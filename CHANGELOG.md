@@ -1,3 +1,12 @@
+# 1.9.3
+
+## Dotnet
+
+  - Fixed missing space and breaking xml when inserting a new version attribute
+  - Fixed breaking the xml when a <Version> element is child of a <PackageReference> element
+
+    Relates to [#348](https://gitlab.com/versionlens/vscode-versionlens/-/issues/348)
+
 # 1.9.2
 
 ## All providers
