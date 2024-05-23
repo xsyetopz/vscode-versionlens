@@ -55,7 +55,6 @@ module.exports = function (env, argv) {
 
     resolve: {
       extensions: ['.ts'],
-      alias: generateAliases(),
       plugins: [
         new tsconfigPathsPlugin(
           {
@@ -91,46 +90,6 @@ module.exports = function (env, argv) {
 
   }
 
-  function generateAliases() {
-    logInfo("Generating aliases")
-
-    let aliases = {
-      ...generateDynamicImportAliases(''),
-      ...generateDynamicImportAliases('infrastructure/providers')
-    }
-
-    // logDebug("Generated aliases", aliases)
-
-    return aliases;
-  }
-
-  function generateDynamicImportAliases(relativePath) {
-    // logDebug("Generating area aliases for " + relativePath)
-
-    const areaAliases = {}
-    const areaPrefix = relativePath.length > 0 ?
-      `${relativePath}/` :
-      relativePath;
-
-    getDirectories(path.resolve(sourcePath, relativePath))
-      .sort()
-      .map(areaPath => ({ areaName: path.basename(areaPath), areaPath }))
-      .forEach(
-        area => {
-          const areaFullName = `${areaPrefix}${area.areaName}`;
-          const areaFullPath = path.resolve(sourcePath, relativePath, area.areaPath);
-          const indexTestPath = path.resolve(areaFullPath, 'index.test.ts');
-
-          areaAliases[areaFullName] = areaFullPath;
-          if (test && fs.existsSync(indexTestPath)) {
-            areaAliases['test.' + areaFullName] = indexTestPath;
-          }
-        }
-      )
-
-    return areaAliases;
-  }
-
   // Finds all the dependencies in the package.json.
   // Returns a object map of strings {"{moduleName}": true, ...} to mark them as nodejs modules
   function generateExternals(testMode) {
@@ -156,12 +115,6 @@ module.exports = function (env, argv) {
       externals,
       /package\.json$/,
     ];
-  }
-
-  function getDirectories(absolutePath) {
-    return fs.readdirSync(absolutePath).filter(
-      file => fs.statSync(absolutePath + '/' + file).isDirectory()
-    )
   }
 
   function logDebug(message, ...optional) {
