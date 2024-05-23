@@ -1,5 +1,5 @@
 import { KeyStringDictionary } from 'domain/utils';
-import { parse } from 'url';
+import { parse } from 'node:url';
 
 export enum RegistryProtocols {
   file = 'file:',

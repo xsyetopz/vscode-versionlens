@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { Config, IConfig } from 'domain/configuration';
 import { test } from 'mocha-ui-esm';
 import { instance, mock, when } from 'ts-mockito';

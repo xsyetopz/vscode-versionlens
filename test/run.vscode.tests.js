@@ -1,5 +1,5 @@
 const { runTests } = require('@vscode/test-electron');
-const path = require('path');
+const path = require('node:path');
 
 const extensionDevelopmentPath = path.resolve(__dirname, '..');
 const distPath = path.resolve(extensionDevelopmentPath, 'dist');

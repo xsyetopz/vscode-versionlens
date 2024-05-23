@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { fileExists } from 'domain/utils';
 import { NpmUtils } from 'infrastructure/providers/npm';
 import { test } from 'mocha-ui-esm';

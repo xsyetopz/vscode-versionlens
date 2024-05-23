@@ -1,5 +1,5 @@
 import { nullMessage, undefinedMessage } from '@esm-test/guards';
-import assert from 'assert';
+import assert from 'node:assert';
 import { ICache, MemoryCache } from 'domain/caching';
 import { test } from 'mocha-ui-esm';
 

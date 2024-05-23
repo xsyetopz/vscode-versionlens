@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { parseVersionSpec } from 'infrastructure/providers/dotnet';
 import { test } from 'mocha-ui-esm';
 

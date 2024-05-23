@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { TTomlPackageParserOptions, parsePackagesToml } from 'domain/packages';
 import { test } from 'mocha-ui-esm';
 import Fixtures from './extractPackageDependenciesFromToml.fixtures';

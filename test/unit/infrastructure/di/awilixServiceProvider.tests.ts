@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { asFunction, asValue, createContainer } from 'awilix';
 import { TServiceResolver } from 'domain/di';
 import { AwilixServiceCollection, AwilixServiceProvider } from 'infrastructure/di';

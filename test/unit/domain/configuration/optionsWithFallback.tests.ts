@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { OptionsWithFallback } from 'domain/configuration';
 import { KeyDictionary } from 'domain/utils';
 import { test } from 'mocha-ui-esm';

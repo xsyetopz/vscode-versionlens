@@ -1,4 +1,4 @@
-import assert from "assert";
+import assert from "node:assert";
 import { MemoryExpiryCache } from "domain/caching";
 import { test } from "mocha-ui-esm";
 

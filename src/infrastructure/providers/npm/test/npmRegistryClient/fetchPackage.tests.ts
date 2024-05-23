@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { CachingOptions, ICachingOptions } from 'domain/caching';
 import { ILogger } from 'domain/logging';
 import {
@@ -19,9 +19,9 @@ import {
   NpmRegistryClient
 } from 'infrastructure/providers/npm';
 import { test } from 'mocha-ui-esm';
+import { homedir } from 'node:os';
+import { resolve } from 'node:path';
 import npa from 'npm-package-arg';
-import { homedir } from 'os';
-import { resolve } from 'path';
 import { LoggerStub } from 'test/unit/domain/logging';
 import { anything, instance, mock, when } from 'ts-mockito';
 import { TNpmClientData } from '../../src/definitions/tNpmClientData';

@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { CachingOptions, ICachingOptions, MemoryExpiryCache } from 'domain/caching';
 import { ClientResponseSource, ProcessClientResponse } from 'domain/clients';
 import { ILogger } from 'domain/logging';

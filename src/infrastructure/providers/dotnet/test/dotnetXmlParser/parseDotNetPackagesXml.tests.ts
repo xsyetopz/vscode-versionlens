@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { parseDotNetPackagesXml } from 'infrastructure/providers/dotnet';
 import { test } from 'mocha-ui-esm';
 import Fixtures from './parseDotNetPackagesXml.fixtures';

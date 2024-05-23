@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { VersionUtils } from 'domain/packages';
 
 export const isFixedVersionTests = {

@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { ClientResponseSource } from 'domain/clients';
 import { ILogger } from 'domain/logging';
 import {

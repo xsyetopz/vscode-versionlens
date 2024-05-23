@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { UrlUtils } from 'domain/clients';
 import { test } from 'mocha-ui-esm';
 

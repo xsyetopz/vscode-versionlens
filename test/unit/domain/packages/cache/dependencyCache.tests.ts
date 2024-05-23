@@ -1,4 +1,4 @@
-import assert from "assert";
+import assert from "node:assert";
 import { DependencyCache, PackageDependency } from "domain/packages";
 import { test } from "mocha-ui-esm";
 import { anything, instance, mock, verify, when } from "ts-mockito";

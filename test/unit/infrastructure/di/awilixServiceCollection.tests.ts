@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { BuildResolver } from 'awilix';
 import { TServiceResolver } from 'domain/di';
 import { KeyDictionary } from 'domain/utils';

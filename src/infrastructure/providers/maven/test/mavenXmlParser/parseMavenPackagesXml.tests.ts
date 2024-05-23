@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { extractReposUrlsFromXml, getVersionsFromPackageXml, parseMavenPackagesXml } from 'infrastructure/providers/maven';
 import { test } from 'mocha-ui-esm';
 import Fixtures from './parseMavenPackagesXml.fixtures';

@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { CachingOptions } from 'domain/caching';
 import { ILogger } from 'domain/logging';
 import { DependencyCache, PackageResponse, SuggestionTypes } from 'domain/packages';
