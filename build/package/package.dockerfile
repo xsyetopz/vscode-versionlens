@@ -1,5 +1,5 @@
 # see ./package.gitlab-ci.yml for cmdline example of how to run on local docker
-FROM node:19.4-alpine
+FROM node:22-alpine3.19
 ARG TARGET_PATH=/versionlens
 
 COPY / $TARGET_PATH
@@ -7,7 +7,7 @@ COPY / $TARGET_PATH
 WORKDIR $TARGET_PATH
 
 # install deps
-RUN npm install @vscode/vsce rimraf -g
+RUN npm install -g npm @vscode/vsce rimraf
 RUN npm install
 
 # run tests
