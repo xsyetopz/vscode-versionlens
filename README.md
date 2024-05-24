@@ -21,6 +21,7 @@ This extension shows __version__ information when opening a package or project f
   - jspm https://jspm.org/
   - pnpm https://pnpm.io/
 - pub https://pub.dev/
+- python https://pypi.org/
 
 Version lens abides to [semver rules](https://semver.org/) and uses the [Node Semver](https://github.com/npm/node-semver) package to compare and sort versions.
 

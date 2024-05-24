@@ -1,3 +1,17 @@
+# 1.10.0
+
+## Python (poetry)
+
+  - Added poetry support to pyproject.toml files
+
+    Relates to [#57](https://gitlab.com/versionlens/vscode-versionlens/-/issues/57)
+
+## Rust (cargo)
+
+  - Added '[workspace.dependencies]' support to Cargo.toml files
+
+    Relates to [#346](https://gitlab.com/versionlens/vscode-versionlens/-/issues/346)
+
 # 1.9.3
 
 ## Dotnet
