@@ -24,7 +24,11 @@ export const extractPackageDependenciesFromTomlTests = {
 
   "extracts dependencies from toml": () => {
     const testOptions = {
-      includePropNames: ['dependencies', 'dev-dependencies']
+      includePropNames: [
+        'dependencies',
+        'dependencies.*',
+        'dev-dependencies',
+      ]
     }
 
     const actual = parsePackagesToml(Fixtures.extractDependencyEntries.test, testOptions)

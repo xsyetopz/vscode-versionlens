@@ -514,8 +514,13 @@
           "minItems": 1,
           "default": [
             "dependencies",
+            "dependencies.*",
             "dev-dependencies",
-            "build-dependencies"
+            "dev-dependencies.*",
+            "build-dependencies",
+            "build-dependencies.*",
+            "workspace.dependencies",
+            "workspace.dependencies.*"
           ],
           "description": "Defines which properties in cargo.toml should be parsed by this extension"
         },

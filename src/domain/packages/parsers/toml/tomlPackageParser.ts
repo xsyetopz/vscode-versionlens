@@ -1,5 +1,4 @@
 import { AST, parseTOML } from "toml-eslint-parser";
-import { TOMLTable } from "toml-eslint-parser/lib/ast";
 import { PackageDescriptorType } from "../definitions/ePackageDescriptorType";
 import { PackageDescriptor } from "../packageDescriptor";
 import { TTomlPackageParserOptions } from "./tTomlPackageParserOptions";
@@ -9,7 +8,7 @@ import {
   createPathDescFromTomlNode,
   createVersionDescFromTomlNode
 } from "./tomlPackageTypeFactory";
-import { complexHasProperty } from "./tomlParserUtils";
+import { complexHasProperty, matchesTableExpression } from "./tomlParserUtils";
 
 export function parsePackagesToml(
   toml: string,
@@ -34,24 +33,28 @@ function parsePackageNodes(
   const matchedDependencies: Array<PackageDescriptor> = [];
   const { includePropNames } = options;
 
-  const nodes = bodyNode.body
+  const matchedTables = bodyNode.body
     .filter(x => x.type === 'TOMLTable')
-    .filter((x: AST.TOMLTable) => includePropNames.includes(x.resolvedKey[0] as string))
-    .map((x: AST.TOMLTable) => x.body)
-    .flat()
+    .map((x: AST.TOMLTable) => ({
+      match: matchesTableExpression(x.resolvedKey, includePropNames),
+      rows: x.body
+    }))
+    .filter(x => x.match);
 
-  for (const node of nodes) {
-    const parent = node.parent as TOMLTable;
-    const isNameFromTable = parent.key.keys.length > 1;
-    const isComplexNode = node.value.type === 'TOMLInlineTable';
+  for (const matchedTable of matchedTables) {
+    const tableRows = matchedTable.rows;
+    const isPkgNameInTableName = matchedTable.match.endsWith('*');
 
-    const packageDesc = isComplexNode
-      ? parseComplexNode(node, node.value as AST.TOMLInlineTable)
-      : parseSimpleNode(node, isNameFromTable);
+    for (const tableRow of tableRows) {
+      const isComplexNode = tableRow.value.type === 'TOMLInlineTable';
+      const packageDesc = isComplexNode
+        ? parseComplexNode(tableRow, tableRow.value as AST.TOMLInlineTable)
+        : parseSimpleNode(tableRow, isPkgNameInTableName);
 
-    // add the package desc to the matched array
-    if (packageDesc) matchedDependencies.push(packageDesc);
+      // add the package desc to the matched array
+      if (packageDesc) matchedDependencies.push(packageDesc);
 
+    }
   }
 
   return matchedDependencies;

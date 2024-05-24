@@ -8,6 +8,10 @@ syn = { version = "2.0.38", features = ["full"] }
 thiserror = "1.0.49"
 test = { path = "../.." }
 smallvec = { git = "https://github.com/servo/rust-smallvec.git" }
+libc = { workspace = true }
 
 [dev-dependencies.trybuild]
 version = "1.0.85"
+
+[workspace.dependencies]
+libc = "1.0.96"
