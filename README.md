@@ -22,6 +22,7 @@ This extension shows __version__ information when opening a package or project f
   - pnpm https://pnpm.io/
 - pub https://pub.dev/
 - python https://pypi.org/
+  - needs a TOML language extension installed (like [even-better-toml](https://marketplace.visualstudio.com/items?itemName=tamasfe.even-better-toml))
 
 Version lens abides to [semver rules](https://semver.org/) and uses the [Node Semver](https://github.com/npm/node-semver) package to compare and sort versions.
 
