@@ -29,9 +29,8 @@ export class OnUpdateDependencyClick {
 
     const { version, type } = codeLens.package.suggestion;
     const isTag = type & SuggestionTypes.tag;
-    const isPrerelease = type & SuggestionTypes.prerelease;
     const suggestionUpdate = mapToSuggestionUpdate(codeLens.package);
-    const replaceWithVersion: string = isPrerelease || isTag
+    const replaceWithVersion: string = isTag
       ? version
       : codeLens.replaceVersionFn(suggestionUpdate, version);
 
