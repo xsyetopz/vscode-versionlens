@@ -132,14 +132,14 @@ export default {
     <TPackageSuggestion>{
       type: SuggestionTypes.release,
       category: SuggestionCategory.Updateable,
-      name: SuggestionStatusText.UpdateRange,
-      version: '2.1.0'
+      name: SuggestionStatusText.UpdateLatest,
+      version: '3.0.0'
     },
     <TPackageSuggestion>{
       type: SuggestionTypes.release,
       category: SuggestionCategory.Updateable,
-      name: SuggestionStatusText.UpdateLatest,
-      version: '3.0.0'
+      name: SuggestionStatusText.UpdateRange,
+      version: '2.1.0'
     },
     <TPackageSuggestion>{
       type: SuggestionTypes.prerelease,
@@ -158,14 +158,14 @@ export default {
     {
       type: SuggestionTypes.release,
       category: SuggestionCategory.Updateable,
-      name: SuggestionStatusText.UpdateRange,
-      version: '1.1.2',
+      name: SuggestionStatusText.UpdateLatest,
+      version: '2.2.2',
     },
     {
       type: SuggestionTypes.release,
       category: SuggestionCategory.Updateable,
-      name: SuggestionStatusText.UpdateLatest,
-      version: '2.2.2',
+      name: SuggestionStatusText.UpdateRange,
+      version: '1.1.2',
     },
     {
       type: SuggestionTypes.release,
@@ -184,14 +184,14 @@ export default {
     {
       type: SuggestionTypes.release,
       category: SuggestionCategory.Updateable,
-      name: SuggestionStatusText.UpdateRange,
-      version: '1.2.2',
+      name: SuggestionStatusText.UpdateLatest,
+      version: '2.2.2',
     },
     {
       type: SuggestionTypes.release,
       category: SuggestionCategory.Updateable,
-      name: SuggestionStatusText.UpdateLatest,
-      version: '2.2.2',
+      name: SuggestionStatusText.UpdateRange,
+      version: '1.2.2',
     },
   ],
   rangeSatisfiesMaxAndSuggestsLatest: [

@@ -54,64 +54,55 @@ export function createSuggestions(
     isRangeVersion &&
     satisfiesVersion &&
     satisfiesVersion !== minVersion(versionRange).version;
+  let status: TPackageSuggestion;
 
-  const suggestions: Array<TPackageSuggestion> = [];
-
-  // Frist add the actual status
-
+  // determine the current status
   if (!satisfiesVersion) {
     // Cannot find a version that satisfies the range -> suggest only latest
-    suggestions.push(SuggestionFactory.createNoMatchStatus());
+    status = SuggestionFactory.createNoMatchStatus();
   } else if (isLatest) {
     if (hasRangeUpdate) {
       // Theoretically up to date,
       // but it could still be using an older version in the range
-      suggestions.push(
-        SuggestionFactory.createSatisifiesLatestStatus(satisfiesVersion)
-      );
+      status = SuggestionFactory.createSatisifiesLatestStatus(satisfiesVersion);
     } else {
       // Already up to date -> nothing to do
-      suggestions.push(
-        SuggestionFactory.createMatchesLatestStatus(satisfiesVersion)
-      );
+      status = SuggestionFactory.createMatchesLatestStatus(satisfiesVersion);
     }
   } else if (isFixedVersion) {
     // Not up to date (fixed) -> display the current version
-    suggestions.push(SuggestionFactory.createFixedStatus(satisfiesVersion));
+    status = SuggestionFactory.createFixedStatus(satisfiesVersion);
   } else {
     // Not up to date (range) -> display the max satisfying version
-    suggestions.push(
-      SuggestionFactory.createSatisifiesStatus(satisfiesVersion)
-    );
+    status = SuggestionFactory.createSatisifiesStatus(satisfiesVersion);
   }
 
-  // Then suggest available updates
+  // determine suggestions
+  const potentialSuggestions: Array<[SuggestionStatusText, string]> = [];
+  const suggestions: Array<TPackageSuggestion> = [];
 
-  if (hasRangeUpdate) {
-    if (isLatest) {
-      suggestions.push(
-        SuggestionFactory.createLatestUpdateable(satisfiesVersion)
-      );
-    } else {
-      suggestions.push(
-        SuggestionFactory.createRangeUpdateable(satisfiesVersion)
-      );
-    }
+  // suggest latest?
+  if (!isLatest || hasRangeUpdate) {
+    potentialSuggestions.push([SuggestionStatusText.UpdateLatest, latestVersion]);
   }
 
+  // suggest ranged?
+  if (!isLatest && hasRangeUpdate) {
+    potentialSuggestions.push([SuggestionStatusText.UpdateRange, satisfiesVersion]);
+  }
+
+  // suggest minor and\or patch?
   if (satisfiesVersion) {
-    const nextMajor = inc(satisfiesVersion, 'major');
-    const nextMinor = inc(satisfiesVersion, 'minor');
-    const nextPatch = inc(satisfiesVersion, 'patch');
+    const nextMaxMajor = inc(satisfiesVersion, 'major');
+    const nextMaxMinor = inc(satisfiesVersion, 'minor');
+    const nextMaxPatch = inc(satisfiesVersion, 'patch');
 
-    const potentialSuggesions: ReadonlyArray<[SuggestionStatusText, string]> = [
-      [SuggestionStatusText.Latest, latestVersion],
-      [SuggestionStatusText.UpdateLatest, `>=${nextMajor}`],
-      [SuggestionStatusText.UpdateMinor, `>=${nextMinor} <${nextMajor}`],
-      [SuggestionStatusText.UpdatePatch, `>=${nextPatch} <${nextMinor}`],
-    ];
+    potentialSuggestions.push(
+      [SuggestionStatusText.UpdateMinor, `>=${nextMaxMinor} <${nextMaxMajor}`],
+      [SuggestionStatusText.UpdatePatch, `>=${nextMaxPatch} <${nextMaxMinor}`],
+    );
 
-    for (const [name, range] of potentialSuggesions) {
+    for (const [name, range] of potentialSuggestions) {
       const version = maxSatisfying(releases, range);
       // Only suggest if the version is not already suggested
       if (version && !suggestions.some((s) => s.version === version)) {
@@ -124,6 +115,8 @@ export function createSuggestions(
     // No satisfying version -> suggest the latest
     suggestions.push(SuggestionFactory.createLatestUpdateable(latestVersion));
   }
+
+  const results = [status, ...suggestions];
 
   // roll up prereleases
   const maxSatisfyingPrereleases = VersionUtils.filterPrereleasesGtMinRange(
@@ -140,7 +133,7 @@ export function createSuggestions(
     if (tv.version === latestVersion) break;
     if (versionRange.includes(tv.version)) break;
 
-    suggestions.push({
+    results.push({
       name: tv.name,
       category: SuggestionCategory.Updateable,
       version: tv.version,
@@ -148,5 +141,5 @@ export function createSuggestions(
     });
   }
 
-  return suggestions;
+  return results;
 }
