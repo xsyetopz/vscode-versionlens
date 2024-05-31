@@ -7,6 +7,7 @@ import {
   PackageVersionType,
   SuggestionFactory,
   TPackageClientResponse,
+  UpdateableFactory,
   VersionUtils,
   createSuggestions
 } from 'domain/packages';
@@ -162,7 +163,7 @@ export class GitHubClient {
     if (noMatch) {
       suggestions.push(
         SuggestionFactory.createNoMatchStatus(),
-        SuggestionFactory.createLatestUpdateable(latestCommit)
+        UpdateableFactory.createLatestUpdateable(latestCommit)
       );
     } else if (isLatest) {
       suggestions.push(
@@ -171,7 +172,7 @@ export class GitHubClient {
     } else if (commitIndex > 0) {
       suggestions.push(
         SuggestionFactory.createFixedStatus(versionRange),
-        SuggestionFactory.createLatestUpdateable(latestCommit)
+        UpdateableFactory.createLatestUpdateable(latestCommit)
       );
     }
 

@@ -6,7 +6,8 @@ import {
   TPackageClientResponse,
   TPackageClientResponseStatus,
   TPackageResource,
-  TPackageSuggestion
+  TPackageSuggestion,
+  UpdateableFactory
 } from 'domain/packages';
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -34,7 +35,7 @@ export function createInvalidVersion(
   const source: PackageSourceType = PackageSourceType.Registry;
   const suggestions: Array<TPackageSuggestion> = [
     SuggestionFactory.createInvalidStatus(''),
-    SuggestionFactory.createLatestUpdateable(),
+    UpdateableFactory.createLatestUpdateable(),
   ];
 
   return {
@@ -55,7 +56,7 @@ export function createNoMatch(
 
   const suggestions: Array<TPackageSuggestion> = [
     SuggestionFactory.createNoMatchStatus(),
-    SuggestionFactory.createLatestUpdateable(latestVersion),
+    UpdateableFactory.createLatestUpdateable(latestVersion),
   ];
 
   return {

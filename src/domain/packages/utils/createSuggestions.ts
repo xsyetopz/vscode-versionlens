@@ -2,6 +2,7 @@ import {
   SuggestionFactory,
   SuggestionStatusText,
   TPackageSuggestion,
+  UpdateableFactory,
   VersionUtils,
 } from 'domain/packages';
 import { Nullable } from 'domain/utils';
@@ -14,7 +15,6 @@ import {
   valid,
   validRange,
 } from 'semver';
-import { createTaggedPreleaseUpdateable } from '../factories/packageSuggestionFactory';
 
 export function createSuggestions(
   versionRange: string,
@@ -107,7 +107,7 @@ export function createSuggestions(
       // Only suggest if the version is not already suggested
       if (version && !suggestions.some((s) => s.version === version)) {
         suggestions.push(
-          SuggestionFactory.createNextMaxUpdateable(version, name)
+          UpdateableFactory.createNextMaxUpdateable(version, name)
         );
       }
     }
@@ -115,7 +115,7 @@ export function createSuggestions(
 
   if (!satisfiesVersion && suggestions.length === 0 && suggestLatest) {
     // No satisfying version -> suggest the latest
-    suggestions.push(SuggestionFactory.createLatestUpdateable(latestVersion));
+    suggestions.push(UpdateableFactory.createLatestUpdateable(latestVersion));
   }
 
   const results = [status, ...suggestions];
@@ -136,7 +136,7 @@ export function createSuggestions(
     if (versionRange.includes(tv.version)) break;
 
     results.push(
-      createTaggedPreleaseUpdateable(tv.name, tv.version)
+      UpdateableFactory.createTaggedPreleaseUpdateable(tv.name, tv.version)
     );
   }
 

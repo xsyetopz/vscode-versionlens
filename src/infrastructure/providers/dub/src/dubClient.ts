@@ -15,6 +15,7 @@ import {
   TPackageClientResponse,
   TPackageSuggestion,
   TSemverSpec,
+  UpdateableFactory,
   VersionUtils,
   createSuggestions
 } from 'domain/packages';
@@ -142,7 +143,7 @@ export function parseSuggestions(
       suggestions.pop();
     } else {
       // suggest
-      suggestions[1] = SuggestionFactory.createLatestUpdateable(latestRelease);
+      suggestions[1] = UpdateableFactory.createLatestUpdateable(latestRelease);
     }
 
   }

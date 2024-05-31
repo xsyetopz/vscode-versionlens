@@ -8,7 +8,8 @@ import {
   SuggestionFactory,
   TPackageClientRequest,
   TPackageClientResponse,
-  TPackageSuggestion
+  TPackageSuggestion,
+  UpdateableFactory
 } from 'domain/packages';
 import npa from 'npm-package-arg';
 import { NpaSpec, NpaTypes } from '../models/npaSpec';
@@ -116,7 +117,7 @@ export class NpmPackageClient implements IPackageClient<null> {
       else if (status == 'INVALIDTAGNAME' || response.data.includes('Invalid comparator:'))
         suggestions = [
           SuggestionFactory.createInvalidStatus(''),
-          SuggestionFactory.createLatestUpdateable('latest')
+          UpdateableFactory.createLatestUpdateable('latest')
         ];
       else if (status == 'INVALIDPACKAGENAME')
         suggestions = [

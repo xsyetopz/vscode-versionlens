@@ -1,2 +1,2 @@
 export * from './createFromHttpStatus.tests';
-export * from './createLatest.tests';
+export * from '../../packages/packageUpdateableFactory.tests';
