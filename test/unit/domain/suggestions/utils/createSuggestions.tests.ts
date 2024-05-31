@@ -12,7 +12,6 @@ import Fixtures from './createSuggestions.fixtures';
 export const CreateSuggestionsTests = {
 
   [test.title]: createSuggestions.name,
-
   "returns nomatch": {
 
     "when releases and prereleases are empty": () => {
@@ -153,6 +152,22 @@ export const CreateSuggestionsTests = {
 
         // assert
         assert.deepEqual(results, Fixtures.fixedNoMatchWithLatestSuggestions);
+      },
+      "$i: returns 'no match' with minor and patch suggestions": () => {
+        // setup
+        const testRange = '0.5.0'
+        const testReleases = ['0.5.1', '0.6.0', '1.0.0']
+        const testPrereleases = ['1.1.0-alpha.1']
+
+        // test
+        const results = createSuggestions(
+          testRange,
+          testReleases,
+          testPrereleases
+        );
+
+        // assert
+        assert.deepEqual(results, Fixtures.fixedNoMatchWithNextSuggestions);
       }
     },
     "is the latest release": {
@@ -190,38 +205,88 @@ export const CreateSuggestionsTests = {
         assert.deepEqual(results, Fixtures.fixedIsLatestNoSuggestions);
         assert.equal(results[0].version, testVersion);
       }
-    }
-  },
-
-  'fixed with latest, minor and patch': {
-    "$i: returns 'fixed' with latest, minor and patch suggestions": [
-      ['1.1.1'],
-      (testRange: string) => {
+    },
+    "is a prerelease and has no releases": {
+      "returns 'fixed' with latest prerelease suggestion": () => {
         // setup
-        const fixedVersion = '1.1.1';
-        const testReleases = [
-          '1.1.0',
-          '1.1.1',
-          '1.1.2',
-          '1.2.0',
-          '1.2.2',
-          '2.0.0',
-          '2.2.2',
-        ];
-        const testPrereleases = [];
+        const testVersion = '1.0.0-beta.1';
+        const testReleases = []
+        const testPrereleases = [testVersion, '1.0.0-beta.2', '1.0.0-beta.3']
+
+        const expected = [
+          <TPackageSuggestion>{
+            name: SuggestionStatusText.Fixed,
+            category: SuggestionCategory.Match,
+            version: '1.0.0-beta.1',
+            type: SuggestionTypes.status
+          },
+          <TPackageSuggestion>{
+            name: 'beta',
+            category: SuggestionCategory.Updateable,
+            version: '1.0.0-beta.3',
+            type: SuggestionTypes.prerelease
+          }
+        ]
 
         // test
         const results = createSuggestions(
-          testRange,
+          testVersion,
           testReleases,
           testPrereleases
         );
 
         // assert
-        assert.deepEqual(results, Fixtures.fixedWithSuggestions);
-        assert.equal(results[0].version, fixedVersion);
+        assert.deepEqual(results, expected);
+        assert.equal(results[0].version, testVersion);
       },
-    ],
+      "returns 'latest' with no suggestions": () => {
+        // setup
+        const testVersion = '3.0.0';
+        const testReleases = ['1.0.0', '2.0.0', '2.1.0', testVersion]
+        const testPrereleases = ['1.1.0-alpha.1', '3.0.0-next']
+
+        // test
+        const results = createSuggestions(
+          testVersion,
+          testReleases,
+          testPrereleases
+        );
+
+        // assert
+        assert.deepEqual(results, Fixtures.fixedIsLatestNoSuggestions);
+        assert.equal(results[0].version, testVersion);
+      }
+    },
+    'has latest, minor and patch suggestions': {
+      "$i: returns 'fixed' with latest, minor and patch suggestions": [
+        ['1.1.1'],
+        (testRange: string) => {
+          // setup
+          const fixedVersion = '1.1.1';
+          const testReleases = [
+            '1.1.0',
+            '1.1.1',
+            '1.1.2',
+            '1.2.0',
+            '1.2.2',
+            '2.0.0',
+            '2.2.2',
+          ];
+          const testPrereleases = [];
+
+          // test
+          const results = createSuggestions(
+            testRange,
+            testReleases,
+            testPrereleases
+          );
+
+          // assert
+          assert.deepEqual(results, Fixtures.fixedWithSuggestions);
+          assert.equal(results[0].version, fixedVersion);
+        },
+      ],
+    },
   },
 
   "when version is a range": {

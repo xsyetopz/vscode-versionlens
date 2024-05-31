@@ -74,6 +74,38 @@ export default {
       version: '4.0.0-next'
     }
   ],
+  fixedNoMatchWithNextSuggestions: [
+    <TPackageSuggestion>{
+      type: SuggestionTypes.status,
+      category: SuggestionCategory.NoMatch,
+      name: SuggestionStatusText.NoMatch,
+      version: ''
+    },
+    <TPackageSuggestion>{
+      type: SuggestionTypes.release,
+      category: SuggestionCategory.Updateable,
+      name: SuggestionStatusText.UpdateLatest,
+      version: '1.0.0'
+    },
+    <TPackageSuggestion>{
+      type: SuggestionTypes.release,
+      category: SuggestionCategory.Updateable,
+      name: SuggestionStatusText.UpdateMinor,
+      version: '0.6.0'
+    },
+    <TPackageSuggestion>{
+      type: SuggestionTypes.release,
+      category: SuggestionCategory.Updateable,
+      name: SuggestionStatusText.UpdatePatch,
+      version: '0.5.1'
+    },
+    <TPackageSuggestion>{
+      type: SuggestionTypes.prerelease,
+      category: SuggestionCategory.Updateable,
+      name: 'alpha',
+      version: '1.1.0-alpha.1'
+    }
+  ],
   rangeNoMatchWithLatestSuggestions: [
     <TPackageSuggestion>{
       type: SuggestionTypes.status,

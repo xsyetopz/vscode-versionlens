@@ -82,7 +82,8 @@ export function createSuggestions(
   const suggestions: Array<TPackageSuggestion> = [];
 
   // suggest latest?
-  if (!isLatest || hasRangeUpdate) {
+  const suggestLatest = !isLatest || hasRangeUpdate;
+  if (suggestLatest) {
     potentialSuggestions.push([SuggestionStatusText.UpdateLatest, latestVersion]);
   }
 
@@ -92,10 +93,10 @@ export function createSuggestions(
   }
 
   // suggest minor and\or patch?
-  if (satisfiesVersion) {
-    const nextMaxMajor = inc(satisfiesVersion, 'major');
-    const nextMaxMinor = inc(satisfiesVersion, 'minor');
-    const nextMaxPatch = inc(satisfiesVersion, 'patch');
+  if (satisfiesVersion || isFixedVersion) {
+    const nextMaxMajor = inc(satisfiesVersion ?? versionRange, 'major');
+    const nextMaxMinor = inc(satisfiesVersion ?? versionRange, 'minor');
+    const nextMaxPatch = inc(satisfiesVersion ?? versionRange, 'patch');
 
     potentialSuggestions.push(
       [SuggestionStatusText.UpdateMinor, `>=${nextMaxMinor} <${nextMaxMajor}`],
@@ -111,7 +112,9 @@ export function createSuggestions(
         );
       }
     }
-  } else {
+  }
+
+  if (!satisfiesVersion && suggestions.length === 0 && suggestLatest) {
     // No satisfying version -> suggest the latest
     suggestions.push(SuggestionFactory.createLatestUpdateable(latestVersion));
   }
