@@ -1,3 +1,18 @@
+# 1.12.0-next.1
+
+## All Providers
+
+  - Added suggestion update links for the next maximum `minor` and\or `patch` (if they exist relative to the choosen version) 
+
+    Examples:
+
+    ![image](/uploads/c10bed509673e368184d9ab546186029/image.png)
+    ![image](/uploads/411ad32f58e37cc64b40a757796829aa/image.png)
+
+    Thanks to https://gitlab.com/ST-DDT
+
+    Relates to [#291](https://gitlab.com/versionlens/vscode-versionlens/-/issues/291)
+
 # 1.11.0
 
 ## GoLang
