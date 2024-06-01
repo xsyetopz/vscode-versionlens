@@ -1,4 +1,4 @@
-# 1.12.0-next.1
+# 1.12.0-preview
 
 ## All Providers
 
@@ -13,6 +13,11 @@
     Thanks to https://gitlab.com/ST-DDT
 
     Relates to [#291](https://gitlab.com/versionlens/vscode-versionlens/-/issues/291)
+
+  - A sub dependency minor patch caused versionlens to stop working for some users.
+    This fix attempts to override `@npmcli/agent` back to last know working version.
+
+    Relates to [#357](https://gitlab.com/versionlens/vscode-versionlens/-/issues/357)
 
 ## Dart (pub)
 
