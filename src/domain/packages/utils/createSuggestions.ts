@@ -51,11 +51,15 @@ export function createSuggestions(
   // get the latest release
   const latestVersion = distTagVersion || releases[releases.length - 1];
   const isLatest = latestVersion === satisfiesVersion;
-  const minVersion = getMinVersion(versionRange).version;
+
+  let minVersion = null;
+  if (isRangeVersion) minVersion = getMinVersion(versionRange).version;
+
   const hasRangeUpdate =
     isRangeVersion &&
     satisfiesVersion &&
     satisfiesVersion !== minVersion;
+
   let status: TPackageSuggestion;
 
   // determine the current status
