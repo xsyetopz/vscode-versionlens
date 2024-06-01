@@ -23,7 +23,7 @@ RUN rimraf ./node_modules
 RUN npm install --omit dev
 
 # set preview=true in package.json
-RUN node -e node -e "const {readFileSync, writeFileSync} = require('fs'); const pkg = JSON.parse(readFileSync('./package.json', 'utf-8')); pkg.preview=true; writeFileSync('./package.json', JSON.stringify(pkg,null,'  '))"
+RUN node -e node -e "const {readFileSync, writeFileSync} = require('fs'); const pkg = JSON.parse(readFileSync('./package.json', 'utf-8')); pkg.preview=true; pkg.version = pkg.version.replace('-preview', ''); writeFileSync('./package.json', JSON.stringify(pkg,null,'  '))"
 
 # package the extension
 RUN vsce package --pre-release
@@ -33,4 +33,4 @@ RUN mkdir ./artifacts
 RUN mv *.vsix ./artifacts
 
 # publish
-RUN vsce publish --pre-release
+CMD vsce publish --pre-release
