@@ -14,6 +14,10 @@
 
     Relates to [#291](https://gitlab.com/versionlens/vscode-versionlens/-/issues/291)
 
+## Dart (pub)
+
+  - Fixed a case where a comment after the version was preventing suggestions from showing for that package
+
 # 1.11.0
 
 ## GoLang

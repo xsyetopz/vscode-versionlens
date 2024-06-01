@@ -77,7 +77,7 @@ dependencies:
           },
           version: <TPackageVersionDescriptor>{
             type: PackageDescriptorType.version,
-            version: "#",
+            version: "*",
             versionAppend: " ",
             versionPrepend: "",
             versionRange: {

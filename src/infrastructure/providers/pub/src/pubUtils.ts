@@ -4,10 +4,8 @@ export function pubReplaceVersion(suggestionUpdate: TSuggestionUpdate, newVersio
 
   return defaultReplaceFn(
     suggestionUpdate,
-    // handle cases with blank entries and # comments
-    suggestionUpdate.parsedVersion === '#' ?
-      `${suggestionUpdate.parsedVersionPrepend}${newVersion}${suggestionUpdate.parsedVersionAppend}` :
-      newVersion
+    // handle cases for blank entries and # comments
+    `${suggestionUpdate.parsedVersionPrepend}${newVersion}${suggestionUpdate.parsedVersionAppend}`
   );
 
 }
