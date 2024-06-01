@@ -1,0 +1,20 @@
+image: docker:stable
+
+services:
+  - docker:dind
+
+workflow:
+  rules:
+    - when: always
+
+preview:
+  script:
+    - cp $VSCE_PAT_FILEPATH .env
+    - docker build -t versionlens:preview -f build/preview/preview.dockerfile .
+    - docker run --name versionlens-container --env-file ./.env versionlens:preview
+    - docker cp versionlens-container:/versionlens/artifacts/ .
+    - docker rm -f versionlens-container
+    - mv ./artifacts/*.vsix .
+  artifacts:
+    paths:
+      - ./*.vsix

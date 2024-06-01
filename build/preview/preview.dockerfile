@@ -1,0 +1,36 @@
+# see ./preview.gitlab-ci.yml for cmdline example of how to run on local docker
+FROM node:22-alpine3.19
+ARG TARGET_PATH=/versionlens
+
+COPY / $TARGET_PATH
+
+WORKDIR $TARGET_PATH
+
+# install deps
+RUN npm install -g npm @vscode/vsce rimraf
+RUN npm install
+
+# run tests
+RUN npm run test:unit
+
+# bundle
+RUN npm run pack -- --mode=production
+
+# remove all node modules
+RUN rimraf ./node_modules
+
+# install prod dependencies only
+RUN npm install --omit dev
+
+# set preview=true in package.json
+RUN node -e node -e "const {readFileSync, writeFileSync} = require('fs'); const pkg = JSON.parse(readFileSync('./package.json', 'utf-8')); pkg.preview=true; writeFileSync('./package.json', JSON.stringify(pkg,null,'  '))"
+
+# package the extension
+RUN vsce package --pre-release
+
+# move package to artifacts
+RUN mkdir ./artifacts
+RUN mv *.vsix ./artifacts
+
+# publish
+vsce publish --pre-release
