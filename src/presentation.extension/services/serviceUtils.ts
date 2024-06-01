@@ -49,7 +49,7 @@ export function addVersionLensState(services: IServiceCollection) {
 export function addVersionLensExtension(services: IServiceCollection) {
   const projectPath = workspace.workspaceFolders && workspace.workspaceFolders.length > 0
     ? workspace.workspaceFolders[0].uri.fsPath
-    : "";
+    : '';
 
   services.addSingleton(
     nameOf<IExtensionServices>().extension,

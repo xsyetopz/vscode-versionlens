@@ -1,4 +1,4 @@
-import { throwNotStringOrEmpty, throwUndefinedOrNull } from '@esm-test/guards';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 import { IFrozenOptions } from 'domain/configuration';
 import { VersionLensState } from "presentation.extension";
 import { SuggestionsOptions } from "./suggestions/suggestionsOptions";
@@ -16,7 +16,7 @@ export class VersionLensExtension {
     throwUndefinedOrNull("config", config);
     throwUndefinedOrNull("state", state);
     throwUndefinedOrNull("suggestionOptions", suggestionOptions);
-    throwNotStringOrEmpty("projectPath", projectPath);
+    throwUndefinedOrNull("projectPath", projectPath);
   }
 
   /**
