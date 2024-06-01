@@ -33,4 +33,4 @@ RUN mkdir ./artifacts
 RUN mv *.vsix ./artifacts
 
 # publish
-vsce publish --pre-release
+RUN vsce publish --pre-release
