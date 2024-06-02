@@ -9,7 +9,7 @@ This project is `active`, not sponsored or funded.
 
 [![BuyMeACoffee](https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png)](https://www.buymeacoffee.com/peterf)
 
-This extension shows __version__ information when opening a package or project file in version lens. <br> It abides to [semver rules](https://semver.org/) and uses the [Node Semver](https://github.com/npm/node-semver) package to compare and sort versions.
+This extension shows __version__ information when opening a package or project file in vscode. <br> It abides by [semver rules](https://semver.org/) and uses the [Node Semver](https://github.com/npm/node-semver) package to compare and sort versions.
 
 ![Show releases](https://gitlab.com/versionlens/vscode-versionlens/-/raw/master/images/faq/show-releases.gif)
 
