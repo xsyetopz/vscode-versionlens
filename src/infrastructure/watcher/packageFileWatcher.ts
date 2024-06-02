@@ -8,6 +8,7 @@ import {
 import { ISuggestionProvider } from 'domain/providers';
 import { DependencyChangesResult, GetDependencyChanges } from 'domain/useCases';
 import { AsyncEmitter, IDisposable } from 'domain/utils';
+import { isMatch } from 'micromatch';
 import { Uri } from 'vscode';
 import { IWorkspaceAdapter } from '.';
 
@@ -34,7 +35,7 @@ export class PackageFileWatcher
 
   private disposables: IDisposable[];
 
-  async initialize(): Promise<void> {
+  async watchFolder(): Promise<void> {
     const startedAt = performance.now();
 
     // queue promises
@@ -50,6 +51,30 @@ export class PackageFileWatcher
     this.logger.debug(
       'initialized PackageFileWatcher (%s ms)',
       Math.floor(completedAt - startedAt)
+    );
+
+    this.watch();
+  }
+
+  async watchFile(file: Uri): Promise<void> {
+    const matched = this.providers.filter(
+      provider => isMatch(file.fsPath, provider.config.fileMatcher.pattern)
+    );
+
+    if (matched.length === 0) {
+      this.logger.error(
+        `could not find '%s' project file`,
+        file.fsPath
+      );
+      return;
+    }
+
+    const provider = matched[0];
+    await this.onFileAdd(provider, file);
+    this.logger.debug(
+      'found %s project file for %s',
+      1,
+      provider.name
     );
 
     this.watch();

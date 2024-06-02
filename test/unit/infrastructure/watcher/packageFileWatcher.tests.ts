@@ -31,21 +31,20 @@ export const packageFileWatcherTests = {
     this.mockPackageFileWatcher = mock<PackageFileWatcher>();
 
     when(this.mockProvider.name).thenReturn("test provider");
-  },
 
-  initialize: {
+    when(this.mockConfig.fileMatcher).thenReturn({
+      language: "",
+      pattern: "**/package.json",
+      scheme: "",
+      exclude: "**/node_modules/**"
+    });
+  },
+  watchFolder: {
     "finds files using a provider file pattern": async function (this: TestContext) {
       // setup
       const testProvider = instance(this.mockProvider);
       const testConfig = instance(this.mockConfig);
       const testUri: Uri = <any>{ fsPath: 'some-dir/package.json' };
-
-      when(this.mockConfig.fileMatcher).thenReturn({
-        language: "",
-        pattern: "**/package.json",
-        scheme: "",
-        exclude: "**/node_modules/**"
-      });
 
       when(this.mockProvider.config).thenReturn(testConfig);
 
@@ -71,27 +70,49 @@ export const packageFileWatcherTests = {
       watcher.watch = stubWatcher.watch;
 
       // test
-      await watcher.initialize();
+      await watcher.watchFolder();
 
       // verify
       verify(this.mockPackageFileWatcher.onFileAdd(testProvider, testUri)).once();
       verify(this.mockPackageFileWatcher.watch()).once();
     },
   },
+  watchFile: {
+    "finds files using a provider file pattern": async function (this: TestContext) {
+      // setup
+      const testProvider = instance(this.mockProvider);
+      const testConfig = instance(this.mockConfig);
+      const testUri: Uri = <any>{ fsPath: 'some-dir/package.json' };
 
+      when(this.mockProvider.config).thenReturn(testConfig);
+
+      const watcher = new PackageFileWatcher(
+        instance(this.mockGetDependencyChanges),
+        instance(this.mockWorkspace),
+        [testProvider],
+        instance(this.mockCache),
+        instance(this.mockLogger)
+      );
+
+      // override dependent functions with mocks
+      const stubWatcher = instance(this.mockPackageFileWatcher);
+      watcher.onFileAdd = stubWatcher.onFileAdd;
+      watcher.watch = stubWatcher.watch;
+
+      // test
+      await watcher.watchFile(testUri);
+
+      // verify
+      verify(this.mockPackageFileWatcher.onFileAdd(testProvider, testUri)).once();
+      verify(this.mockPackageFileWatcher.watch()).once();
+    },
+  },
   watch: {
     "watches files using a provider file pattern": async function (this: TestContext) {
       // setup
       const mockFileSystemWatcher = mock<FileSystemWatcher>();
       const testProvider = instance(this.mockProvider);
       const testConfig = instance(this.mockConfig);
-
-      when(this.mockConfig.fileMatcher).thenReturn({
-        language: "",
-        pattern: "**/package.json",
-        scheme: "",
-        exclude: "**/node_modules/**"
-      });
 
       when(this.mockProvider.config).thenReturn(testConfig);
 

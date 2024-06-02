@@ -64,9 +64,16 @@ export async function activate(context: ExtensionContext): Promise<void> {
   logger.info("log folder: %s", logPath);
 
   // setup package dependency watcher
-  await serviceProvider.getService<IPackageFileWatcher>(serviceNames.packageFileWatcher)
-    // init and watch provider workspace files
-    .initialize();
+  const watcher = serviceProvider.getService<IPackageFileWatcher>(
+    serviceNames.packageFileWatcher
+  );
+
+  if (extension.isWorkspaceMode)
+    // watch workspace project files
+    await watcher.watchFolder();
+  else
+    // watch single project file
+    await watcher.watchFile(window.activeTextEditor.document.uri)
 
   // instantiate events
   serviceProvider.getService<OnErrorClick>(serviceNames.onErrorClick);

@@ -1,5 +1,6 @@
 import { PackageDependency } from "domain/packages";
 import { ISuggestionProvider } from "domain/providers";
+import { Uri } from "vscode";
 
 export type OnPackageDependenciesChangedEvent = (
   provider: ISuggestionProvider,
@@ -9,7 +10,9 @@ export type OnPackageDependenciesChangedEvent = (
 
 export interface IPackageFileWatcher {
 
-  initialize(): Promise<void>;
+  watchFolder(): Promise<void>;
+
+  watchFile(file: Uri): Promise<void>
 
   watch: () => void;
 
