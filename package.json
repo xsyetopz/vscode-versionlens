@@ -10,7 +10,7 @@
   },
   "author": "Peter Flannery",
   "license": "ISC",
-  "version": "1.12.2-preview",
+  "version": "1.12.5",
   "publisher": "pflannery",
   "displayName": "Version Lens",
   "icon": "images/logo.png",
@@ -22,7 +22,7 @@
     "packages",
     "dependencies",
     "references",
-    "c#,composer,csharp,dart,dotnet,dub,f#,fsharp,java,jspm,maven,npm,nuget,pnpm,pub"
+    "c#,composer,csharp,dart,dotnet,dub,f#,fsharp,go,java,jspm,maven,npm,nuget,pnpm,pub,python"
   ],
   "categories": [
     "Programming Languages",

@@ -1,39 +1,35 @@
-# 1.12.2-preview
+# 1.12.5
 
 ## All Providers
 
-  - Replaced webpack with esbuild for better extension start-up time
-
-# 1.12.1-preview
-
-## All Providers
-
-  - Fixed cases where `minor` or `patch` suggestions could be presented twice
-
-# 1.12.0-preview
-
-## All Providers
-
-  - Added suggestion update links for the next maximum `minor` and\or `patch` (if they exist relative to the choosen version) 
+  - Added suggestion links for the next available maximum `minor` and\or `patch` version(s)
 
     Examples:
 
-    ![image](/uploads/c10bed509673e368184d9ab546186029/image.png)
+    ![image](https://gitlab.com/-/project/19418059/uploads/c10bed509673e368184d9ab546186029/image.png)
     
-    ![image](/uploads/411ad32f58e37cc64b40a757796829aa/image.png)
+    ![image](https://gitlab.com/-/project/19418059/uploads/411ad32f58e37cc64b40a757796829aa/image.png)
 
     Thanks to https://gitlab.com/ST-DDT
 
     Relates to [#291](https://gitlab.com/versionlens/vscode-versionlens/-/issues/291)
 
-  - A sub dependency minor patch caused versionlens to stop working for some users.
-    This fix attempts to override `@npmcli/agent` back to last know working version.
+  - A sub dependency patch caused versionlens to stop working for some users.<br>
+    This fix overrides `@npmcli/agent` back to the last know working version.
 
     Relates to [#357](https://gitlab.com/versionlens/vscode-versionlens/-/issues/357)
+
+  - Fixed an activation error when opening a project file outside of a workspace folder
+
+  - Replaced webpack with esbuild for a faster extension start-up time
 
 ## Dart (pub)
 
   - Fixed a case where a comment after the version was preventing suggestions from showing for that package
+
+## GoLang
+
+  - Fixed line comments being removed when replacing a version
 
 # 1.11.0
 
