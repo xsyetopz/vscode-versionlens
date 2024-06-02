@@ -1,7 +1,7 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from 'domain/logging';
 import { SuggestionTypes, mapToSuggestionUpdate } from 'domain/packages';
-import { SuggestionCodeLens, SuggestionCommandContributions } from 'presentation.extension';
+import { SuggestionCodeLens, SuggestionCommandFeatures } from 'presentation.extension';
 import { Disposable, WorkspaceEdit, commands, workspace } from 'vscode';
 
 export class OnUpdateDependencyClick {
@@ -11,7 +11,7 @@ export class OnUpdateDependencyClick {
 
     // register the vscode command
     this.disposable = commands.registerCommand(
-      SuggestionCommandContributions.OnUpdateDependencyClick,
+      SuggestionCommandFeatures.OnUpdateDependencyClick,
       this.execute,
       this
     );

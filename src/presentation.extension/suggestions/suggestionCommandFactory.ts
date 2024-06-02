@@ -7,7 +7,7 @@ import { KeyDictionary } from 'domain/utils';
 import * as os from 'node:os';
 import {
   SuggestionCodeLens,
-  SuggestionCommandContributions
+  SuggestionCommandFeatures
 } from 'presentation.extension';
 
 const isWindows = os.type() === "Windows_NT";
@@ -19,7 +19,7 @@ export function createStatusCommand(status: string, codeLens: SuggestionCodeLens
 export function createUpdateableCommand(title: string, codeLens: SuggestionCodeLens) {
   return codeLens.setCommand(
     title,
-    SuggestionCommandContributions.OnUpdateDependencyClick,
+    SuggestionCommandFeatures.OnUpdateDependencyClick,
     [codeLens]
   );
 }
@@ -29,7 +29,7 @@ export function createInvalidCommand(codeLens: SuggestionCodeLens) {
 }
 
 export function createDirectoryLinkCommand(title: string, codeLens: SuggestionCodeLens) {
-  const cmd = SuggestionCommandContributions.OnFileLinkClick as string;
+  const cmd = SuggestionCommandFeatures.OnFileLinkClick as string;
   return codeLens.setCommand(title, cmd, [codeLens]);
 }
 

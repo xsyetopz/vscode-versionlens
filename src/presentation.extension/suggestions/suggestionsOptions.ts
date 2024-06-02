@@ -1,7 +1,7 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { IConfig } from 'domain/configuration';
-import { SuggestionContributions } from './definitions/eSuggestionContributions';
 import { KeyDictionary } from 'domain/utils';
+import { SuggestionFeatures } from '../features/eSuggestionFeatures';
 
 export class SuggestionsOptions {
 
@@ -11,19 +11,19 @@ export class SuggestionsOptions {
 
   get showOnStartup(): boolean {
     return this.config.get<boolean>(
-      SuggestionContributions.ShowOnStartup
+      SuggestionFeatures.ShowOnStartup
     ) || false;
   }
 
   get showPrereleasesOnStartup(): boolean {
     return this.config.get<boolean>(
-      SuggestionContributions.ShowPrereleasesOnStartup
+      SuggestionFeatures.ShowPrereleasesOnStartup
     ) || false;
   }
 
   get indicators(): KeyDictionary<string> {
     return this.config.get<KeyDictionary<string>>(
-      SuggestionContributions.Indicators
+      SuggestionFeatures.Indicators
     );
   }
 

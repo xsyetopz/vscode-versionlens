@@ -1,4 +1,4 @@
-export enum StateContributions {
+export enum StateFeatures {
   Show = 'versionlens.show',
   ShowPrereleases = 'versionlens.showPrereleases',
   ShowOutdated = 'versionlens.showOutdated',

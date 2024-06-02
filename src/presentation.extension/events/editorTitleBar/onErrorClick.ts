@@ -1,6 +1,6 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from 'domain/logging';
-import { IconCommandContributions, VersionLensState } from 'presentation.extension';
+import { IconCommandFeatures, VersionLensState } from 'presentation.extension';
 import { Disposable, OutputChannel, commands, window } from 'vscode';
 
 export class OnErrorClick {
@@ -16,7 +16,7 @@ export class OnErrorClick {
 
     // register the vscode commands
     this.disposable = commands.registerCommand(
-      IconCommandContributions.ShowError,
+      IconCommandFeatures.ShowError,
       this.execute,
       this
     );

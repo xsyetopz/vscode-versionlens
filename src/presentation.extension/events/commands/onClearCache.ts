@@ -2,7 +2,7 @@ import { throwUndefinedOrNull } from '@esm-test/guards';
 import { IExpiryCache } from 'domain/caching';
 import { ILogger } from 'domain/logging';
 import { PackageCache } from 'domain/packages';
-import { SuggestionCommandContributions } from 'presentation.extension';
+import { SuggestionCommandFeatures } from 'presentation.extension';
 import { Disposable, commands } from 'vscode';
 
 export class OnClearCache {
@@ -18,7 +18,7 @@ export class OnClearCache {
 
     // register the vscode command
     this.disposable = commands.registerCommand(
-      SuggestionCommandContributions.OnClearCache,
+      SuggestionCommandFeatures.OnClearCache,
       this.execute,
       this
     );

@@ -1,7 +1,7 @@
 import { throwUndefinedOrNull } from "@esm-test/guards";
 import { SuggestionsOptions } from "presentation.extension";
+import { StateFeatures } from "../features/eStateFeatures";
 import { ContextState } from "./contextState";
-import { StateContributions } from "./eStateContributions";
 
 export class VersionLensState {
 
@@ -20,12 +20,12 @@ export class VersionLensState {
   constructor(private readonly suggestionOptions: SuggestionsOptions) {
     throwUndefinedOrNull("suggestionOptions", this.suggestionOptions);
 
-    this.show = new ContextState(StateContributions.Show);
-    this.showPrereleases = new ContextState(StateContributions.ShowPrereleases);
-    this.showOutdated = new ContextState(StateContributions.ShowOutdated);
-    this.providerActive = new ContextState(StateContributions.ProviderActive);
-    this.providerBusy = new ContextState(StateContributions.ProviderBusy);
-    this.providerError = new ContextState(StateContributions.ProviderError);
+    this.show = new ContextState(StateFeatures.Show);
+    this.showPrereleases = new ContextState(StateFeatures.ShowPrereleases);
+    this.showOutdated = new ContextState(StateFeatures.ShowOutdated);
+    this.providerActive = new ContextState(StateFeatures.ProviderActive);
+    this.providerBusy = new ContextState(StateFeatures.ProviderBusy);
+    this.providerError = new ContextState(StateFeatures.ProviderError);
   }
 
   async applyDefaults(): Promise<void> {

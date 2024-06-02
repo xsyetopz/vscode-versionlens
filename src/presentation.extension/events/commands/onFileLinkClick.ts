@@ -1,6 +1,6 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from 'domain/logging';
-import { SuggestionCodeLens, SuggestionCommandContributions } from 'presentation.extension';
+import { SuggestionCodeLens, SuggestionCommandFeatures } from 'presentation.extension';
 import { Disposable, commands, env } from 'vscode';
 
 export class OnFileLinkClick {
@@ -10,7 +10,7 @@ export class OnFileLinkClick {
 
     // register the vscode command
     this.disposable = commands.registerCommand(
-      SuggestionCommandContributions.OnFileLinkClick,
+      SuggestionCommandFeatures.OnFileLinkClick,
       this.execute,
       this
     );

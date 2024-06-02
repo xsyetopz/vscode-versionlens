@@ -1,7 +1,7 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from 'domain/logging';
 import {
-  IconCommandContributions,
+  IconCommandFeatures,
   SuggestionCodeLensProvider,
   VersionLensState
 } from 'presentation.extension';
@@ -21,11 +21,11 @@ export class OnTogglePrereleases {
     // register the vscode commands
     this.disposables.push(
       commands.registerCommand(
-        IconCommandContributions.ShowPrereleaseVersions,
+        IconCommandFeatures.ShowPrereleaseVersions,
         this.execute.bind(this, true)
       ),
       commands.registerCommand(
-        IconCommandContributions.HidePrereleaseVersions,
+        IconCommandFeatures.HidePrereleaseVersions,
         this.execute.bind(this, false)
       )
     );

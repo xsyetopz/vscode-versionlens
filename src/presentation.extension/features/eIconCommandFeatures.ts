@@ -1,4 +1,4 @@
-export enum IconCommandContributions {
+export enum IconCommandFeatures {
   ShowError = 'versionlens.icons.showError',
   ShowPrereleaseVersions = 'versionlens.icons.showPrereleaseVersions',
   HidePrereleaseVersions = 'versionlens.icons.hidePrereleaseVersions',

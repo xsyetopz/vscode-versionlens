@@ -1,7 +1,7 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from 'domain/logging';
 import {
-  IconCommandContributions,
+  IconCommandFeatures,
   SuggestionCodeLensProvider,
   VersionLensState
 } from 'presentation.extension';
@@ -21,11 +21,11 @@ export class OnToggleReleases {
     // register the vscode commands
     this.disposables.push(
       commands.registerCommand(
-        IconCommandContributions.ShowVersionLenses,
+        IconCommandFeatures.ShowVersionLenses,
         this.execute.bind(this, true)
       ),
       commands.registerCommand(
-        IconCommandContributions.HideVersionLenses,
+        IconCommandFeatures.HideVersionLenses,
         this.execute.bind(this, false)
       ),
     );
