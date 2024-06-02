@@ -1,4 +1,4 @@
-export * from './container'
+export * from './domainContainer'
 export * from './iDomainServices'
 export * from './iProviderServices'
-export * from './servicesUtils'
+export * from './serviceFactory'

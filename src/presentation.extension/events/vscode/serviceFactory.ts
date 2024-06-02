@@ -37,7 +37,7 @@ export function addOnTextDocumentChange(services: IServiceCollection) {
   )
 }
 
-export function addOnTextDocumentClosed(services: IServiceCollection) {
+export function addOnTextDocumentClose(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().onTextDocumentClose;
   services.addSingleton(
     serviceName,

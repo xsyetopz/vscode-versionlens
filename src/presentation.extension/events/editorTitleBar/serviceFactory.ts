@@ -4,7 +4,7 @@ import { nameOf } from 'domain/utils';
 import { IExtensionServices, OnTogglePrereleases, OnToggleReleases } from 'presentation.extension';
 import { OnErrorClick } from './onErrorClick';
 
-export function addOnShowError(services: IServiceCollection) {
+export function addOnErrorClick(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().onErrorClick;
   services.addSingleton(
     serviceName,

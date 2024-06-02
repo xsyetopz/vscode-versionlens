@@ -1,4 +1,4 @@
-import { IServiceProvider } from 'domain/di';
+import { IServiceCollection, IServiceProvider } from 'domain/di';
 import {
   IDomainServices,
   addDomainServices,
@@ -14,6 +14,7 @@ import {
   addGetSuggestionsUseCase,
   addOnActiveTextEditorChange,
   addOnClearCache,
+  addOnErrorClick,
   addOnFileLinkClick,
   addOnPackageDependenciesChanged,
   addOnPreSaveChanges,
@@ -21,9 +22,8 @@ import {
   addOnProviderTextDocumentChange,
   addOnProviderTextDocumentClose,
   addOnSaveChanges,
-  addOnShowError,
   addOnTextDocumentChange,
-  addOnTextDocumentClosed,
+  addOnTextDocumentClose,
   addOnTextDocumentSave,
   addOnTogglePrereleases,
   addOnToggleReleases,
@@ -38,10 +38,8 @@ import {
 import { ExtensionContext, workspace } from 'vscode';
 
 export async function configureContainer(context: ExtensionContext): Promise<IServiceProvider> {
-
   const serviceCollectionFactory = new AwilixServiceCollectionFactory();
   const services = serviceCollectionFactory.createServiceCollection();
-
   services.addSingleton(
     nameOf<IDomainServices>().serviceCollectionFactory,
     serviceCollectionFactory
@@ -55,60 +53,57 @@ export async function configureContainer(context: ExtensionContext): Promise<ISe
   );
 
   // infrastructure
-  addInfrastructureServices(services, "extension");
+  const defaultLogGroup = "extension";
+  addInfrastructureServices(services, defaultLogGroup);
 
   // extension
-  addSuggestionOptions(services);
-
-  addVersionLensState(services);
-
-  addVersionLensExtension(services);
-
-  addProviderNames(services);
-
-  addOutputChannel(services);
-
-  addVersionLensProviders(services);
-
-  addEditorDependencyCache(services);
-
-  addFetchProjectSuggestionsUseCase(services);
-
-  addFetchPackageSuggestionsUseCase(services);
-
-  addGetSuggestionsUseCase(services);
-
-  addOnActiveTextEditorChange(services);
-
-  addOnTextDocumentChange(services);
-
-  addOnTextDocumentClosed(services);
-
-  addOnTextDocumentSave(services);
-
-  addOnProviderEditorActivated(services);
-
-  addOnProviderTextDocumentChange(services);
-
-  addOnProviderTextDocumentClose(services);
-
-  addOnClearCache(services);
-
-  addOnPreSaveChanges(services);
-
-  addOnSaveChanges(services);
-
-  addOnFileLinkClick(services);
-
-  addOnUpdateDependencyClick(services);
-
-  addOnToggleReleases(services);
-
-  addOnTogglePrereleases(services);
-
-  addOnPackageDependenciesChanged(services);
-
-  addOnShowError(services);
+  addExtensionServices(services)
 
   return await services.build();
+}
+
+function addExtensionServices(services: IServiceCollection) {
+  addProviderNames(services);
+  addSuggestionOptions(services);
+  addVersionLensState(services);
+  addVersionLensExtension(services);
+  addOutputChannel(services);
+  addVersionLensProviders(services);
+  addEditorDependencyCache(services);
+  addFetchProjectSuggestionsUseCase(services);
+  addFetchPackageSuggestionsUseCase(services);
+  addGetSuggestionsUseCase(services);
+
+  // events
+  addEventServices(services);
+}
+
+function addEventServices(services) {
+  // commands
+  addOnClearCache(services);
+  addOnFileLinkClick(services);
+  addOnUpdateDependencyClick(services);
+
+  // editorTitleBar
+  addOnErrorClick(services);
+  addOnToggleReleases(services);
+  addOnTogglePrereleases(services);
+
+  // install
+  addOnPreSaveChanges(services);
+  addOnSaveChanges(services);
+
+  // provider
+  addOnProviderEditorActivated(services);
+  addOnProviderTextDocumentChange(services);
+  addOnProviderTextDocumentClose(services);
+
+  // vscode
+  addOnActiveTextEditorChange(services);
+  addOnTextDocumentChange(services);
+  addOnTextDocumentClose(services);
+  addOnTextDocumentSave(services);
+
+  // watcher
+  addOnPackageDependenciesChanged(services);
 }
