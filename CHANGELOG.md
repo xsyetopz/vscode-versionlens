@@ -1,3 +1,9 @@
+# next
+
+## All Providers
+
+  - Fixed cases when a version range is invalid (e.g. `>1 <1`) and wasn't showing a status or suggestions
+
 # 1.12.5
 
 ## All Providers
