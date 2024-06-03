@@ -42,8 +42,18 @@ export class SuggestionCodeLensProvider implements CodeLensProvider, IDisposable
     this.onDidChangeCodeLenses = this.notifyCodeLensesChanged.event;
 
     // register the codelens provider with vscode
+    const selector = suggestionProvider.config.fileMatcher;
+
+    // check if the provider has a JSON selector
+    const expandedSelector = selector.language === 'json'
+      // expand to a Array<DocumentSelector> to support JSONC
+      ? [selector, { ...selector, language: 'jsonc' }]
+      // otherwise use the single selector
+      : selector;
+
+    // register provider
     this.disposable = languages.registerCodeLensProvider(
-      suggestionProvider.config.fileMatcher,
+      expandedSelector,
       this
     );
   }

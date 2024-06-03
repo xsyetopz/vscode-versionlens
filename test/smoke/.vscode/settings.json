@@ -22,5 +22,8 @@
     "customDependencies"
   ],
   "versionlens.npm.files": "**/{package.json,web-module.json}",
-  "versionlens.npm.onSaveChanges": "smoke npm install"
+  "versionlens.npm.onSaveChanges": "smoke npm install",
+  "files.associations": {
+    "*.json": "json"
+  },
 }

@@ -2,6 +2,8 @@
 
 ## All Providers
 
+  - Added JSONC support for all providers that use json files
+
   - Fixed cases when a version range is invalid (e.g. `>1 <1`) and wasn't showing a status or suggestions
 
   - Fixed an error when opening an external package file in a workspace
