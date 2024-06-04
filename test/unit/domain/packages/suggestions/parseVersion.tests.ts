@@ -192,6 +192,38 @@ export const parseVersionTests = {
         equal(actual.latestRelease, this.testReleases[this.testReleases.length - 1]);
       }
     ],
+    'case $i: is true when equals latest version using distTagVersion': [
+      '5.3.3',
+      '5.3.*',
+      '5.3.*-pre',
+      function (this: any, testVersion: string) {
+        const testDistTagVersion = '5.3.3';
+        const actual = parseVersion(
+          testVersion,
+          this.testReleases,
+          this.testPrereleases,
+          testDistTagVersion
+        );
+        ok(actual.isLatest);
+        equal(actual.latestRelease, testDistTagVersion);
+      }
+    ],
+    'case $i: is false for non matching latest versions using distTagVersion': [
+      '1.2.3',
+      '5.4.4',
+      '5.4.5-pre',
+      function (this: any, testVersion: string) {
+        const testDistTagVersion = '5.3.3';
+        const actual = parseVersion(
+          testVersion,
+          this.testReleases,
+          this.testPrereleases,
+          testDistTagVersion
+        );
+        ok(actual.isLatest === false);
+        equal(actual.latestRelease, testDistTagVersion);
+      }
+    ],
   },
 
   isLatestPrerelease: {
@@ -199,7 +231,7 @@ export const parseVersionTests = {
       const testVersion = '5.4.5-next.1452';
       const actual = parseVersion(testVersion, this.testReleases, this.testPrereleases);
       ok(actual.isPreRelease);
-      equal(actual.latestPreRelease, this.testPrereleases[this.testReleases.length - 1]);
+      equal(actual.latestPreRelease, this.testPrereleases[this.testPrereleases.length - 1]);
     },
     'case $i: is false for non matching latest prerelease versions': [
       '5.4.5-pre',
