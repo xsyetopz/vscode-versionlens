@@ -1,8 +1,10 @@
-import { PackageVersionType } from '../definitions/ePackageVersionType';
-import { TPackageNameVersion } from '../definitions/tPackageNameVersion';
-import { TPackageSuggestion } from '../suggestions/tPackageSuggestion';
-import { PackageSourceType } from './ePackageSource';
-import { TPackageClientResponseStatus } from './tPackageClientResponseStatus';
+import {
+  PackageSourceType,
+  PackageVersionType,
+  TPackageClientResponseStatus,
+  TPackageNameVersion,
+  TPackageSuggestion
+} from 'domain/packages';
 
 export type TPackageClientResponse = {
 

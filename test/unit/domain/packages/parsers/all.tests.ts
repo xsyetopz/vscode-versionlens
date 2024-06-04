@@ -1,5 +1,3 @@
-export const title = "Package Parser";
-
 export * from './gomodPackageParser/extractPackageDependenciesFromGoMod.tests';
 export * from './jsonPackageParser/extractPackageDependenciesFromJson.tests';
 export * from './packageDescriptor.tests';

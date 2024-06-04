@@ -41,6 +41,7 @@
     "clean": "rimraf ./out ./dist",
     "prebundle": "npm run -s clean",
     "bundle": "node ./build/esbuild.js",
+    "bundle:dev": "env BUNDLE_DEV=true npm run -s bundle",
     "bundle:test": "env BUNDLE_TEST=true npm run -s bundle",
     "precompile": "npm run -s clean && npm run -s lint:src",
     "compile": "npm run -s bundle",

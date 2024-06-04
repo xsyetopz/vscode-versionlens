@@ -16,7 +16,7 @@
         "${workspaceFolder}/dist/**/*.js"
       ],
       "sourceMaps": true,
-      "preLaunchTask": "compile",
+      "preLaunchTask": "bundle:dev",
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": [
         "<node_internals>/**"
@@ -36,7 +36,7 @@
         "${workspaceFolder}/dist/**/*.js"
       ],
       "sourceMaps": true,
-      "preLaunchTask": "compile",
+      "preLaunchTask": "bundle:dev",
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": [
         "<node_internals>/**"

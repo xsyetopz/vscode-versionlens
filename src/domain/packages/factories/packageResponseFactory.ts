@@ -1,7 +1,9 @@
-import { TPackageClientRequest } from "../clients/tPackageClientRequest";
-import { TPackageClientResponse } from "../clients/tPackageClientResponse";
-import { PackageResponse } from "../definitions/tPackageResponse";
-import { TPackageSuggestion } from "../suggestions/tPackageSuggestion";
+import {
+  PackageResponse,
+  TPackageClientRequest,
+  TPackageClientResponse,
+  TPackageSuggestion
+} from "domain/packages";
 
 export function createSuccess<TClientData>(
   providerName: string,

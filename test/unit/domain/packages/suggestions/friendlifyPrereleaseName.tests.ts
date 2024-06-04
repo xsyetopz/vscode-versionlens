@@ -1,5 +1,6 @@
+import { friendlifyPrereleaseName } from 'domain/packages';
+import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
-import { VersionUtils } from 'domain/packages';
 
 const testPrereleases = [
   '4.1.0-beta.1',
@@ -9,10 +10,10 @@ const testPrereleases = [
 
 export const friendlifyPrereleaseNameTests = {
 
-  title: VersionUtils.friendlifyPrereleaseName.name,
+  [test.title]: friendlifyPrereleaseName.name,
 
   "returns null name when no matches found": () => {
-    const result = VersionUtils.friendlifyPrereleaseName('2.5.0-tag.1');
+    const result = friendlifyPrereleaseName('2.5.0-tag.1');
     assert.equal(result, null);
   },
 
@@ -23,7 +24,7 @@ export const friendlifyPrereleaseNameTests = {
       'release',
     ]
     expected.forEach((expectedValue, index) => {
-      const actual = VersionUtils.friendlifyPrereleaseName(testPrereleases[index])
+      const actual = friendlifyPrereleaseName(testPrereleases[index])
       assert.equal(actual, expectedValue);
     })
   },

@@ -4,7 +4,7 @@ import SourceMaps from 'source-map-support';
 import * as UnitTests from './unit/index.tests';
 
 registerMochaUiEsm({
-  sort: SortByEnum.all
+  sort: SortByEnum.none
 });
 
 const runner = new Mocha({
