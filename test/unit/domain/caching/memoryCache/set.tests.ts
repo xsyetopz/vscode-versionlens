@@ -1,7 +1,7 @@
 import { nullMessage, undefinedMessage } from '@esm-test/guards';
-import assert from 'node:assert';
 import { ICache, MemoryCache } from 'domain/caching';
 import { test } from 'mocha-ui-esm';
+import assert from 'node:assert';
 
 type TestContext = {
   testCache: ICache
@@ -16,13 +16,14 @@ export const setTests = {
   },
 
   '$i throws an error when the key is $1': [
-    [undefined,  undefinedMessage("key")],
-    [null,  nullMessage("key")],
+    [undefined, undefinedMessage("key")],
+    [null, nullMessage("key")],
     function (this: TestContext, testKey: string, expectedMessage: string) {
       try {
         this.testCache.set(testKey, 123)
         assert.ok(false)
       } catch (error) {
+        if (!(error instanceof Error)) assert.fail()
         assert.equal(error.message, expectedMessage)
       }
     }

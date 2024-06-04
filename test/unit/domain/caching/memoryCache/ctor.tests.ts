@@ -1,7 +1,7 @@
 import { emptyMessage, notTypeMessage } from '@esm-test/guards';
-import assert from 'node:assert';
 import { MemoryCache } from 'domain/caching';
 import { test } from 'mocha-ui-esm';
+import assert from 'node:assert';
 
 export const ctorTests = {
 
@@ -16,7 +16,8 @@ export const ctorTests = {
         new MemoryCache(testName);
         assert.ok(false)
       } catch (error) {
-        assert.equal(error.message, expectedMessage)
+        if (!(error instanceof Error)) assert.fail()
+          assert.equal(error.message, expectedMessage)
       }
     }
   ],

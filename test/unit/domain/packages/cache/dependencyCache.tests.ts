@@ -84,7 +84,7 @@ export const dependencyCacheTests = {
       assert.equal(actualDeps, testPreferredDeps);
     },
 
-    "uses fallback cache to fetch dependencies": function () {
+    "uses fallback cache to fetch dependencies": function (this: TestContext) {
       const testFallbackDeps: PackageDependency[] = [];
       const mockPreferredCache = mock<DependencyCache>();
       const mockFallbackCache = mock<DependencyCache>();

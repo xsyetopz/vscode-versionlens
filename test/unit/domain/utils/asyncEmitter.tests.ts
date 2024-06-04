@@ -36,7 +36,7 @@ export const asyncEmitterTests = {
 
       const emitter = new AsyncEmitter();
 
-      const order = [];
+      const order: number[] = [];
 
       when(mockListener1.call(testThisArg1))
         .thenReturn()

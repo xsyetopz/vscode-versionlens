@@ -210,7 +210,7 @@ export const CreateSuggestionsTests = {
       "returns 'fixed' with latest prerelease suggestion": () => {
         // setup
         const testVersion = '1.0.0-beta.1';
-        const testReleases = []
+        const testReleases: string[] = []
         const testPrereleases = [testVersion, '1.0.0-beta.2', '1.0.0-beta.3']
 
         const expected = [
@@ -272,7 +272,7 @@ export const CreateSuggestionsTests = {
             '2.0.0',
             '2.2.2',
           ];
-          const testPrereleases = [];
+          const testPrereleases: string[] = [];
 
           // test
           const results = createSuggestions(
@@ -317,7 +317,7 @@ export const CreateSuggestionsTests = {
           // setup
           const latestVersion = '5.0.0';
           const testReleases = ['1.0.0', '2.0.0', '3.0.0', '4.0.0', latestVersion]
-          const testPrereleases = []
+          const testPrereleases: string[] = []
 
           // test
           const results = createSuggestions(
@@ -424,7 +424,7 @@ export const CreateSuggestionsTests = {
             '2.0.0',
             '2.2.2',
           ];
-          const testPrereleases = [];
+          const testPrereleases: string[] = [];
 
           // test
           const results = createSuggestions(
@@ -458,7 +458,7 @@ export const CreateSuggestionsTests = {
             '2.0.0',
             '2.2.2',
           ];
-          const testPrereleases = [];
+          const testPrereleases: string[] = [];
 
           // test
           const results = createSuggestions(
