@@ -1,3 +1,7 @@
+# next
+
+  - Fixed case when using a prerelease range version (e.g. `^1.0.0-pre`) where no match was found and the latest suggestion would not update the version text
+
 # 1.13.0
 
 ## All Providers
