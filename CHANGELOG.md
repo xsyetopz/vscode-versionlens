@@ -1,9 +1,17 @@
-# 1.13.1-next.1
+# 1.13.1
 
-## All Providers
+### All Providers
 
   - Fixed a case when using prerelease range versions (e.g. `^1.0.0-pre`), 
     it would show 'no match' and clicking the latest suggestion would not update the version text
+
+### Npm
+
+  - Fixed suggestion handling for the `packageManager` field when using sha hashes
+
+    Thanks to https://gitlab.com/ST-DDT
+
+    Relates to [#358](https://gitlab.com/versionlens/vscode-versionlens/-/issues/358)
 
 # 1.13.0
 
