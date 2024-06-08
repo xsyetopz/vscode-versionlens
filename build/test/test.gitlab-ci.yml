@@ -12,4 +12,4 @@ before_script:
 
 unit_tests:
   script:
-    - docker run --rm versionlens:tests npm run test:unit
+    - docker run --rm versionlens:tests

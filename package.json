@@ -43,7 +43,7 @@
     "bundle:dev": "task",
     "bundle:test": "task",
     "test": "task",
-    "test:unit": "task",
+    "test:insiders": "task",
     "trace": "task"
   },
   "devDependencies": {

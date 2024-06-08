@@ -12,7 +12,7 @@ RUN npm install -g npm @vscode/vsce
 RUN npm install
 
 # run tests
-RUN npm run test:unit
+RUN npm run test
 
 # bundle
 RUN npm run bundle

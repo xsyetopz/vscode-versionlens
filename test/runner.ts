@@ -37,6 +37,6 @@ export function run(): Promise<void> {
   });
 }
 
-if (process.env.TEST && process.env.TEST === 'unit') {
+if (process.env.TEST_HEADLESS && process.env.TEST_HEADLESS === 'true') {
   run().catch(e => process.exit(1));
 }

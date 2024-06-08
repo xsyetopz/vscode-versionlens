@@ -10,4 +10,4 @@ RUN npm install -g npm
 
 RUN npm install
 
-CMD npm test:unit
+CMD npm test
