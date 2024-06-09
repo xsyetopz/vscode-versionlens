@@ -38,15 +38,15 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
 
     const packageDependencies = [];
 
-    for (const packageDesc of parsedPackages) {
+    for (const descriptors of parsedPackages) {
 
-      const nameDesc = packageDesc.getType<TPackageNameDescriptor>(
+      const nameDesc = descriptors.getType<TPackageNameDescriptor>(
         PackageDescriptorType.name
       );
 
       // map the version descriptor to a package dependency
-      if (packageDesc.hasType(PackageDescriptorType.version)) {
-        const versionDesc = packageDesc.getType<TPackageVersionDescriptor>(
+      if (descriptors.hasType(PackageDescriptorType.version)) {
+        const versionDesc = descriptors.getType<TPackageVersionDescriptor>(
           PackageDescriptorType.version
         );
 
@@ -59,7 +59,7 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
             ),
             nameDesc.nameRange,
             versionDesc.versionRange,
-            packageDesc
+            descriptors
           )
         );
 
@@ -67,8 +67,8 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
       }
 
       // map the path descriptor to a package dependency
-      if (packageDesc.hasType(PackageDescriptorType.path)) {
-        const pathType = packageDesc.getType<TPackagePathDescriptor>(
+      if (descriptors.hasType(PackageDescriptorType.path)) {
+        const pathType = descriptors.getType<TPackagePathDescriptor>(
           PackageDescriptorType.path
         );
 
@@ -81,7 +81,7 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
             ),
             nameDesc.nameRange,
             pathType.pathRange,
-            packageDesc
+            descriptors
           )
         );
 
@@ -89,8 +89,8 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
       }
 
       // map the git descriptor to a package dependency
-      if (packageDesc.hasType(PackageDescriptorType.git)) {
-        const gitType = packageDesc.getType<TPackageGitDescriptor>(
+      if (descriptors.hasType(PackageDescriptorType.git)) {
+        const gitType = descriptors.getType<TPackageGitDescriptor>(
           PackageDescriptorType.git
         );
 
@@ -103,7 +103,7 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
             ),
             nameDesc.nameRange,
             nameDesc.nameRange,
-            packageDesc
+            descriptors
           )
         );
 

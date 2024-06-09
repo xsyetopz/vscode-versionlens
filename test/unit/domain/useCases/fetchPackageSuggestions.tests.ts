@@ -128,7 +128,7 @@ export const fetchPackageSuggestionsTests = <any>{
         parsedDependency: {
           nameRange: <TPackageTextRange>{ start: 1, end: 20 },
           versionRange: <TPackageTextRange>{ start: 25, end: 30 },
-          packageDesc: new PackageDescriptor([]),
+          descriptors: new PackageDescriptor([]),
           package: this.testPackageRes
         },
         suggestion: testRespDoc.suggestions[0],

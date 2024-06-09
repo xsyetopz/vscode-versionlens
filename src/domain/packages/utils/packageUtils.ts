@@ -58,7 +58,7 @@ export function hasPackageDepsChanged(
 
   for (const dep of original) {
 
-    if (dep.packageDesc.hasType(PackageDescriptorType.ignoreChanges)) continue;
+    if (dep.descriptors.hasType(PackageDescriptorType.ignoreChanges)) continue;
 
     const noChange = changed.some(
       other => other.packageEquals(dep)

@@ -34,15 +34,15 @@ export class GoSuggestionProvider implements ISuggestionProvider {
 
     const packageDependencies = [];
 
-    for (const packageDesc of parsedPackages) {
+    for (const descriptors of parsedPackages) {
 
-      const nameDesc = packageDesc.getType<TPackageNameDescriptor>(
+      const nameDesc = descriptors.getType<TPackageNameDescriptor>(
         PackageDescriptorType.name
       );
 
       // map the version descriptor to a package dependency
-      if (packageDesc.hasType(PackageDescriptorType.version)) {
-        const versionDesc = packageDesc.getType<TPackageVersionDescriptor>(
+      if (descriptors.hasType(PackageDescriptorType.version)) {
+        const versionDesc = descriptors.getType<TPackageVersionDescriptor>(
           PackageDescriptorType.version
         );
 
@@ -55,7 +55,7 @@ export class GoSuggestionProvider implements ISuggestionProvider {
             ),
             nameDesc.nameRange,
             versionDesc.versionRange,
-            packageDesc
+            descriptors
           )
         );
 

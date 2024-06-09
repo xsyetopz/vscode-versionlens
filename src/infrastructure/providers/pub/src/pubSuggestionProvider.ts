@@ -57,14 +57,14 @@ export class PubSuggestionProvider implements ISuggestionProvider {
 
     const packageDependencies = [];
 
-    for (const packageDesc of parsedPackages) {
-      const nameDesc = packageDesc.getType<TPackageNameDescriptor>(
+    for (const descriptors of parsedPackages) {
+      const nameDesc = descriptors.getType<TPackageNameDescriptor>(
         PackageDescriptorType.name
       );
 
       // map the version descriptor to a package dependency
-      if (packageDesc.hasType(PackageDescriptorType.version)) {
-        const versionType = packageDesc.getType<TPackageVersionDescriptor>(
+      if (descriptors.hasType(PackageDescriptorType.version)) {
+        const versionType = descriptors.getType<TPackageVersionDescriptor>(
           PackageDescriptorType.version
         );
 
@@ -77,7 +77,7 @@ export class PubSuggestionProvider implements ISuggestionProvider {
             ),
             nameDesc.nameRange,
             versionType.versionRange,
-            packageDesc
+            descriptors
           )
         );
 
@@ -85,8 +85,8 @@ export class PubSuggestionProvider implements ISuggestionProvider {
       }
 
       // map the path descriptor to a package dependency
-      if (packageDesc.hasType(PackageDescriptorType.path)) {
-        const pathType = packageDesc.getType<TPackagePathDescriptor>(
+      if (descriptors.hasType(PackageDescriptorType.path)) {
+        const pathType = descriptors.getType<TPackagePathDescriptor>(
           PackageDescriptorType.path
         );
 
@@ -99,14 +99,14 @@ export class PubSuggestionProvider implements ISuggestionProvider {
             ),
             nameDesc.nameRange,
             pathType.pathRange,
-            packageDesc
+            descriptors
           )
         );
       }
 
       // map the git descriptor to a package dependency
-      if (packageDesc.hasType(PackageDescriptorType.git)) {
-        const gitType = packageDesc.getType<TPackageGitDescriptor>(
+      if (descriptors.hasType(PackageDescriptorType.git)) {
+        const gitType = descriptors.getType<TPackageGitDescriptor>(
           PackageDescriptorType.git
         );
 
@@ -119,7 +119,7 @@ export class PubSuggestionProvider implements ISuggestionProvider {
             ),
             nameDesc.nameRange,
             nameDesc.nameRange,
-            packageDesc
+            descriptors
           )
         );
 

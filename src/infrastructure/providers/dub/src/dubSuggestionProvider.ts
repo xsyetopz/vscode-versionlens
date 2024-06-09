@@ -49,15 +49,15 @@ export class DubSuggestionProvider implements ISuggestionProvider {
 
     const packageDependencies = [];
 
-    for (const packageDesc of parsedPackages) {
+    for (const descriptors of parsedPackages) {
 
       // map the version descriptor to a package dependency
-      if (packageDesc.hasType(PackageDescriptorType.version)) {
-        const nameDesc = packageDesc.getType<TPackageNameDescriptor>(
+      if (descriptors.hasType(PackageDescriptorType.version)) {
+        const nameDesc = descriptors.getType<TPackageNameDescriptor>(
           PackageDescriptorType.name
         );
 
-        const versionDesc = packageDesc.getType<TPackageVersionDescriptor>(
+        const versionDesc = descriptors.getType<TPackageVersionDescriptor>(
           PackageDescriptorType.version
         );
 
@@ -70,7 +70,7 @@ export class DubSuggestionProvider implements ISuggestionProvider {
             ),
             nameDesc.nameRange,
             versionDesc.versionRange,
-            packageDesc
+            descriptors
           )
         );
 

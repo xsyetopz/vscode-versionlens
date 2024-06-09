@@ -48,12 +48,12 @@ export class DotNetSuggestionProvider implements ISuggestionProvider {
     const packageDependencies = parsedPackages
       .filter(x => x.hasType(PackageDescriptorType.version))
       .map(
-        packageDesc => {
-          const nameDesc = packageDesc.getType<TPackageNameDescriptor>(
+        descriptors => {
+          const nameDesc = descriptors.getType<TPackageNameDescriptor>(
             PackageDescriptorType.name
           );
 
-          const versionDesc = packageDesc.getType<TPackageVersionDescriptor>(
+          const versionDesc = descriptors.getType<TPackageVersionDescriptor>(
             PackageDescriptorType.version
           );
 
@@ -65,7 +65,7 @@ export class DotNetSuggestionProvider implements ISuggestionProvider {
             ),
             nameDesc.nameRange,
             versionDesc.versionRange,
-            packageDesc
+            descriptors
           );
         }
       );

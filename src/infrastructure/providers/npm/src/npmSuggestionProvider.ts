@@ -52,9 +52,9 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
 
     const packageDependencies = [];
 
-    for (const packageDesc of parsedPackages) {
+    for (const descriptors of parsedPackages) {
 
-      const nameDesc = packageDesc.getType<TPackageNameDescriptor>(
+      const nameDesc = descriptors.getType<TPackageNameDescriptor>(
         PackageDescriptorType.name
       );
 
@@ -66,8 +66,8 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
       }
 
       // map the version descriptor to a package dependency
-      if (packageDesc.hasType(PackageDescriptorType.version)) {
-        const versionDesc = packageDesc.getType<TPackageVersionDescriptor>(
+      if (descriptors.hasType(PackageDescriptorType.version)) {
+        const versionDesc = descriptors.getType<TPackageVersionDescriptor>(
           PackageDescriptorType.version
         );
 
@@ -80,7 +80,7 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
             ),
             nameDesc.nameRange,
             versionDesc.versionRange,
-            packageDesc
+            descriptors
           )
         );
 

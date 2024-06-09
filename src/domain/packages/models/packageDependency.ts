@@ -6,12 +6,12 @@ export class PackageDependency {
     packageRes: TPackageResource,
     nameRange: TPackageTextRange,
     versionRange: TPackageTextRange,
-    packageDesc?: PackageDescriptor
+    descriptors?: PackageDescriptor
   ) {
     this.package = packageRes;
     this.nameRange = nameRange;
     this.versionRange = versionRange;
-    this.packageDesc = packageDesc;
+    this.descriptors = descriptors;
   }
 
   nameRange: TPackageTextRange;
@@ -20,7 +20,7 @@ export class PackageDependency {
 
   package: TPackageResource;
 
-  packageDesc: PackageDescriptor;
+  descriptors: PackageDescriptor;
 
   packageEquals(other: PackageDependency) {
     return other.package.name === this.package.name
