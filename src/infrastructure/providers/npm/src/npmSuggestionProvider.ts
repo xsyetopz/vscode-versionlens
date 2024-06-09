@@ -18,6 +18,7 @@ import { resolve } from 'node:path';
 import { NpmPackageClient } from './clients/npmPackageClient';
 import { TNpmCliConfigParams } from './definitions/tNpmCliConfigParams';
 import { NpmConfig } from './npmConfig';
+import { customDescriptorHandler } from './parser/customDescriptorHandler';
 import { createNpmRegistryClientData } from './utils/createNpmRegistryClientData';
 import { resolveDotFilePath } from './utils/fileUtils';
 import { npmReplaceVersion } from './utils/replaceUtils';
@@ -45,10 +46,10 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
   suggestionReplaceFn: TSuggestionReplaceFunction;
 
   parseDependencies(packagePath: string, packageText: string): Array<PackageDependency> {
-
     const options: TJsonPackageParserOptions = {
       includePropNames: this.config.dependencyProperties,
-      complexTypeHandlers
+      complexTypeHandlers,
+      customDescriptorHandler
     };
 
     const parsedPackages = parsePackagesJson(packageText, options);

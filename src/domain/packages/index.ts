@@ -24,7 +24,6 @@ export * from "./parsers/gomod/gomodPackageParser";
 export * from "./parsers/json/jsonPackageParser";
 export * from './parsers/json/jsonPackageTypeFactory';
 export * from './parsers/json/tJsonPackageParserOptions';
-export * from './parsers/json/tJsonPackageTypeHandler';
 export * from './parsers/packageDescriptor';
 export * from './parsers/packageDescriptorTypeUtils';
 export * from './parsers/toml/tTomlPackageParserOptions';

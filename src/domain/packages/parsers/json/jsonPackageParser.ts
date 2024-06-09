@@ -1,14 +1,13 @@
-import { PackageDescriptor, createSpecialDesc } from 'domain/packages';
-import { KeyDictionary, Undefinable } from 'domain/utils';
-import * as JsonC from 'jsonc-parser';
 import {
+  PackageDescriptor,
+  TJsonPackageParserOptions,
+  TJsonPackageTypeHandler,
   createNameDescFromJsonNode,
   createParentDesc,
-  createVersionDescFromJsonNode,
-  packageManagerVersionRegex,
-} from './jsonPackageTypeFactory';
-import { TJsonPackageParserOptions } from './tJsonPackageParserOptions';
-import { TJsonPackageTypeHandler } from './tJsonPackageTypeHandler';
+  createVersionDescFromJsonNode
+} from 'domain/packages';
+import { KeyDictionary, Undefinable } from 'domain/utils';
+import * as JsonC from 'jsonc-parser';
 
 export function parsePackagesJson(
   json: string,
@@ -31,31 +30,28 @@ function parsePackageNodes(
   options: TJsonPackageParserOptions
 ): Array<PackageDescriptor> {
   const matchedDependencies: Array<PackageDescriptor> = [];
-  const { includePropNames, complexTypeHandlers } = options;
+  const { includePropNames, customDescriptorHandler, complexTypeHandlers } = options;
 
   for (const incPropName of includePropNames) {
-    const foundAtLocation = findNodesAtLocation(rootNode, incPropName);
-    if (!foundAtLocation || !foundAtLocation.node) continue;
+    const found = findNodesAtLocation(rootNode, incPropName);
+    if (!found || !found.node) continue;
 
-    if (foundAtLocation.node instanceof Array) {
-      const matched = descendChildNodes(foundAtLocation.path, foundAtLocation.node, complexTypeHandlers);
+    if (found.node instanceof Array) {
+      const matched = descendChildNodes(found.path, found.node, complexTypeHandlers);
       matchedDependencies.push.apply(matchedDependencies, matched);
       continue;
     }
 
-    const hasChildren = foundAtLocation.node.children && foundAtLocation.node.children.length > 0;
+    const hasChildren = found.node.children && found.node.children.length > 0;
     if (hasChildren) {
-      const matched = descendChildNodes(foundAtLocation.path, foundAtLocation.node.children, complexTypeHandlers);
+      const matched = descendChildNodes(found.path, found.node.children, complexTypeHandlers);
       matchedDependencies.push.apply(matchedDependencies, matched);
       continue;
     }
 
-    if (
-      foundAtLocation.node.type === 'string' &&
-      packageManagerVersionRegex.test(foundAtLocation.node.value)
-    ) {
-      const packageDesc = createSpecialDesc(foundAtLocation.node, foundAtLocation.path);
-      matchedDependencies.push(packageDesc);
+    if (customDescriptorHandler) {
+      const typeDesc = customDescriptorHandler(found.path, found.node);
+      if (typeDesc) matchedDependencies.push(typeDesc);
     }
   }
 
@@ -139,10 +135,7 @@ type FoundNode = {
   node: JsonC.Node | Array<JsonC.Node>
 }
 
-function findNodesAtLocation(
-  jsonTree: JsonC.Node,
-  expression: string
-): Undefinable<FoundNode> { //Undefinable<JsonC.Node | Array<JsonC.Node>> {
+function findNodesAtLocation(jsonTree: JsonC.Node, expression: string): Undefinable<FoundNode> {
   const pathSegments: Array<JsonC.Segment> = expression.split(".");
 
   // if the path doesn't end with * then process a standard path
