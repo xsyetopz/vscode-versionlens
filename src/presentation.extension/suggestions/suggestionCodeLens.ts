@@ -48,7 +48,7 @@ export class SuggestionCodeLens extends CodeLens {
     document: TextDocument,
     replaceVersionFn: TSuggestionReplaceFunction,
   ): SuggestionCodeLens {
-    const { nameRange, versionRange } = packageResponse;
+    const { nameRange, versionRange } = packageResponse.parsedDependency;
     const commandRangePos = nameRange.start + packageResponse.order;
     const commandRange = new Range(
       document.positionAt(commandRangePos),

@@ -1,10 +1,10 @@
-import assert from 'node:assert';
 import { CachingOptions } from 'domain/caching';
 import { ILogger } from 'domain/logging';
 import { DependencyCache, PackageResponse, SuggestionTypes } from 'domain/packages';
 import { IProviderConfig, ISuggestionProvider } from 'domain/providers';
 import { FetchProjectSuggestions, GetSuggestions } from 'domain/useCases';
 import { test } from 'mocha-ui-esm';
+import assert from 'node:assert';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 type TestContext = {
@@ -36,10 +36,12 @@ export const getSuggestionsTests = {
     [
       [
         <PackageResponse>{
-          parsedPackage: {
-            name: "test-package",
-            version: "1.2.3",
-            path: "some/project/path/package.json"
+          parsedDependency: {
+            package: {
+              name: "test-package",
+              version: "1.2.3",
+              path: "some/project/path/package.json"
+            },
           },
           suggestion: {
             name: "test-package",
@@ -54,10 +56,12 @@ export const getSuggestionsTests = {
     [
       [
         <PackageResponse>{
-          parsedPackage: {
-            name: "test-package",
-            version: "1.2.3",
-            path: "some/project/path/package.json"
+          parsedDependency: {
+            package: {
+              name: "test-package",
+              version: "1.2.3",
+              path: "some/project/path/package.json"
+            },
           },
           suggestion: {
             name: "test-package",

@@ -4,8 +4,8 @@ export function mapToSuggestionUpdate(packageResponse: PackageResponse): TSugges
   let parsedVersionPrepend = "";
   let parsedVersionAppend = "";
 
-  if (packageResponse.packageDesc.hasType(PackageDescriptorType.version)) {
-    const versionDesc = packageResponse.packageDesc.getType<TPackageVersionDescriptor>(PackageDescriptorType.version);
+  if (packageResponse.parsedDependency.packageDesc.hasType(PackageDescriptorType.version)) {
+    const versionDesc = packageResponse.parsedDependency.packageDesc.getType<TPackageVersionDescriptor>(PackageDescriptorType.version);
     parsedVersionPrepend = versionDesc.versionPrepend;
     parsedVersionAppend = versionDesc.versionAppend;
   }
@@ -14,9 +14,9 @@ export function mapToSuggestionUpdate(packageResponse: PackageResponse): TSugges
     packageSource: packageResponse.packageSource,
     packageVersionType: packageResponse.type,
 
-    parsedName: packageResponse.parsedPackage.name,
-    parsedVersion: packageResponse.parsedPackage.version,
-    parsedVersionRange: packageResponse.versionRange,
+    parsedName: packageResponse.parsedDependency.package.name,
+    parsedVersion: packageResponse.parsedDependency.package.version,
+    parsedVersionRange: packageResponse.parsedDependency.versionRange,
     parsedVersionPrepend,
     parsedVersionAppend,
 

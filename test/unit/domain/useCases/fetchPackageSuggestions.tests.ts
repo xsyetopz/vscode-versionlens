@@ -1,4 +1,3 @@
-import assert from 'node:assert';
 import { ClientResponseSource } from 'domain/clients';
 import { ILogger } from 'domain/logging';
 import {
@@ -23,6 +22,7 @@ import {
 import { IProviderConfig, ISuggestionProvider } from 'domain/providers';
 import { FetchPackageSuggestions } from 'domain/useCases';
 import { test } from 'mocha-ui-esm';
+import assert from 'node:assert';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 type TestContext = {
@@ -125,11 +125,13 @@ export const fetchPackageSuggestionsTests = <any>{
         type: testRespDoc.type,
         packageSource: testRespDoc.source,
         fetchedPackage: testRespDoc.resolved,
-        packageDesc: new PackageDescriptor([]),
-        parsedPackage: this.testPackageRes,
+        parsedDependency: {
+          nameRange: <TPackageTextRange>{ start: 1, end: 20 },
+          versionRange: <TPackageTextRange>{ start: 25, end: 30 },
+          packageDesc: new PackageDescriptor([]),
+          package: this.testPackageRes
+        },
         suggestion: testRespDoc.suggestions[0],
-        nameRange: <TPackageTextRange>{ start: 1, end: 20 },
-        versionRange: <TPackageTextRange>{ start: 25, end: 30 },
         order: 0
       }
     ]

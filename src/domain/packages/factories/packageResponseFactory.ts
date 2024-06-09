@@ -15,10 +15,7 @@ export function createSuccess<TClientData>(
     function (suggestion: TPackageSuggestion, order: number): PackageResponse {
       return {
         providerName,
-        nameRange: request.dependency.nameRange,
-        versionRange: request.dependency.versionRange,
-        parsedPackage: request.dependency.package,
-        packageDesc: request.dependency.packageDesc,
+        parsedDependency: request.dependency,
         fetchedPackage: response.resolved,
         packageSource: response.source,
         type: response.type,
