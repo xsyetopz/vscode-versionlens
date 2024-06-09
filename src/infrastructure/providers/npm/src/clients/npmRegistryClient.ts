@@ -10,10 +10,8 @@ import {
   VersionUtils,
   createSuggestions
 } from 'domain/packages';
-import { KeyDictionary } from 'domain/utils';
 import semver from 'semver';
 import { INpmRegistry } from '../definitions/iNpmRegistry.js';
-import { TNpmClientData } from '../definitions/tNpmClientData';
 import { TNpmRegistryClientResponse } from '../definitions/tNpmRegistryClientResponse';
 import { NpaSpec, NpaTypes } from '../models/npaSpec';
 import { NpmConfig } from '../npmConfig';
@@ -31,7 +29,7 @@ export class NpmRegistryClient {
   }
 
   async fetchPackage(
-    request: TPackageClientRequest<TNpmClientData>,
+    request: TPackageClientRequest<any>,
     npaSpec: NpaSpec
   ): Promise<TPackageClientResponse> {
     const type: PackageVersionType = <any>npaSpec.type;
@@ -128,15 +126,11 @@ export class NpmRegistryClient {
 
   }
 
-  async request(
-    npaSpec: NpaSpec,
-    options: KeyDictionary<any>
-  ): Promise<TNpmRegistryClientResponse> {
-
+  async request(npaSpec: NpaSpec, clientData: any): Promise<TNpmRegistryClientResponse> {
     try {
-      const registry = this.npmRegistryFetch.pickRegistry(npaSpec, options);
+      const registry = this.npmRegistryFetch.pickRegistry(npaSpec, clientData);
       const url = `${UrlUtils.ensureEndSlash(registry)}${npaSpec.escapedName}`;
-      const registryResponse = await this.npmRegistryFetch.json(url, options);
+      const registryResponse = await this.npmRegistryFetch.json(url, clientData);
 
       return <TNpmRegistryClientResponse>{
         source: ClientResponseSource.remote,

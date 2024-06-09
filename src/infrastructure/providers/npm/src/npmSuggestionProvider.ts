@@ -16,8 +16,11 @@ import { KeyDictionary } from 'domain/utils';
 import { homedir } from 'node:os';
 import { resolve } from 'node:path';
 import { NpmPackageClient } from './clients/npmPackageClient';
+import { TNpmCliConfigParams } from './definitions/tNpmCliConfigParams';
 import { NpmConfig } from './npmConfig';
-import { createNpmRegistryOptions, npmReplaceVersion, resolveDotFilePath } from './npmUtils';
+import { createNpmRegistryClientData } from './utils/createNpmRegistryClientData';
+import { resolveDotFilePath } from './utils/fileUtils';
+import { npmReplaceVersion } from './utils/replaceUtils';
 
 const complexTypeHandlers: KeyDictionary<TJsonPackageTypeHandler> = {
   [PackageDescriptorType.version]: createVersionDescFromJsonNode
@@ -92,10 +95,7 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
     return packageDependencies;
   }
 
-  async preFetchSuggestions(
-    projectPath: string,
-    packagePath: string
-  ): Promise<any> {
+  async preFetchSuggestions(projectPath: string, packagePath: string): Promise<any> {
     if (this.config.github.accessToken &&
       this.config.github.accessToken.length > 0) {
       // defrost github parameters
@@ -125,8 +125,7 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
     this.logger.debug("Resolved .env is %s", hasEnvFile ? envFilePath : false);
 
     // return options as client data
-    const npmCliOptions = {
-      projectPath,
+    const npmCliConfigData: TNpmCliConfigParams = {
       userConfigPath,
       npmRcFilePath,
       envFilePath,
@@ -134,7 +133,7 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
       hasEnvFile
     };
 
-    return createNpmRegistryOptions(packagePath, npmCliOptions)
+    return createNpmRegistryClientData(packagePath, npmCliConfigData)
   }
 
 }

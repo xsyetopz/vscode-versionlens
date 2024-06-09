@@ -8,13 +8,13 @@ import {
   createDependencyRange,
   mapToSuggestionUpdate
 } from 'domain/packages';
-import { NpmUtils } from 'infrastructure/providers/npm';
+import { npmReplaceVersion } from 'infrastructure/providers/npm';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
 
 export const npmReplaceVersionTests = {
 
-  [test.title]: NpmUtils.npmReplaceVersion.name,
+  [test.title]: npmReplaceVersion.name,
 
   "handles #tag|commit|semver:": () => {
     const packageInfo: PackageResponse = {
@@ -46,7 +46,7 @@ export const npmReplaceVersionTests = {
     const expected = 'github:someRepo/someProject#semver:4.2.1'
 
     // NpmVersionUtils
-    const actual = NpmUtils.npmReplaceVersion(mapToSuggestionUpdate(packageInfo))
+    const actual = npmReplaceVersion(mapToSuggestionUpdate(packageInfo))
 
     assert.equal(actual, expected)
   },

@@ -1,7 +1,7 @@
-import assert from 'node:assert';
 import { fileExists } from 'domain/utils';
-import { NpmUtils } from 'infrastructure/providers/npm';
+import { resolveDotFilePath } from 'infrastructure/providers/npm';
 import { test } from 'mocha-ui-esm';
+import assert from 'node:assert';
 import path from 'node:path';
 import { createDir, createFile, fileDir, removeDir, removeFile } from 'test/unit/utils';
 
@@ -22,7 +22,7 @@ type TestContext = {
 
 export const resolveDotFilePathTests = {
 
-  [test.title]: NpmUtils.resolveDotFilePath.name,
+  [test.title]: resolveDotFilePath.name,
 
   beforeAll: async function () {
     this.testPath = await createDir(...testPathParts);
@@ -39,7 +39,7 @@ export const resolveDotFilePathTests = {
 
     await createFile(testFile, "test");
 
-    const actual = await NpmUtils.resolveDotFilePath(
+    const actual = await resolveDotFilePath(
       ".npmrc",
       [
         testPackagePath,
@@ -56,7 +56,7 @@ export const resolveDotFilePathTests = {
 
     await createFile(testFile, "test");
 
-    const actual = await NpmUtils.resolveDotFilePath(
+    const actual = await resolveDotFilePath(
       ".npmrc",
       [
         testPackagePath,
@@ -69,7 +69,7 @@ export const resolveDotFilePathTests = {
   },
 
   "returns empty string when .npmrc does not exist": async function () {
-    const actual = await NpmUtils.resolveDotFilePath(
+    const actual = await resolveDotFilePath(
       ".npmrc",
       [
         testPackagePath,

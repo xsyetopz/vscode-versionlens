@@ -14,11 +14,11 @@ import {
 import npa from 'npm-package-arg';
 import { NpaSpec, NpaTypes } from '../models/npaSpec';
 import { NpmConfig } from '../npmConfig';
-import * as NpmUtils from '../npmUtils';
+import { convertNpmErrorToResponse } from '../utils/convertNpmErrorToResponse';
 import { GitHubClient } from './githubClient';
 import { NpmRegistryClient } from './npmRegistryClient';
 
-export class NpmPackageClient implements IPackageClient<null> {
+export class NpmPackageClient implements IPackageClient<any> {
 
   constructor(
     readonly config: NpmConfig,
@@ -32,7 +32,7 @@ export class NpmPackageClient implements IPackageClient<null> {
     throwUndefinedOrNull("logger", logger);
   }
 
-  async fetchPackage(request: TPackageClientRequest<null>): Promise<TPackageClientResponse> {
+  async fetchPackage(request: TPackageClientRequest<any>): Promise<TPackageClientResponse> {
     let source: PackageSourceType;
 
     try {
@@ -94,7 +94,7 @@ export class NpmPackageClient implements IPackageClient<null> {
       this.logger.debug("Caught exception from %s: %O", source, response);
 
       if (!response.data) {
-        response = NpmUtils.convertNpmErrorToResponse(
+        response = convertNpmErrorToResponse(
           response,
           ClientResponseSource.remote
         );
