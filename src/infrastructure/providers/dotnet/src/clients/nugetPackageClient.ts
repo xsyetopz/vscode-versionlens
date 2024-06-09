@@ -47,7 +47,7 @@ export class NuGetPackageClient implements IPackageClient<NuGetClientData> {
 
       this.logger.debug(
         "request failed for '%s' from '%s': %O",
-        request.dependency.package.name,
+        request.parsedDependency.package.name,
         autoCompleteUrl,
         errorResponse
       );
@@ -59,7 +59,7 @@ export class NuGetPackageClient implements IPackageClient<NuGetClientData> {
       if (errorResponse.status === 404 && request.attempt < urls.length) {
         this.logger.debug(
           "attempting to fetch '%s' from '%s'",
-          request.dependency.package.name,
+          request.parsedDependency.package.name,
           urls[request.attempt]
         );
         return this.fetchPackage(request);
@@ -87,7 +87,7 @@ export class NuGetPackageClient implements IPackageClient<NuGetClientData> {
 
     const query = {};
     const headers = {};
-    const requestedPackage = request.dependency.package;
+    const requestedPackage = request.parsedDependency.package;
     const packageUrl = UrlUtils.ensureEndSlash(url)
       + `${requestedPackage.name.toLowerCase()}/index.json`;
 

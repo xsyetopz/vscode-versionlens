@@ -25,7 +25,7 @@ export class FetchPackageSuggestions {
     request: TPackageClientRequest<any>
   ): Promise<Array<PackageResponse>> {
     const providerName = provider.name;
-    const requestedPackage = request.dependency.package;
+    const requestedPackage = request.parsedDependency.package;
 
     // capture start time
     const startedAt = performance.now();
@@ -64,7 +64,7 @@ export class FetchPackageSuggestions {
     request: TPackageClientRequest<any>
   ): Promise<TPackageClientResponse> {
 
-    const requestedPackage = request.dependency.package;
+    const requestedPackage = request.parsedDependency.package;
 
     this.logger.silly("fetching %s", requestedPackage.name);
 

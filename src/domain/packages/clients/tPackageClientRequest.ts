@@ -8,7 +8,7 @@ export type TPackageClientRequest<TClientData> = {
   clientData: TClientData,
 
   // dependency to fetch
-  dependency: PackageDependency;
+  parsedDependency: PackageDependency;
 
   // number of fallback attempts
   attempt: number;

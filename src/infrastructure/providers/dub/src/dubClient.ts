@@ -33,7 +33,7 @@ export class DubClient implements IPackageClient<null> {
   }
 
   async fetchPackage(request: TPackageClientRequest<null>): Promise<TPackageClientResponse> {
-    const requestedPackage = request.dependency.package;
+    const requestedPackage = request.parsedDependency.package;
     const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
     const url = `${this.config.apiUrl}${encodeURIComponent(requestedPackage.name)}/info`;
 
@@ -66,7 +66,7 @@ export class DubClient implements IPackageClient<null> {
     request: TPackageClientRequest<null>,
     semverSpec: TSemverSpec
   ): Promise<TPackageClientResponse> {
-    const requestedPackage = request.dependency.package;
+    const requestedPackage = request.parsedDependency.package;
     const query = { minimize: 'true' }
     const headers = {};
 

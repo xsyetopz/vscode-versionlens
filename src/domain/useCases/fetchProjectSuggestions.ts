@@ -18,7 +18,7 @@ export class FetchProjectSuggestions {
     provider: ISuggestionProvider,
     projectPath: string,
     packagePath: string,
-    dependencies: Array<PackageDependency>,
+    parsedPackages: Array<PackageDependency>,
   ): Promise<Array<PackageResponse>> {
 
     // get any client data if implemented
@@ -27,19 +27,19 @@ export class FetchProjectSuggestions {
       clientData = await provider.preFetchSuggestions(projectPath, packagePath);
     }
 
-    this.logger.debug("queueing %s package fetch tasks", dependencies.length);
+    this.logger.debug("queueing %s package fetch tasks", parsedPackages.length);
 
     // capture start time
     const startedAt = performance.now();
 
     // queue package fetch tasks
     const promises = [];
-    for (const dependency of dependencies) {
+    for (const parsedPackage of parsedPackages) {
       // setup the client request
       const clientRequest: TPackageClientRequest<any> = {
         providerName: provider.name,
         clientData,
-        dependency,
+        parsedDependency: parsedPackage,
         attempt: 0
       };
 

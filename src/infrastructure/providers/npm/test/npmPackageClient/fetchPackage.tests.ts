@@ -54,7 +54,7 @@ export const fetchPackageTests = {
     const testRequest: TPackageClientRequest<any> = {
       providerName: 'testnpmprovider',
       clientData: {},
-      dependency: new PackageDependency(
+      parsedDependency: new PackageDependency(
         testPackageRes,
         createDependencyRange(0, 0),
         createDependencyRange(1, 1),
@@ -90,7 +90,7 @@ export const fetchPackageTests = {
     const testRequest: TPackageClientRequest<any> = {
       providerName: 'testnpmprovider',
       clientData: {},
-      dependency: new PackageDependency(
+      parsedDependency: new PackageDependency(
         testPackageRes,
         createDependencyRange(0, 0),
         createDependencyRange(1, 1),
@@ -147,7 +147,7 @@ export const fetchPackageTests = {
     const testRequest: TPackageClientRequest<any> = {
       providerName: 'testnpmprovider',
       clientData: {},
-      dependency: new PackageDependency(
+      parsedDependency: new PackageDependency(
         testPackageRes,
         createDependencyRange(0, 0),
         createDependencyRange(1, 1),
@@ -197,7 +197,7 @@ export const fetchPackageTests = {
       const testRequest: TPackageClientRequest<any> = {
         providerName: 'testnpmprovider',
         clientData: {},
-        dependency: new PackageDependency(
+        parsedDependency: new PackageDependency(
           testPackageRes,
           createDependencyRange(0, 0),
           createDependencyRange(1, 1),

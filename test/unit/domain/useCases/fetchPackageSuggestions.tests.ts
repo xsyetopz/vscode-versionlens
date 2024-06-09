@@ -88,7 +88,7 @@ export const fetchPackageSuggestionsTests = <any>{
       providerName: testProviderName,
       attempt: 1,
       clientData: {},
-      dependency: new PackageDependency(
+      parsedDependency: new PackageDependency(
         this.testPackageRes,
         //nameRange
         createDependencyRange(1, 20),
@@ -146,7 +146,7 @@ export const fetchPackageSuggestionsTests = <any>{
     const actual = await useCase.execute(this.testProvider, this.testRequest);
 
     // verify
-    const expectedPackage = this.testRequest.dependency.package;
+    const expectedPackage = this.testRequest.parsedDependency.package;
     verify(this.loggerMock.silly("fetching %s", expectedPackage.name)).once();
     verify(
       this.loggerMock.info(
@@ -200,8 +200,8 @@ export const fetchPackageSuggestionsTests = <any>{
       verify(
         this.loggerMock.error(
           "%s@%s was rejected with the status code %s",
-          this.testRequest.dependency.package.name,
-          this.testRequest.dependency.package.version,
+          this.testRequest.parsedDependency.package.name,
+          this.testRequest.parsedDependency.package.version,
           testRespDoc.responseStatus?.status
         )
       ).once();

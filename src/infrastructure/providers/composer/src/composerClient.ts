@@ -34,7 +34,7 @@ export class ComposerClient implements IPackageClient<null> {
   async fetchPackage<TClientData>(
     request: TPackageClientRequest<TClientData>
   ): Promise<TPackageClientResponse> {
-    const requestedPackage = request.dependency.package;
+    const requestedPackage = request.parsedDependency.package;
     const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
     const url = `${this.config.apiUrl}${requestedPackage.name}.json`;
 
@@ -79,7 +79,7 @@ export class ComposerClient implements IPackageClient<null> {
       headers
     );
 
-    const requestPackage = request.dependency.package;
+    const requestPackage = request.parsedDependency.package;
     const versionRange = semverSpec.rawVersion;
 
     const resolved = {

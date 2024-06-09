@@ -36,7 +36,7 @@ export class NpmPackageClient implements IPackageClient<null> {
     let source: PackageSourceType;
 
     try {
-      const requestedPackage = request.dependency.package;
+      const requestedPackage = request.parsedDependency.package;
 
       const npaSpec = npa.resolve(
         requestedPackage.name,

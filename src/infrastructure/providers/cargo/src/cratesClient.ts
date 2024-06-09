@@ -37,10 +37,10 @@ export class CratesClient implements IPackageClient<null> {
   async fetchPackage<TClientData>(
     request: TPackageClientRequest<TClientData>
   ): Promise<TPackageClientResponse> {
-    const requestedPackage = request.dependency.package;
+    const requestedPackage = request.parsedDependency.package;
 
     // return a directory response if this a path type
-    const pathDesc = request.dependency.packageDesc.getType<TPackagePathDescriptor>(
+    const pathDesc = request.parsedDependency.packageDesc.getType<TPackagePathDescriptor>(
       PackageDescriptorType.path
     );
     if (pathDesc) {
@@ -52,7 +52,7 @@ export class CratesClient implements IPackageClient<null> {
     }
 
     // return a git response if this a git type
-    const gitDesc = request.dependency.packageDesc.getType<TPackageGitDescriptor>(
+    const gitDesc = request.parsedDependency.packageDesc.getType<TPackageGitDescriptor>(
       PackageDescriptorType.git
     );
     if (gitDesc) return ClientResponseFactory.createGit();
@@ -101,7 +101,7 @@ export class CratesClient implements IPackageClient<null> {
       headers
     );
 
-    const requestPackage = request.dependency.package;
+    const requestPackage = request.parsedDependency.package;
     const versionRange = semverSpec.rawVersion;
 
     const resolved = {

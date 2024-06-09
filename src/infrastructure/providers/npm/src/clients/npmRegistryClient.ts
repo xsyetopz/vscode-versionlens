@@ -40,7 +40,7 @@ export class NpmRegistryClient {
       ? npaSpec.subSpec as NpaSpec
       : npaSpec;
 
-    const requestedPackage = request.dependency.package;
+    const requestedPackage = request.parsedDependency.package;
 
     // fetch the package from the npm's registry
     const response = await this.request(spec, request.clientData);

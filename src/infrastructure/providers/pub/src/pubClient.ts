@@ -32,10 +32,10 @@ export class PubClient implements IPackageClient<null> {
   }
 
   async fetchPackage(request: TPackageClientRequest<null>): Promise<TPackageClientResponse> {
-    const requestedPackage = request.dependency.package;
+    const requestedPackage = request.parsedDependency.package;
 
     // return a directory response if this a path type
-    const pathDesc = request.dependency.packageDesc.getType<TPackagePathDescriptor>(
+    const pathDesc = request.parsedDependency.packageDesc.getType<TPackagePathDescriptor>(
       PackageDescriptorType.path
     );
     if (pathDesc) {
@@ -47,7 +47,7 @@ export class PubClient implements IPackageClient<null> {
     }
 
     // return a git response if this a git type
-    const gitDesc = request.dependency.packageDesc.getType<TPackageGitDescriptor>(
+    const gitDesc = request.parsedDependency.packageDesc.getType<TPackageGitDescriptor>(
       PackageDescriptorType.git
     );
     if (gitDesc) {
@@ -58,7 +58,7 @@ export class PubClient implements IPackageClient<null> {
     const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
 
     // use the hosted entry if it exists
-    const hosted = request.dependency.packageDesc.getType<TPackageHostedDescriptor>(
+    const hosted = request.parsedDependency.packageDesc.getType<TPackageHostedDescriptor>(
       PackageDescriptorType.hosted
     );
 
