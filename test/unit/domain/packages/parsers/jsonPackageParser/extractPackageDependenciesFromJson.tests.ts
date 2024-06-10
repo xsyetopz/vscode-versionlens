@@ -1,4 +1,3 @@
-import assert from 'node:assert';
 import {
   createPathDescFromJsonNode,
   createRepoDescFromJsonNode,
@@ -9,6 +8,7 @@ import {
 } from 'domain/packages';
 import { KeyDictionary } from 'domain/utils';
 import { test } from 'mocha-ui-esm';
+import assert from 'node:assert';
 import Fixtures from './extractPackageDependenciesFromJson.fixtures';
 
 const complexTypeHandlers: KeyDictionary<TJsonPackageTypeHandler> = {
@@ -45,14 +45,14 @@ export const extractPackageDependenciesFromJsonTests = {
     };
 
     const results = parsePackagesJson(
-      JSON.stringify(Fixtures.extractDependencyEntries.test),
+      JSON.stringify(Fixtures.parsesDependencyEntries.test),
       testOptions
     );
 
     assert.equal(results.length, 0);
   },
 
-  "extracts dependency entries from json": () => {
+  "parses dependency entries from json": () => {
     const includePropNames = ["dependencies"];
 
     const testOptions: TJsonPackageParserOptions = {
@@ -61,11 +61,11 @@ export const extractPackageDependenciesFromJsonTests = {
     };
 
     const results = parsePackagesJson(
-      JSON.stringify(Fixtures.extractDependencyEntries.test),
+      JSON.stringify(Fixtures.parsesDependencyEntries.test),
       testOptions
     );
 
-    assert.deepEqual(results, Fixtures.extractDependencyEntries.expected);
+    assert.deepEqual(results, Fixtures.parsesDependencyEntries.expected);
   },
 
   "matches json expression paths": () => {

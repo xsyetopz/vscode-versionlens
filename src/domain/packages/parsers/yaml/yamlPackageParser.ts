@@ -1,13 +1,14 @@
-import { createParentDesc, PackageDescriptor } from 'domain/packages';
+import {
+  createNameDescFromYamlNode,
+  createPackageParentDescType,
+  createVersionDescFromYamlNode,
+  PackageDescriptor,
+  TYamlPackageParserOptions,
+  TYamlPackageTypeHandler
+} from 'domain/packages';
 import { KeyDictionary } from 'domain/utils';
 import { Document, isMap, Pair, ParsedNode, parseDocument, YAMLMap } from 'yaml';
 import { findPair } from 'yaml/util';
-import { TYamlPackageParserOptions } from './tYamlPackageParserOptions';
-import { TYamlPackageTypeHandler } from './tYamlPackageTypeHandler';
-import {
-  createNameDescFromYamlNode,
-  createVersionDescFromYamlNode
-} from './yamlPackageTypeFactory';
 
 export function parsePackagesYaml(
   yaml: string,
@@ -68,7 +69,7 @@ function descendChildNodes(
       );
 
       // create the parent path desc
-      const parentDesc = createParentDesc(path);
+      const parentDesc = createPackageParentDescType(path);
 
       // create the package descriptor
       const packageDesc = new PackageDescriptor([nameDesc, versionDesc, parentDesc]);
@@ -116,7 +117,7 @@ function descendChildNodes(
       packageDesc.addType(nameDesc);
 
       // add the parent path desc
-      packageDesc.addType(createParentDesc(path));
+      packageDesc.addType(createPackageParentDescType(path));
 
       // add the package desc to the matched array
       matchedDependencies.push(packageDesc);

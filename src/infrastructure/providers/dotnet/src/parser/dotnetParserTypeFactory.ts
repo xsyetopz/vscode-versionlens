@@ -1,10 +1,10 @@
 import {
-  PackageDescriptorType,
   TPackageNameDescriptor,
   TPackageVersionDescriptor,
   XmlNode,
+  createPackageNameDesc,
   createPackageVersionDesc
-} from "domain/packages";
+} from 'domain/packages';
 
 export function createNameDescFromXmlAttr(node: XmlNode): TPackageNameDescriptor {
   const includeAttr = node.attributes.include || node.attributes.update;
@@ -15,11 +15,7 @@ export function createNameDescFromXmlAttr(node: XmlNode): TPackageNameDescriptor
     end: node.tagOpenStart
   };
 
-  return {
-    type: PackageDescriptorType.name,
-    name: includeAttr.value,
-    nameRange
-  };
+  return createPackageNameDesc(includeAttr.value, nameRange);
 }
 
 export function createVersionDescFromXmlAttr(keyNode: XmlNode): TPackageVersionDescriptor {
@@ -43,11 +39,7 @@ export function createSdkNameDescFromXmlAttr(node: XmlNode): TPackageNameDescrip
     end: node.tagOpenStart
   };
 
-  return {
-    type: PackageDescriptorType.name,
-    name: nameAttr.value,
-    nameRange
-  };
+  return createPackageNameDesc(nameAttr.value, nameRange);
 }
 
 export function createBlankVersionDescFromXmlAttr(node: XmlNode): TPackageVersionDescriptor {

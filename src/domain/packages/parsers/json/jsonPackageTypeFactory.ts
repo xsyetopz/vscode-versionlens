@@ -1,14 +1,15 @@
 import {
   PackageDescriptor,
-  PackageDescriptorType,
   TPackageGitDescriptor,
-  TPackageIgnoreChangesDescriptor,
   TPackageNameDescriptor,
-  TPackageParentDescriptor,
   TPackagePathDescriptor,
-  TPackageProjectVersionDescriptor,
   TPackageVersionDescriptor,
-  createPackageVersionDesc
+  createPackageGitDescType,
+  createPackageNameDesc,
+  createPackageParentDescType,
+  createPackagePathDescType,
+  createPackageVersionDesc,
+  createProjectVersionTypeDesc
 } from 'domain/packages';
 import * as JsonC from 'jsonc-parser';
 
@@ -20,14 +21,10 @@ export function createNameDescFromJsonNode(keyNode: JsonC.Node): TPackageNameDes
     end: keyNode.offset,
   };
 
-  return {
-    type: PackageDescriptorType.name,
-    name,
-    nameRange
-  };
+  return createPackageNameDesc(name, nameRange);
 }
 
-export function createVersionDescFromJsonNode(valueNode: any): TPackageVersionDescriptor {
+export function createVersionDescFromJsonNode(valueNode: JsonC.Node): TPackageVersionDescriptor {
   // +1 and -1 to be inside quotes
   const versionRange = {
     start: valueNode.offset + 1,
@@ -39,54 +36,24 @@ export function createVersionDescFromJsonNode(valueNode: any): TPackageVersionDe
   return createPackageVersionDesc(version, versionRange);
 }
 
-export function createPathDescFromJsonNode(
-  valueNode: any
-): TPackagePathDescriptor {
-
+export function createPathDescFromJsonNode(valueNode: JsonC.Node): TPackagePathDescriptor {
   // +1 and -1 to be inside quotes
   const pathRange = {
     start: valueNode.offset + 1,
     end: valueNode.offset + valueNode.length - 1,
   };
 
-  return {
-    type: PackageDescriptorType.path,
-    path: valueNode.value,
-    pathRange: pathRange
-  }
+  return createPackagePathDescType(valueNode.value, pathRange);
 }
 
-export function createRepoDescFromJsonNode(
-  valueNode: any
-): TPackageGitDescriptor {
-
-  return {
-    type: PackageDescriptorType.git,
-    gitUrl: valueNode.value,
-    gitPath: "",
-    gitRef: ""
-  }
-}
-
-export function createParentDesc(path: string): TPackageParentDescriptor {
-  return {
-    type: PackageDescriptorType.parent,
-    path
-  }
-}
-
-export function createIgnoreChangesDesc(): TPackageIgnoreChangesDescriptor {
-  return { type: PackageDescriptorType.ignoreChanges }
-}
-
-export function createProjectVersionTypeDesc(): TPackageProjectVersionDescriptor {
-  return { type: PackageDescriptorType.projectVersion }
+export function createRepoDescFromJsonNode(valueNode: JsonC.Node): TPackageGitDescriptor {
+  return createPackageGitDescType(valueNode.value);
 }
 
 export function createProjectVersionDesc(path: string, node: JsonC.Node): PackageDescriptor {
   const nameDesc = createNameDescFromJsonNode(node);
   const versionDesc = createVersionDescFromJsonNode(node);
-  const parentDesc = createParentDesc(path);
+  const parentDesc = createPackageParentDescType(path);
   const projectVersionDesc = createProjectVersionTypeDesc();
   return new PackageDescriptor([
     nameDesc,

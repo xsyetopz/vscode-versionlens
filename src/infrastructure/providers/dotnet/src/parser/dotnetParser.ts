@@ -2,13 +2,13 @@ import {
   PackageDescriptor,
   XmlDoc,
   createProjectVersionDescFromXmlElem
-} from "domain/packages";
+} from 'domain/packages';
 import {
   createBlankVersionDescFromXmlAttr,
   createNameDescFromXmlAttr,
   createSdkNameDescFromXmlAttr,
   createVersionDescFromXmlAttr
-} from "./dotnetParserTypeFactory";
+} from './dotnetParserTypeFactory';
 
 export function parseDotNetPackagesXml(
   xml: string,

@@ -1,18 +1,17 @@
 import {
   PackageDescriptor,
-  PackageDescriptorType,
   TPackageGitDescriptor,
   TPackageNameDescriptor,
-  TPackageParentDescriptor,
   TPackagePathDescriptor,
   TPackageVersionDescriptor,
   createPackageGitDescType,
+  createPackageNameDesc,
   createPackagePathDescType,
   createPackageVersionDesc,
   createProjectVersionTypeDesc
-} from "domain/packages";
-import { AST } from "toml-eslint-parser";
-import { TOMLKeyValue, TOMLTable } from "toml-eslint-parser/lib/ast";
+} from 'domain/packages';
+import { AST } from 'toml-eslint-parser';
+import { TOMLKeyValue, TOMLTable } from 'toml-eslint-parser/lib/ast';
 
 export function createNameDescFromTomlNode(keyNode: AST.TOMLKey, isNameFromTable: boolean): TPackageNameDescriptor {
   const nameNode = isNameFromTable
@@ -24,11 +23,7 @@ export function createNameDescFromTomlNode(keyNode: AST.TOMLKey, isNameFromTable
     end: nameNode.range[0],
   };
 
-  return {
-    type: PackageDescriptorType.name,
-    name: nameNode.name,
-    nameRange
-  };
+  return createPackageNameDesc(nameNode.name, nameRange);
 }
 
 export function createVersionDescFromTomlNode(
@@ -46,13 +41,6 @@ export function createVersionDescFromTomlNode(
   return createPackageVersionDesc(version, versionRange);
 }
 
-export function createParentDesc(path: string): TPackageParentDescriptor {
-  return {
-    type: PackageDescriptorType.parent,
-    path
-  }
-}
-
 export function createPathDescFromTomlNode(valueNode: any): TPackagePathDescriptor {
   const path = valueNode.value as string;
 
@@ -65,8 +53,8 @@ export function createPathDescFromTomlNode(valueNode: any): TPackagePathDescript
   return createPackagePathDescType(path, pathRange);
 }
 
-export function createGitDescFromTomlNode(valueNode: any): TPackageGitDescriptor {
-  return createPackageGitDescType(valueNode.value);
+export function createGitDescFromTomlNode(valueNode: AST.TOMLValue): TPackageGitDescriptor {
+  return createPackageGitDescType(valueNode.value as string);
 }
 
 export function createProjectVersionDescFromTomlNode(keyValue: TOMLKeyValue): PackageDescriptor {
@@ -74,5 +62,5 @@ export function createProjectVersionDescFromTomlNode(keyValue: TOMLKeyValue): Pa
     createNameDescFromTomlNode(keyValue.key, false),
     createVersionDescFromTomlNode(keyValue.value as AST.TOMLValue),
     createProjectVersionTypeDesc()
-  ])
+  ]);
 }

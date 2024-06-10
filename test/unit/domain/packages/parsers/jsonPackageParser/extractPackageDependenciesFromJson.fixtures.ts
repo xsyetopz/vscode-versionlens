@@ -1,18 +1,16 @@
 import {
   PackageDescriptor,
-  PackageDescriptorType,
-  TPackageGitDescriptor,
-  TPackageNameDescriptor,
-  TPackageParentDescriptor,
-  TPackagePathDescriptor,
-  TPackageTypeDescriptor,
-  TPackageVersionDescriptor
-} from "domain/packages";
-import { KeyDictionary } from 'domain/utils';
+  createDependencyRange,
+  createPackageGitDescType,
+  createPackageNameDesc,
+  createPackageParentDescType,
+  createPackagePathDescType,
+  createPackageVersionDesc
+} from 'domain/packages';
 
 export default {
 
-  extractDependencyEntries: {
+  parsesDependencyEntries: {
 
     test: {
       "dependencies": {
@@ -36,189 +34,41 @@ export default {
     },
 
     expected: [
-      <PackageDescriptor>{
-        typeCount: 3,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
-            type: PackageDescriptorType.name,
-            name: "Package1",
-            nameRange: {
-              start: 17,
-              end: 17
-            },
-          },
-          version: <TPackageVersionDescriptor>{
-            type: PackageDescriptorType.version,
-            version: "1.0.0",
-            versionAppend: "",
-            versionPrepend: "",
-            versionRange: {
-              start: 29,
-              end: 34
-            },
-          },
-          parent: <TPackageParentDescriptor>{
-            type: PackageDescriptorType.parent,
-            path: "dependencies"
-          }
-        }
-      },
-      <PackageDescriptor>{
-        typeCount: 3,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
-            type: PackageDescriptorType.name,
-            name: "Package2",
-            nameRange: {
-              start: 36,
-              end: 36
-            },
-          },
-          version: <TPackageVersionDescriptor>{
-            type: PackageDescriptorType.version,
-            version: "github:repo/project#semver:1.2.3",
-            versionAppend: "",
-            versionPrepend: "",
-            versionRange: {
-              start: 48,
-              end: 80
-            },
-          },
-          parent: <TPackageParentDescriptor>{
-            type: "parent",
-            path: "dependencies"
-          }
-        }
-      },
-      <PackageDescriptor>{
-        typeCount: 3,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
-            type: PackageDescriptorType.name,
-            name: "Package3",
-            nameRange: {
-              start: 82,
-              end: 82
-            },
-          },
-          version: <TPackageVersionDescriptor>{
-            type: "version",
-            version: "*",
-            versionAppend: "",
-            versionPrepend: "",
-            versionRange: {
-              start: 94,
-              end: 95
-            },
-          },
-          parent: <TPackageParentDescriptor>{
-            type: "parent",
-            path: "dependencies"
-          }
-        },
-      },
-      <PackageDescriptor>{
-        typeCount: 3,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
-            type: PackageDescriptorType.name,
-            name: "ComplexPackage1",
-            nameRange: {
-              start: 97,
-              end: 97
-            },
-          },
-          version: <TPackageVersionDescriptor>{
-            type: "version",
-            version: "1.2.3",
-            versionAppend: "",
-            versionPrepend: "",
-            versionRange: {
-              start: 127,
-              end: 132
-            },
-          },
-          parent: <TPackageParentDescriptor>{
-            type: "parent",
-            path: "dependencies"
-          }
-        },
-      },
-      <PackageDescriptor>{
-        typeCount: 3,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
-            type: PackageDescriptorType.name,
-            name: "NameOverrides@1",
-            nameRange: {
-              end: 135,
-              start: 135
-            },
-          },
-          version: <TPackageVersionDescriptor>{
-            type: "version",
-            version: "1.0.0",
-            versionAppend: "",
-            versionPrepend: "",
-            versionRange: {
-              end: 159,
-              start: 154
-            },
-          },
-          parent: <TPackageParentDescriptor>{
-            type: "parent",
-            path: "dependencies"
-          }
-        }
-      },
-      <PackageDescriptor>{
-        typeCount: 3,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
-            type: PackageDescriptorType.name,
-            name: "PathPackage1",
-            nameRange: {
-              start: 161,
-              end: 161
-            },
-          },
-          path: <TPackagePathDescriptor>{
-            type: "path",
-            path: "some/path/project",
-            pathRange: {
-              start: 185,
-              end: 202
-            },
-          },
-          parent: <TPackageParentDescriptor>{
-            type: "parent",
-            path: "dependencies"
-          }
-        },
-      },
-      <PackageDescriptor>{
-        typeCount: 3,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
-            type: PackageDescriptorType.name,
-            name: "GitPackage1",
-            nameRange: {
-              start: 205,
-              end: 205
-            },
-          },
-          git: <TPackageGitDescriptor>{
-            type: "git",
-            gitUrl: "git@github.com:munificent/kittens.git",
-            gitRef: "",
-            gitPath: ""
-          },
-          parent: <TPackageParentDescriptor>{
-            type: "parent",
-            path: "dependencies"
-          }
-        },
-      },
+      new PackageDescriptor([
+        createPackageNameDesc("Package1", createDependencyRange(17, 17)),
+        createPackageVersionDesc("1.0.0", createDependencyRange(29, 34)),
+        createPackageParentDescType("dependencies")
+      ]),
+      new PackageDescriptor([
+        createPackageNameDesc("Package2", createDependencyRange(36, 36)),
+        createPackageVersionDesc("github:repo/project#semver:1.2.3", createDependencyRange(48, 80)),
+        createPackageParentDescType("dependencies")
+      ]),
+      new PackageDescriptor([
+        createPackageNameDesc("Package3", createDependencyRange(82, 82)),
+        createPackageVersionDesc("*", createDependencyRange(94, 95)),
+        createPackageParentDescType("dependencies")
+      ]),
+      new PackageDescriptor([
+        createPackageNameDesc("ComplexPackage1", createDependencyRange(97, 97)),
+        createPackageVersionDesc("1.2.3", createDependencyRange(127, 132)),
+        createPackageParentDescType("dependencies")
+      ]),
+      new PackageDescriptor([
+        createPackageNameDesc("NameOverrides@1", createDependencyRange(135, 135)),
+        createPackageVersionDesc("1.0.0", createDependencyRange(154, 159)),
+        createPackageParentDescType("dependencies")
+      ]),
+      new PackageDescriptor([
+        createPackageNameDesc("PathPackage1", createDependencyRange(161, 161)),
+        createPackagePathDescType("some/path/project", createDependencyRange(185, 202)),
+        createPackageParentDescType("dependencies")
+      ]),
+      new PackageDescriptor([
+        createPackageNameDesc("GitPackage1", createDependencyRange(205, 205)),
+        createPackageGitDescType("git@github.com:munificent/kittens.git"),
+        createPackageParentDescType("dependencies")
+      ]),
     ]
   },
 
@@ -235,87 +85,21 @@ export default {
       }
     },
     expected: [
-      <PackageDescriptor>{
-        typeCount: 3,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
-            type: PackageDescriptorType.name,
-            name: "childPackage1",
-            nameRange: {
-              start: 32,
-              end: 32
-            },
-          },
-          version: <TPackageVersionDescriptor>{
-            type: "version",
-            version: "2.0.0",
-            versionAppend: "",
-            versionPrepend: "",
-            versionRange: {
-              start: 49,
-              end: 54
-            },
-          },
-          parent: <TPackageParentDescriptor>{
-            type: "parent",
-            path: "overrides"
-          }
-        }
-      },
-      <PackageDescriptor>{
-        typeCount: 3,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
-            type: PackageDescriptorType.name,
-            name: "childPackage2",
-            nameRange: {
-              start: 56,
-              end: 56
-            },
-          },
-          version: <TPackageVersionDescriptor>{
-            type: "version",
-            version: "3.0.0",
-            versionAppend: "",
-            versionPrepend: "",
-            versionRange: {
-              start: 73,
-              end: 78
-            },
-          },
-          parent: <TPackageParentDescriptor>{
-            type: "parent",
-            path: "overrides"
-          }
-        }
-      },
-      <PackageDescriptor>{
-        typeCount: 3,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
-            type: PackageDescriptorType.name,
-            name: "childPackage3",
-            nameRange: {
-              start: 99,
-              end: 99
-            },
-          },
-          version: <TPackageVersionDescriptor>{
-            type: "version",
-            version: "4.0.0",
-            versionAppend: "",
-            versionPrepend: "",
-            versionRange: {
-              start: 116,
-              end: 121
-            },
-          },
-          parent: <TPackageParentDescriptor>{
-            type: "parent",
-            path: "overrides"
-          }
-        }
-      },
+      new PackageDescriptor([
+        createPackageNameDesc("childPackage1", createDependencyRange(32, 32)),
+        createPackageVersionDesc("2.0.0", createDependencyRange(49, 54)),
+        createPackageParentDescType("overrides")
+      ]),
+      new PackageDescriptor([
+        createPackageNameDesc("childPackage2", createDependencyRange(56, 56)),
+        createPackageVersionDesc("3.0.0", createDependencyRange(73, 78)),
+        createPackageParentDescType("overrides")
+      ]),
+      new PackageDescriptor([
+        createPackageNameDesc("childPackage3", createDependencyRange(99, 99)),
+        createPackageVersionDesc("4.0.0", createDependencyRange(116, 121)),
+        createPackageParentDescType("overrides")
+      ]),
     ]
   },
 };

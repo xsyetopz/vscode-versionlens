@@ -3,7 +3,7 @@ import {
   TJsonPackageParserOptions,
   TJsonPackageTypeHandler,
   createNameDescFromJsonNode,
-  createParentDesc,
+  createPackageParentDescType,
   createVersionDescFromJsonNode
 } from 'domain/packages';
 import { KeyDictionary, Undefinable } from 'domain/utils';
@@ -77,7 +77,7 @@ function descendChildNodes(
       // create the version descriptor
       const versionDesc = createVersionDescFromJsonNode(valueNode);
       // create the parent descriptor
-      const parentDesc = createParentDesc(path);
+      const parentDesc = createPackageParentDescType(path);
       // create the package descriptor
       const packageDesc = new PackageDescriptor([nameDesc, versionDesc, parentDesc]);
 
@@ -118,7 +118,7 @@ function descendChildNodes(
       packageDesc.addType(nameDesc)
 
       // add the parent path to the package desc
-      const parentDesc = createParentDesc(path);
+      const parentDesc = createPackageParentDescType(path);
       packageDesc.addType(parentDesc);
 
       // add the package desc to the matched array

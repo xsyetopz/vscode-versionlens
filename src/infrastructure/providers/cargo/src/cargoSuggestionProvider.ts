@@ -1,7 +1,8 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from 'domain/logging';
 import {
-  PackageDependency, PackageDescriptorType,
+  PackageDependency,
+  PackageDescriptorType,
   TPackageGitDescriptor,
   TPackageNameDescriptor,
   TPackagePathDescriptor,

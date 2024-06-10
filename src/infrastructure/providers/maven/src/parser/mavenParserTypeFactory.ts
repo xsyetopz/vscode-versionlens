@@ -1,10 +1,10 @@
 import {
-  PackageDescriptorType,
   TPackageNameDescriptor,
   TPackageVersionDescriptor,
   XmlNode,
+  createPackageNameDesc,
   createPackageVersionDesc
-} from "domain/packages";
+} from 'domain/packages';
 
 export function createNameDescFromXmlNodes(
   parentNode: XmlNode,
@@ -26,11 +26,7 @@ export function createNameDescFromXmlNodes(
     end: parentNode.tagOpenStart
   };
 
-  return {
-    type: PackageDescriptorType.name,
-    name: `${groupIdNode.text}:${artifactIdNode.text}`,
-    nameRange
-  };
+  return createPackageNameDesc(`${groupIdNode.text}:${artifactIdNode.text}`, nameRange);
 }
 
 export function createVersionDescFromXmlNodes(

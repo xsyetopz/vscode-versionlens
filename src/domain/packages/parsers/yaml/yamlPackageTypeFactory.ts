@@ -1,10 +1,13 @@
 import {
-  PackageDescriptorType,
   TPackageGitDescriptor,
   TPackageHostedDescriptor,
   TPackageNameDescriptor,
   TPackagePathDescriptor,
   TPackageVersionDescriptor,
+  createPackageGitDescType,
+  createPackageHostedDescType,
+  createPackageNameDesc,
+  createPackagePathDescType,
   createPackageVersionDesc
 } from "domain/packages";
 import { Undefinable } from 'domain/utils';
@@ -19,11 +22,7 @@ export function createNameDescFromYamlNode(keyNode: any): TPackageNameDescriptor
     end: keyNode.range[0],
   };
 
-  return {
-    type: PackageDescriptorType.name,
-    name,
-    nameRange
-  };
+  return createPackageNameDesc(name, nameRange);
 }
 
 export function createVersionDescFromYamlNode(
@@ -64,13 +63,7 @@ export function createPathDescFromYamlNode(
     pathRange.end--;
   }
 
-  const pathDesc: TPackagePathDescriptor = {
-    type: PackageDescriptorType.path,
-    path: valueNode.value,
-    pathRange
-  }
-
-  return pathDesc;
+  return createPackagePathDescType(valueNode.value, pathRange);
 }
 
 export function createHostedDescFromYamlNode(
@@ -83,11 +76,7 @@ export function createHostedDescFromYamlNode(
   // extract url from direct strings
   const isStringType = valueNode.type === "PLAIN" || isQuoteType;
   if (isStringType) {
-    return {
-      type: PackageDescriptorType.hosted,
-      hostUrl: valueNode.value,
-      hostPackageName: ""
-    }
+    return createPackageHostedDescType(valueNode.value)
   }
 
   // skip incomplete hosted entries
@@ -107,11 +96,7 @@ export function createHostedDescFromYamlNode(
     hostPackageName = (<any>namePair.value).value;
   }
 
-  return {
-    type: PackageDescriptorType.hosted,
-    hostPackageName,
-    hostUrl
-  }
+  return createPackageHostedDescType(hostUrl, hostPackageName)
 }
 
 export function createGitDescFromYamlNode(
@@ -127,12 +112,11 @@ export function createGitDescFromYamlNode(
   const isStringType = valueNode.type === "PLAIN" || isQuoteType;
   if (isStringType) {
     gitUrl = valueNode.value;
-    return {
-      type: PackageDescriptorType.git,
+    return createPackageGitDescType(
       gitUrl,
-      gitRef,
-      gitPath
-    }
+      gitPath,
+      gitRef
+    )
   }
 
   const map = valueNode as YAMLMap;
@@ -159,10 +143,9 @@ export function createGitDescFromYamlNode(
     gitPath = (<any>namePair.value).value;
   }
 
-  return {
-    type: PackageDescriptorType.git,
+  return createPackageGitDescType(
     gitUrl,
-    gitRef,
-    gitPath
-  }
+    gitPath,
+    gitRef
+  );
 }

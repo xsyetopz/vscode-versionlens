@@ -1,8 +1,12 @@
 import {
   PackageDescriptorType,
   TPackageGitDescriptor,
+  TPackageHostedDescriptor,
+  TPackageIgnoreChangesDescriptor,
   TPackageNameDescriptor,
+  TPackageParentDescriptor,
   TPackagePathDescriptor,
+  TPackageProjectVersionDescriptor,
   TPackageTextRange,
   TPackageVersionDescriptor
 } from "domain/packages";
@@ -18,8 +22,8 @@ export function createPackageNameDesc(name: string, nameRange: TPackageTextRange
 export function createPackageVersionDesc(
   version: string,
   versionRange: TPackageTextRange,
-  versionPrepend: string = "",
-  versionAppend: string = ""
+  versionPrepend: string = '',
+  versionAppend: string = ''
 ): TPackageVersionDescriptor {
   return {
     type: PackageDescriptorType.version,
@@ -32,8 +36,8 @@ export function createPackageVersionDesc(
 
 export function createPackageGitDescType(
   gitUrl: string,
-  gitPath?: string,
-  gitRef?: string
+  gitPath: string = '',
+  gitRef: string = ''
 ): TPackageGitDescriptor {
   return {
     type: PackageDescriptorType.git,
@@ -52,4 +56,30 @@ export function createPackagePathDescType(
     path,
     pathRange
   }
+}
+
+export function createPackageHostedDescType(
+  hostUrl: string,
+  hostPackageName: string = '',
+): TPackageHostedDescriptor {
+  return {
+    type: PackageDescriptorType.hosted,
+    hostPackageName,
+    hostUrl
+  }
+}
+
+export function createPackageParentDescType(path: string): TPackageParentDescriptor {
+  return {
+    type: PackageDescriptorType.parent,
+    path
+  }
+}
+
+export function createIgnoreChangesDesc(): TPackageIgnoreChangesDescriptor {
+  return { type: PackageDescriptorType.ignoreChanges }
+}
+
+export function createProjectVersionTypeDesc(): TPackageProjectVersionDescriptor {
+  return { type: PackageDescriptorType.projectVersion }
 }

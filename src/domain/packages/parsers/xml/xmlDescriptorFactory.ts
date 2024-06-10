@@ -1,9 +1,12 @@
-import { PackageDescriptorType } from "../definitions/ePackageDescriptorType";
-import { TPackageNameDescriptor, TPackageVersionDescriptor } from "../definitions/tPackageTypeDescriptors";
-import { createProjectVersionTypeDesc } from "../json/jsonPackageTypeFactory";
-import { PackageDescriptor } from "../packageDescriptor";
-import { createPackageVersionDesc } from "../packageDescriptorTypeUtils";
-import { XmlNode } from "./xmlParser";
+import {
+  PackageDescriptor,
+  TPackageNameDescriptor,
+  TPackageVersionDescriptor,
+  createPackageNameDesc,
+  createPackageVersionDesc,
+  createProjectVersionTypeDesc
+} from 'domain/packages';
+import { XmlNode } from './xmlParser';
 
 export function createNameDescFromXmlElem(keyNode: XmlNode): TPackageNameDescriptor {
   const nameRange = {
@@ -11,11 +14,7 @@ export function createNameDescFromXmlElem(keyNode: XmlNode): TPackageNameDescrip
     end: keyNode.tagOpenStart
   };
 
-  return {
-    type: PackageDescriptorType.name,
-    name: keyNode.name,
-    nameRange
-  };
+  return createPackageNameDesc(keyNode.name, nameRange);
 }
 
 export function createVersionDescFromXmlElem(keyNode: XmlNode): TPackageVersionDescriptor {

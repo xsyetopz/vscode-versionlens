@@ -1,7 +1,8 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from 'domain/logging';
 import {
-  PackageDependency, PackageDescriptorType,
+  PackageDependency,
+  PackageDescriptorType,
   TPackageGitDescriptor,
   TPackageNameDescriptor,
   TPackagePathDescriptor,
@@ -11,8 +12,8 @@ import {
   parsePackagesToml
 } from 'domain/packages';
 import { ISuggestionProvider } from 'domain/providers';
-import { PypiConfig } from './pypiConfig';
 import { PypiClient } from './pypiClient';
+import { PypiConfig } from './pypiConfig';
 
 export class PypiSuggestionProvider implements ISuggestionProvider {
 

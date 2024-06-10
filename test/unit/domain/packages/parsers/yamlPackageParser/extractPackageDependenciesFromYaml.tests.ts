@@ -1,4 +1,3 @@
-import assert from 'node:assert';
 import {
   createGitDescFromYamlNode,
   createHostedDescFromYamlNode,
@@ -10,6 +9,7 @@ import {
 } from 'domain/packages';
 import { KeyDictionary } from 'domain/utils';
 import { test } from 'mocha-ui-esm';
+import assert from 'node:assert';
 import Fixtures from './extractPackageDependenciesFromYaml.fixtures';
 
 const complexTypeHandlers = <KeyDictionary<TYamlPackageTypeHandler>>{
@@ -47,14 +47,14 @@ export const extractPackageDependenciesFromYamlTests = {
     };
 
     const results = parsePackagesYaml(
-      Fixtures.extractDependencyEntries.test,
+      Fixtures.parsesDependencyEntries.test,
       testOptions
     );
 
     assert.equal(results.length, 0);
   },
 
-  "extracts general dependencies from yaml": () => {
+  "parses general dependencies from yaml": () => {
     const includePropNames = ["dependencies"];
 
     const testOptions: TYamlPackageParserOptions = {
@@ -63,14 +63,14 @@ export const extractPackageDependenciesFromYamlTests = {
     };
 
     const results = parsePackagesYaml(
-      Fixtures.extractDependencyEntries.test,
+      Fixtures.parsesDependencyEntries.test,
       testOptions
     );
 
-    assert.deepEqual(results, Fixtures.extractDependencyEntries.expected);
+    assert.deepEqual(results, Fixtures.parsesDependencyEntries.expected);
   },
 
-  "extracts path type dependencies from yaml": () => {
+  "parses path type dependencies from yaml": () => {
     const includePropNames = ["dependencies"];
 
     const testOptions: TYamlPackageParserOptions = {
@@ -79,14 +79,14 @@ export const extractPackageDependenciesFromYamlTests = {
     };
 
     const results = parsePackagesYaml(
-      Fixtures.extractPathDependencies.test,
+      Fixtures.parsesPathDependencies.test,
       testOptions
     );
 
-    assert.deepEqual(results, Fixtures.extractPathDependencies.expected);
+    assert.deepEqual(results, Fixtures.parsesPathDependencies.expected);
   },
 
-  "extracts git type dependencies from yaml": () => {
+  "parses git type dependencies from yaml": () => {
     const includePropNames = ["dependencies"];
 
     const testOptions: TYamlPackageParserOptions = {
@@ -95,13 +95,13 @@ export const extractPackageDependenciesFromYamlTests = {
     };
 
     const results = parsePackagesYaml(
-      Fixtures.extractGitDepencdencies.test,
+      Fixtures.parsesGitDepencdencies.test,
       testOptions
     );
-    assert.deepEqual(results, Fixtures.extractGitDepencdencies.expected);
+    assert.deepEqual(results, Fixtures.parsesGitDepencdencies.expected);
   },
 
-  "extracts hosted type dependencies from yaml": () => {
+  "parses hosted type dependencies from yaml": () => {
     const includePropNames = ["dependencies"];
 
     const testOptions: TYamlPackageParserOptions = {
@@ -110,10 +110,10 @@ export const extractPackageDependenciesFromYamlTests = {
     };
 
     const results = parsePackagesYaml(
-      Fixtures.extractHostedDependencies.test,
+      Fixtures.parsesHostedDependencies.test,
       testOptions
     );
 
-    assert.deepEqual(results, Fixtures.extractHostedDependencies.expected);
+    assert.deepEqual(results, Fixtures.parsesHostedDependencies.expected);
   }
 }

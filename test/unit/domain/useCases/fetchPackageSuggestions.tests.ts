@@ -14,7 +14,6 @@ import {
   TPackageNameVersion,
   TPackageResource,
   TPackageSuggestion,
-  TPackageTextRange,
   createDependencyRange,
   createPackageNameVersion,
   createPackageResource
@@ -125,12 +124,12 @@ export const fetchPackageSuggestionsTests = <any>{
         type: testRespDoc.type,
         packageSource: testRespDoc.source,
         fetchedPackage: testRespDoc.resolved,
-        parsedDependency: {
-          nameRange: <TPackageTextRange>{ start: 1, end: 20 },
-          versionRange: <TPackageTextRange>{ start: 25, end: 30 },
-          descriptors: new PackageDescriptor([]),
-          package: this.testPackageRes
-        },
+        parsedDependency: new PackageDependency(
+          this.testPackageRes,
+          { start: 1, end: 20 }, // nameRange
+          { start: 25, end: 30 }, // versionRange
+          new PackageDescriptor([])
+        ),
         suggestion: testRespDoc.suggestions[0],
         order: 0
       }
@@ -205,6 +204,6 @@ export const fetchPackageSuggestionsTests = <any>{
           testRespDoc.responseStatus?.status
         )
       ).once();
-    }
+    },
 
 };

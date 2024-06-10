@@ -1,7 +1,11 @@
-import { TPackageTextRange } from "../definitions/tPackageTextRange";
-import { TPackageNameDescriptor, TPackageVersionDescriptor } from "../definitions/tPackageTypeDescriptors";
-import { PackageDescriptor } from "../packageDescriptor";
-import { createPackageNameDesc, createPackageVersionDesc } from "../packageDescriptorTypeUtils";
+import {
+  PackageDescriptor,
+  TPackageNameDescriptor,
+  TPackageTextRange,
+  TPackageVersionDescriptor,
+  createPackageNameDesc,
+  createPackageVersionDesc
+} from 'domain/packages';
 
 const INCOMPAT_BUILD = "+incompatible";
 const PREPEND_V = "v";
