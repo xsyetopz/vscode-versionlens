@@ -1,4 +1,5 @@
 import {
+  PackageDescriptor,
   TPackageGitDescriptor,
   TPackageHostedDescriptor,
   TPackageNameDescriptor,
@@ -8,7 +9,8 @@ import {
   createPackageHostedDescType,
   createPackageNameDesc,
   createPackagePathDescType,
-  createPackageVersionDesc
+  createPackageVersionDesc,
+  createProjectVersionTypeDesc
 } from "domain/packages";
 import { Undefinable } from 'domain/utils';
 import { YAMLMap } from 'yaml';
@@ -148,4 +150,22 @@ export function createGitDescFromYamlNode(
     gitPath,
     gitRef
   );
+}
+
+export function getPackageProjectVersionDesc(map: YAMLMap<any, any>): PackageDescriptor {
+  for (const node of map.items) {
+    if (node.key.value === 'version') {
+      const isQuoted = isNodeQuoted(node.value);
+      return new PackageDescriptor([
+        createNameDescFromYamlNode(node.key),
+        createVersionDescFromYamlNode(node.value, isQuoted),
+        createProjectVersionTypeDesc()
+      ]);
+    }
+  }
+}
+
+export function isNodeQuoted(node: any) {
+  return node.type === "QUOTE_SINGLE"
+    || node.type === "QUOTE_DOUBLE";
 }

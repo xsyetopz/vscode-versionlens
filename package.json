@@ -342,6 +342,7 @@
           "uniqueItems": true,
           "minItems": 1,
           "default": [
+            "version",
             "dependencies",
             "dev_dependencies"
           ],

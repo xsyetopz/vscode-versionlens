@@ -6,7 +6,8 @@ import {
   createPackageNameDesc,
   createPackageParentDescType,
   createPackagePathDescType,
-  createPackageVersionDesc
+  createPackageVersionDesc,
+  createProjectVersionTypeDesc
 } from 'domain/packages';
 
 export default {
@@ -35,6 +36,11 @@ dependencies:
 `,
 
     expected: [
+      new PackageDescriptor([
+        createPackageNameDesc("version", createDependencyRange(15, 15)),
+        createPackageVersionDesc("1.2.3", createDependencyRange(24, 29)),
+        createProjectVersionTypeDesc()
+      ]),
       new PackageDescriptor([
         createPackageNameDesc("efts", createDependencyRange(376, 376)),
         createPackageVersionDesc("^2.0.4", createDependencyRange(382, 388)),
@@ -162,5 +168,28 @@ dependencies:
         createPackageParentDescType("dependencies")
       ]),
     ]
+  },
+
+  parsesProjectVersionNoQuotes: {
+    test: `version: 1.0.0`,
+    expected: [
+      new PackageDescriptor([
+        createPackageNameDesc("version", createDependencyRange(0, 0)),
+        createPackageVersionDesc("1.0.0", createDependencyRange(9, 14)),
+        createProjectVersionTypeDesc()
+      ])
+    ]
+  },
+
+  parsesProjectVersionWithQuotes: {
+    test: `version: '1.0.0'`,
+    expected: [
+      new PackageDescriptor([
+        createPackageNameDesc("version", createDependencyRange(0, 0)),
+        createPackageVersionDesc("1.0.0", createDependencyRange(10, 15)),
+        createProjectVersionTypeDesc()
+      ])
+    ]
   }
+
 }

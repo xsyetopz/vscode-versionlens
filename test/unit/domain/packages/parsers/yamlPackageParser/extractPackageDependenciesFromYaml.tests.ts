@@ -54,66 +54,30 @@ export const extractPackageDependenciesFromYamlTests = {
     assert.equal(results.length, 0);
   },
 
-  "parses general dependencies from yaml": () => {
-    const includePropNames = ["dependencies"];
+  "case $i: parses yaml dependencies": [
+    Fixtures.parsesDependencyEntries,
+    Fixtures.parsesPathDependencies,
+    Fixtures.parsesGitDepencdencies,
+    Fixtures.parsesHostedDependencies,
+    Fixtures.parsesProjectVersionNoQuotes,
+    Fixtures.parsesProjectVersionWithQuotes,
+    (fixture: any) => {
+      const includePropNames = [
+        "version",
+        "dependencies"
+      ];
 
-    const testOptions: TYamlPackageParserOptions = {
-      includePropNames,
-      complexTypeHandlers
-    };
+      const testOptions: TYamlPackageParserOptions = {
+        includePropNames,
+        complexTypeHandlers
+      };
 
-    const results = parsePackagesYaml(
-      Fixtures.parsesDependencyEntries.test,
-      testOptions
-    );
+      const results = parsePackagesYaml(
+        fixture.test,
+        testOptions
+      );
 
-    assert.deepEqual(results, Fixtures.parsesDependencyEntries.expected);
-  },
-
-  "parses path type dependencies from yaml": () => {
-    const includePropNames = ["dependencies"];
-
-    const testOptions: TYamlPackageParserOptions = {
-      includePropNames,
-      complexTypeHandlers
-    };
-
-    const results = parsePackagesYaml(
-      Fixtures.parsesPathDependencies.test,
-      testOptions
-    );
-
-    assert.deepEqual(results, Fixtures.parsesPathDependencies.expected);
-  },
-
-  "parses git type dependencies from yaml": () => {
-    const includePropNames = ["dependencies"];
-
-    const testOptions: TYamlPackageParserOptions = {
-      includePropNames,
-      complexTypeHandlers
-    };
-
-    const results = parsePackagesYaml(
-      Fixtures.parsesGitDepencdencies.test,
-      testOptions
-    );
-    assert.deepEqual(results, Fixtures.parsesGitDepencdencies.expected);
-  },
-
-  "parses hosted type dependencies from yaml": () => {
-    const includePropNames = ["dependencies"];
-
-    const testOptions: TYamlPackageParserOptions = {
-      includePropNames,
-      complexTypeHandlers
-    };
-
-    const results = parsePackagesYaml(
-      Fixtures.parsesHostedDependencies.test,
-      testOptions
-    );
-
-    assert.deepEqual(results, Fixtures.parsesHostedDependencies.expected);
-  }
+      assert.deepEqual(results, fixture.expected);
+    }
+  ]
 }

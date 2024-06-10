@@ -2,6 +2,8 @@ import {
   createNameDescFromYamlNode,
   createPackageParentDescType,
   createVersionDescFromYamlNode,
+  getPackageProjectVersionDesc,
+  isNodeQuoted,
   PackageDescriptor,
   TYamlPackageParserOptions,
   TYamlPackageTypeHandler
@@ -33,6 +35,11 @@ function parsePackageNodes(
 
     const node = rootNode.getIn(segments) as YAMLMap;
     if (!node) continue;
+
+    if (incPropName === 'version') {
+      matchedDependencies.push(getPackageProjectVersionDesc(rootNode.contents as YAMLMap))
+      continue;
+    }
 
     const children = node instanceof Array
       ? descendChildNodes(incPropName, node, complexTypeHandlers)
@@ -126,9 +133,4 @@ function descendChildNodes(
   }
 
   return matchedDependencies;
-}
-
-function isNodeQuoted(node: any) {
-  return node.type === "QUOTE_SINGLE"
-    || node.type === "QUOTE_DOUBLE";
 }
