@@ -1,3 +1,20 @@
+# 1.14.0-preview.1
+
+### All Providers
+
+  - Fixed suggestion replace-text race-condition causing broken text output
+
+  - Added the ability to update the package\project version using major, minor or patch suggestions.
+
+    > **NOTE**
+    >
+    > - **Go** is not supported yet
+    >
+    > - Will trigger the [custom install task](https://gitlab.com/versionlens/vscode-versionlens/-/blob/master/docs/custom-install-task.md?ref_type=heads) when saving changes.
+    >   This is useful for package managers like npm where the package-lock.json file gets updated with the project version after an install
+
+    Relates to [#356](https://gitlab.com/versionlens/vscode-versionlens/-/issues/356)
+
 # 1.13.1
 
 ### All Providers
