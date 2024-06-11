@@ -3,7 +3,7 @@ import { ICachingOptions } from '#domain/caching';
 import { UrlUtils } from '#domain/clients';
 import { IFrozenOptions } from '#domain/configuration';
 import { IHttpOptions } from '#domain/http';
-import { IProviderConfig, TProviderFileMatcher } from 'domain/providers';
+import { IProviderConfig, TProviderFileMatcher } from '#domain/providers';
 import { nameOf } from 'domain/utils';
 import { PubContributions } from './definitions/ePubContributions';
 

@@ -1,6 +1,6 @@
 import { ICachingOptions } from '#domain/caching';
 import { IHttpOptions } from '#domain/http';
-import { TProviderFileMatcher } from './tProviderFileMatcher';
+import { TProviderFileMatcher } from '#domain/providers';
 
 export interface IProviderConfig {
 

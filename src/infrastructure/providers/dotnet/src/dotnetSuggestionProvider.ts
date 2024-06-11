@@ -9,7 +9,7 @@ import {
   TSuggestionReplaceFunction,
   createPackageResource
 } from '#domain/packages';
-import { ISuggestionProvider } from 'domain/providers';
+import { ISuggestionProvider } from '#domain/providers';
 import { DotNetCli } from './clients/dotnetCli';
 import { NuGetPackageClient } from './clients/nugetPackageClient';
 import { NuGetResourceClient } from './clients/nugetResourceClient';

@@ -1,5 +1,5 @@
 import { PackageDependency } from '#domain/packages';
-import { ISuggestionProvider } from "domain/providers";
+import { ISuggestionProvider } from '#domain/providers';
 import { Uri } from "vscode";
 
 export type OnPackageDependenciesChangedEvent = (

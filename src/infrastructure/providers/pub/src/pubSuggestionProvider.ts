@@ -16,7 +16,7 @@ import {
   createVersionDescFromYamlNode,
   parsePackagesYaml
 } from '#domain/packages';
-import { ISuggestionProvider } from 'domain/providers';
+import { ISuggestionProvider } from '#domain/providers';
 import { PubClient } from './pubClient';
 import { PubConfig } from './pubConfig';
 import { pubReplaceVersion } from './pubUtils';

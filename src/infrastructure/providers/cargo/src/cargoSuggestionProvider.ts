@@ -11,7 +11,7 @@ import {
   createPackageResource,
   parsePackagesToml
 } from '#domain/packages';
-import { ISuggestionProvider } from 'domain/providers';
+import { ISuggestionProvider } from '#domain/providers';
 import { CargoConfig } from './cargoConfig';
 import { CratesClient } from './cratesClient';
 

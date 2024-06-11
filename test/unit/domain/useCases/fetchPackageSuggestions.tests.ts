@@ -18,7 +18,7 @@ import {
   createPackageNameVersion,
   createPackageResource
 } from '#domain/packages';
-import { IProviderConfig, ISuggestionProvider } from 'domain/providers';
+import { IProviderConfig, ISuggestionProvider } from '#domain/providers';
 import { FetchPackageSuggestions } from 'domain/useCases';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';

@@ -1,5 +1,5 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { ISuggestionProvider } from 'domain/providers';
+import { ISuggestionProvider } from '#domain/providers';
 import { isMatch } from 'micromatch';
 import { basename } from 'node:path';
 

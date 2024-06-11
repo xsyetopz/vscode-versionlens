@@ -13,7 +13,7 @@ import {
   createVersionDescFromJsonNode,
   parsePackagesJson
 } from '#domain/packages';
-import { ISuggestionProvider } from 'domain/providers';
+import { ISuggestionProvider } from '#domain/providers';
 import { KeyDictionary } from 'domain/utils';
 import { DubClient } from './dubClient';
 import { DubConfig } from './dubConfig';

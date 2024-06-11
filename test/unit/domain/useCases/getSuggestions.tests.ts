@@ -1,7 +1,7 @@
 import { CachingOptions } from '#domain/caching';
 import { ILogger } from '#domain/logging';
 import { DependencyCache, PackageResponse, SuggestionTypes } from '#domain/packages';
-import { IProviderConfig, ISuggestionProvider } from 'domain/providers';
+import { IProviderConfig, ISuggestionProvider } from '#domain/providers';
 import { FetchProjectSuggestions, GetSuggestions } from 'domain/useCases';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';

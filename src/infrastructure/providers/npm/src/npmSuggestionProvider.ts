@@ -11,7 +11,7 @@ import {
   createVersionDescFromJsonNode,
   parsePackagesJson
 } from '#domain/packages';
-import { ISuggestionProvider } from 'domain/providers';
+import { ISuggestionProvider } from '#domain/providers';
 import { KeyDictionary } from 'domain/utils';
 import { homedir } from 'node:os';
 import { resolve } from 'node:path';

@@ -5,7 +5,7 @@ import {
   IPackageFileWatcher,
   OnPackageDependenciesChangedEvent
 } from '#domain/packages';
-import { ISuggestionProvider } from 'domain/providers';
+import { ISuggestionProvider } from '#domain/providers';
 import { DependencyChangesResult, GetDependencyChanges } from 'domain/useCases';
 import { AsyncEmitter } from 'domain/utils';
 import { isMatch } from 'micromatch';

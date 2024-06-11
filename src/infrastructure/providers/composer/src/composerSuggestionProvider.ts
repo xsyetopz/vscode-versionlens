@@ -10,7 +10,7 @@ import {
   createVersionDescFromJsonNode,
   parsePackagesJson
 } from '#domain/packages';
-import { ISuggestionProvider } from 'domain/providers';
+import { ISuggestionProvider } from '#domain/providers';
 import { KeyDictionary } from 'domain/utils';
 import { ComposerClient } from './composerClient';
 import { ComposerConfig } from './composerConfig';

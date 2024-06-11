@@ -8,7 +8,7 @@ import {
   createPackageResource,
   parsePackagesGoMod
 } from '#domain/packages';
-import { ISuggestionProvider } from 'domain/providers';
+import { ISuggestionProvider } from '#domain/providers';
 import { GoClient } from './goClient';
 import { GoConfig } from './goConfig';
 import { goReplaceVersion } from './goReplaceVersion';

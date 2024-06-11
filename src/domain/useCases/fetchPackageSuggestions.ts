@@ -10,7 +10,7 @@ import {
   TPackageClientResponse,
   getProjectVersionSuggestions
 } from '#domain/packages';
-import { ISuggestionProvider } from 'domain/providers';
+import { ISuggestionProvider } from '#domain/providers';
 
 export class FetchPackageSuggestions {
 
