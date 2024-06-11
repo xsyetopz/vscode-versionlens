@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import {
   HttpClientRequestMethods,
   HttpClientResponse,
@@ -17,8 +16,9 @@ import {
   VersionUtils,
   createSuggestions
 } from '#domain/packages';
+import { DubConfig } from '#providers/dub';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 import { valid } from 'semver';
-import { DubConfig } from './dubConfig';
 
 export class DubClient implements IPackageClient<null> {
 

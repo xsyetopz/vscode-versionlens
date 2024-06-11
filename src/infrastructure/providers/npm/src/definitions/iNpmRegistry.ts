@@ -1,4 +1,4 @@
-import { NpaSpec } from "../models/npaSpec.js"
+import { NpaSpec } from '#providers/npm'
 
 export interface INpmRegistry {
 

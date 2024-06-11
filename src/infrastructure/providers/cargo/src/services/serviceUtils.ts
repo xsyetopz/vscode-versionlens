@@ -4,11 +4,13 @@ import { HttpOptions } from '#domain/http';
 import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 import { createJsonClient } from '#infrastructure/http';
-import { CargoConfig } from "../cargoConfig";
-import { CargoSuggestionProvider } from "../cargoSuggestionProvider";
-import { CratesClient } from "../cratesClient";
-import { CargoContributions } from "../definitions/eCargoContributions";
-import { ICargoService } from "./iCargoServices";
+import {
+  CargoConfig,
+  CargoContributions,
+  CargoSuggestionProvider,
+  CratesClient,
+  ICargoService
+} from "#providers/cargo";
 
 export function addCachingOptions(services: IServiceCollection) {
   services.addSingleton(

@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ClientResponseSource } from '#domain/clients';
 import { ILogger } from '#domain/logging';
 import {
@@ -11,12 +10,16 @@ import {
   TPackageSuggestion,
   UpdateableFactory
 } from '#domain/packages';
+import {
+  GitHubClient,
+  NpaSpec,
+  NpaTypes,
+  NpmConfig,
+  NpmRegistryClient,
+  convertNpmErrorToResponse
+} from '#providers/npm';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 import npa from 'npm-package-arg';
-import { NpaSpec, NpaTypes } from '../models/npaSpec';
-import { NpmConfig } from '../npmConfig';
-import { convertNpmErrorToResponse } from '../utils/convertNpmErrorToResponse';
-import { GitHubClient } from './githubClient';
-import { NpmRegistryClient } from './npmRegistryClient';
 
 export class NpmPackageClient implements IPackageClient<any> {
 

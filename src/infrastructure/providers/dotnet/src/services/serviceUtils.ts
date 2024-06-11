@@ -5,14 +5,16 @@ import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 import { createJsonClient } from '#infrastructure/http';
 import { createProcessClient } from '#infrastructure/process';
+import {
+  DotNetConfig,
+  DotNetSuggestionProvider,
+  IDotNetServices,
+  NugetOptions
+} from '#providers/dotnet';
 import { DotNetCli } from '../clients/dotnetCli';
 import { NuGetPackageClient } from '../clients/nugetPackageClient';
 import { NuGetResourceClient } from '../clients/nugetResourceClient';
 import { DotNetContributions } from "../definitions/eDotNetContributions";
-import { DotNetConfig } from '../dotnetConfig';
-import { DotNetSuggestionProvider } from '../dotnetSuggestionProvider';
-import { NugetOptions } from "../options/nugetOptions";
-import { IDotNetServices } from "./iDotnetServices";
 
 export function addCachingOptions(services: IServiceCollection) {
   services.addSingleton(

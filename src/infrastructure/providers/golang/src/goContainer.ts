@@ -6,7 +6,7 @@ import {
   addGoClient,
   addGoConfig,
   addSuggestionProvider
-} from './services/serviceUtils';
+} from '#providers/golang';
 
 export async function configureContainer(
   serviceProvider: IServiceProvider,

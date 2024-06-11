@@ -1,11 +1,13 @@
 import { CachingOptions } from '#domain/caching';
 import { IJsonHttpClient } from '#domain/clients';
 import { HttpOptions } from '#domain/http';
-import { GitHubClient } from '../clients/githubClient';
-import { NpmPackageClient } from '../clients/npmPackageClient';
-import { NpmRegistryClient } from '../clients/npmRegistryClient';
-import { NpmConfig } from '../npmConfig';
-import { GitHubOptions } from '../options/githubOptions';
+import {
+  GitHubClient,
+  GitHubOptions,
+  NpmConfig,
+  NpmPackageClient,
+  NpmRegistryClient
+} from '#providers/npm';
 
 export interface INpmServices {
 

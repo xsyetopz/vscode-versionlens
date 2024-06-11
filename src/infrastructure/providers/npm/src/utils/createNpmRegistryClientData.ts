@@ -1,6 +1,5 @@
+import { TNpmCliConfigParams, getDotEnv } from '#providers/npm';
 import NpmCliConfig from '@npmcli/config';
-import { TNpmCliConfigParams } from '../definitions/tNpmCliConfigParams';
-import { getDotEnv } from './fileUtils';
 
 export async function createNpmRegistryClientData(
   packagePath: string,

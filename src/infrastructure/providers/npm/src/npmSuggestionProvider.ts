@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from '#domain/logging';
 import {
   PackageDependency, PackageDescriptorType,
@@ -13,15 +12,18 @@ import {
 } from '#domain/packages';
 import { ISuggestionProvider } from '#domain/providers';
 import { KeyDictionary } from '#domain/utils';
+import {
+  NpmConfig,
+  NpmPackageClient,
+  TNpmCliConfigParams,
+  createNpmRegistryClientData,
+  customDescriptorHandler,
+  npmReplaceVersion,
+  resolveDotFilePath
+} from '#providers/npm';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 import { homedir } from 'node:os';
 import { resolve } from 'node:path';
-import { NpmPackageClient } from './clients/npmPackageClient';
-import { TNpmCliConfigParams } from './definitions/tNpmCliConfigParams';
-import { NpmConfig } from './npmConfig';
-import { customDescriptorHandler } from './parser/customDescriptorHandler';
-import { createNpmRegistryClientData } from './utils/createNpmRegistryClientData';
-import { resolveDotFilePath } from './utils/fileUtils';
-import { npmReplaceVersion } from './utils/replaceUtils';
 
 const complexTypeHandlers: KeyDictionary<TJsonPackageTypeHandler> = {
   [PackageDescriptorType.version]: createVersionDescFromJsonNode

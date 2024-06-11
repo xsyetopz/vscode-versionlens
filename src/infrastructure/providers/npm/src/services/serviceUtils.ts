@@ -4,15 +4,17 @@ import { HttpOptions } from '#domain/http';
 import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 import { createJsonClient } from '#infrastructure/http';
+import {
+  GitHubClient,
+  GitHubOptions,
+  INpmServices,
+  NpmConfig,
+  NpmContributions,
+  NpmPackageClient,
+  NpmRegistryClient,
+  NpmSuggestionProvider
+} from '#providers/npm';
 import NpmRegistryFetch from 'npm-registry-fetch';
-import { GitHubClient } from '../clients/githubClient';
-import { NpmPackageClient } from '../clients/npmPackageClient';
-import { NpmRegistryClient } from '../clients/npmRegistryClient';
-import { NpmContributions } from '../definitions/eNpmContributions';
-import { NpmConfig } from '../npmConfig';
-import { NpmSuggestionProvider } from "../npmSuggestionProvider";
-import { GitHubOptions } from '../options/githubOptions';
-import { INpmServices } from './iNpmServices';
 
 export function addCachingOptions(services: IServiceCollection) {
   services.addSingleton(

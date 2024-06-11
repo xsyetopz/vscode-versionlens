@@ -1,10 +1,10 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ICachingOptions } from '#domain/caching';
 import { IFrozenOptions } from '#domain/configuration';
 import { IHttpOptions } from '#domain/http';
 import { IProviderConfig, TProviderFileMatcher } from '#domain/providers';
 import { nameOf } from '#domain/utils';
-import { PypiContributions } from './definitions/ePypiContributions';
+import { PypiContributions } from '#providers/pypi';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 
 const ctorParam = nameOf<PypiConfig>();
 

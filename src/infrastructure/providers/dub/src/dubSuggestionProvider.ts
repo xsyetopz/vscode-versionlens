@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from '#domain/logging';
 import {
   PackageDependency,
@@ -15,8 +14,8 @@ import {
 } from '#domain/packages';
 import { ISuggestionProvider } from '#domain/providers';
 import { KeyDictionary } from '#domain/utils';
-import { DubClient } from './dubClient';
-import { DubConfig } from './dubConfig';
+import { DubClient, DubConfig } from '#providers/dub';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 
 const complexTypeHandlers: KeyDictionary<TJsonPackageTypeHandler> = {
   [PackageDescriptorType.version]: createVersionDescFromJsonNode,

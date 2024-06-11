@@ -42,6 +42,9 @@
       "presentation.extension": [
         "./src/presentation.extension/index"
       ],
+      "#providers/*": [
+        "./src/infrastructure/providers/*/src/index"
+      ],
       "#extension": [
         "./src/presentation.extension/index"
       ]

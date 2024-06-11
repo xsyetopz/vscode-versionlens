@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { UrlUtils } from '#domain/clients';
 import { ILogger } from '#domain/logging';
 import {
@@ -10,13 +9,16 @@ import {
   createPackageResource
 } from '#domain/packages';
 import { ISuggestionProvider } from '#domain/providers';
-import { DotNetCli } from './clients/dotnetCli';
-import { NuGetPackageClient } from './clients/nugetPackageClient';
-import { NuGetResourceClient } from './clients/nugetResourceClient';
-import { NuGetClientData } from './definitions/nuget';
-import { DotNetConfig } from './dotnetConfig';
-import { parseDotNetPackagesXml } from './parser/dotnetParser';
-import { dotnetReplaceVersion } from './utils/dotnetReplaceVersion';
+import {
+  DotNetCli,
+  DotNetConfig,
+  NuGetClientData,
+  NuGetPackageClient,
+  NuGetResourceClient,
+  dotnetReplaceVersion,
+  parseDotNetPackagesXml
+} from '#providers/dotnet';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class DotNetSuggestionProvider implements ISuggestionProvider {
 

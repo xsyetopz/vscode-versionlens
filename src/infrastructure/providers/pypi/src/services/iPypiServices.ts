@@ -1,8 +1,7 @@
 import { CachingOptions } from '#domain/caching';
 import { IHttpClient } from '#domain/clients';
 import { HttpOptions } from '#domain/http';
-import { PypiClient } from "../pypiClient";
-import { PypiConfig } from "../pypiConfig";
+import { PypiClient, PypiConfig } from '#providers/pypi';
 
 export interface IPypiService {
 

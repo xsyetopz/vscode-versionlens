@@ -4,11 +4,13 @@ import { HttpOptions } from '#domain/http';
 import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 import { createJsonClient } from '#infrastructure/http';
-import { PubContributions } from "../definitions/ePubContributions";
-import { PubClient } from "../pubClient";
-import { PubConfig } from "../pubConfig";
-import { PubSuggestionProvider } from "../pubSuggestionProvider";
-import { IPubServices } from "./iPubServices";
+import {
+  IPubServices,
+  PubClient,
+  PubConfig,
+  PubContributions,
+  PubSuggestionProvider
+} from '#providers/pub';
 
 export function addCachingOptions(services: IServiceCollection) {
   services.addSingleton(

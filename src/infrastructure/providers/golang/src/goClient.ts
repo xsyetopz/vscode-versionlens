@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import {
   HttpClientRequestMethods,
   HttpClientResponse,
@@ -19,8 +18,9 @@ import {
   VersionUtils,
   createSuggestions
 } from '#domain/packages';
+import { GoConfig } from '#providers/golang';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 import semver from 'semver';
-import { GoConfig } from './goConfig';
 export class GoClient implements IPackageClient<null> {
 
   constructor(

@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { parseVersionSpec } from 'infrastructure/providers/dotnet';
+import { parseVersionSpec } from '#providers/dotnet';
 import { test } from 'mocha-ui-esm';
 
 type TestContext = {

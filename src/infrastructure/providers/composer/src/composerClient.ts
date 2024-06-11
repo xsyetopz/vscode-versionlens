@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import {
   HttpClientRequestMethods,
   HttpClientResponse,
@@ -16,8 +15,8 @@ import {
   VersionUtils,
   createSuggestions
 } from '#domain/packages';
-import { ComposerConfig } from './composerConfig';
-import { IPackagistApiItem } from './definitions/iPackagistApiItem';
+import { ComposerConfig, IPackagistApiItem } from '#providers/composer';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class ComposerClient implements IPackageClient<null> {
 

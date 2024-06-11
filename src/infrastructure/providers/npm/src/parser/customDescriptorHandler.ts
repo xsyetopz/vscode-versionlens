@@ -1,6 +1,6 @@
 import { createProjectVersionDesc } from '#domain/packages';
+import { createPackageManagerDesc } from '#providers/npm';
 import * as JsonC from 'jsonc-parser';
-import { createPackageManagerDesc } from './npmPackageTypeFactory';
 
 export function customDescriptorHandler(path: string, node: JsonC.Node) {
   if (node.type !== 'string') return;

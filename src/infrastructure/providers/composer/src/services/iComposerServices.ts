@@ -1,8 +1,7 @@
 import { CachingOptions } from '#domain/caching';
 import { IJsonHttpClient } from '#domain/clients';
 import { HttpOptions } from '#domain/http';
-import { ComposerClient } from "../composerClient";
-import { ComposerConfig } from "../composerConfig";
+import { ComposerClient, ComposerConfig } from "#providers/composer";
 
 export interface IComposerService {
 

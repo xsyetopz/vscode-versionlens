@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ClientResponseSource, UrlUtils } from '#domain/clients';
 import { ILogger } from '#domain/logging';
 import {
@@ -10,11 +9,15 @@ import {
   VersionUtils,
   createSuggestions
 } from '#domain/packages';
+import {
+  INpmRegistry,
+  NpaSpec,
+  NpaTypes,
+  NpmConfig,
+  TNpmRegistryClientResponse
+} from '#providers/npm';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 import semver from 'semver';
-import { INpmRegistry } from '../definitions/iNpmRegistry.js';
-import { TNpmRegistryClientResponse } from '../definitions/tNpmRegistryClientResponse';
-import { NpaSpec, NpaTypes } from '../models/npaSpec';
-import { NpmConfig } from '../npmConfig';
 
 export class NpmRegistryClient {
 

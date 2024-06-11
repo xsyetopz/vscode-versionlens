@@ -15,7 +15,7 @@ import {
   GitHubOptions,
   NpaSpec,
   NpmConfig
-} from 'infrastructure/providers/npm';
+} from '#providers/npm';
 import npa from 'npm-package-arg';
 import { LoggerStub } from 'test/unit/domain/logging/index.test';
 import { anything, capture, instance, mock, when } from 'ts-mockito';

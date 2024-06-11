@@ -16,8 +16,9 @@ import {
   INpmRegistry,
   NpaSpec,
   NpmConfig,
-  NpmRegistryClient
-} from 'infrastructure/providers/npm';
+  NpmRegistryClient,
+  TNpmClientData
+} from '#providers/npm';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
 import { homedir } from 'node:os';
@@ -25,7 +26,6 @@ import { resolve } from 'node:path';
 import npa from 'npm-package-arg';
 import { LoggerStub } from 'test/unit/domain/logging';
 import { anything, instance, mock, when } from 'ts-mockito';
-import { TNpmClientData } from '../../src/definitions/tNpmClientData';
 import Fixtures from './npmRegistryClient.fixtures';
 
 let cachingOptsMock: ICachingOptions;

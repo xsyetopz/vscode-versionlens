@@ -1,7 +1,6 @@
 import { PackageVersionType, VersionUtils } from '#domain/packages';
+import { DotNetVersionSpec, NugetVersionSpec } from '#providers/dotnet';
 import semver from 'semver';
-import { DotNetVersionSpec } from "../definitions/dotnet";
-import { NugetVersionSpec } from "../definitions/nuget";
 
 export function parseVersionSpec(rawVersion: string): DotNetVersionSpec {
   const spec = buildVersionSpec(rawVersion);

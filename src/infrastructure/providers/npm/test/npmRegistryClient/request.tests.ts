@@ -9,7 +9,7 @@ import {
   NpaSpec,
   NpmConfig,
   NpmRegistryClient
-} from 'infrastructure/providers/npm';
+} from '#providers/npm';
 import { test } from 'mocha-ui-esm';
 import npa from 'npm-package-arg';
 import { LoggerStub } from 'test/unit/domain/logging';

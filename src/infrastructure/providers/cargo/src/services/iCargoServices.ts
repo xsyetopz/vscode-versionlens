@@ -1,8 +1,7 @@
 import { CachingOptions } from '#domain/caching';
 import { IJsonHttpClient } from '#domain/clients';
 import { HttpOptions } from '#domain/http';
-import { CargoConfig } from "../cargoConfig";
-import { CratesClient } from "../cratesClient";
+import { CargoConfig, CratesClient } from "#providers/cargo";
 
 export interface ICargoService {
 

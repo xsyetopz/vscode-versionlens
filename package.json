@@ -6,6 +6,7 @@
   "imports": {
     "#domain/*": "./out/src/domain/*/index.js",
     "#infrastructure/*": "./out/src/infrastructure/*/index.js",
+    "#providers/*": "./out/src/infrastructure/providers/src/*/index.js",
     "#extension": "./out/src/presentation.extension/index.js"
   },
   "description": "Shows the latest version for each package using code lens",

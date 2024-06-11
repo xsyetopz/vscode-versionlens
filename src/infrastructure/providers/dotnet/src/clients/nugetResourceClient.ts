@@ -1,12 +1,11 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import {
   HttpClientRequestMethods,
   HttpClientResponse,
   IJsonHttpClient
 } from '#domain/clients';
 import { ILogger } from '#domain/logging';
-import { DotNetSource } from '../definitions/dotnet';
-import { NugetServiceIndexResponse } from '../definitions/nuget';
+import { DotNetSource, NugetServiceIndexResponse } from '#providers/dotnet';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class NuGetResourceClient {
 

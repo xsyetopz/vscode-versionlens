@@ -6,7 +6,7 @@ import {
   NpmConfig,
   NpmPackageClient,
   NpmSuggestionProvider
-} from 'infrastructure/providers/npm';
+} from '#providers/npm';
 import { test } from 'mocha-ui-esm';
 import { homedir } from 'node:os';
 import path, { resolve } from 'node:path';

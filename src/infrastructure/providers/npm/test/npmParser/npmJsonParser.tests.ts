@@ -7,9 +7,9 @@ import {
   TJsonPackageTypeHandler
 } from '#domain/packages';
 import { KeyDictionary } from '#domain/utils';
+import { customDescriptorHandler } from '#providers/npm';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
-import { customDescriptorHandler } from '../../src/parser/customDescriptorHandler';
 import Fixtures from './npmJsonParser.fixtures';
 
 const complexTypeHandlers: KeyDictionary<TJsonPackageTypeHandler> = {

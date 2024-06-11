@@ -1,4 +1,3 @@
-import assert from 'node:assert';
 import { CachingOptions, ICachingOptions } from '#domain/caching';
 import { ClientResponseSource, IProcessClient, UrlUtils } from '#domain/clients';
 import { HttpOptions, IHttpOptions } from '#domain/http';
@@ -8,7 +7,8 @@ import {
   DotNetConfig,
   INugetOptions,
   NugetOptions
-} from 'infrastructure/providers/dotnet';
+} from '#providers/dotnet';
+import assert from 'node:assert';
 import { LoggerStub } from 'test/unit/domain/logging';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import Fixtures from './fixtures/dotnetSources';

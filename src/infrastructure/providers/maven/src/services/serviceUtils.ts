@@ -5,12 +5,14 @@ import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 import { createHttpClient } from '#infrastructure/http';
 import { createProcessClient } from '#infrastructure/process';
-import { MavenClient } from '../clients/mavenClient';
-import { MvnCli } from '../clients/mvnCli';
-import { MavenContributions } from '../definitions/eMavenContributions';
-import { MavenConfig } from '../mavenConfig';
-import { MavenSuggestionProvider } from '../mavenSuggestionProvider';
-import { IMavenServices } from "./iMavenServices";
+import { 
+  IMavenServices, 
+  MavenClient, 
+  MavenConfig, 
+  MavenContributions, 
+  MavenSuggestionProvider, 
+  MvnCli 
+} from '#providers/maven';
 
 export function addCachingOptions(services: IServiceCollection) {
   services.addSingleton(

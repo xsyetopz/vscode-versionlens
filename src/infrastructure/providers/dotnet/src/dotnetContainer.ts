@@ -5,12 +5,12 @@ import {
   addDotNetConfig,
   addHttpOptions,
   addJsonClient,
-  addNugetOptions,
   addNuGetPackageClient,
   addNuGetResourceClient,
+  addNugetOptions,
   addProcessClient,
   addSuggestionProvider
-} from './services/serviceUtils';
+} from '#providers/dotnet';
 
 export async function configureContainer(
   serviceProvider: IServiceProvider,

@@ -1,5 +1,5 @@
 import { fileExists } from '#domain/utils';
-import { resolveDotFilePath } from 'infrastructure/providers/npm';
+import { resolveDotFilePath } from '#providers/npm';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
 import path from 'node:path';

@@ -2,7 +2,7 @@ import {
   extractReposUrlsFromXml,
   getVersionsFromPackageXml,
   parseMavenPackagesXml
-} from 'infrastructure/providers/maven';
+} from '#providers/maven';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
 import Fixtures from './parseMavenPackagesXml.fixtures';

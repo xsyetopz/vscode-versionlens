@@ -17,9 +17,9 @@ import {
   parsePackagesYaml
 } from '#domain/packages';
 import { ISuggestionProvider } from '#domain/providers';
-import { PubClient } from './pubClient';
-import { PubConfig } from './pubConfig';
-import { pubReplaceVersion } from './pubUtils';
+import { PubClient } from '#providers/pub';
+import { PubConfig } from '#providers/pub';
+import { pubReplaceVersion } from '#providers/pub';
 
 const complexTypeHandlers = {
   [PackageDescriptorType.version]: createVersionDescFromYamlNode,

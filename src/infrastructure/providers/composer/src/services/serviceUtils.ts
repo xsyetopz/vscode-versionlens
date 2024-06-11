@@ -4,11 +4,13 @@ import { HttpOptions } from '#domain/http';
 import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 import { createJsonClient } from '#infrastructure/http';
-import { ComposerClient } from "../composerClient";
-import { ComposerConfig } from "../composerConfig";
-import { ComposerSuggestionProvider } from "../composerSuggestionProvider";
-import { ComposerContributions } from "../definitions/eComposerContributions";
-import { IComposerService } from "./iComposerServices";
+import {
+  ComposerClient,
+  ComposerConfig,
+  ComposerContributions,
+  ComposerSuggestionProvider,
+  IComposerService
+} from '#providers/composer';
 
 export function addCachingOptions(services: IServiceCollection) {
   services.addSingleton(

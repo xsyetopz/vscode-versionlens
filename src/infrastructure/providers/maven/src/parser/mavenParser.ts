@@ -4,7 +4,7 @@ import {
   XmlNode,
   createProjectVersionDescFromXmlElem
 } from '#domain/packages';
-import { createNameDescFromXmlNodes, createVersionDescFromXmlNodes } from "./mavenParserTypeFactory";
+import { createNameDescFromXmlNodes, createVersionDescFromXmlNodes } from '#providers/maven';
 
 export function parseMavenPackagesXml(
   xml: string,

@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { HttpClientRequestMethods, HttpClientResponse, IJsonHttpClient } from '#domain/clients';
 import { ILogger } from '#domain/logging';
 import {
@@ -16,8 +15,9 @@ import {
   VersionUtils,
   createSuggestions
 } from '#domain/packages';
+import { PubConfig } from '#providers/pub';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 import semver from 'semver';
-import { PubConfig } from './pubConfig';
 
 export class PubClient implements IPackageClient<null> {
 

@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import {
   HttpClientRequestMethods,
   HttpClientResponse,
@@ -16,9 +15,8 @@ import {
   VersionUtils,
   createSuggestions
 } from '#domain/packages';
-import { MavenClientData } from '../definitions/mavenClientData';
-import { MavenConfig } from '../mavenConfig';
-import { getVersionsFromPackageXml } from '../parser/mavenXmlUtils';
+import { MavenClientData, MavenConfig, getVersionsFromPackageXml } from '#providers/maven';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class MavenClient implements IPackageClient<MavenClientData> {
 

@@ -1,8 +1,7 @@
 import { CachingOptions } from '#domain/caching';
 import { JsonHttpClient } from '#domain/clients';
 import { HttpOptions } from '#domain/http';
-import { PubClient } from "../pubClient";
-import { PubConfig } from "../pubConfig";
+import { PubClient, PubConfig } from '#providers/pub';
 
 export interface IPubServices {
 

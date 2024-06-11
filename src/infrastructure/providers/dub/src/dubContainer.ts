@@ -6,7 +6,7 @@ import {
   addHttpOptions,
   addJsonClient,
   addSuggestionProvider
-} from './services/serviceUtils';
+} from '#providers/dub';
 
 export async function configureContainer(
   serviceProvider: IServiceProvider,

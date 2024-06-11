@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import {
   HttpClientRequestMethods,
   HttpClientResponse,
@@ -20,8 +19,10 @@ import {
   XmlDoc,
   createSuggestions
 } from '#domain/packages';
+import { PypiConfig } from '#providers/pypi';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 import semver from 'semver';
-import { PypiConfig } from './pypiConfig';
+
 export class PypiClient implements IPackageClient<null> {
 
   constructor(

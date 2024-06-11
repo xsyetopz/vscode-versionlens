@@ -4,11 +4,13 @@ import { HttpOptions } from '#domain/http';
 import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 import { createJsonClient } from '#infrastructure/http';
-import { DubContributions } from "../definitions/eDubContributions";
-import { DubClient } from "../dubClient";
-import { DubConfig } from "../dubConfig";
-import { DubSuggestionProvider } from "../dubSuggestionProvider";
-import { IDubServices } from "./iDubServices";
+import {
+  DubClient,
+  DubConfig,
+  DubContributions,
+  DubSuggestionProvider,
+  IDubServices
+} from '#providers/dub';
 
 export function addCachingOptions(services: IServiceCollection) {
   services.addSingleton(

@@ -6,7 +6,7 @@ import {
   addHttpOptions,
   addJsonClient,
   addSuggestionProvider
-} from './services/serviceUtils';
+} from '#providers/composer';
 
 export async function configureContainer(
   serviceProvider: IServiceProvider,

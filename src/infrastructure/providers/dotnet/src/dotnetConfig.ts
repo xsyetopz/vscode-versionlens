@@ -4,8 +4,8 @@ import { IFrozenOptions } from '#domain/configuration';
 import { IHttpOptions } from '#domain/http';
 import { IProviderConfig, TProviderFileMatcher } from '#domain/providers';
 import { nameOf } from '#domain/utils';
-import { DotNetContributions } from './definitions/eDotNetContributions';
-import { INugetOptions } from "./definitions/iNugetOptions";
+import { DotNetContributions } from '#providers/dotnet';
+import { INugetOptions } from '#providers/dotnet';
 
 const ctorParam = nameOf<DotNetConfig>();
 

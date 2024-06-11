@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import {
   HttpClientRequestMethods,
   HttpClientResponse,
@@ -19,8 +18,8 @@ import {
   VersionUtils,
   createSuggestions
 } from '#domain/packages';
-import { CargoConfig } from './cargoConfig';
-import { ICratesApiItem } from './definitions/iCratesApiItem';
+import { CargoConfig, ICratesApiItem } from '#providers/cargo';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class CratesClient implements IPackageClient<null> {
 

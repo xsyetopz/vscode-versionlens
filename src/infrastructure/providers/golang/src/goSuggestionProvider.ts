@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from '#domain/logging';
 import {
   PackageDependency, PackageDescriptorType,
@@ -9,9 +8,8 @@ import {
   parsePackagesGoMod
 } from '#domain/packages';
 import { ISuggestionProvider } from '#domain/providers';
-import { GoClient } from './goClient';
-import { GoConfig } from './goConfig';
-import { goReplaceVersion } from './goReplaceVersion';
+import { GoClient, GoConfig, goReplaceVersion } from '#providers/golang';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class GoSuggestionProvider implements ISuggestionProvider {
 

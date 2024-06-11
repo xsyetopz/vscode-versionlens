@@ -1,4 +1,4 @@
-import { MavenRepository } from './mavenRepository'
+import { MavenRepository } from '#providers/maven'
 
 export type MavenClientData = {
   repositories: Array<MavenRepository>

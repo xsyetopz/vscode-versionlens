@@ -4,11 +4,13 @@ import { HttpOptions } from '#domain/http';
 import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 import { createHttpClient } from '#infrastructure/http';
-import { PypiContributions } from "../definitions/ePypiContributions";
-import { PypiClient } from "../pypiClient";
-import { PypiConfig } from "../pypiConfig";
-import { PypiSuggestionProvider } from "../pypiSuggestionProvider";
-import { IPypiService } from "./iPypiServices";
+import {
+  IPypiService,
+  PypiClient,
+  PypiConfig,
+  PypiContributions,
+  PypiSuggestionProvider
+} from '#providers/pypi';
 
 export function addCachingOptions(services: IServiceCollection) {
   services.addSingleton(

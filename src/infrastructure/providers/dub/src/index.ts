@@ -1,4 +1,7 @@
+export * from './definitions/eDubContributions'
 export * from './dubClient'
 export * from './dubConfig'
 export * from './dubContainer'
 export * from './dubSuggestionProvider'
+export * from './services/iDubServices'
+export * from './services/serviceUtils'

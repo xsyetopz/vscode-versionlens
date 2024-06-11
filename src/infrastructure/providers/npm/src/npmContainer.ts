@@ -9,7 +9,7 @@ import {
   addNpmPackageClient,
   addNpmRegistryClient,
   addSuggestionProvider
-} from './services/serviceUtils';
+} from '#providers/npm';
 
 export async function configureContainer(
   serviceProvider: IServiceProvider,

@@ -4,11 +4,13 @@ import { HttpOptions } from '#domain/http';
 import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 import { createHttpClient } from '#infrastructure/http';
-import { GoContributions } from "../definitions/eGoContributions";
-import { GoClient } from "../goClient";
-import { GoConfig } from "../goConfig";
-import { GoSuggestionProvider } from "../goSuggestionProvider";
-import { IGoService } from "./iGoServices";
+import {
+  GoClient,
+  GoConfig,
+  GoContributions,
+  GoSuggestionProvider,
+  IGoService
+} from '#providers/golang';
 
 export function addCachingOptions(services: IServiceCollection) {
   services.addSingleton(

@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { UrlUtils } from '#domain/clients';
 import { ILogger } from '#domain/logging';
 import {
@@ -9,11 +8,14 @@ import {
   TPackageVersionDescriptor
 } from '#domain/packages';
 import { ISuggestionProvider } from '#domain/providers';
-import { MavenClient } from './clients/mavenClient';
-import { MvnCli } from './clients/mvnCli';
-import { MavenClientData } from './definitions/mavenClientData';
-import { MavenConfig } from './mavenConfig';
-import { parseMavenPackagesXml } from './parser/mavenParser';
+import {
+  MavenClient,
+  MavenClientData,
+  MavenConfig,
+  MvnCli,
+  parseMavenPackagesXml
+} from '#providers/maven';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class MavenSuggestionProvider implements ISuggestionProvider {
 

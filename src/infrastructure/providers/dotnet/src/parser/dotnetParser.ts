@@ -8,7 +8,7 @@ import {
   createNameDescFromXmlAttr,
   createSdkNameDescFromXmlAttr,
   createVersionDescFromXmlAttr
-} from './dotnetParserTypeFactory';
+} from '#providers/dotnet';
 
 export function parseDotNetPackagesXml(
   xml: string,

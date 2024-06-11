@@ -6,7 +6,7 @@ import {
   addPypiClient,
   addPypiConfig,
   addSuggestionProvider
-} from './services/serviceUtils';
+} from '#providers/pypi';
 
 export async function configureContainer(
   serviceProvider: IServiceProvider,

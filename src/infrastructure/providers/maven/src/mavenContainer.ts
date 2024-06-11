@@ -8,7 +8,7 @@ import {
   addMavenConfig,
   addProcessClient,
   addSuggestionProvider
-} from './services/serviceUtils';
+} from '#providers/maven';
 
 export async function configureContainer(
   serviceProvider: IServiceProvider,

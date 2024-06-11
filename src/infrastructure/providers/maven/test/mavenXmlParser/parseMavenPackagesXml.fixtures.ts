@@ -1,4 +1,10 @@
-import { PackageDescriptor, createDependencyRange, createPackageNameDesc, createPackageVersionDesc, createProjectVersionTypeDesc } from '#domain/packages';
+import {
+  PackageDescriptor,
+  createDependencyRange,
+  createPackageNameDesc,
+  createPackageVersionDesc,
+  createProjectVersionTypeDesc
+} from '#domain/packages';
 
 export default {
 

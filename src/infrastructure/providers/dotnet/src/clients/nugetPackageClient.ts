@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import {
   HttpClientRequestMethods,
   HttpClientResponse,
@@ -17,9 +16,8 @@ import {
   VersionUtils,
   createSuggestions
 } from '#domain/packages';
-import { NuGetClientData } from '../definitions/nuget';
-import { DotNetConfig } from '../dotnetConfig';
-import { parseVersionSpec } from '../utils/parseVersionSpec';
+import { DotNetConfig, NuGetClientData, parseVersionSpec } from '#providers/dotnet';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class NuGetPackageClient implements IPackageClient<NuGetClientData> {
 

@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from '#domain/logging';
 import {
   PackageDependency,
@@ -12,8 +11,8 @@ import {
   parsePackagesToml
 } from '#domain/packages';
 import { ISuggestionProvider } from '#domain/providers';
-import { CargoConfig } from './cargoConfig';
-import { CratesClient } from './cratesClient';
+import { CargoConfig, CratesClient } from '#providers/cargo';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class CargoSuggestionProvider implements ISuggestionProvider {
 

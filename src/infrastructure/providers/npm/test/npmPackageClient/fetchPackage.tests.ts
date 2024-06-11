@@ -16,7 +16,7 @@ import {
   NpmConfig,
   NpmPackageClient,
   NpmRegistryClient
-} from 'infrastructure/providers/npm';
+} from '#providers/npm';
 import assert from 'node:assert';
 import { LoggerStub } from 'test/unit/domain/logging';
 import { fileDir } from 'test/unit/utils';

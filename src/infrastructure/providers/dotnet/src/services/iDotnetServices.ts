@@ -3,11 +3,11 @@ import { IJsonHttpClient, IProcessClient } from '#domain/clients';
 import { HttpOptions } from '#domain/http';
 import {
   DotNetCli,
+  DotNetConfig,
   NuGetPackageClient,
   NuGetResourceClient,
   NugetOptions
-} from "..";
-import { DotNetConfig } from "../dotnetConfig";
+} from '#providers/dotnet';
 
 export interface IDotNetServices {
 

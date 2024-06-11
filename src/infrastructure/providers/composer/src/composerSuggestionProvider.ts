@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from '#domain/logging';
 import {
   PackageDependency, PackageDescriptorType,
@@ -12,9 +11,12 @@ import {
 } from '#domain/packages';
 import { ISuggestionProvider } from '#domain/providers';
 import { KeyDictionary } from '#domain/utils';
-import { ComposerClient } from './composerClient';
-import { ComposerConfig } from './composerConfig';
-import { customDescriptorHandler } from './parser/customDescriptorHandler';
+import {
+  ComposerClient,
+  ComposerConfig,
+  customDescriptorHandler
+} from '#providers/composer';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 
 const complexTypeHandlers: KeyDictionary<TJsonPackageTypeHandler> = {
   [PackageDescriptorType.version]: createVersionDescFromJsonNode

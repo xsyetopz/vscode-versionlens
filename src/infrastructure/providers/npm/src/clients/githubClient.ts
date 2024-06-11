@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { HttpClientRequestMethods, IJsonHttpClient } from '#domain/clients';
 import { ILogger } from '#domain/logging';
 import {
@@ -11,9 +10,9 @@ import {
   VersionUtils,
   createSuggestions
 } from '#domain/packages';
+import { NpaSpec, NpmConfig } from '#providers/npm';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 import semver from 'semver';
-import { NpaSpec } from '../models/npaSpec';
-import { NpmConfig } from '../npmConfig';
 
 const defaultHeaders = {
   accept: 'application\/vnd.github.v3+json'
