@@ -1,6 +1,6 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { IProcessClient, UrlUtils } from '#domain/clients';
-import { ILogger } from 'domain/logging';
+import { ILogger } from '#domain/logging';
 import { MavenRepository } from '../definitions/mavenRepository';
 import { MavenConfig } from '../mavenConfig';
 import { extractReposUrlsFromXml } from '../parser/mavenXmlUtils';

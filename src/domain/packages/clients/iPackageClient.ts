@@ -1,4 +1,4 @@
-import { ILogger } from 'domain/logging';
+import { ILogger } from '#domain/logging';
 import { IProviderConfig } from 'domain/providers';
 import { TPackageClientRequest } from "./tPackageClientRequest";
 import { TPackageClientResponse } from "./tPackageClientResponse";

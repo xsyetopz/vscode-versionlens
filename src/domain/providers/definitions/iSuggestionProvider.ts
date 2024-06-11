@@ -1,4 +1,4 @@
-import { ILogger } from 'domain/logging';
+import { ILogger } from '#domain/logging';
 import { IPackageClient, PackageDependency, TSuggestionReplaceFunction } from 'domain/packages';
 import { IProviderConfig } from 'domain/providers';
 

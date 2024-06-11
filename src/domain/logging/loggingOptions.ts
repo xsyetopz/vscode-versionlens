@@ -1,5 +1,5 @@
-import { LogLevelTypes, ILoggingOptions } from '.';
 import { IFrozenOptions, Options } from '#domain/configuration';
+import { ILoggingOptions, LogLevelTypes } from '#domain/logging';
 
 export enum LoggingContributions {
   LoggingLevel = 'level',

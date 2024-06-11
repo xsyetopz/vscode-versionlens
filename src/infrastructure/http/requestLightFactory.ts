@@ -4,7 +4,7 @@ import {
   IJsonHttpClient,
   JsonHttpClient
 } from '#domain/clients';
-import { ILogger } from "domain/logging";
+import { ILogger } from '#domain/logging';
 import * as RequireLight from 'request-light';
 import { RequestLightClient } from "./requestLightClient";
 

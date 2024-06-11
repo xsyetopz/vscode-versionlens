@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { ILogger } from 'domain/logging';
+import { ILogger } from '#domain/logging';
 import { fileExists } from 'domain/utils';
 import {
   GitHubOptions,

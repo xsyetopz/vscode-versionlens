@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { ILogger } from 'domain/logging';
+import { ILogger } from '#domain/logging';
 import { IProviderConfig, ISuggestionProvider } from 'domain/providers';
 import { GetSuggestionProvider } from 'domain/useCases';
 import { test } from 'mocha-ui-esm';

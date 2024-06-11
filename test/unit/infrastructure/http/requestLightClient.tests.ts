@@ -9,7 +9,7 @@ import {
 } from '#domain/clients';
 import { KeyStringDictionary } from 'domain/utils';
 import { HttpOptions, IHttpOptions } from '#domain/http';
-import { ILogger } from 'domain/logging';
+import { ILogger } from '#domain/logging';
 import { RequestLightClient } from 'infrastructure/http';
 import { test } from 'mocha-ui-esm';
 import { LoggerStub } from 'test/unit/domain/logging';

@@ -5,7 +5,7 @@ import {
   IJsonHttpClient,
   UrlUtils
 } from '#domain/clients';
-import { ILogger } from 'domain/logging';
+import { ILogger } from '#domain/logging';
 import {
   ClientResponseFactory,
   IPackageClient,

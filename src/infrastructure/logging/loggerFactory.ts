@@ -1,4 +1,4 @@
-import { ILogger, ILoggerChannel } from 'domain/logging';
+import { ILogger, ILoggerChannel } from '#domain/logging';
 import { TransformableInfo } from 'logform';
 import { format, loggers, transports } from 'winston';
 import { loggingLevels } from './logLevels';

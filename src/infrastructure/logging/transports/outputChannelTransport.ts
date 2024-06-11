@@ -1,5 +1,5 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { ILoggerChannel, ILoggingOptions } from 'domain/logging';
+import { ILoggerChannel, ILoggingOptions } from '#domain/logging';
 import { OutputChannel } from 'vscode';
 import * as Winston from 'winston';
 

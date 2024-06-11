@@ -1,4 +1,4 @@
-import { ILogger } from "domain/logging";
+import { ILogger } from '#domain/logging';
 import { Disposable, IDisposable } from "domain/utils";
 import { test } from "mocha-ui-esm";
 import { instance, mock, verify } from "ts-mockito";

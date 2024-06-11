@@ -1,6 +1,6 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { UrlUtils } from '#domain/clients';
-import { ILogger } from 'domain/logging';
+import { ILogger } from '#domain/logging';
 import {
   PackageDependency,
   PackageDescriptorType,

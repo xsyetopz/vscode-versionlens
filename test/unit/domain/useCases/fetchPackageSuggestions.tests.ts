@@ -1,5 +1,5 @@
 import { ClientResponseSource } from '#domain/clients';
-import { ILogger } from 'domain/logging';
+import { ILogger } from '#domain/logging';
 import {
   IPackageClient,
   PackageCache,

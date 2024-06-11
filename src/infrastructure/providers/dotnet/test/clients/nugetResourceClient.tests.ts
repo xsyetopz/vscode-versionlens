@@ -6,7 +6,7 @@ import {
   JsonHttpClient,
   UrlUtils
 } from '#domain/clients';
-import { ILogger } from 'domain/logging';
+import { ILogger } from '#domain/logging';
 import { NuGetResourceClient } from 'infrastructure/providers/dotnet';
 import { LoggerStub } from 'test/unit/domain/logging';
 import { anything, capture, instance, mock, when } from 'ts-mockito';

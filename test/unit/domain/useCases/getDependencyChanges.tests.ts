@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { ILogger } from 'domain/logging';
+import { ILogger } from '#domain/logging';
 import { DependencyCache, PackageDependency } from 'domain/packages';
 import { ISuggestionProvider } from 'domain/providers';
 import { IStorage } from 'domain/storage';

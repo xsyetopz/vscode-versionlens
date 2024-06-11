@@ -1,5 +1,4 @@
-import { LogLevelTypes } from "./eLogLevelTypes";
-import { TChildLoggerOptions } from "./tChildLoggerOptions";
+import { LogLevelTypes, TChildLoggerOptions } from "#domain/logging";
 
 export interface ILogger {
 

@@ -1,5 +1,5 @@
 import { CachingOptions, ICachingOptions } from '#domain/caching';
-import { ILogger } from 'domain/logging';
+import { ILogger } from '#domain/logging';
 import {
   PackageDependency,
   PackageDescriptor,

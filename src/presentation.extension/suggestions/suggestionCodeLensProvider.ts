@@ -1,5 +1,5 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { ILogger } from 'domain/logging';
+import { ILogger } from '#domain/logging';
 import { PackageResponse, defaultReplaceFn } from 'domain/packages';
 import { ISuggestionProvider } from 'domain/providers';
 import { GetSuggestions } from 'domain/useCases';

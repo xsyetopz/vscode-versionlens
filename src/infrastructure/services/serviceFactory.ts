@@ -1,5 +1,5 @@
 import { IServiceCollection, ServiceInjectionMode } from '#domain/di';
-import { ILoggingOptions } from "domain/logging";
+import { ILoggingOptions } from '#domain/logging';
 import { IDomainServices } from "domain/services";
 import { nameOf } from "domain/utils";
 import { OutputChannelTransport, createWinstonLogger } from "infrastructure/logging";

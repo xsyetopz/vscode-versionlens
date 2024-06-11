@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import { CachingOptions, ICachingOptions, MemoryExpiryCache } from '#domain/caching';
 import { ClientResponseSource, ProcessClientResponse } from '#domain/clients';
-import { ILogger } from 'domain/logging';
+import { ILogger } from '#domain/logging';
 import { PromiseSpawnClient } from 'infrastructure/process';
 import { test } from 'mocha-ui-esm';
 import { LoggerStub } from 'test/unit/domain/logging';

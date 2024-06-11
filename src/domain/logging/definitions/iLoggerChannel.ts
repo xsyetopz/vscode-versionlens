@@ -1,4 +1,4 @@
-import { ILoggingOptions } from "./iLoggingOptions";
+import { ILoggingOptions } from "#domain/logging";
 
 export interface ILoggerChannel {
 
