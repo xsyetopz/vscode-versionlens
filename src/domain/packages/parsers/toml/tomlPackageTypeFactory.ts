@@ -1,5 +1,6 @@
 import {
   PackageDescriptor,
+  PackageDescriptorType,
   TPackageGitDescriptor,
   TPackageNameDescriptor,
   TPackagePathDescriptor,
@@ -12,6 +13,14 @@ import {
 } from '#domain/packages';
 import { AST } from 'toml-eslint-parser';
 import { TOMLKeyValue, TOMLTable } from 'toml-eslint-parser/lib/ast';
+
+export function getTomlComplexTypeHandlers() {
+  return {
+    [PackageDescriptorType.version]: createVersionDescFromTomlNode,
+    [PackageDescriptorType.path]: createPathDescFromTomlNode,
+    [PackageDescriptorType.git]: createGitDescFromTomlNode
+  }
+}
 
 export function createNameDescFromTomlNode(keyNode: AST.TOMLKey, isNameFromTable: boolean): TPackageNameDescriptor {
   const nameNode = isNameFromTable

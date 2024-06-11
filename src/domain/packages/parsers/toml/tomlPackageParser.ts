@@ -1,15 +1,12 @@
 import {
   PackageDescriptor,
-  PackageDescriptorType,
   TTomlPackageParserOptions,
   complexHasProperty,
-  createGitDescFromTomlNode,
   createNameDescFromTomlNode,
-  createPathDescFromTomlNode,
   createProjectVersionDescFromTomlNode,
   createVersionDescFromTomlNode,
   matchesTableExpression
-} from "#domain/packages";
+} from '#domain/packages';
 import { AST, parseTOML } from "toml-eslint-parser";
 
 const projectVersionParentKeys = ['project', 'package'];
@@ -61,7 +58,7 @@ function parsePackageNodes(
       // complex or simple
       const isComplexNode = tableRow.value.type === 'TOMLInlineTable';
       const packageDesc = isComplexNode
-        ? parseComplexNode(tableRow, tableRow.value as AST.TOMLInlineTable)
+        ? parseComplexNode(tableRow, tableRow.value as AST.TOMLInlineTable, options)
         : parseSimpleNode(tableRow, isPkgNameInTableName);
 
       // add the package desc to the matched array
@@ -84,26 +81,26 @@ function parseSimpleNode(node: AST.TOMLKeyValue, isNameFromTable: boolean): Pack
   return new PackageDescriptor([nameDesc, versionDesc]);
 }
 
-const complexTypeHandlers = {
-  [PackageDescriptorType.version]: createVersionDescFromTomlNode,
-  [PackageDescriptorType.path]: createPathDescFromTomlNode,
-  [PackageDescriptorType.git]: createGitDescFromTomlNode
-}
-
-function parseComplexNode(nameNode: AST.TOMLKeyValue, valueNode: AST.TOMLInlineTable): PackageDescriptor {
+function parseComplexNode(
+  nameNode: AST.TOMLKeyValue,
+  valueNode: AST.TOMLInlineTable,
+  options: TTomlPackageParserOptions
+): PackageDescriptor {
   const packageDesc = new PackageDescriptor([]);
-  for (const cNode of valueNode.body) {
+  const complexTypeHandlers = options.complexTypeHandlers;
+
+  for (const node of valueNode.body) {
 
     for (const typeName in complexTypeHandlers) {
 
-      const hasType = complexHasProperty(cNode, typeName);
+      const hasType = complexHasProperty(node, typeName);
       if (hasType === false) continue;
 
       // get the type desc
       const handler = complexTypeHandlers[typeName];
 
       // process the type
-      const typeDesc = handler(cNode.value as AST.TOMLValue);
+      const typeDesc = handler(node.value as AST.TOMLValue);
 
       // add the handled type to the package desc
       packageDesc.addType(typeDesc);

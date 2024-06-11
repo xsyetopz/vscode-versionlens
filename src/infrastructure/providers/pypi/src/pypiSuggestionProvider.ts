@@ -8,6 +8,7 @@ import {
   TPackageVersionDescriptor,
   TTomlPackageParserOptions,
   createPackageResource,
+  getTomlComplexTypeHandlers,
   parsePackagesToml
 } from '#domain/packages';
 import { ISuggestionProvider } from '#domain/providers';
@@ -31,7 +32,8 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
   parseDependencies(packagePath: string, packageText: string): Array<PackageDependency> {
 
     const options: TTomlPackageParserOptions = {
-      includePropNames: this.config.dependencyProperties
+      includePropNames: this.config.dependencyProperties,
+      complexTypeHandlers: getTomlComplexTypeHandlers()
     };
 
     const parsedPackages = parsePackagesToml(packageText, options);

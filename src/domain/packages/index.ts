@@ -27,7 +27,6 @@ export * from './parsers/json/tJsonPackageParserOptions';
 export * from './parsers/packageDescriptor';
 export * from './parsers/packageDescriptorTypeUtils';
 export * from './parsers/toml/tTomlPackageParserOptions';
-export * from './parsers/toml/tTomlPackageTypeHandler';
 export * from './parsers/toml/tomlPackageParser';
 export * from './parsers/toml/tomlPackageTypeFactory';
 export * from './parsers/toml/tomlParserUtils';
