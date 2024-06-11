@@ -4,7 +4,7 @@ import {
   addWinstonChannelLogger,
   addWinstonLogger,
   addWorkspaceAdapter
-} from ".";
+} from "#infrastructure/services";
 
 export function addInfrastructureServices(services: IServiceCollection, defaultLogGroup: string) {
 

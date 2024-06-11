@@ -1,10 +1,4 @@
 import {
-  asFunction,
-  asValue,
-  AwilixContainer,
-  createContainer
-} from 'awilix';
-import {
   IServiceCollection,
   IServiceProvider,
   ServiceInjectionMode,
@@ -13,8 +7,13 @@ import {
 } from '#domain/di';
 import { IDomainServices } from '#domain/services';
 import { AsyncFunction, IDisposable, KeyDictionary, nameOf } from '#domain/utils';
-import { AwilixServiceProvider } from './awilixServiceProvider';
-import { registerAsyncSingletons } from './awillixUtils';
+import { AwilixServiceProvider, registerAsyncSingletons } from '#infrastructure/di';
+import {
+  asFunction,
+  asValue,
+  AwilixContainer,
+  createContainer
+} from 'awilix';
 
 export class AwilixServiceCollection implements IServiceCollection {
 

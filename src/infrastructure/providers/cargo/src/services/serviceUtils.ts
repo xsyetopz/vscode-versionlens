@@ -3,7 +3,7 @@ import { IServiceCollection } from '#domain/di';
 import { HttpOptions } from '#domain/http';
 import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
-import { createJsonClient } from "infrastructure/http";
+import { createJsonClient } from '#infrastructure/http';
 import { CargoConfig } from "../cargoConfig";
 import { CargoSuggestionProvider } from "../cargoSuggestionProvider";
 import { CratesClient } from "../cratesClient";

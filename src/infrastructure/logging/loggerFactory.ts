@@ -1,7 +1,7 @@
 import { ILogger, ILoggerChannel } from '#domain/logging';
+import { loggingLevels } from '#infrastructure/logging';
 import { TransformableInfo } from 'logform';
 import { format, loggers, transports } from 'winston';
-import { loggingLevels } from './logLevels';
 
 export function createWinstonLogger(
   loggerChannel: ILoggerChannel,

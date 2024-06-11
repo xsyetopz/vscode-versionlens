@@ -3,7 +3,7 @@ import { IServiceCollection } from '#domain/di';
 import { HttpOptions } from '#domain/http';
 import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
-import { createHttpClient } from "infrastructure/http";
+import { createHttpClient } from '#infrastructure/http';
 import { PypiContributions } from "../definitions/ePypiContributions";
 import { PypiClient } from "../pypiClient";
 import { PypiConfig } from "../pypiConfig";

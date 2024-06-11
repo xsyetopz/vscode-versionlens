@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import {
   ClientResponseSource,
   HttpClientOptions,
@@ -9,8 +8,9 @@ import {
 } from '#domain/clients';
 import { ILogger } from '#domain/logging';
 import { KeyStringDictionary } from '#domain/utils';
+import { IXhrResponse } from '#infrastructure/http';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 import { XHRRequest } from 'request-light';
-import { IXhrResponse } from './iXhrResponse';
 
 const defaultHeaders = {
   'user-agent': 'vscode-versionlens (gitlab.com/versionlens/vscode-versionlens)'

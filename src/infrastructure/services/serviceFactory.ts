@@ -2,10 +2,10 @@ import { IServiceCollection, ServiceInjectionMode } from '#domain/di';
 import { ILoggingOptions } from '#domain/logging';
 import { IDomainServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
-import { OutputChannelTransport, createWinstonLogger } from "infrastructure/logging";
-import { PackageFileWatcher, WorkspaceAdapter } from "infrastructure/watcher";
+import { OutputChannelTransport, createWinstonLogger } from '#infrastructure/logging';
+import { PackageFileWatcher, WorkspaceAdapter } from '#infrastructure/watcher';
 import { workspace } from "vscode";
-import { IInfrastructureServices } from "./infrastructureServices";
+import { IInfrastructureServices } from '#infrastructure/services';
 
 export function addWorkspaceAdapter(services: IServiceCollection) {
   services.addSingleton(

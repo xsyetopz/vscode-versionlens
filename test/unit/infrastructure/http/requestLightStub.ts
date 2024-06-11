@@ -1,4 +1,4 @@
-import { IXhrResponse } from "infrastructure/http";
+import { IXhrResponse } from '#infrastructure/http';
 
 export class RequestLightStub {
   xhr(opts: any): Promise<IXhrResponse> {

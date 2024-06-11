@@ -1,8 +1,8 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ICachingOptions, IExpiryCache } from '#domain/caching';
 import { ClientResponseSource, IProcessClient, ProcessClientResponse } from '#domain/clients';
 import { ILogger } from '#domain/logging';
-import { IPromiseSpawnFn } from './iPromiseSpawn';
+import { IPromiseSpawnFn } from '#infrastructure/process';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class PromiseSpawnClient implements IProcessClient {
 

@@ -3,7 +3,7 @@ import { IServiceCollection } from '#domain/di';
 import { HttpOptions } from '#domain/http';
 import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
-import { createHttpClient } from "infrastructure/http";
+import { createHttpClient } from '#infrastructure/http';
 import { GoContributions } from "../definitions/eGoContributions";
 import { GoClient } from "../goClient";
 import { GoConfig } from "../goConfig";

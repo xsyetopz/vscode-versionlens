@@ -1,4 +1,4 @@
-import { IWorkspaceAdapter } from "infrastructure/watcher";
+import { IWorkspaceAdapter } from '#infrastructure/watcher';
 
 export interface IInfrastructureServices {
 
