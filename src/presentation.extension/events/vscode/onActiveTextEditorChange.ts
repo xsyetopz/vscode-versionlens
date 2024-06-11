@@ -1,10 +1,10 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from '#domain/logging';
 import { ISuggestionProvider } from '#domain/providers';
 import { GetSuggestionProvider } from '#domain/useCases';
 import { AsyncEmitter } from '#domain/utils';
+import { throwUndefinedOrNull } from '@esm-test/guards';
+import { VersionLensState } from '#extension';
 import { TextDocument, TextEditor, window } from 'vscode';
-import { VersionLensState } from '../../state/versionLensState';
 
 export type ProviderEditorActivatedEvent = (
   activeProvider: ISuggestionProvider,

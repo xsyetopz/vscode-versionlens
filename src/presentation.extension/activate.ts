@@ -9,7 +9,7 @@ import {
   OnActiveTextEditorChange,
   VersionLensExtension,
   configureContainer
-} from 'presentation.extension';
+} from '#extension';
 import { ExtensionContext, window, workspace } from 'vscode';
 
 let serviceProvider: IServiceProvider;

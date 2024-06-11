@@ -5,7 +5,7 @@ import {
   IconCommandFeatures,
   SuggestionCodeLensProvider,
   VersionLensState
-} from 'presentation.extension';
+} from '#extension';
 import { commands } from 'vscode';
 
 export class OnToggleReleases extends Disposable {

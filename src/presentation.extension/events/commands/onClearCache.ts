@@ -1,9 +1,9 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { IExpiryCache } from '#domain/caching';
 import { ILogger } from '#domain/logging';
 import { PackageCache } from '#domain/packages';
 import { Disposable } from '#domain/utils';
-import { SuggestionCommandFeatures } from 'presentation.extension';
+import { SuggestionCommandFeatures } from '#extension';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 import { commands } from 'vscode';
 
 export class OnClearCache extends Disposable {

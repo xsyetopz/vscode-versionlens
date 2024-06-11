@@ -3,7 +3,7 @@ import { ILogger } from '#domain/logging';
 import { ISuggestionProvider } from '#domain/providers';
 import { GetSuggestionProvider } from '#domain/useCases';
 import { AsyncEmitter } from '#domain/utils';
-import { VersionLensState } from 'presentation.extension';
+import { VersionLensState } from '#extension';
 import { TextDocumentChangeEvent, TextDocumentChangeReason, workspace } from 'vscode';
 
 export type ProviderTextDocumentChangeEvent = (

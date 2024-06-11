@@ -10,7 +10,7 @@ import {
   SuggestionCodeLens,
   VersionLensExtension,
   VersionLensState
-} from 'presentation.extension';
+} from '#extension';
 import * as VsCode from 'vscode';
 import {
   CancellationToken,

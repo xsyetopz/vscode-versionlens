@@ -6,7 +6,7 @@ import {
   SuggestionCodeLens,
   SuggestionCommandFeatures,
   VersionLensState
-} from 'presentation.extension';
+} from '#extension';
 import { WorkspaceEdit, commands, workspace } from 'vscode';
 
 export class OnUpdateDependencyClick extends Disposable {

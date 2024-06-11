@@ -1,10 +1,12 @@
 import { IServiceCollection } from '#domain/di';
 import { IDomainServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
-import { IExtensionServices } from 'presentation.extension';
-import { OnProviderEditorActivated } from './onProviderEditorActivated';
-import { OnProviderTextDocumentChange } from './onProviderTextDocumentChange';
-import { OnProviderTextDocumentClose } from './onProviderTextDocumentClose';
+import { 
+  IExtensionServices, 
+  OnProviderEditorActivated, 
+  OnProviderTextDocumentChange, 
+  OnProviderTextDocumentClose 
+} from '#extension';
 
 export function addOnProviderEditorActivated(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().onProviderEditorActivated;

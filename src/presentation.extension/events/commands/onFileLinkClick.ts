@@ -1,7 +1,7 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from '#domain/logging';
 import { Disposable } from '#domain/utils';
-import { SuggestionCodeLens, SuggestionCommandFeatures } from 'presentation.extension';
+import { SuggestionCodeLens, SuggestionCommandFeatures } from '#extension';
 import { commands, env } from 'vscode';
 
 export class OnFileLinkClick extends Disposable {

@@ -6,7 +6,7 @@ import {
   OnClearCache,
   OnFileLinkClick,
   OnUpdateDependencyClick
-} from 'presentation.extension';
+} from '#extension';
 
 export function addOnClearCache(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().onClearCache;

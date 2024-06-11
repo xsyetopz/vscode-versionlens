@@ -41,6 +41,9 @@
       ],
       "presentation.extension": [
         "./src/presentation.extension/index"
+      ],
+      "#extension": [
+        "./src/presentation.extension/index"
       ]
     }
   }

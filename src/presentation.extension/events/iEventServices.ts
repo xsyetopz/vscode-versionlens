@@ -1,19 +1,21 @@
-import { OnClearCache } from "./commands/onClearCache";
-import { OnFileLinkClick } from "./commands/onFileLinkClick";
-import { OnUpdateDependencyClick } from "./commands/onUpdateDependencyClick";
-import { OnErrorClick } from "./editorTitleBar/onErrorClick";
-import { OnTogglePrereleases } from "./editorTitleBar/onTogglePrereleases";
-import { OnToggleReleases } from "./editorTitleBar/onToggleReleases";
-import { OnPreSaveChanges } from "./install/onPreSaveChanges";
-import { OnSaveChanges } from "./install/onSaveChanges";
-import { OnProviderEditorActivated } from "./provider/onProviderEditorActivated";
-import { OnProviderTextDocumentChange } from "./provider/onProviderTextDocumentChange";
-import { OnProviderTextDocumentClose } from "./provider/onProviderTextDocumentClose";
-import { OnActiveTextEditorChange } from "./vscode/onActiveTextEditorChange";
-import { OnTextDocumentChange } from "./vscode/onTextDocumentChange";
-import { OnTextDocumentClose } from "./vscode/onTextDocumentClose";
-import { OnTextDocumentSave } from "./vscode/onTextDocumentSave";
-import { OnPackageDependenciesChanged } from "./watcher/onPackageDependenciesChanged";
+import {
+  OnActiveTextEditorChange,
+  OnClearCache,
+  OnErrorClick,
+  OnFileLinkClick,
+  OnPackageDependenciesChanged,
+  OnPreSaveChanges,
+  OnProviderEditorActivated,
+  OnProviderTextDocumentChange,
+  OnProviderTextDocumentClose,
+  OnSaveChanges,
+  OnTextDocumentChange,
+  OnTextDocumentClose,
+  OnTextDocumentSave,
+  OnTogglePrereleases,
+  OnToggleReleases,
+  OnUpdateDependencyClick
+} from '#extension';
 
 // event di dependencies
 export interface IEventServices {

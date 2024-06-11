@@ -1,7 +1,7 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from '#domain/logging';
 import { Disposable } from '#domain/utils';
-import { IconCommandFeatures, VersionLensState } from 'presentation.extension';
+import { IconCommandFeatures, VersionLensState } from '#extension';
 import { OutputChannel, commands, window } from 'vscode';
 
 export class OnErrorClick extends Disposable {

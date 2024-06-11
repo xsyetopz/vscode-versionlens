@@ -1,8 +1,7 @@
 import { IServiceCollection } from '#domain/di';
 import { IDomainServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
-import { IExtensionServices } from 'presentation.extension/services/iExtensionServices';
-import { OnPackageDependenciesChanged } from './onPackageDependenciesChanged';
+import { IExtensionServices, OnPackageDependenciesChanged } from '#extension';
 
 export function addOnPackageDependenciesChanged(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().onPackageDependenciesChanged

@@ -1,5 +1,6 @@
 export * from './events';
 export * from './features/eIconCommandFeatures';
+export * from './features/eStateFeatures';
 export * from './features/eSuggestionCommandFeatures';
 export * from './features/eSuggestionFeatures';
 export * from './services/extensionContainer';

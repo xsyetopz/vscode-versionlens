@@ -34,7 +34,7 @@ import {
   addVersionLensExtension,
   addVersionLensProviders,
   addVersionLensState
-} from 'presentation.extension';
+} from '#extension';
 import { ExtensionContext, workspace } from 'vscode';
 
 export async function configureContainer(context: ExtensionContext): Promise<IServiceProvider> {

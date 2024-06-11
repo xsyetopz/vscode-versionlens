@@ -4,7 +4,8 @@
   "private": true,
   "main": "./dist/extension.bundle.js",
   "imports": {
-    "#domain/*": "./out/src/domain/*/index.js"
+    "#domain/*": "./out/src/domain/*/index.js",
+    "#extension": "./out/src/presentation.extension/index.js"
   },
   "description": "Shows the latest version for each package using code lens",
   "repository": {

@@ -1,7 +1,5 @@
 import { throwUndefinedOrNull } from "@esm-test/guards";
-import { SuggestionsOptions } from "presentation.extension";
-import { StateFeatures } from "../features/eStateFeatures";
-import { ContextState } from "./contextState";
+import { ContextState, StateFeatures, SuggestionsOptions } from '#extension';
 
 export class VersionLensState {
 

@@ -1,7 +1,6 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { IFrozenOptions } from '#domain/configuration';
-import { VersionLensState } from "presentation.extension";
-import { SuggestionsOptions } from "./suggestions/suggestionsOptions";
+import { throwUndefinedOrNull } from '@esm-test/guards';
+import { SuggestionsOptions, VersionLensState } from '#extension';
 
 export class VersionLensExtension {
 

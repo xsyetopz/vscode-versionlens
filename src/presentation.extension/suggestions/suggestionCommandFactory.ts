@@ -8,7 +8,7 @@ import * as os from 'node:os';
 import {
   SuggestionCodeLens,
   SuggestionCommandFeatures
-} from 'presentation.extension';
+} from '#extension';
 
 const isWindows = os.type() === "Windows_NT";
 

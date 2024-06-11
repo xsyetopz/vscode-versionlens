@@ -3,7 +3,7 @@ import { ILogger } from '#domain/logging';
 import { DependencyCache } from '#domain/packages';
 import { ISuggestionProvider } from '#domain/providers';
 import { GetDependencyChanges } from '#domain/useCases';
-import { VersionLensState } from 'presentation.extension';
+import { VersionLensState } from '#extension';
 
 export class OnProviderTextDocumentChange {
 

@@ -9,7 +9,7 @@ import {
   SuggestionsOptions,
   VersionLensExtension,
   VersionLensState
-} from 'presentation.extension';
+} from '#extension';
 import { window, workspace } from 'vscode';
 
 export function addSuggestionOptions(services: IServiceCollection) {

@@ -1,8 +1,12 @@
 import { IServiceCollection } from '#domain/di';
 import { IDomainServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
-import { IExtensionServices, OnTogglePrereleases, OnToggleReleases } from 'presentation.extension';
-import { OnErrorClick } from './onErrorClick';
+import {
+  IExtensionServices,
+  OnErrorClick,
+  OnTogglePrereleases,
+  OnToggleReleases
+} from '#extension';
 
 export function addOnErrorClick(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().onErrorClick;

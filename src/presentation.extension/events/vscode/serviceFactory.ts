@@ -7,7 +7,7 @@ import {
   OnTextDocumentChange,
   OnTextDocumentClose,
   OnTextDocumentSave
-} from 'presentation.extension';
+} from '#extension';
 
 export function addOnActiveTextEditorChange(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().onActiveTextEditorChange;

@@ -5,7 +5,7 @@ import {
   SuggestionsOptions,
   VersionLensExtension,
   VersionLensState
-} from 'presentation.extension';
+} from '#extension';
 import { OutputChannel } from 'vscode';
 
 export interface IExtensionServices extends IEventServices {
