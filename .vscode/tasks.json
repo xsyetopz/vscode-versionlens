@@ -9,7 +9,7 @@
   ],
   "tasks": [
     {
-      "label": "bundle:dev",
+      "label": "compile",
       "presentation": {
         "echo": true,
         "reveal": "always",
@@ -19,6 +19,18 @@
       "group": {
         "isDefault": true,
         "kind": "build",
+      },
+      "args": [
+        "compile"
+      ],
+    },
+    {
+      "label": "bundle:dev",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
       },
       "args": [
         "bundle:dev"

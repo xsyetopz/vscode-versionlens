@@ -20,9 +20,16 @@ export async function importSuggestionProvider(
     );
 
     // import the provider
-    const module: IProviderModule = await import(
-      `../../infrastructure/providers/${providerName}/src/index.ts`
-    );
+    let module: IProviderModule;
+    // works around an esbuild bug with string literal templates and tsconfig.json paths
+    // https://github.com/evanw/esbuild/issues/3798
+    try {
+      // bundle mode
+      module = await import(`../../infrastructure/providers/${providerName}/src/index.ts`);
+    } catch (e) {
+      // dev mode
+      module = await import(`#providers/${providerName}`)
+    }
 
     // register the provider
     const childServiceProvider = await module.configureContainer(

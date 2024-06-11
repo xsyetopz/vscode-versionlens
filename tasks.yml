@@ -1,9 +1,10 @@
 tasks:
-  clean: rimraf ./out ./dist
+  clean: rimraf ./dist
   fresh: [clean -- ./node_modules test/**/node_modules ./package-lock.json]
   bundle: [clean, lint, node ./build/esbuild.js]
   bundle:dev: [env: { BUNDLE_DEV: true }, bundle]
   bundle:test: [env: { BUNDLE_TEST: true }, bundle]
+  compile: [clean, tsc]
   lint: tsc --noEmit
   test: [bundle:test, env: { TEST_HEADLESS: true }, node ./dist/extension.test.js]
   test:insiders: [bundle:test, node ./test/run.insiders.tests]

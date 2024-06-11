@@ -1,13 +1,15 @@
 const path = require('node:path');
-const esbuild = require('esbuild')
+const esbuild = require('esbuild');
+
+const isDevEnv = process.env?.BUNDLE_DEV;
+const isTestEnv = !!process.env?.BUNDLE_TEST;
 
 const projectPath = process.cwd();
 const sourcePath = path.resolve(projectPath, 'src');
 const testPath = path.resolve(projectPath, 'test');
-const distPath = path.resolve(projectPath, 'dist');
-
-const isDevEnv = process.env?.BUNDLE_DEV;
-const isTestEnv = !!process.env?.BUNDLE_TEST;
+const distPath = isTestEnv
+  ? path.resolve(projectPath, 'dist')
+  : path.resolve(projectPath, 'dist', 'src', 'presentation.extension');
 
 const extension = isTestEnv ?
   path.resolve(testPath, 'runner.ts') :
@@ -19,7 +21,7 @@ const external = isTestEnv
 
 const outputFile = isTestEnv
   ? 'extension.test.js'
-  : 'extension.bundle.js';
+  : 'activate.js';
 
 const minify = !isDevEnv && !isTestEnv;
 

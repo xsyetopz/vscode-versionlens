@@ -7,9 +7,9 @@
   "compilerOptions": {
     "strict": false,
     "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "outDir": "./out/",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "./dist",
     "noUnusedLocals": true,
     "noUnusedParameters": false,
     "sourceMap": true,
@@ -24,23 +24,11 @@
       "test/unit/infrastructure/providers/*": [
         "./src/infrastructure/providers/*/test/index.test"
       ],
-      "*": [
-        "./src/*"
-      ],
-      "#*": [
-        "./src/*"
-      ],
-      "infrastructure/providers/*": [
-        "./src/infrastructure/providers/*/src/index"
-      ],
-      "infrastructure/*": [
-        "./src/infrastructure/*/index"
-      ],
-      "domain/*": [
+      "#domain/*": [
         "./src/domain/*/index"
       ],
-      "presentation.extension": [
-        "./src/presentation.extension/index"
+      "#infrastructure/*": [
+        "./src/infrastructure/*/index"
       ],
       "#providers/*": [
         "./src/infrastructure/providers/*/src/index"

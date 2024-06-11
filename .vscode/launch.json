@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Unit tests",
+      "name": "Debug unit tests",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
@@ -23,7 +23,7 @@
       ]
     },
     {
-      "name": "Smoke workspace tests",
+      "name": "Debug smoke workspace",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
@@ -33,17 +33,17 @@
         "${workspaceFolder}/test/smoke"
       ],
       "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
+        "${workspaceFolder}/dist/src/**/*.js"
       ],
       "sourceMaps": true,
-      "preLaunchTask": "bundle:dev",
+      "preLaunchTask": "compile",
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": [
         "<node_internals>/**"
       ]
     },
     {
-      "name": "Smoke file test",
+      "name": "Debug smoke file",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
@@ -53,10 +53,10 @@
         "${workspaceFolder}/test/smoke/npm/typical/package.json"
       ],
       "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
+        "${workspaceFolder}/dist/src/**/*.js"
       ],
       "sourceMaps": true,
-      "preLaunchTask": "bundle:dev",
+      "preLaunchTask": "compile",
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": [
         "<node_internals>/**"
@@ -69,7 +69,7 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": [
         "run-script",
-        "bundle"
+        "bundle:dev"
       ],
       "sourceMaps": true,
       "internalConsoleOptions": "openOnSessionStart",
