@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { IExpiryCache, MemoryExpiryCache } from 'domain/caching';
+import { IExpiryCache, MemoryExpiryCache } from '#domain/caching';
 import { test } from 'mocha-ui-esm';
 
 type TestContext = {

@@ -1,4 +1,4 @@
-import { CachingOptions } from "domain/caching";
+import { CachingOptions } from '#domain/caching';
 import { IHttpClient, IProcessClient } from "domain/clients";
 import { HttpOptions } from "domain/http";
 import { MavenClient, MvnCli } from "../index";

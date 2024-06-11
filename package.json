@@ -3,6 +3,9 @@
   "preview": false,
   "private": true,
   "main": "./dist/extension.bundle.js",
+  "imports": {
+    "#domain/*": "./out/src/domain/*/index.js"
+  },
   "description": "Shows the latest version for each package using code lens",
   "repository": {
     "type": "git",

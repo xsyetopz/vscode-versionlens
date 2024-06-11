@@ -1,4 +1,4 @@
-import { CachingOptions } from 'domain/caching';
+import { CachingOptions } from '#domain/caching';
 import { ILogger } from 'domain/logging';
 import { DependencyCache, PackageResponse, SuggestionTypes } from 'domain/packages';
 import { IProviderConfig, ISuggestionProvider } from 'domain/providers';

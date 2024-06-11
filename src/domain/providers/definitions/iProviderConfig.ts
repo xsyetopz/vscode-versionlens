@@ -1,4 +1,4 @@
-import { ICachingOptions } from 'domain/caching';
+import { ICachingOptions } from '#domain/caching';
 import { IHttpOptions } from 'domain/http';
 import { TProviderFileMatcher } from './tProviderFileMatcher';
 

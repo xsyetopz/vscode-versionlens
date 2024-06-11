@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { MemoryExpiryCache } from "domain/caching";
+import { MemoryExpiryCache } from '#domain/caching';
 import { test } from "mocha-ui-esm";
 
 let testCacheMap: MemoryExpiryCache;

@@ -1,4 +1,4 @@
-import { CachingOptions } from "domain/caching";
+import { CachingOptions } from '#domain/caching';
 import { IJsonHttpClient } from "domain/clients";
 import { HttpOptions } from "domain/http";
 import { CargoConfig } from "../cargoConfig";

@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { CachingOptions, ICachingOptions } from 'domain/caching';
+import { CachingOptions, ICachingOptions } from '#domain/caching';
 import {
   ClientResponseSource,
   HttpClientRequestMethods,

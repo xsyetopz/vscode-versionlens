@@ -1,4 +1,4 @@
-import { ICachingOptions } from 'domain/caching';
+import { ICachingOptions } from '#domain/caching';
 import { IJsonHttpClient } from 'domain/clients';
 import { IHttpOptions } from 'domain/http';
 import { DubClient } from '../dubClient';

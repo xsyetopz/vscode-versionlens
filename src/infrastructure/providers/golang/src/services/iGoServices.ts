@@ -1,4 +1,4 @@
-import { CachingOptions } from "domain/caching";
+import { CachingOptions } from '#domain/caching';
 import { IHttpClient } from "domain/clients";
 import { HttpOptions } from "domain/http";
 import { GoClient } from "../goClient";

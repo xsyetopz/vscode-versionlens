@@ -1,5 +1,5 @@
 import { throwUndefinedOrNull } from "@esm-test/guards";
-import { IExpiryCache, MemoryExpiryCache } from "domain/caching";
+import { IExpiryCache, MemoryExpiryCache } from '#domain/caching';
 import { TPackageClientResponse, TPackageResource } from "domain/packages";
 import { KeyDictionary, TAsyncFunction } from 'domain/utils';
 

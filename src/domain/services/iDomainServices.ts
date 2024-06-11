@@ -1,4 +1,4 @@
-import { CachingOptions, IExpiryCache } from 'domain/caching';
+import { CachingOptions, IExpiryCache } from '#domain/caching';
 import { Config } from 'domain/configuration';
 import { IServiceCollectionFactory, IServiceProvider } from 'domain/di';
 import { HttpOptions } from 'domain/http';

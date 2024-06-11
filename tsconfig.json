@@ -27,6 +27,9 @@
       "*": [
         "./src/*"
       ],
+      "#*": [
+        "./src/*"
+      ],
       "infrastructure/providers/*": [
         "./src/infrastructure/providers/*/src/index"
       ],

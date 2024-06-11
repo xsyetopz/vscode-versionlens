@@ -1,5 +1,5 @@
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { ICachingOptions } from 'domain/caching';
+import { ICachingOptions } from '#domain/caching';
 import { UrlUtils } from 'domain/clients';
 import { IFrozenOptions } from 'domain/configuration';
 import { IHttpOptions } from 'domain/http';
