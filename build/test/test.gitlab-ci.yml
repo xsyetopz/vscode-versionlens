@@ -12,4 +12,12 @@ before_script:
 
 unit_tests:
   script:
-    - docker run --rm versionlens:tests
+    - docker run --rm -v $PWD/.coverage:/versionlens/.coverage --name test-container versionlens:tests
+  coverage: '/Branches\s+:\s(.+)%/'
+  artifacts:
+    paths: 
+      - .coverage/cobertura-coverage.xml
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: .coverage/cobertura-coverage.xml

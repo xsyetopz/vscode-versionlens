@@ -14,7 +14,7 @@ tasks:
   trace: [clean, tsc --explainFiles --project ./tsconfig.json > trace.log]
   docker:test:
     - docker build -t versionlens:tests -f ./build/test/test.dockerfile .
-    - docker run --rm versionlens:tests
+    - docker run --rm -v $PWD/.coverage:/versionlens/.coverage --name test-container versionlens:tests
   docker:package:
     - docker build -t versionlens:package -f build/package/package.dockerfile .
     - docker run --rm -v $PWD/.artifacts:/versionlens/artifacts versionlens:package
