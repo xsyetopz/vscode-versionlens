@@ -11,7 +11,7 @@ const version = process.env?.TEST_INSIDERS === 'true'
 runTests({
   version,
   extensionDevelopmentPath,
-  extensionTestsPath: resolve(distPath, 'extension.test.js'),
+  extensionTestsPath: resolve(distPath, 'bundled.test.js'),
   launchArgs: [
     __dirname
   ]
