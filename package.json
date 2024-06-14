@@ -70,7 +70,6 @@
     "@vscode/test-electron": "2.4.0",
     "c8": "10.1.1",
     "esbuild": "0.21.5",
-    "js-build-tasks": "1.0.0-beta.10",
     "mocha": "10.4.0",
     "mocha-ui-esm": "1.0.0-beta.14",
     "rimraf": "5.0.7",
