@@ -5,7 +5,7 @@ tasks:
   bundle:dev: [env: { BUNDLE_DEV: true }, bundle]
   bundle:test: [env: { BUNDLE_TEST: true }, bundle]
   compile: [clean, tsc]
-  coverage: c8 -r=text -r=cobertura -r=text-summary -o .coverage task -oss test
+  coverage: c8 -r=text -r=cobertura -r=text-summary -o .coverage task -l cmd test
   lint: tsc --noEmit
   test: [compile, env: { TEST_HEADLESS: true }, node ./dist/test/runner.js]
   test:vscode: [bundle:test, node ./test/vscode.runner.js]
