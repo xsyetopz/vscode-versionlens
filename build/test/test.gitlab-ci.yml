@@ -1,22 +1,20 @@
 image: docker:dind
+services: [docker:dind]
 
-services:
-  - docker:dind
+before_script:
+  - apk update && apk upgrade
+  - apk add nodejs npm
+  - npm install js-build-tasks -g
 
 workflow:
   rules:
     - when: always
 
-before_script:
-  - docker build -t versionlens:tests -f ./build/test/test.dockerfile .
-
 unit_tests:
-  script:
-    - docker run --rm -v $PWD/.coverage:/versionlens/.coverage --name test-container versionlens:tests
+  script: [task docker:test]
   coverage: '/Branches\s+:\s(.+)%/'
   artifacts:
-    paths: 
-      - .coverage/cobertura-coverage.xml
+    paths: [.coverage/cobertura-coverage.xml]
     reports:
       coverage_report:
         coverage_format: cobertura
