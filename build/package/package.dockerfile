@@ -1,6 +1,7 @@
-# see ./tasks.yml for example of how to run on local docker
+# see "docker:package" task in ./docker.package.tasks.yml on how this container is created
 FROM node:22-alpine3.19
 ARG TARGET_PATH=/versionlens
+ENV PACKAGE_OUT_PATH=.package
 
 COPY / $TARGET_PATH
 
@@ -18,7 +19,7 @@ RUN task build:test
 RUN task bundle
 
 # create artifacts folder
-RUN mkdir ./artifacts
+RUN mkdir $PACKAGE_OUT_PATH
 
 # package vsix and move it to artifacts folder
-CMD vsce package && mv *.vsix ./artifacts
+CMD vsce package && mv *.vsix $PACKAGE_OUT_PATH

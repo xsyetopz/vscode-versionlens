@@ -1,19 +1,17 @@
 image: docker:dind
+services: [docker:dind]
 
-services:
-  - docker:dind
+before_script:
+  - apk update && apk upgrade
+  - apk add nodejs npm
+  - npm install js-build-tasks -g
 
 workflow:
   rules:
     - when: always
 
 package:
-  script:
-    - docker build -t versionlens:package -f build/package/package.dockerfile .
-    - docker run --name versionlens-container versionlens:package
-    - docker cp versionlens-container:/versionlens/artifacts/ .
-    - docker rm -f versionlens-container
-    - mv ./artifacts/*.vsix .
+  script: [task docker:package]
   artifacts:
     paths:
-      - ./*.vsix
+      - .package/*.vsix

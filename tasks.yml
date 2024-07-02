@@ -1,5 +1,6 @@
 extends:
   - ./build/test/docker.test.tasks.yml
+  - ./build/package/docker.package.tasks.yml
 tasks:
   clean: rimraf ./dist
   fresh: clean -- ./node_modules ./package-lock.json
@@ -14,6 +15,3 @@ tasks:
   test:insiders: [bundle:test, env: { TEST_INSIDERS: true }, node ./test/vscode.runner.js]
   build:test: [bundle:test, env: { TEST_HEADLESS: true }, node ./dist/bundled.test.js]
   trace: [clean, tsc --explainFiles --project ./tsconfig.json > trace.log]
-  docker:package:
-    - docker build -t versionlens:package -f build/package/package.dockerfile .
-    - docker run --rm -v $PWD/.artifacts:/versionlens/artifacts versionlens:package
