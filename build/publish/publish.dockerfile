@@ -7,7 +7,7 @@ COPY / $TARGET_PATH
 WORKDIR $TARGET_PATH
 
 # install deps
-RUN npm install -g npm @vscode/vsce @js-build/tasks
+RUN npm install -g npm @vscode/vsce js-build-tasks
 
 RUN npm install
 
