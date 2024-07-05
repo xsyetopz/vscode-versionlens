@@ -1,10 +1,24 @@
-**/node_modules
-out
-dist
-coverage
-.artifacts
-.git
-.vscode
-.vs
-.env
-.npmrc
+# useful online tester https://dockerignore.vw.codes/
+
+# ignore
+*
+
+# permit
+!build
+!docs
+!images
+!src
+!test
+!.nycrc
+!.vscodeignore
+!CHANGELOG.md
+!LICENSE
+!package-lock.json
+!package.json
+!README.md
+!tasks.yml
+!tsconfig.json
+
+# ignore
+**/*.env
+**/*.npmrc
