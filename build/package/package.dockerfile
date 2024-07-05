@@ -22,4 +22,4 @@ RUN task bundle
 RUN mkdir $PACKAGE_OUT_PATH
 
 # package vsix and move it to artifacts folder
-CMD vsce package && mv *.vsix $PACKAGE_OUT_PATH
+CMD vsce package --out $PACKAGE_OUT_PATH
