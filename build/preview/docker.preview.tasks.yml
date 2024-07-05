@@ -1,0 +1,8 @@
+var:
+  DOCKER_PREVIEW_PATH: ./build/preview
+  PREVIEW_IMAGE: versionlens:preview
+  PREVIEW_VOL: $PWD/.preview:/versionlens/.preview
+tasks:
+  docker:preview:
+    - docker build -t $PREVIEW_IMAGE -f $DOCKER_PREVIEW_PATH/preview.dockerfile .
+    - docker run --rm -v $PREVIEW_VOL --env-file ./.env --name preview-container $PREVIEW_IMAGE
