@@ -2,6 +2,7 @@ extends:
   - ./build/test/docker.test.tasks.yml
   - ./build/package/docker.package.tasks.yml
   - ./build/preview/docker.preview.tasks.yml
+  - ./build/publish/docker.publish.tasks.yml
 tasks:
   clean: rimraf ./dist
   fresh: clean -- ./node_modules ./package-lock.json

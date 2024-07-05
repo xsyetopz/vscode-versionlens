@@ -1,7 +1,10 @@
 image: docker:dind
+services: [docker:dind]
 
-services:
-  - docker:dind
+before_script:
+  - apk update && apk upgrade
+  - apk add nodejs npm
+  - npm install js-build-tasks -g
 
 workflow:
   rules:
@@ -10,10 +13,7 @@ workflow:
 publish:
   script:
     - cp $VSCE_PAT_FILEPATH .env
-    - docker build -t versionlens:publish -f build/publish/publish.dockerfile .
-    - docker run --name versionlens-container --env-file ./.env versionlens:publish
-    - docker cp versionlens-container:/versionlens/artifacts/ .
-    - docker rm -f versionlens-container
+    - task docker:publish
     - mv ./artifacts/*.vsix .
   artifacts:
     paths:
