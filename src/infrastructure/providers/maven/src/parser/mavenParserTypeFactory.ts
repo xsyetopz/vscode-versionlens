@@ -1,10 +1,10 @@
 import {
   TPackageNameDescriptor,
   TPackageVersionDescriptor,
-  XmlNode,
   createPackageNameDesc,
   createPackageVersionDesc
 } from '#domain/packages';
+import { XmlNode } from '#infrastructure/parsers';
 
 export function createNameDescFromXmlNodes(
   parentNode: XmlNode,

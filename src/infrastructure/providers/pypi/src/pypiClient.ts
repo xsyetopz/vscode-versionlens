@@ -16,9 +16,9 @@ import {
   TPackagePathDescriptor,
   TSemverSpec,
   VersionUtils,
-  XmlDoc,
   createSuggestions
 } from '#domain/packages';
+import { XmlDoc } from '#infrastructure/parsers';
 import { PypiConfig } from '#providers/pypi';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import semver from 'semver';

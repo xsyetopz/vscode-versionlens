@@ -25,8 +25,6 @@ export * from './parsers/json/jsonPackageTypeFactory';
 export * from './parsers/json/tJsonPackageParserOptions';
 export * from './parsers/packageDescriptor';
 export * from './parsers/packageDescriptorTypeUtils';
-export * from './parsers/xml/xmlDescriptorFactory';
-export * from './parsers/xml/xmlParser';
 export * from "./suggestions";
 export * from './utils/defaultReplaceFn';
 export * from './utils/packageResponseMappers';

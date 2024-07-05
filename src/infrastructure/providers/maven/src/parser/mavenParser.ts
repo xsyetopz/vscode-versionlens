@@ -1,9 +1,5 @@
-import {
-  PackageDescriptor,
-  XmlDoc,
-  XmlNode,
-  createProjectVersionDescFromXmlElem
-} from '#domain/packages';
+import { PackageDescriptor } from '#domain/packages';
+import { XmlDoc, XmlNode, createProjectVersionDescFromXmlElem } from '#infrastructure/parsers';
 import { createNameDescFromXmlNodes, createVersionDescFromXmlNodes } from '#providers/maven';
 
 export function parseMavenPackagesXml(
@@ -35,9 +31,9 @@ export function extractDependenciesFromNodes(
   for (const node of includeNodes) {
     // check for project version entries
     if (node.name === 'version') {
-        // add the package desc to the matched array
-        matchedDependencies.push(createProjectVersionDescFromXmlElem(node));
-        continue;
+      // add the package desc to the matched array
+      matchedDependencies.push(createProjectVersionDescFromXmlElem(node));
+      continue;
     }
 
     const childNodes = doc.getChildren(node)

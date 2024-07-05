@@ -1,6 +1,6 @@
-import assert from 'node:assert';
-import { XmlDoc } from '#domain/packages';
+import { XmlDoc } from '#infrastructure/parsers';
 import { test } from 'mocha-ui-esm';
+import assert from 'node:assert';
 import { xmlDocFixtures } from './xmlDoc.fixtures';
 
 export const xmlDocTests = {
