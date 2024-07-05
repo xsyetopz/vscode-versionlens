@@ -4,10 +4,10 @@ import {
   TPackageNameDescriptor,
   TPackageVersionDescriptor,
   TSuggestionReplaceFunction,
-  createPackageResource,
-  parsePackagesGoMod
+  createPackageResource
 } from '#domain/packages';
 import { ISuggestionProvider } from '#domain/providers';
+import { parsePackagesGoMod } from '#infrastructure/parsers';
 import { GoClient, GoConfig, goReplaceVersion } from '#providers/golang';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 

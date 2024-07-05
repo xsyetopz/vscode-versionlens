@@ -1,3 +1,4 @@
+export * from "./gomod/gomodPackageParser";
 export * from './toml/tomlPackageParser';
 export * from './toml/tomlPackageTypeFactory';
 export * from './toml/tomlParserUtils';

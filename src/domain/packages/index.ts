@@ -20,7 +20,6 @@ export * from './packageCache';
 export * from './parsers/definitions/ePackageDescriptorType';
 export * from './parsers/definitions/tPackageTextRange';
 export * from './parsers/definitions/tPackageTypeDescriptors';
-export * from "./parsers/gomod/gomodPackageParser";
 export * from "./parsers/json/jsonPackageParser";
 export * from './parsers/json/jsonPackageTypeFactory';
 export * from './parsers/json/tJsonPackageParserOptions';
