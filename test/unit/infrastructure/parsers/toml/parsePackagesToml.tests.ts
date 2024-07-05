@@ -5,7 +5,7 @@ import {
 } from '#infrastructure/parsers';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
-import Fixtures from './extractPackageDependenciesFromToml.fixtures';
+import Fixtures from './parsePackagesToml.fixtures';
 
 export const extractPackageDependenciesFromTomlTests = {
 

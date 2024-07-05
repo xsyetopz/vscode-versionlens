@@ -10,7 +10,7 @@ import {
 } from '#infrastructure/parsers';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
-import Fixtures from './extractPackageDependenciesFromYaml.fixtures';
+import Fixtures from './parsePackagesYaml.fixtures';
 
 const complexTypeHandlers = <KeyDictionary<TYamlPackageTypeHandler>>{
   "version": createVersionDescFromYamlNode,
