@@ -1,5 +1,5 @@
-# see ./tasks.yml for example of how to run on local docker
-FROM node:22-alpine3.19
+# see ./docker.test.tasks.yml on how this container is created
+FROM node:current-alpine
 ARG TARGET_PATH=/versionlens
 
 COPY / $TARGET_PATH
