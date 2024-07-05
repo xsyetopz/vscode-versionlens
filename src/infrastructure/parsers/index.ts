@@ -3,3 +3,7 @@ export * from './toml/tomlPackageParser';
 export * from './toml/tomlPackageTypeFactory';
 export * from './toml/tomlParserUtils';
 export * from './toml/tTomlPackageParserOptions';
+export * from './yaml/tYamlPackageParserOptions';
+export * from './yaml/tYamlPackageTypeHandler';
+export * from "./yaml/yamlPackageParser";
+export * from './yaml/yamlPackageTypeFactory';

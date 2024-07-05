@@ -1,4 +1,3 @@
-import { throwUndefinedOrNull } from '@esm-test/guards';
 import { ILogger } from '#domain/logging';
 import {
   PackageDependency,
@@ -8,18 +7,19 @@ import {
   TPackagePathDescriptor,
   TPackageVersionDescriptor,
   TSuggestionReplaceFunction,
+  createPackageResource,
+} from '#domain/packages';
+import { ISuggestionProvider } from '#domain/providers';
+import {
   TYamlPackageParserOptions,
   createGitDescFromYamlNode,
   createHostedDescFromYamlNode,
-  createPackageResource,
   createPathDescFromYamlNode,
   createVersionDescFromYamlNode,
-  parsePackagesYaml
-} from '#domain/packages';
-import { ISuggestionProvider } from '#domain/providers';
-import { PubClient } from '#providers/pub';
-import { PubConfig } from '#providers/pub';
-import { pubReplaceVersion } from '#providers/pub';
+  parsePackagesYaml,
+} from '#infrastructure/parsers';
+import { PubClient, PubConfig, pubReplaceVersion } from '#providers/pub';
+import { throwUndefinedOrNull } from '@esm-test/guards';
 
 const complexTypeHandlers = {
   [PackageDescriptorType.version]: createVersionDescFromYamlNode,
