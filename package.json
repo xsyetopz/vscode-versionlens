@@ -68,7 +68,7 @@
     "@types/vscode": "1.95.0",
     "@vscode/test-electron": "2.4.1",
     "c8": "10.1.2",
-    "esbuild": "0.22.0",
+    "esbuild": "0.24.0",
     "js-build-tasks": "1.0.0-rc.18",
     "mocha": "10.8.2",
     "mocha-ui-esm": "1.0.0-beta.14",
