@@ -3,14 +3,20 @@ FROM node:current-alpine
 ARG TARGET_PATH=/versionlens
 ENV PREVIEW_OUT_PATH=.preview
 
+# update os packages
+RUN apk update && apk upgrade
+
+# copy in project files (minus the .dockerignore entries)
 COPY / $TARGET_PATH
 
+# set the $CWD to the project root
 WORKDIR $TARGET_PATH
 
-# install deps
+# update npm to latest
 RUN npm install -g npm @vscode/vsce js-build-tasks
 
-RUN npm install
+# install dependencies
+RUN npm ci
 
 # run tests
 RUN task build:test
