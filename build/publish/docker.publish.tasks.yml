@@ -1,7 +1,7 @@
 var:
   DOCKER_PUBLISH_PATH: ./build/publish
   PUBLISH_IMAGE: versionlens:publish
-  PUBLISH_VOL: $PWD/.publish:/versionlens/.publish
+  PUBLISH_VOL: $PWD/artifacts:/versionlens/artifacts
 tasks:
   docker:publish:
     - docker build -t $PUBLISH_IMAGE -f $DOCKER_PUBLISH_PATH/publish.dockerfile .
