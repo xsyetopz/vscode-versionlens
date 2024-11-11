@@ -6,7 +6,7 @@ import {
   createProjectVersionDescFromTomlNode,
   createVersionDescFromTomlNode,
   matchesTableExpression
-} from '#infrastructure/parsers';
+} from '#domain/parsers';
 import { AST, parseTOML } from "toml-eslint-parser";
 
 export function parsePackagesToml(

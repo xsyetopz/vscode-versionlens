@@ -6,14 +6,14 @@ import {
   TPackageVersionDescriptor,
   createPackageResource,
 } from '#domain/packages';
-import { ISuggestionProvider } from '#domain/providers';
-import { KeyDictionary } from '#domain/utils';
 import {
   TJsonPackageParserOptions,
   TJsonPackageTypeHandler,
   createVersionDescFromJsonNode,
   parsePackagesJson
-} from '#infrastructure/parsers';
+} from '#domain/parsers';
+import { ISuggestionProvider } from '#domain/providers';
+import { KeyDictionary } from '#domain/utils';
 import {
   ComposerClient,
   ComposerConfig,

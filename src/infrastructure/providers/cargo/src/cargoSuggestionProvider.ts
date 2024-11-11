@@ -8,12 +8,12 @@ import {
   TPackageVersionDescriptor,
   createPackageResource,
 } from '#domain/packages';
-import { ISuggestionProvider } from '#domain/providers';
 import {
   TTomlPackageParserOptions,
   getTomlComplexTypeHandlers,
   parsePackagesToml
-} from '#infrastructure/parsers';
+} from '#domain/parsers';
+import { ISuggestionProvider } from '#domain/providers';
 import { CargoConfig, CratesClient } from '#providers/cargo';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 

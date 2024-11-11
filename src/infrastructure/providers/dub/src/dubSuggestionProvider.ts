@@ -6,8 +6,6 @@ import {
   TPackageVersionDescriptor,
   createPackageResource,
 } from '#domain/packages';
-import { ISuggestionProvider } from '#domain/providers';
-import { KeyDictionary } from '#domain/utils';
 import {
   TJsonPackageParserOptions,
   TJsonPackageTypeHandler,
@@ -15,7 +13,9 @@ import {
   createRepoDescFromJsonNode,
   createVersionDescFromJsonNode,
   parsePackagesJson
-} from '#infrastructure/parsers';
+} from '#domain/parsers';
+import { ISuggestionProvider } from '#domain/providers';
+import { KeyDictionary } from '#domain/utils';
 import { DubClient, DubConfig } from '#providers/dub';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 

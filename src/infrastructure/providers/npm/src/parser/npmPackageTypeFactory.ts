@@ -4,7 +4,7 @@ import {
   createIgnoreChangesDesc,
   createPackageParentDescType,
 } from '#domain/packages';
-import { createNameDescFromJsonNode, createVersionDescFromJsonNode } from '#infrastructure/parsers';
+import { createNameDescFromJsonNode, createVersionDescFromJsonNode } from '#domain/parsers';
 import * as JsonC from 'jsonc-parser';
 
 /**

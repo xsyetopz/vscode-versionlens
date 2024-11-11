@@ -1,5 +1,4 @@
 import { createPackageParentDescType, PackageDescriptor } from '#domain/packages';
-import { KeyDictionary } from '#domain/utils';
 import {
   createNameDescFromYamlNode,
   createVersionDescFromYamlNode,
@@ -7,7 +6,8 @@ import {
   isNodeQuoted,
   TYamlPackageParserOptions,
   TYamlPackageTypeHandler
-} from '#infrastructure/parsers';
+} from '#domain/parsers';
+import { KeyDictionary } from '#domain/utils';
 import { Document, isMap, Pair, ParsedNode, parseDocument, YAMLMap } from 'yaml';
 import { findPair } from 'yaml/util';
 

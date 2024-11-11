@@ -1,11 +1,11 @@
 import { PackageDescriptor, createPackageParentDescType } from '#domain/packages';
-import { KeyDictionary, Undefinable } from '#domain/utils';
 import {
   TJsonPackageParserOptions,
   TJsonPackageTypeHandler,
   createNameDescFromJsonNode,
   createVersionDescFromJsonNode
-} from '#infrastructure/parsers';
+} from '#domain/parsers';
+import { KeyDictionary, Undefinable } from '#domain/utils';
 import * as JsonC from 'jsonc-parser';
 
 export function parsePackagesJson(

@@ -1,4 +1,4 @@
-import { XmlDoc } from '#infrastructure/parsers';
+import { XmlDoc } from '#domain/parsers';
 
 export function getVersionsFromPackageXml(packageXml: string): Array<string> {
   const document = new XmlDoc();

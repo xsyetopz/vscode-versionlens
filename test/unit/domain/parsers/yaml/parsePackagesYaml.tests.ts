@@ -1,4 +1,3 @@
-import { KeyDictionary } from '#domain/utils';
 import {
   createGitDescFromYamlNode,
   createHostedDescFromYamlNode,
@@ -7,7 +6,8 @@ import {
   parsePackagesYaml,
   TYamlPackageParserOptions,
   TYamlPackageTypeHandler
-} from '#infrastructure/parsers';
+} from '#domain/parsers';
+import { KeyDictionary } from '#domain/utils';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
 import Fixtures from './parsePackagesYaml.fixtures';

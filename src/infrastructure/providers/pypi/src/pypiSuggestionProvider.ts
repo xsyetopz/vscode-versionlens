@@ -13,7 +13,7 @@ import {
   TTomlPackageParserOptions,
   getTomlComplexTypeHandlers,
   parsePackagesToml
-} from '#infrastructure/parsers';
+} from '#domain/parsers';
 import { PypiClient, PypiConfig } from '#providers/pypi';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 

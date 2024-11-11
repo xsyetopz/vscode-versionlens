@@ -9,7 +9,6 @@ import {
   TSuggestionReplaceFunction,
   createPackageResource,
 } from '#domain/packages';
-import { ISuggestionProvider } from '#domain/providers';
 import {
   TYamlPackageParserOptions,
   createGitDescFromYamlNode,
@@ -17,7 +16,8 @@ import {
   createPathDescFromYamlNode,
   createVersionDescFromYamlNode,
   parsePackagesYaml,
-} from '#infrastructure/parsers';
+} from '#domain/parsers';
+import { ISuggestionProvider } from '#domain/providers';
 import { PubClient, PubConfig, pubReplaceVersion } from '#providers/pub';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 

@@ -1,4 +1,4 @@
-import { createProjectVersionDesc } from '#infrastructure/parsers';
+import { createProjectVersionDesc } from '#domain/parsers';
 import { createPackageManagerDesc } from '#providers/npm';
 import * as JsonC from 'jsonc-parser';
 

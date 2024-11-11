@@ -1,4 +1,4 @@
-import { createProjectVersionDesc } from '#infrastructure/parsers';
+import { createProjectVersionDesc } from '#domain/parsers';
 import * as JsonC from 'jsonc-parser';
 
 export function customDescriptorHandler(path: string, node: JsonC.Node) {

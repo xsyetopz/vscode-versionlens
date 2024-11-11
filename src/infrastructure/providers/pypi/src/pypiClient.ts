@@ -18,7 +18,7 @@ import {
   VersionUtils,
   createSuggestions
 } from '#domain/packages';
-import { XmlDoc } from '#infrastructure/parsers';
+import { XmlDoc } from '#domain/parsers';
 import { PypiConfig } from '#providers/pypi';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import semver from 'semver';

@@ -4,7 +4,7 @@ import {
   createPackageNameDesc,
   createPackageVersionDesc
 } from '#domain/packages';
-import { XmlNode } from '#infrastructure/parsers';
+import { XmlNode } from '#domain/parsers';
 
 export function createNameDescFromXmlNodes(
   parentNode: XmlNode,

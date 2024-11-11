@@ -1,4 +1,3 @@
-import { KeyDictionary } from '#domain/utils';
 import {
   createPathDescFromJsonNode,
   createRepoDescFromJsonNode,
@@ -6,7 +5,8 @@ import {
   parsePackagesJson,
   TJsonPackageParserOptions,
   TJsonPackageTypeHandler
-} from '#infrastructure/parsers';
+} from '#domain/parsers';
+import { KeyDictionary } from '#domain/utils';
 import { customDescriptorHandler } from '#providers/npm';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';

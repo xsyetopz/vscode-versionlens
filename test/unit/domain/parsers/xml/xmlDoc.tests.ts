@@ -1,4 +1,4 @@
-import { XmlDoc } from '#infrastructure/parsers';
+import { XmlDoc } from '#domain/parsers';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
 import { xmlDocFixtures } from './xmlDoc.fixtures';

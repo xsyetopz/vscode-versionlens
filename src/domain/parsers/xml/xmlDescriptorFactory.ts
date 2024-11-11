@@ -6,7 +6,7 @@ import {
   createPackageVersionDesc,
   createProjectVersionTypeDesc
 } from '#domain/packages';
-import type { XmlNode } from '#infrastructure/parsers';
+import type { XmlNode } from '#domain/parsers';
 
 export function createNameDescFromXmlElem(keyNode: XmlNode): TPackageNameDescriptor {
   const nameRange = {
