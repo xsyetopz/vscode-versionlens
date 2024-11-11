@@ -1,3 +1,2 @@
-export * from './eHttpFeatures';
+export * from './definitions';
 export * from './httpOptions';
-export * from './iHttpOptions';
