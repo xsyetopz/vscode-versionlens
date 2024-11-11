@@ -1,6 +1,5 @@
 import { IFrozenOptions, Options } from '#domain/configuration';
-import { ILoggingOptions, LogLevelTypes } from '#domain/logging';
-import { LoggingFeatures } from '#domain/logging';
+import { ILoggingOptions, LoggingFeatures, LogLevelTypes } from '#domain/logging';
 
 export class LoggingOptions extends Options implements ILoggingOptions {
 
