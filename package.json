@@ -5,12 +5,12 @@
   "main": "./dist/src/presentation.extension/activate.js",
   "imports": {
     "#domain/*": "./dist/src/domain/*/index.js",
+    "#domain/providers/*": "./dist/src/domain/providers/*/src/index.js",
     "#infrastructure/*": "./dist/src/infrastructure/*/index.js",
-    "#providers/*": "./dist/src/infrastructure/providers/*/src/index.js",
     "#extension": "./dist/src/presentation.extension/index.js",
     "#test/utils": "./dist/test/unit/utils.js",
     "#test/unit/providers/*": [
-      "./dist/src/infrastructure/providers/*/test/index.test.js"
+      "./dist/src/domain/providers/*/test/index.test.js"
     ]
   },
   "description": "Shows the latest version for each package using code lens",

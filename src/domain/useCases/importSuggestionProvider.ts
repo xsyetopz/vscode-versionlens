@@ -25,10 +25,10 @@ export async function importSuggestionProvider(
     // https://github.com/evanw/esbuild/issues/3798
     try {
       // bundle mode
-      module = await import(`../../infrastructure/providers/${providerName}/src/index.ts`);
+      module = await import(`../../domain/providers/${providerName}/src/index.ts`);
     } catch (e) {
       // dev mode
-      module = await import(`#providers/${providerName}`)
+      module = await import(`#domain/providers/${providerName}`)
     }
 
     // register the provider

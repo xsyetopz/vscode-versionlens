@@ -1,7 +1,6 @@
 {
   "include": [
     "./src",
-    "./src/infrastructure/providers/**/index.ts",
     "./test",
   ],
   "compilerOptions": {
@@ -21,16 +20,16 @@
         "./test/unit/utils.ts",
       ],
       "#test/unit/providers/*": [
-        "./src/infrastructure/providers/*/test/index.test"
+        "./src/domain/providers/*/test/index.test"
       ],
       "#domain/*": [
         "./src/domain/*/index"
       ],
+      "#domain/providers/*": [
+        "./src/domain/providers/*/src/index"
+      ],
       "#infrastructure/*": [
         "./src/infrastructure/*/index"
-      ],
-      "#providers/*": [
-        "./src/infrastructure/providers/*/src/index"
       ],
       "#extension": [
         "./src/presentation.extension/index"
