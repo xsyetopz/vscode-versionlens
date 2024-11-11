@@ -8,10 +8,7 @@
     "#domain/providers/*": "./dist/src/domain/providers/*/src/index.js",
     "#infrastructure/*": "./dist/src/infrastructure/*/index.js",
     "#extension": "./dist/src/presentation.extension/index.js",
-    "#test/utils": "./dist/test/unit/utils.js",
-    "#test/unit/providers/*": [
-      "./dist/src/domain/providers/*/test/index.test.js"
-    ]
+    "#test/utils": "./dist/test/unit/utils.js"
   },
   "description": "Shows the latest version for each package using code lens",
   "repository": {

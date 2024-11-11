@@ -1,3 +1,3 @@
-export * as DotNetProvider from '#test/unit/providers/dotnet';
-export * as MavenProvider from '#test/unit/providers/maven';
-export * as NpmProvider from '#test/unit/providers/npm';
+export * as DotNetProvider from './dotnet/index.tests';
+export * as MavenProvider from './maven/index.tests';
+export * as NpmProvider from './npm/index.tests';

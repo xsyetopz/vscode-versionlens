@@ -19,9 +19,6 @@
       "#test/utils": [
         "./test/unit/utils.ts",
       ],
-      "#test/unit/providers/*": [
-        "./src/domain/providers/*/test/index.test"
-      ],
       "#domain/*": [
         "./src/domain/*/index"
       ],
