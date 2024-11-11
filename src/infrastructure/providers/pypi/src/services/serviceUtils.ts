@@ -1,9 +1,9 @@
 import { CachingOptions } from '#domain/caching';
 import { IServiceCollection } from '#domain/di';
 import { HttpOptions } from '#domain/http';
+import { createHttpClient } from '#domain/http/requestLight';
 import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
-import { createHttpClient } from '#infrastructure/http';
 import {
   IPypiService,
   PypiClient,

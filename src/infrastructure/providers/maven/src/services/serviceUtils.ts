@@ -1,17 +1,17 @@
 import { CachingOptions } from '#domain/caching';
 import { IServiceCollection } from '#domain/di';
 import { HttpOptions } from '#domain/http';
+import { createHttpClient } from '#domain/http/requestLight';
 import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
-import { createHttpClient } from '#infrastructure/http';
 import { createProcessClient } from '#infrastructure/process';
-import { 
-  IMavenServices, 
-  MavenClient, 
-  MavenConfig, 
-  MavenFeatures, 
-  MavenSuggestionProvider, 
-  MvnCli 
+import {
+  IMavenServices,
+  MavenClient,
+  MavenConfig,
+  MavenFeatures,
+  MavenSuggestionProvider,
+  MvnCli
 } from '#providers/maven';
 
 export function addCachingOptions(services: IServiceCollection) {

@@ -6,9 +6,9 @@ import {
   IHttpClient,
   UrlUtils
 } from '#domain/clients';
+import { IXhrResponse } from '#domain/http/requestLight';
 import { ILogger } from '#domain/logging';
 import { KeyStringDictionary } from '#domain/utils';
-import { IXhrResponse } from '#infrastructure/http';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { XHRRequest } from 'request-light';
 

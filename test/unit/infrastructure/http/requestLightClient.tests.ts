@@ -7,9 +7,9 @@ import {
   UrlUtils
 } from '#domain/clients';
 import { HttpOptions, IHttpOptions } from '#domain/http';
+import { RequestLightClient } from '#domain/http/requestLight';
 import { ILogger } from '#domain/logging';
 import { KeyStringDictionary } from '#domain/utils';
-import { RequestLightClient } from '#infrastructure/http';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
 import {

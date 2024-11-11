@@ -1,9 +1,9 @@
 import { CachingOptions } from '#domain/caching';
 import { IServiceCollection } from '#domain/di';
 import { HttpOptions } from '#domain/http';
+import { createJsonClient } from '#domain/http/requestLight';
 import { IDomainServices, IProviderServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
-import { createJsonClient } from '#infrastructure/http';
 import {
   GitHubClient,
   GitHubOptions,

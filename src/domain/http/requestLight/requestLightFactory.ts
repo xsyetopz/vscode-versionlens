@@ -4,8 +4,8 @@ import {
   IJsonHttpClient,
   JsonHttpClient
 } from '#domain/clients';
+import { RequestLightClient } from "#domain/http/requestLight";
 import { ILogger } from '#domain/logging';
-import { RequestLightClient } from "#infrastructure/http";
 import * as RequireLight from 'request-light';
 
 export function createHttpClient(
