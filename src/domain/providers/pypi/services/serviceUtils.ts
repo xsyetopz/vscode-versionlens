@@ -1,6 +1,5 @@
 import { CachingOptions } from '#domain/caching';
-import { HttpOptions } from '#domain/clients';
-import { createHttpClient } from '#domain/clients/requestLight';
+import { createHttpClient, HttpOptions } from '#domain/clients';
 import { IServiceCollection } from '#domain/di';
 import { IProviderServices } from '#domain/providers';
 import {
