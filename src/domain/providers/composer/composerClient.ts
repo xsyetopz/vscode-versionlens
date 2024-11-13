@@ -66,17 +66,8 @@ export class ComposerClient implements IPackageClient<null> {
     request: TPackageClientRequest<TClientData>,
     semverSpec: TSemverSpec
   ): Promise<TPackageClientResponse> {
-
-    const query = {};
-    const headers = {};
-
     // fetch package from api
-    const httpResponse = await this.jsonClient.request(
-      HttpClientRequestMethods.get,
-      url,
-      query,
-      headers
-    );
+    const httpResponse = await this.jsonClient.request(HttpClientRequestMethods.get, url);
 
     const requestPackage = request.parsedDependency.package;
     const versionRange = semverSpec.rawVersion;

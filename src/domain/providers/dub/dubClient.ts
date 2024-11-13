@@ -68,14 +68,12 @@ export class DubClient implements IPackageClient<null> {
   ): Promise<TPackageClientResponse> {
     const requestedPackage = request.parsedDependency.package;
     const query = { minimize: 'true' }
-    const headers = {};
 
     // fetch package from api
     const httpResponse = await this.jsonClient.request(
       HttpClientRequestMethods.get,
       url,
-      query,
-      headers
+      query
     );
 
     const packageInfo = httpResponse.data;

@@ -71,16 +71,8 @@ export class MavenClient implements IPackageClient<MavenClientData> {
     request: TPackageClientRequest<MavenClientData>,
     semverSpec: TSemverSpec
   ): Promise<TPackageClientResponse> {
-    const query = {};
-    const headers = {};
-
     // fetch package from api
-    const httpResponse = await this.httpClient.request(
-      HttpClientRequestMethods.get,
-      url,
-      query,
-      headers
-    );
+    const httpResponse = await this.httpClient.request(HttpClientRequestMethods.get, url);
 
     const { data } = httpResponse;
     const source = PackageSourceType.Registry;

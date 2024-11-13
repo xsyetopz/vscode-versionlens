@@ -18,17 +18,12 @@ export class NuGetResourceClient {
   }
 
   async fetchResource(source: DotNetSource): Promise<string> {
-    const query = {};
-    const headers = {};
-
     this.logger.debug("Requesting PackageBaseAddressService from %s", source.url)
 
     try {
       const response = await this.jsonClient.request(
         HttpClientRequestMethods.get,
-        source.url,
-        query,
-        headers
+        source.url
       ) as NugetServiceIndexResponse;
 
       const packageBaseAddressServices = response.data.resources

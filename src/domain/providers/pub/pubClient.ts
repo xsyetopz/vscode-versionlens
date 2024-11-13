@@ -102,16 +102,8 @@ export class PubClient implements IPackageClient<null> {
     packageName: string,
     semverSpec: TSemverSpec
   ): Promise<TPackageClientResponse> {
-
-    const query = {};
-    const headers = {};
-
-    const httpResponse = await this.jsonClient.request(
-      HttpClientRequestMethods.get,
-      url,
-      query,
-      headers
-    );
+    // fetch package from api
+    const httpResponse = await this.jsonClient.request(HttpClientRequestMethods.get, url);
 
     const packageInfo = httpResponse.data;
 

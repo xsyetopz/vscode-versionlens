@@ -41,13 +41,9 @@ export const NuGetResourceClientTests = {
 
       const expected = 'https://api.nuget.org/v3-flatcontainer1/';
 
-      when(jsonClientMock.request(anything(), anything(), anything(), anything()))
-        .thenResolve(mockResponse)
+      when(jsonClientMock.request(anything(), anything())).thenResolve(mockResponse)
 
-      const cut = new NuGetResourceClient(
-        instance(jsonClientMock),
-        instance(loggerMock)
-      )
+      const cut = new NuGetResourceClient(instance(jsonClientMock), instance(loggerMock))
 
       return cut.fetchResource(testSource)
         .then(actualSources => {

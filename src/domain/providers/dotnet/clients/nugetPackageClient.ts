@@ -82,19 +82,11 @@ export class NuGetPackageClient implements IPackageClient<NuGetClientData> {
     url: string,
     request: TPackageClientRequest<NuGetClientData>
   ): Promise<TPackageClientResponse> {
-
-    const query = {};
-    const headers = {};
     const requestedPackage = request.parsedDependency.package;
     const packageUrl = ensureEndSlash(url)
       + `${requestedPackage.name.toLowerCase()}/index.json`;
 
-    const httpResponse = await this.jsonClient.request(
-      HttpClientRequestMethods.get,
-      packageUrl,
-      query,
-      headers
-    );
+    const httpResponse = await this.jsonClient.request(HttpClientRequestMethods.get, packageUrl);
 
     const { data } = httpResponse;
 

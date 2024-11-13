@@ -41,8 +41,8 @@ export interface THttpClientRequestFn {
   (
     method: HttpClientRequestMethods,
     url: string,
-    query: KeyStringDictionary,
-    headers: KeyStringDictionary,
+    query?: KeyStringDictionary,
+    headers?: KeyStringDictionary,
   ): Promise<HttpClientResponse>;
 }
 
@@ -57,8 +57,8 @@ export interface IJsonHttpClient {
   request: (
     method: HttpClientRequestMethods,
     url: string,
-    query: KeyStringDictionary,
-    headers: KeyStringDictionary,
+    query?: KeyStringDictionary,
+    headers?: KeyStringDictionary,
   ) => Promise<JsonClientResponse>;
 }
 
