@@ -85,6 +85,12 @@ If that fails then have a look in the output channel and choose the `Log (Extens
 
 - Ensure you have `"editor.codeLens": true` set in your settings.
 
+- Try resetting the cache by running the clear cache command (ctrl+p then type "Clear Cache") 
+  This setting can be changed using `versionlens.caching.duration`. 
+
+  You can try setting this value to `0` when doing tests 
+  but recommended to keep around 3 minutes for normal usage.
+
 - Version lens writes a log to an output channel in vscode.
 
   If your experiencing issues please set your `versionlens.logging.level` to `debug` (vscode needs to be restarted) 
