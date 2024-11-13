@@ -1,5 +1,6 @@
 import { ILoggerChannel, ILoggingOptions } from '#domain/logging';
 import { throwUndefinedOrNull } from '@esm-test/guards';
+import { setImmediate } from 'node:timers';
 import { OutputChannel } from 'vscode';
 import * as Winston from 'winston';
 
