@@ -1,9 +1,12 @@
 # Version Lens for Visual Studio Code
 
-[![Badge for version for Visual Studio Code extension](https://vsmarketplacebadges.dev/version/pflannery.vscode-versionlens.png?color=blue&style=?style=for-the-badge&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=pflannery.vscode-versionlens&wt.mc_id=vscode-versionlens-gitlab)
-[![Installs](https://vsmarketplacebadges.dev/installs-short/pflannery.vscode-versionlens.png?color=blue&style=flat-square)](https://marketplace.visualstudio.com/items?itemName=pflannery.vscode-versionlens)
-[![Rating](https://vsmarketplacebadges.dev/rating/pflannery.vscode-versionlens.png?color=blue&style=flat-square)](https://marketplace.visualstudio.com/items?itemName=pflannery.vscode-versionlens)
-[![The ISC license](https://img.shields.io/badge/license-ISC-orange.png?color=blue&style=flat-square)](http://opensource.org/licenses/ISC)
+[![Badge for version for Visual Studio Code extension](https://img.shields.io/visual-studio-marketplace/v/pflannery.vscode-versionlens?style=flat-square&color=blue
+)](https://marketplace.visualstudio.com/items?itemName=pflannery.vscode-versionlens&wt.mc_id=vscode-versionlens-gitlab)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/pflannery.vscode-versionlens?style=flat-square&color=blue
+)](https://marketplace.visualstudio.com/items?itemName=pflannery.vscode-versionlens)
+[![Rating](https://img.shields.io/visual-studio-marketplace/r/pflannery.vscode-versionlens?style=flat-square&color=blue
+)](https://marketplace.visualstudio.com/items?itemName=pflannery.vscode-versionlens)
+[![The ISC license](https://img.shields.io/badge/license-ISC-orange.png?style=flat-square&color=blue)](http://opensource.org/licenses/ISC)
 
 This project is `active`, not sponsored or funded.
 
@@ -15,7 +18,7 @@ This extension shows __version__ information when opening a package or project f
 
 The following languages are supported:
 
-- cargo (rust) https://doc.rust-lang.org/cargo/ 
+- cargo (rust) https://doc.rust-lang.org/cargo/
 - composer (php) https://getcomposer.org/
 - dotnet https://www.dotnetfoundation.org/
 - dub https://code.dlang.org/
