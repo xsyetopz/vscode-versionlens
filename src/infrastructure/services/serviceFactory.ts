@@ -2,7 +2,7 @@ import { IServiceCollection } from '#domain/di';
 import { IDomainServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 import { IInfrastructureServices } from '#infrastructure/services';
-import { PackageFileWatcher, WorkspaceAdapter } from '#infrastructure/watcher';
+import { PackageFileWatcher, WorkspaceAdapter } from '#infrastructure/vscode';
 import { workspace } from "vscode";
 
 export function addWorkspaceAdapter(services: IServiceCollection) {

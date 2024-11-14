@@ -1,11 +1,11 @@
 import { IServiceCollection } from '#domain/di';
 import { IDomainServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
-import { 
-  IExtensionServices, 
-  OnProviderEditorActivated, 
-  OnProviderTextDocumentChange, 
-  OnProviderTextDocumentClose 
+import {
+  IExtensionServices,
+  OnProviderEditorActivated,
+  OnProviderTextDocumentChange,
+  OnProviderTextDocumentClose
 } from '#extension';
 
 export function addOnProviderEditorActivated(services: IServiceCollection) {

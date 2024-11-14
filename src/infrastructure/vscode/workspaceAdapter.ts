@@ -1,5 +1,5 @@
 import { FileSystemWatcher, Uri } from 'vscode';
-import { IWorkspaceAdapter } from './iWorkspaceAdapter';
+import { IWorkspaceAdapter } from './definitions';
 
 export class WorkspaceAdapter implements IWorkspaceAdapter {
 
