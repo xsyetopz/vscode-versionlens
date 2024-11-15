@@ -2,9 +2,10 @@ import { ICachingOptions, IExpiryCache } from '#domain/caching';
 import {
   ClientResponseSource,
   IShellClient,
+  ShellClientRequestError,
   ShellClientResponse
 } from '#domain/clients';
-import { IPromiseSpawnFn, ShellClientRequestError } from '#domain/clients/promiseSpawn';
+import { IPromiseSpawnFn } from '#domain/clients/promiseSpawn';
 import { ILogger } from '#domain/logging';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
