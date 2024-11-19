@@ -1,4 +1,5 @@
-import { ContextState, StateFeatures } from '#extension';
+import { StateFeatures } from '#extension';
+import { ContextState } from '#extension/state';
 import { SuggestionsOptions } from '#extension/suggestions';
 import { throwUndefinedOrNull } from "@esm-test/guards";
 

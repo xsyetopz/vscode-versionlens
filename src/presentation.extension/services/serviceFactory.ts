@@ -3,11 +3,8 @@ import { DependencyCache } from '#domain/packages';
 import { IDomainServices } from '#domain/services';
 import { GetSuggestions } from '#domain/useCases';
 import { DisposableArray, nameOf } from '#domain/utils';
-import {
-  IExtensionServices,
-  VersionLensExtension,
-  VersionLensState
-} from '#extension';
+import { IExtensionServices, VersionLensExtension } from '#extension';
+import { VersionLensState } from '#extension/state';
 import { SuggestionCodeLensProvider, SuggestionsOptions } from '#extension/suggestions';
 import { window, workspace } from 'vscode';
 

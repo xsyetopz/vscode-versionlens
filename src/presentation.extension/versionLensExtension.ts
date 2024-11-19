@@ -1,5 +1,5 @@
 import { IFrozenOptions } from '#domain/configuration';
-import { VersionLensState } from '#extension';
+import { VersionLensState } from '#extension/state';
 import { SuggestionsOptions } from '#extension/suggestions';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 

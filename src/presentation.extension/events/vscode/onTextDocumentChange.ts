@@ -2,7 +2,7 @@ import { ILogger } from '#domain/logging';
 import { ISuggestionProvider } from '#domain/providers';
 import { GetSuggestionProvider } from '#domain/useCases';
 import { AsyncEmitter } from '#domain/utils';
-import { VersionLensState } from '#extension';
+import { VersionLensState } from '#extension/state';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { TextDocumentChangeEvent, TextDocumentChangeReason } from 'vscode';
 

@@ -1,6 +1,6 @@
 import { ILogger } from '#domain/logging';
 import { Disposable } from '#domain/utils';
-import { VersionLensState } from '#extension';
+import { VersionLensState } from '#extension/state';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { OutputChannel, window } from 'vscode';
 

@@ -1,7 +1,7 @@
 import { ILogger } from '#domain/logging';
 import { SuggestionTypes, mapToSuggestionUpdate } from '#domain/packages';
 import { Disposable } from '#domain/utils';
-import { VersionLensState } from '#extension';
+import { VersionLensState } from '#extension/state';
 import { SuggestionCodeLens } from '#extension/suggestions';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { WorkspaceEdit, workspace } from 'vscode';
