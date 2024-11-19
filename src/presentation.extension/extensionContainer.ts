@@ -68,11 +68,6 @@ function addExtensionServices(services: IServiceCollection) {
   addEditorDependencyCache(services);
   addGetSuggestionsUseCase(services);
 
-  // events
-  addEventServices(services);
-}
-
-function addEventServices(services) {
   // commands
   addOnClearCache(services);
   addOnFileLinkClick(services);

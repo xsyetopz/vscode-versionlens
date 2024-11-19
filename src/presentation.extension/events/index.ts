@@ -6,7 +6,6 @@ export * from './editorTitleBar/onErrorClick';
 export * from './editorTitleBar/onTogglePrereleases';
 export * from './editorTitleBar/onToggleReleases';
 export * from './editorTitleBar/serviceFactory';
-export * from './iEventServices';
 export * from './install/onPreSaveChanges';
 export * from './install/onSaveChanges';
 export * from './install/serviceFactory';
