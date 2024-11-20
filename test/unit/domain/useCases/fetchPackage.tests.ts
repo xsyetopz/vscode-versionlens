@@ -1,24 +1,24 @@
 import { ClientResponseSource } from '#domain/clients';
-import { ILogger } from '#domain/logging';
+import type { ILogger } from '#domain/logging';
 import {
+  type IPackageClient,
+  type PackageResponse,
+  type TPackageClientRequest,
+  type TPackageClientResponse,
+  type TPackageNameVersion,
+  type TPackageResource,
+  type TPackageSuggestion,
   createPackageNameVersion,
   createPackageResource,
-  IPackageClient,
   PackageCache,
   PackageDependency,
-  PackageResponse,
   PackageSourceType,
   PackageVersionType,
-  SuggestionTypes,
-  TPackageClientRequest,
-  TPackageClientResponse,
-  TPackageNameVersion,
-  TPackageResource,
-  TPackageSuggestion
+  SuggestionTypes
 } from '#domain/packages';
 import { createTextRange, PackageDescriptor } from '#domain/parsers';
-import { IProviderConfig, ISuggestionProvider } from '#domain/providers';
-import { FetchPackageSuggestions } from '#domain/useCases';
+import type { IProviderConfig, ISuggestionProvider } from '#domain/providers';
+import { FetchPackage } from '#domain/useCases';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
@@ -38,9 +38,9 @@ type TestContext = {
   testRequest: TPackageClientRequest<any>;
 }
 
-export const fetchPackageSuggestionsTests = <any>{
+export const fetchPackageTests = <any>{
 
-  [test.title]: FetchPackageSuggestions.name,
+  [test.title]: FetchPackage.name,
 
   beforeEach: function (this: TestContext) {
     // mocks
@@ -138,7 +138,7 @@ export const fetchPackageSuggestionsTests = <any>{
     when(this.clientMock.fetchPackage(this.testRequest)).thenResolve(testRespDoc);
 
     // create the use case
-    const useCase = new FetchPackageSuggestions(this.testPackageCache, this.testLogger);
+    const useCase = new FetchPackage(this.testPackageCache, this.testLogger);
 
     // test
     const actual = await useCase.execute(this.testProvider, this.testRequest);
@@ -188,7 +188,7 @@ export const fetchPackageSuggestionsTests = <any>{
       when(this.clientMock.fetchPackage(this.testRequest)).thenResolve(testRespDoc);
 
       // create the use case
-      const useCase = new FetchPackageSuggestions(this.testPackageCache, this.testLogger);
+      const useCase = new FetchPackage(this.testPackageCache, this.testLogger);
 
       // test
       await useCase.execute(this.testProvider, this.testRequest);

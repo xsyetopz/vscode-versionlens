@@ -1,8 +1,8 @@
 import { CachingOptions } from '#domain/caching';
-import { ILogger } from '#domain/logging';
-import { DependencyCache, PackageResponse, SuggestionTypes } from '#domain/packages';
-import { IProviderConfig, ISuggestionProvider } from '#domain/providers';
-import { FetchProjectSuggestions, GetSuggestions } from '#domain/useCases';
+import type { ILogger } from '#domain/logging';
+import { type PackageResponse, DependencyCache, SuggestionTypes } from '#domain/packages';
+import type { IProviderConfig, ISuggestionProvider } from '#domain/providers';
+import { FetchPackages, GetSuggestions } from '#domain/useCases';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
@@ -14,7 +14,7 @@ type TestContext = {
   mockConfig: IProviderConfig;
   mockProvider: ISuggestionProvider;
   mockCachingOpts: CachingOptions;
-  mockFetchProjectSuggestions: FetchProjectSuggestions;
+  mockFetchProjectSuggestions: FetchPackages;
 }
 
 export const getSuggestionsTests = {
@@ -28,7 +28,7 @@ export const getSuggestionsTests = {
     this.mockConfig = mock<IProviderConfig>()
     this.mockLogger = mock<ILogger>();
     this.mockProvider = mock<ISuggestionProvider>();
-    this.mockFetchProjectSuggestions = mock<FetchProjectSuggestions>();
+    this.mockFetchProjectSuggestions = mock<FetchPackages>();
   },
 
   "$i: return expected suggestions.length==$3 and includePrereleases==$2": [
@@ -129,10 +129,7 @@ export const getSuggestionsTests = {
       ).once();
 
       verify(
-        this.mockFileDependencyCache.get(
-          testProvider.name,
-          testPackageFilePath
-        )
+        this.mockFileDependencyCache.get(testProvider.name, testPackageFilePath)
       ).never();
 
       verify(

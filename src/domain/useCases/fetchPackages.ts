@@ -1,16 +1,16 @@
+import type { ILogger } from '#domain/logging';
+import { type PackageResponse, type TPackageClientRequest, PackageDependency } from '#domain/packages';
+import type { ISuggestionProvider } from '#domain/providers';
+import { FetchPackage } from '#domain/useCases';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { ILogger } from '#domain/logging';
-import { PackageDependency, PackageResponse, TPackageClientRequest } from '#domain/packages';
-import { ISuggestionProvider } from '#domain/providers';
-import { FetchPackageSuggestions } from '#domain/useCases';
 
-export class FetchProjectSuggestions {
+export class FetchPackages {
 
   constructor(
-    private readonly fetchPackageSuggestions: FetchPackageSuggestions,
+    private readonly fetchPackage: FetchPackage,
     private readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("fetchPackageSuggestions", fetchPackageSuggestions);
+    throwUndefinedOrNull("fetchPackage", fetchPackage);
     throwUndefinedOrNull("logger", logger);
   }
 
@@ -44,7 +44,7 @@ export class FetchProjectSuggestions {
       };
 
       // get the fetch task
-      const promisedFetch = this.fetchPackageSuggestions.execute(provider, clientRequest);
+      const promisedFetch = this.fetchPackage.execute(provider, clientRequest);
 
       // queue the fetch task
       promises.push(promisedFetch);

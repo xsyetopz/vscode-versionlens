@@ -1,33 +1,33 @@
-import { ILogger } from '#domain/logging';
+import type { ILogger } from '#domain/logging';
 import {
+  type PackageResponse,
+  type TPackageClientRequest,
   createPackageResource,
   PackageCache,
   PackageDependency,
-  PackageResponse,
-  PackageVersionType,
-  TPackageClientRequest
+  PackageVersionType
 } from '#domain/packages';
 import { createTextRange, PackageDescriptor } from '#domain/parsers';
-import { ISuggestionProvider } from '#domain/providers';
-import { FetchPackageSuggestions, FetchProjectSuggestions } from '#domain/useCases';
+import type { ISuggestionProvider } from '#domain/providers';
+import { FetchPackage, FetchPackages } from '#domain/useCases';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 type TestContext = {
-  fetchPackageSuggestionsMock: FetchPackageSuggestions,
+  fetchPackageSuggestionsMock: FetchPackage,
   loggerMock: ILogger,
   suggestionProviderMock: ISuggestionProvider,
   testPackageCache: PackageCache
 }
 
-export const fetchProjectSuggestionsTests = {
+export const fetchPackagesTests = {
 
-  [test.title]: FetchProjectSuggestions.name,
+  [test.title]: FetchPackages.name,
 
   beforeEach: function (this: TestContext) {
     this.loggerMock = mock<ILogger>();
-    this.fetchPackageSuggestionsMock = mock<FetchPackageSuggestions>();
+    this.fetchPackageSuggestionsMock = mock<FetchPackage>();
 
     this.suggestionProviderMock = mock<ISuggestionProvider>();
     when(this.suggestionProviderMock.name).thenReturn("test provider");
@@ -42,7 +42,7 @@ export const fetchProjectSuggestionsTests = {
       const testProjectPath = 'test/project/path';
       const testPackagePath = 'test/package/path';
 
-      const usecase = new FetchProjectSuggestions(
+      const usecase = new FetchPackages(
         instance(this.fetchPackageSuggestionsMock),
         instance(this.loggerMock)
       );

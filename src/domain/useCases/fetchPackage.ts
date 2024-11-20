@@ -1,18 +1,18 @@
-import { ILogger } from '#domain/logging';
+import type { ILogger } from '#domain/logging';
 import {
-  IPackageClient,
+  type IPackageClient,
+  type PackageResponse,
+  type TPackageClientRequest,
+  type TPackageClientResponse,
   PackageCache,
-  PackageResponse,
   ResponseFactory,
-  TPackageClientRequest,
-  TPackageClientResponse,
   getProjectVersionSuggestions
 } from '#domain/packages';
 import { PackageDescriptorType } from '#domain/parsers';
-import { ISuggestionProvider } from '#domain/providers';
+import type { ISuggestionProvider } from '#domain/providers';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
-export class FetchPackageSuggestions {
+export class FetchPackage {
 
   constructor(
     private readonly packageCache: PackageCache,
@@ -33,7 +33,7 @@ export class FetchPackageSuggestions {
     // capture start time
     const startedAt = performance.now();
 
-    // check if this a project version
+    // check if this is a project version dep
     if (parsedDependency.descriptors.hasType(PackageDescriptorType.projectVersion)) {
       return getProjectVersionSuggestions(parsedDependency.package.version)
         .map(
@@ -50,7 +50,7 @@ export class FetchPackageSuggestions {
       requestedPackage,
       async () => {
         source = "client";
-        return await this.fetchPackage(provider.client, request);
+        return await this.fetchFromClient(provider.client, request);
       },
       provider.config.caching.duration
     );
@@ -72,7 +72,7 @@ export class FetchPackageSuggestions {
     );
   }
 
-  async fetchPackage(
+  async fetchFromClient(
     client: IPackageClient<any>,
     request: TPackageClientRequest<any>
   ): Promise<TPackageClientResponse> {
@@ -91,7 +91,7 @@ export class FetchPackageSuggestions {
       // unexpected error
       this.logger.error(
         `%s caught an exception.\n Package: %j\n Error: %j`,
-        this.fetchPackage.name,
+        this.fetchFromClient.name,
         requestedPackage,
         error
       );

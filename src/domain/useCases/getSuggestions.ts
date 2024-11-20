@@ -1,23 +1,23 @@
-import { ILogger } from '#domain/logging';
+import type { ILogger } from '#domain/logging';
 import {
+  type PackageResponse,
   DependencyCache,
-  PackageResponse,
   SuggestionStatusText,
   SuggestionTypes
 } from '#domain/packages';
-import { ISuggestionProvider } from '#domain/providers';
-import { FetchProjectSuggestions } from '#domain/useCases';
+import type { ISuggestionProvider } from '#domain/providers';
+import { FetchPackages } from '#domain/useCases';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { dirname } from 'node:path';
 
 export class GetSuggestions {
 
   constructor(
-    readonly fetchSuggestions: FetchProjectSuggestions,
+    readonly fetchPackages: FetchPackages,
     readonly dependencyCaches: DependencyCache[],
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("fetchSuggestions", fetchSuggestions);
+    throwUndefinedOrNull("fetchPackages", fetchPackages);
     throwUndefinedOrNull("dependencyCaches", dependencyCaches);
     throwUndefinedOrNull("logger", logger);
   }
@@ -45,7 +45,7 @@ export class GetSuggestions {
 
     // fetch the package suggestions
     const packagePath = dirname(packageFilePath);
-    const suggestions = await this.fetchSuggestions.execute(
+    const suggestions = await this.fetchPackages.execute(
       provider,
       projectPath,
       packagePath,

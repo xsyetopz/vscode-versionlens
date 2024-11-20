@@ -1,14 +1,14 @@
-import { CachingOptions, IExpiryCache } from '#domain/caching';
+import { type IExpiryCache, CachingOptions } from '#domain/caching';
 import { HttpOptions } from '#domain/clients';
 import { Config } from '#domain/configuration';
-import { IServiceCollectionFactory, IServiceProvider } from '#domain/di';
-import { ILogger, ILoggerChannel, LoggingOptions } from '#domain/logging';
-import { DependencyCache, IPackageFileWatcher, PackageCache } from '#domain/packages';
-import { ISuggestionProvider } from '#domain/providers';
-import { IStorage } from '#domain/storage';
+import type { IServiceCollectionFactory, IServiceProvider } from '#domain/di';
+import { type ILogger, type ILoggerChannel, LoggingOptions } from '#domain/logging';
+import { type IPackageFileWatcher, DependencyCache, PackageCache } from '#domain/packages';
+import type { ISuggestionProvider } from '#domain/providers';
+import type { IStorage } from '#domain/storage';
 import {
-  FetchPackageSuggestions,
-  FetchProjectSuggestions,
+  FetchPackage,
+  FetchPackages,
   GetDependencyChanges,
   GetSuggestionProvider,
   GetSuggestions
@@ -48,9 +48,9 @@ export interface IDomainServices {
 
   GetSuggestionProvider: GetSuggestionProvider;
 
-  fetchProjectSuggestions: FetchProjectSuggestions;
+  fetchPackages: FetchPackages;
 
-  fetchPackageSuggestions: FetchPackageSuggestions;
+  fetchPackage: FetchPackage;
 
   getSuggestions: GetSuggestions;
 

@@ -1,16 +1,16 @@
 import { CachingOptions, MemoryExpiryCache } from '#domain/caching';
 import { HttpOptions } from '#domain/clients';
-import { Config, TConfigSectionResolver } from '#domain/configuration';
-import { IServiceCollection, ServiceInjectionMode } from '#domain/di';
-import { ILoggingOptions, LoggingOptions } from '#domain/logging';
+import { type TConfigSectionResolver, Config } from '#domain/configuration';
+import { type IServiceCollection, ServiceInjectionMode } from '#domain/di';
+import { type ILoggingOptions, LoggingOptions } from '#domain/logging';
 import { createWinstonLogger, OutputChannelTransport } from '#domain/logging/winston';
 import { DependencyCache, PackageCache } from '#domain/packages';
 import { importSuggestionProviders } from '#domain/providers';
-import { IDomainServices } from '#domain/services';
+import type { IDomainServices } from '#domain/services';
 import { FileSystemStorage } from '#domain/storage';
 import {
-  FetchPackageSuggestions,
-  FetchProjectSuggestions,
+  FetchPackage,
+  FetchPackages,
   GetDependencyChanges,
   GetSuggestionProvider
 } from '#domain/useCases';
@@ -107,23 +107,23 @@ export function addGetDependencyChangesUseCase(services: IServiceCollection) {
 }
 
 export function addFetchProjectSuggestionsUseCase(services: IServiceCollection) {
-  const serviceName = nameOf<IDomainServices>().fetchProjectSuggestions;
+  const serviceName = nameOf<IDomainServices>().fetchPackages;
   services.addSingleton(
     serviceName,
     (container: IDomainServices) =>
-      new FetchProjectSuggestions(
-        container.fetchPackageSuggestions,
+      new FetchPackages(
+        container.fetchPackage,
         container.logger.child({ logGroup: serviceName })
       )
   );
 }
 
 export function addFetchPackageSuggestionsUseCase(services: IServiceCollection) {
-  const serviceName = nameOf<IDomainServices>().fetchPackageSuggestions;
+  const serviceName = nameOf<IDomainServices>().fetchPackage;
   services.addSingleton(
     serviceName,
     (container: IDomainServices) =>
-      new FetchPackageSuggestions(
+      new FetchPackage(
         container.packageCache,
         container.logger.child({ logGroup: serviceName })
       )
