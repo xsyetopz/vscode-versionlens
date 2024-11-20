@@ -35,9 +35,10 @@ export class NuGetResourceClient {
     catch (error) {
       const responseError = error as HttpClientResponse;
       this.logger.error(
-        "Could not resolve nuget service index. %O",
+        "Could not resolve nuget service index %s. %O",
+        source.url,
         responseError
-      )
+      );
       return "";
     }
   }

@@ -3,7 +3,7 @@ import type { ILogger } from '#domain/logging';
 import { NuGetResourceClient } from '#domain/providers/dotnet';
 import { RegistryProtocols } from '#domain/utils';
 import assert from 'node:assert';
-import { anything, capture, instance, mock, when } from 'ts-mockito';
+import { anything, capture, instance, mock, verify, when } from 'ts-mockito';
 import Fixtures from './fixtures/nugetResources';
 
 let jsonClientMock: IJsonHttpClient;
@@ -35,26 +35,34 @@ export const NuGetResourceClientTests = {
       };
 
       const expected = 'https://api.nuget.org/v3-flatcontainer1/';
-
       when(jsonClientMock.get(anything())).thenResolve(mockResponse)
-
       const cut = new NuGetResourceClient(instance(jsonClientMock), instance(loggerMock))
 
-      return cut.fetchResource(testSource)
-        .then(actualSources => {
-          assert.equal(actualSources, expected)
+      // test
+      const actual = await cut.fetchResource(testSource);
 
-          const [actualUrl] = capture(jsonClientMock.get).first();
-          assert.equal(actualUrl, testSource.url);
-        });
+      // verify
+      verify(
+        loggerMock.debug(
+          "Resolved PackageBaseAddressService endpoint: %O",
+          actual
+        )
+      ).once();
+
+      // assert
+      assert.equal(actual, expected);
+
+      const [actualUrl] = capture(jsonClientMock.get).first();
+      assert.equal(actualUrl, testSource.url);
+      assert.equal(actual, expected);
     },
 
     "returns empty when the resource cannot be obtained": async () => {
-
+      const testResourceUrl = 'https://test'
       const testSource = {
         enabled: true,
         machineWide: false,
-        url: 'https://test',
+        url: testResourceUrl,
         protocol: RegistryProtocols.https
       };
 
@@ -67,22 +75,24 @@ export const NuGetResourceClientTests = {
 
       const expectedUrl = "";
 
-      when(jsonClientMock.get(anything(), anything(), anything()))
-        .thenReject(<any>errorResponse)
+      when(jsonClientMock.get(anything())).thenReject(<any>errorResponse);
 
-      const cut = new NuGetResourceClient(
-        instance(jsonClientMock),
-        instance(loggerMock)
-      )
+      const cut = new NuGetResourceClient(instance(jsonClientMock), instance(loggerMock));
 
-      await cut.fetchResource(testSource)
-        .then(actualUrl => {
-          assert.equal(actualUrl, expectedUrl)
-        })
-        .catch(err => {
-          assert.fail();
-        });
+      // test
+      const actual = await cut.fetchResource(testSource)
 
+      // verify
+      verify(
+        loggerMock.error(
+          "Could not resolve nuget service index %s. %O",
+          testResourceUrl,
+          errorResponse
+        )
+      ).once();
+
+      // assert
+      assert.equal(actual, expectedUrl);
     },
 
   }
