@@ -1,18 +1,18 @@
+import type { IDomainServices } from '#domain';
 import { CachingOptions } from '#domain/caching';
 import { HttpOptions, createJsonClient, createShellClient } from '#domain/clients';
-import { IServiceCollection } from '#domain/di';
-import { IProviderServices } from '#domain/providers';
+import type { IServiceCollection } from '#domain/di';
+import type { IProviderServices } from '#domain/providers';
 import {
+  type IDotNetServices,
   DotNetCli,
   DotNetConfig,
   DotNetFeatures,
   DotNetSuggestionProvider,
-  IDotNetServices,
   NuGetPackageClient,
   NuGetResourceClient,
   NugetOptions
 } from '#domain/providers/dotnet';
-import { IDomainServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 
 export function addCachingOptions(services: IServiceCollection) {

@@ -1,6 +1,6 @@
+import type { IDomainServices } from '#domain';
 import type { IServiceCollection } from '#domain/di';
 import { DependencyCache } from '#domain/packages';
-import type { IDomainServices } from '#domain/services';
 import { GetSuggestions } from '#domain/useCases';
 import { DisposableArray, nameOf } from '#domain/utils';
 import { type IExtensionServices, VersionLensExtension } from '#extension';

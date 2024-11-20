@@ -1,5 +1,5 @@
+import type { IDomainServices } from '#domain';
 import type { IServiceCollection } from '#domain/di';
-import type { IDomainServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 import { PackageFileWatcher } from '#infrastructure/vscode';
 import { workspace } from 'vscode';

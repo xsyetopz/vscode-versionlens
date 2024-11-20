@@ -1,15 +1,15 @@
+import type { IDomainServices } from '#domain';
 import { CachingOptions } from '#domain/caching';
 import { createJsonClient, HttpOptions } from '#domain/clients';
-import { IServiceCollection } from '#domain/di';
-import { IProviderServices } from '#domain/providers';
+import type { IServiceCollection } from '#domain/di';
+import type { IProviderServices } from '#domain/providers';
 import {
+  type IDubServices,
   DubClient,
   DubConfig,
   DubFeatures,
-  DubSuggestionProvider,
-  IDubServices
+  DubSuggestionProvider
 } from '#domain/providers/dub';
-import { IDomainServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 
 export function addCachingOptions(services: IServiceCollection) {

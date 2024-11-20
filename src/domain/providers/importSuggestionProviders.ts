@@ -1,7 +1,11 @@
-import { IServiceCollectionFactory, IServiceProvider } from '#domain/di';
-import { ILogger } from '#domain/logging';
-import { IProviderModule, IProviderServices, ISuggestionProvider } from '#domain/providers';
-import { IDomainServices } from '#domain/services';
+import type { IDomainServices } from '#domain';
+import type { IServiceCollectionFactory, IServiceProvider } from '#domain/di';
+import type { ILogger } from '#domain/logging';
+import type {
+  IProviderModule,
+  IProviderServices,
+  ISuggestionProvider
+} from '#domain/providers';
 import { nameOf } from '#domain/utils';
 
 export function importSuggestionProviders(

@@ -1,5 +1,3 @@
-import { TConfigSectionResolver } from '#domain/configuration';
-import { IServiceCollection } from '#domain/di';
 import {
   addAppConfig,
   addCachingOptions,
@@ -16,7 +14,9 @@ import {
   addSuggestionProviders,
   addWinstonChannelLogger,
   addWinstonLogger
-} from '#domain/services';
+} from '#domain';
+import type { TConfigSectionResolver } from '#domain/configuration';
+import type { IServiceCollection } from '#domain/di';
 
 export function addDomainServices(
   services: IServiceCollection,

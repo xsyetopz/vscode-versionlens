@@ -1,18 +1,18 @@
+import type { IDomainServices } from '#domain';
 import { CachingOptions } from '#domain/caching';
 import { createJsonClient, HttpOptions } from '#domain/clients';
-import { IServiceCollection } from '#domain/di';
-import { IProviderServices } from '#domain/providers';
+import type { IServiceCollection } from '#domain/di';
+import type { IProviderServices } from '#domain/providers';
 import {
+  type INpmServices,
   GitHubClient,
   GitHubOptions,
-  INpmServices,
   NpmConfig,
   NpmFeatures,
   NpmPackageClient,
   NpmRegistryClient,
   NpmSuggestionProvider
 } from '#domain/providers/npm';
-import { IDomainServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 import NpmRegistryFetch from 'npm-registry-fetch';
 

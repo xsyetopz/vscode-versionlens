@@ -1,7 +1,7 @@
+import type { IDomainServices } from '#domain';
 import type { IServiceProvider } from '#domain/di';
 import type { ILogger, ILoggingOptions } from '#domain/logging';
 import type { IPackageFileWatcher } from '#domain/packages';
-import type { IDomainServices } from '#domain/services';
 import { nameOf, readJsonFile } from '#domain/utils';
 import {
   type IExtensionServices,

@@ -1,15 +1,15 @@
+import type { IDomainServices } from '#domain';
 import { CachingOptions } from '#domain/caching';
 import { createHttpClient, HttpOptions } from '#domain/clients';
-import { IServiceCollection } from '#domain/di';
-import { IProviderServices } from '#domain/providers';
+import type { IServiceCollection } from '#domain/di';
+import type { IProviderServices } from '#domain/providers';
 import {
+  type IGoService,
   GoClient,
   GoConfig,
   GoFeatures,
-  GoSuggestionProvider,
-  IGoService
+  GoSuggestionProvider
 } from '#domain/providers/golang';
-import { IDomainServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 
 export function addCachingOptions(services: IServiceCollection) {

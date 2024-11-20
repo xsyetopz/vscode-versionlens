@@ -1,5 +1,5 @@
+import type { IDomainServices } from '#domain';
 import type { IServiceCollection } from '#domain/di';
-import type { IDomainServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 import type { IExtensionServices } from '#extension';
 import { OnPreSaveChanges, OnSaveChanges } from '#extension/events';

@@ -1,17 +1,22 @@
+import type { IDomainServices } from '#domain';
 import {
-  IServiceCollection,
-  IServiceProvider,
+  type IServiceCollection,
+  type IServiceProvider,
+  type TServiceResolver,
   ServiceInjectionMode,
-  ServiceLifetime,
-  TServiceResolver
+  ServiceLifetime
 } from '#domain/di';
 import { AwilixServiceProvider, registerAsyncSingletons } from '#domain/di/awilix';
-import { IDomainServices } from '#domain/services';
-import { AsyncFunction, IDisposable, KeyDictionary, nameOf } from '#domain/utils';
 import {
+  type IDisposable,
+  type KeyDictionary,
+  AsyncFunction,
+  nameOf
+} from '#domain/utils';
+import {
+  type AwilixContainer,
   asFunction,
   asValue,
-  AwilixContainer,
   createContainer
 } from 'awilix';
 

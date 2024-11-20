@@ -1,7 +1,7 @@
-import { IServiceCollection } from '#domain/di';
-import { IDomainServices } from '#domain/services';
+import type { IDomainServices } from '#domain';
+import type { IServiceCollection } from '#domain/di';
 import { nameOf } from '#domain/utils';
-import { IExtensionServices } from '#extension';
+import type { IExtensionServices } from '#extension';
 import {
   OnActiveTextEditorChange,
   OnTextDocumentChange,

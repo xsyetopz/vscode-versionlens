@@ -4,6 +4,7 @@
   "private": true,
   "main": "./dist/src/presentation.extension/activate.js",
   "imports": {
+    "#domain": "./dist/src/domain/index.js",
     "#domain/*": "./dist/src/domain/*/index.js",
     "#domain/providers/*": "./dist/src/domain/providers/*/index.js",
     "#infrastructure": "./dist/src/infrastructure/index.js",

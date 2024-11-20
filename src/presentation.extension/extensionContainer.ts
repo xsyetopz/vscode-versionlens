@@ -1,6 +1,6 @@
+import { type IDomainServices, addDomainServices } from '#domain';
 import type { IServiceCollection, IServiceProvider } from '#domain/di';
 import { AwilixServiceCollectionFactory } from '#domain/di/awilix';
-import { type IDomainServices, addDomainServices } from '#domain/services';
 import { nameOf } from '#domain/utils';
 import {
   VersionLensExtension,

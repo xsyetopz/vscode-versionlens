@@ -1,3 +1,4 @@
+import type { IDomainServices } from '#domain';
 import { CachingOptions, MemoryExpiryCache } from '#domain/caching';
 import { HttpOptions } from '#domain/clients';
 import { type TConfigSectionResolver, Config } from '#domain/configuration';
@@ -6,7 +7,6 @@ import { type ILoggingOptions, LoggingOptions } from '#domain/logging';
 import { createWinstonLogger, OutputChannelTransport } from '#domain/logging/winston';
 import { DependencyCache, PackageCache } from '#domain/packages';
 import { importSuggestionProviders } from '#domain/providers';
-import type { IDomainServices } from '#domain/services';
 import { FileSystemStorage } from '#domain/storage';
 import {
   FetchPackage,
