@@ -4,8 +4,8 @@ export * as ClientResponseFactory from './factories/packageClientResponseFactory
 export * as ResponseFactory from './factories/packageResponseFactory';
 export * as PackageStatusFactory from './factories/packageStatusFactory';
 export * as UpdateableFactory from './factories/packageUpdateableFactory';
-export * from './models/packageDependency';
 export * from './packageCache';
+export * from './packageDependency';
 export * from "./suggestions";
 export * from './utils/defaultReplaceFn';
 export * from './utils/packageResponseMappers';

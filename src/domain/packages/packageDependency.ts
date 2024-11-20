@@ -1,5 +1,5 @@
-import { TPackageResource } from '#domain/packages';
-import { PackageDescriptor, TPackageTextRange } from '#domain/parsers';
+import type { TPackageResource } from '#domain/packages';
+import type { PackageDescriptor, TPackageTextRange } from '#domain/parsers';
 
 export class PackageDependency {
 
