@@ -31,10 +31,10 @@ export class NuGetPackageClient implements IPackageClient<NuGetClientData> {
     request: TPackageClientRequest<NuGetClientData>
   ): Promise<TPackageClientResponse> {
     const urls = request.clientData.serviceUrls;
-    const autoCompleteUrl = urls[request.attempt];
+    const resourceUrl = urls[request.attempt];
 
     try {
-      return await this.createRemotePackageDocument(autoCompleteUrl, request);
+      return await this.fetch(resourceUrl, request);
     }
     catch (error) {
       const errorResponse = error as HttpClientResponse;
@@ -42,7 +42,7 @@ export class NuGetPackageClient implements IPackageClient<NuGetClientData> {
       this.logger.debug(
         "request failed for '%s' from '%s': %O",
         request.parsedDependency.package.name,
-        autoCompleteUrl,
+        resourceUrl,
         errorResponse
       );
 
@@ -74,12 +74,12 @@ export class NuGetPackageClient implements IPackageClient<NuGetClientData> {
     };
   }
 
-  async createRemotePackageDocument(
-    url: string,
+  async fetch(
+    resourceUrl: string,
     request: TPackageClientRequest<NuGetClientData>
   ): Promise<TPackageClientResponse> {
     const requestedPackage = request.parsedDependency.package;
-    const packageUrl = ensureEndSlash(url)
+    const packageUrl = ensureEndSlash(resourceUrl)
       + `${requestedPackage.name.toLowerCase()}/index.json`;
 
     const jsonResponse = await this.jsonClient.get(packageUrl);
