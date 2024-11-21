@@ -53,12 +53,12 @@ export const JsonClientRequestTests = {
       ).thenResolve(testResponse)
 
       const rut = new JsonHttpClient(instance(httpClientMock));
-      await rut.get(
-        testUrl,
-        testQueryParams
-      ).then(response => {
-        assert.deepEqual(response, expectedCacheData);
-      })
+
+      // test
+      const actual = await rut.get(testUrl, testQueryParams);
+
+      // assert
+      assert.deepEqual(actual, expectedCacheData);
     },
 
   },
