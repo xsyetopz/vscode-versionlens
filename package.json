@@ -280,13 +280,6 @@
           ],
           "description": "Specifies how long (in minutes) version suggestions will be cached."
         },
-        "versionlens.npm.http.strictSSL": {
-          "type": [
-            "null",
-            "boolean"
-          ],
-          "description": "When set to 'true' the server will reject any connection which is not authorized within the list of supplied CAs. Set to false for unsigned. Overrides 'versionlens.http.strictSSL'"
-        },
         "versionlens.npm.dependencyProperties": {
           "type": "array",
           "items": {
