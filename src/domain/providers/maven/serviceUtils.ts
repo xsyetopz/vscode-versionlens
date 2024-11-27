@@ -82,7 +82,6 @@ export function addHttpClient(services: IServiceCollection) {
     (container: IMavenServices & IDomainServices) =>
       createHttpClient(
         container.authorization,
-        container.authenticationSession,
         {
           caching: container.mavenCachingOpts,
           http: container.mavenHttpOpts

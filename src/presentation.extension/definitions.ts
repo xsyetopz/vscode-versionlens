@@ -22,7 +22,6 @@ import type {
 import type {
   AuthenticationInteractions,
   IAuthenticationProviderFactory,
-  UrlAuthenticationSession,
   UrlAuthenticationStore
 } from '#extension/authorization';
 import type { VersionLensState } from '#extension/state';
@@ -75,7 +74,6 @@ export interface IExtensionServices {
   authenticationInteractions: AuthenticationInteractions;
   authenticationProviderFactory: IAuthenticationProviderFactory;
   urlAuthenticationStore: UrlAuthenticationStore;
-  authenticationSession: UrlAuthenticationSession
 
   // command events
   onClearCache: OnClearCache;

@@ -1,4 +1,4 @@
-import type { IAuthorization, IUrlAuthenticationSession } from '#domain/authorization';
+import type { IAuthorization } from '#domain/authorization';
 import {
   type HttpClientOptions,
   type HttpClientResponse,
@@ -20,12 +20,10 @@ export class RequestLightClient implements IHttpClient {
   constructor(
     readonly requestLight: IXhrRequest,
     readonly authorization: IAuthorization,
-    readonly authenticationSession: IUrlAuthenticationSession,
     readonly options: HttpClientOptions
   ) {
     throwUndefinedOrNull('requestLight', requestLight);
     throwUndefinedOrNull('authorization', authorization);
-    throwUndefinedOrNull('authenticationSession', authenticationSession);
     throwUndefinedOrNull('options', options);
   }
 
@@ -73,8 +71,8 @@ export class RequestLightClient implements IHttpClient {
 
       // retry when the status is 401
       if (errorResponse.status === 401) {
-        const retry = await this.tryAuthorize(host);
-        if (retry) return await this.get(baseUrl, query, headers);
+        const consent = await this.authorization.getConsent(host);
+        if (consent) return await this.get(baseUrl, query, headers);
       }
 
       // throw the error response
@@ -87,22 +85,6 @@ export class RequestLightClient implements IHttpClient {
 
       throw result;
     }
-  }
-
-  async tryAuthorize(host: string): Promise<Boolean> {
-    const retry = await this.authenticationSession.hasRetries(host);
-    if (retry === false) return false;
-
-    // update retries made
-    this.authenticationSession.incrementRetries(host);
-
-    // check user gave consent
-    const consent = await this.authorization.getConsent(host);
-
-    // update consent
-    this.authenticationSession.updateConsent(host, consent);
-
-    return consent;
   }
 
 }

@@ -1,10 +1,10 @@
 import type { ILogger } from '#domain/logging';
 import {
+  type AuthenticationInteractions,
   type IAuthenticationProviderFactory,
   type IVsCodeAuthentication,
   type UrlAuthenticationData,
   type UrlAuthenticationStore,
-  AuthenticationInteractions,
   AuthenticationScheme,
   Authorization,
   createEmptyUrlAuthData,
@@ -49,6 +49,30 @@ export const AuthorizationTests = {
       instance(this.mockAuthentication),
       instance(this.mockLogger)
     );
+  },
+
+  isUrlAuthorized: {
+
+    "case $i: returns $2": [
+      [undefined, false],
+      [{ scheme: AuthenticationScheme.NotSet }, false],
+      [{ scheme: AuthenticationScheme.Basic }, true],
+      function (testUrlAuthData: undefined | UrlAuthenticationData, expected: boolean) {
+        const testUrl = 'https://anything';
+
+        when(this.mockUrlAuthStore.get(testUrl)).thenReturn(testUrlAuthData);
+
+        // test
+        const actual = this.testAuthorization.isUrlAuthorized(testUrl);
+
+        // verify
+        verify(this.mockUrlAuthStore.get(testUrl)).once();
+
+        // assert
+        assert.equal(actual, expected);
+      }
+    ],
+
   },
 
   getToken: {
@@ -145,6 +169,23 @@ export const AuthorizationTests = {
 
   getConsent: {
 
+    "returns false when the url auth data is already unconsented": async function (this: TestContext) {
+      const testUrl = 'https://anything';
+      const testUrlAuthData: UrlAuthenticationData = createEmptyUrlAuthData(testUrl);
+
+      when(this.mockUrlAuthStore.get(testUrl)).thenReturn(testUrlAuthData);
+
+      // test
+      const actual = await this.testAuthorization.getConsent(testUrl);
+
+      // verify
+      verify(this.mockUrlAuthStore.get(testUrl)).once();
+      verify(this.mockInteractions.chooseAuthenticationType(testUrl)).never();
+
+      // assert
+      assert.equal(actual, false);
+    },
+
     "returns false and stores empty auth data when no auth type was choosen": async function (this: TestContext) {
       const testUrl = 'https://anything';
 
@@ -154,6 +195,7 @@ export const AuthorizationTests = {
       const actual = await this.testAuthorization.getConsent(testUrl);
 
       // verify
+      verify(this.mockUrlAuthStore.get(testUrl)).once();
       verify(this.mockInteractions.chooseAuthenticationType(testUrl)).once();
       verify(
         this.mockUrlAuthStore.update(
@@ -184,6 +226,7 @@ export const AuthorizationTests = {
       await this.testAuthorization.getConsent(testUrl);
 
       // verify
+      verify(this.mockUrlAuthStore.get(testUrl)).once();
       verify(this.mockInteractions.chooseAuthenticationType(testUrl)).once();
       verify(this.mockProviderFactory.registerCustomAuthProvider(testScheme, testUrl)).once();
     },
@@ -217,6 +260,7 @@ export const AuthorizationTests = {
       const actual = await this.testAuthorization.getConsent(testUrl);
 
       // verify
+      verify(this.mockUrlAuthStore.get(testUrl)).once();
       verify(this.mockInteractions.chooseAuthenticationType(testUrl)).once();
       verify(
         this.mockAuthentication.getSession(
@@ -260,6 +304,7 @@ export const AuthorizationTests = {
       const actual = await this.testAuthorization.getConsent(testUrl);
 
       // verify
+      verify(this.mockUrlAuthStore.get(testUrl)).once();
       verify(this.mockInteractions.chooseAuthenticationType(testUrl)).once();
       verify(
         this.mockAuthentication.getSession(

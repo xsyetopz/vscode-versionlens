@@ -16,7 +16,6 @@ export function addOnRemoveUrlAuthentication(
       // create the event handler
       const handler = new OnRemoveUrlAuthentication(
         container.urlAuthenticationStore,
-        container.authenticationSession,
         secrets,
         container.packageCache,
         container.authenticationInteractions,

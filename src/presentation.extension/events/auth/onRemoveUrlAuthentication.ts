@@ -2,7 +2,6 @@ import type { ILogger } from '#domain/logging';
 import type { PackageCache } from '#domain/packages';
 import { Disposable } from '#domain/utils';
 import {
-  type UrlAuthenticationSession,
   type UrlAuthenticationStore,
   AuthenticationInteractions,
 } from '#extension/authorization';
@@ -13,7 +12,6 @@ export class OnRemoveUrlAuthentication extends Disposable {
 
   constructor(
     readonly urlAuthStore: UrlAuthenticationStore,
-    readonly authSession: UrlAuthenticationSession,
     readonly secretStorage: SecretStorage,
     readonly packageCache: PackageCache,
     readonly interactions: AuthenticationInteractions,
@@ -21,7 +19,6 @@ export class OnRemoveUrlAuthentication extends Disposable {
   ) {
     super();
     throwUndefinedOrNull('urlAuthStore', urlAuthStore);
-    throwUndefinedOrNull('authSession', authSession);
     throwUndefinedOrNull('secretStorage', secretStorage);
     throwUndefinedOrNull('packageCache', packageCache);
     throwUndefinedOrNull('interactions', interactions);
@@ -48,9 +45,6 @@ export class OnRemoveUrlAuthentication extends Disposable {
 
       // clear secret auth persistence
       await this.secretStorage.delete(authItem.id);
-
-      // clear session memory cache
-      this.authSession.clear(authItem.url);
     }
 
     // clear package cache

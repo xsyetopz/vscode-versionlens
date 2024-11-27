@@ -55,7 +55,6 @@ export function addJsonClient(services: IServiceCollection) {
     (container: IDubServices & IDomainServices) =>
       createJsonClient(
         container.authorization,
-        container.authenticationSession,
         {
           caching: container.dubCachingOpts,
           http: container.dubHttpOpts

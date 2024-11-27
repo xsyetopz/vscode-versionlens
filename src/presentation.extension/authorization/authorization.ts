@@ -27,7 +27,9 @@ export class Authorization implements IAuthorization {
   }
 
   isUrlAuthorized(url: string): boolean {
-    return !!this.urlAuthStore.get(url);
+    const urlAuthInfo = this.urlAuthStore.get(url);
+    if (urlAuthInfo === undefined) return false;
+    return urlAuthInfo.scheme !== AuthenticationScheme.NotSet;
   }
 
   async getToken(url: string): Promise<string | undefined> {
@@ -64,6 +66,12 @@ export class Authorization implements IAuthorization {
   }
 
   async getConsent(url: string): Promise<boolean> {
+    // check url isn't already unconsented
+    const urlAuthInfo = this.urlAuthStore.get(url);
+    if (urlAuthInfo?.scheme === AuthenticationScheme.NotSet) {
+      return false;
+    }
+
     // get the authentication type
     const authType = await this.interactions.chooseAuthenticationType(url);
     if (authType === undefined) {

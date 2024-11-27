@@ -72,7 +72,6 @@ export function addJsonClient(services: IServiceCollection) {
     (container: INpmServices & IDomainServices) =>
       createJsonClient(
         container.authorization,
-        container.authenticationSession,
         {
           caching: container.npmCachingOpts,
           http: container.npmHttpOpts

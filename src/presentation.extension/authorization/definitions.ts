@@ -84,11 +84,6 @@ export type UrlAuthenticationData = {
   isCustomProvider: boolean
 }
 
-export type UrlAuthenticationSessionData = {
-  consent: boolean
-  retries: number
-}
-
 type AuthenticationProviderInfo = {
   scheme: AuthenticationScheme
   label: string

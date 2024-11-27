@@ -1,4 +1,4 @@
-import type { IAuthorization, IUrlAuthenticationSession } from '#domain/authorization';
+import type { IAuthorization } from '#domain/authorization';
 import type { ICachingOptions, IExpiryCache } from '#domain/caching';
 import {
   type IHttpClient,
@@ -23,27 +23,16 @@ export function createShellClient(
 
 export function createHttpClient(
   authorization: IAuthorization,
-  authenticationSession: IUrlAuthenticationSession,
   options: HttpClientOptions
 ): IHttpClient {
-  return new RequestLightClient(
-    RequireLight,
-    authorization,
-    authenticationSession,
-    options
-  );
+  return new RequestLightClient(RequireLight, authorization, options);
 }
 
 export function createJsonClient(
   authorization: IAuthorization,
-  authenticationSession: IUrlAuthenticationSession,
   options: HttpClientOptions
 ): IJsonHttpClient {
   return new JsonHttpClient(
-    createHttpClient(
-      authorization,
-      authenticationSession,
-      options
-    )
+    createHttpClient(authorization, options)
   );
 }

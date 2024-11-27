@@ -36,7 +36,6 @@ import {
   addAuthenticationInteractions,
   addAuthenticationProviderFactory,
   addAuthorization,
-  addUrlAuthenticationSession,
   addUrlAuthenticationStore
 } from './authorization/serviceFactory';
 
@@ -85,7 +84,6 @@ function addExtensionServices(
   addAuthenticationInteractions(services);
   addAuthenticationProviderFactory(services, secrets);
   addUrlAuthenticationStore(services, workspaceState);
-  addUrlAuthenticationSession(services);
   addOnRemoveUrlAuthentication(services, secrets);
 
   // command events

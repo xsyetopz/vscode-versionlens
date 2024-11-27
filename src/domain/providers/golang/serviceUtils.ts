@@ -55,7 +55,6 @@ export function addHttpClient(services: IServiceCollection) {
     (container: IGoService & IDomainServices) =>
       createHttpClient(
         container.authorization,
-        container.authenticationSession,
         {
           caching: container.goCachingOpts,
           http: container.goHttpOpts

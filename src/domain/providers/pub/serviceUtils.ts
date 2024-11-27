@@ -55,7 +55,6 @@ export function addJsonClient(services: IServiceCollection) {
     (container: IPubServices & IDomainServices) =>
       createJsonClient(
         container.authorization,
-        container.authenticationSession,
         {
           caching: container.pubCachingOpts,
           http: container.pubHttpOpts

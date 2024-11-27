@@ -1,5 +1,4 @@
 import type { IDomainServices } from '#domain';
-import { MemoryCache } from '#domain/caching';
 import type { IServiceCollection } from '#domain/di';
 import { nameOf } from '#domain/utils';
 import type { IExtensionServices } from '#extension';
@@ -8,7 +7,6 @@ import {
   type IVsCodeWindow,
   AuthenticationInteractions,
   Authorization,
-  UrlAuthenticationSession,
   UrlAuthenticationStore
 } from '#extension/authorization';
 import { type Memento, type SecretStorage, authentication, window } from 'vscode';
@@ -46,16 +44,6 @@ export function addUrlAuthenticationStore(services: IServiceCollection, persiste
   services.addSingleton(
     serviceName,
     () => new UrlAuthenticationStore(UrlAuthenticationStore.name, persistence)
-  );
-}
-
-export function addUrlAuthenticationSession(services: IServiceCollection) {
-  const serviceName = nameOf<IExtensionServices>().authenticationSession;
-  services.addSingleton(
-    serviceName,
-    () => new UrlAuthenticationSession(
-      new MemoryCache(UrlAuthenticationSession.name)
-    )
   );
 }
 

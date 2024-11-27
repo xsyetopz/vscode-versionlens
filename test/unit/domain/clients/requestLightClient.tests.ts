@@ -1,4 +1,4 @@
-import type { IAuthorization, IUrlAuthenticationSession } from '#domain/authorization';
+import type { IAuthorization } from '#domain/authorization';
 import { type ICachingOptions, CachingOptions } from '#domain/caching';
 import {
   type HttpClientOptions,
@@ -22,7 +22,6 @@ import { anything, capture, deepEqual, instance, mock, verify, when } from 'ts-m
 
 type TestContext = {
   mockAuthorization: IAuthorization
-  mockAuthenticationSession: IUrlAuthenticationSession
   mockCachingOpts: ICachingOptions
   mockHttpOpts: IHttpOptions
   mockRequestLight: IXhrRequest,
@@ -35,7 +34,6 @@ export const RequestLightClientTests = {
 
   beforeEach: function (this: TestContext) {
     this.mockAuthorization = mock<IAuthorization>();
-    this.mockAuthenticationSession = mock<IUrlAuthenticationSession>();
     this.mockCachingOpts = mock(CachingOptions);
     this.mockHttpOpts = mock(HttpOptions);
     this.mockRequestLight = mock<IXhrRequest>();
@@ -58,7 +56,6 @@ export const RequestLightClientTests = {
     this.rut = new RequestLightClient(
       instance(this.mockRequestLight),
       instance(this.mockAuthorization),
-      instance(this.mockAuthenticationSession),
       testOptions
     );
   },
@@ -86,7 +83,6 @@ export const RequestLightClientTests = {
       const rut = new RequestLightClient(
         instance(this.mockRequestLight),
         instance(this.mockAuthorization),
-        instance(this.mockAuthenticationSession),
         testOptions
       );
 
@@ -282,18 +278,15 @@ export const RequestLightClientTests = {
 
       when(this.mockRequestLight.xhr(anything()))
         .thenCall(() => {
-          if (testRetries === 0) return Promise.reject(testResponse);
+          if (testRetries === 0) {
+            testRetries++;
+            return Promise.reject(testResponse);
+          }
 
           testResponse.status = 200;
           testResponse.responseText = expectedData
           return Promise.resolve(testResponse)
         });
-
-      when(this.mockAuthenticationSession.hasRetries(testHost))
-        .thenCall(() => testRetries === 0);
-
-      when(this.mockAuthenticationSession.incrementRetries(testHost))
-        .thenCall(() => testRetries++);
 
       when(this.mockAuthorization.getConsent(testHost)).thenResolve(testConsent);
 
@@ -309,14 +302,11 @@ export const RequestLightClientTests = {
         assert.equal(error.data, expectedData);
       }
 
+      // verify
+      verify(this.mockAuthorization.getConsent(testHost)).once();
+
       // assert
       assert.equal(testRetries, 1);
-
-      // verify
-      verify(this.mockAuthenticationSession.hasRetries(testHost)).once();
-      verify(this.mockAuthenticationSession.incrementRetries(testHost)).once();
-      verify(this.mockAuthorization.getConsent(testHost)).once();
-      verify(this.mockAuthenticationSession.updateConsent(testHost, testConsent)).once();
     }
   ]
 };
