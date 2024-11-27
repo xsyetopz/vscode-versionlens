@@ -1,5 +1,5 @@
-import { DependencyCache } from '#domain/packages';
-import {
+import type { DependencyCache } from '#domain/packages';
+import type {
   OnActiveTextEditorChange,
   OnClearCache,
   OnErrorClick,
@@ -9,6 +9,7 @@ import {
   OnProviderEditorActivated,
   OnProviderTextDocumentChange,
   OnProviderTextDocumentClose,
+  OnRemoveUrlAuthentication,
   OnSaveChanges,
   OnTextDocumentChange,
   OnTextDocumentClose,
@@ -18,9 +19,19 @@ import {
   OnUpdateDependencyClick,
   VersionLensExtension
 } from '#extension';
-import { VersionLensState } from '#extension/state';
-import { SuggestionCodeLensProvider, SuggestionsOptions } from '#extension/suggestions';
+import type {
+  AuthenticationInteractions,
+  IAuthenticationProviderFactory,
+  UrlAuthenticationSession,
+  UrlAuthenticationStore
+} from '#extension/authorization';
+import type { VersionLensState } from '#extension/state';
+import type { SuggestionCodeLensProvider, SuggestionsOptions } from '#extension/suggestions';
 import type { OutputChannel } from 'vscode';
+
+export enum AuthorizationCommandFeatures {
+  OnRemoveUrlAuthentication = "versionlens.authorization.removeUrlAuthentication"
+}
 
 export enum IconCommandFeatures {
   ShowError = 'versionlens.icons.showError',
@@ -60,8 +71,15 @@ export interface IExtensionServices {
   versionLensProviders: Array<SuggestionCodeLensProvider>;
   editorDependencyCache: DependencyCache;
 
+  // auth
+  authenticationInteractions: AuthenticationInteractions;
+  authenticationProviderFactory: IAuthenticationProviderFactory;
+  urlAuthenticationStore: UrlAuthenticationStore;
+  authenticationSession: UrlAuthenticationSession
+
   // command events
   onClearCache: OnClearCache;
+  onRemoveUrlAuthentication: OnRemoveUrlAuthentication;
   onFileLinkClick: OnFileLinkClick;
   onUpdateDependencyClick: OnUpdateDependencyClick;
 

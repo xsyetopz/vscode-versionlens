@@ -15,6 +15,7 @@ import {
   addOnProviderEditorActivated,
   addOnProviderTextDocumentChange,
   addOnProviderTextDocumentClose,
+  addOnRemoveUrlAuthentication,
   addOnSaveChanges,
   addOnTextDocumentChange,
   addOnTextDocumentClose,
@@ -30,7 +31,14 @@ import {
   addVersionLensState
 } from '#extension';
 import { addInfrastructureServices } from '#infrastructure';
-import { type ExtensionContext, workspace } from 'vscode';
+import { type ExtensionContext, type Memento, type SecretStorage, workspace } from 'vscode';
+import {
+  addAuthenticationInteractions,
+  addAuthenticationProviderFactory,
+  addAuthorization,
+  addUrlAuthenticationSession,
+  addUrlAuthenticationStore
+} from './authorization/serviceFactory';
 
 export async function configureContainer(context: ExtensionContext): Promise<IServiceProvider> {
   const serviceCollectionFactory = new AwilixServiceCollectionFactory();
@@ -41,7 +49,7 @@ export async function configureContainer(context: ExtensionContext): Promise<ISe
   );
 
   // domain
-  const defaultLogGroup = "extension";
+  const defaultLogGroup = 'extension';
   addDomainServices(
     services,
     VersionLensExtension.extensionName,
@@ -53,12 +61,16 @@ export async function configureContainer(context: ExtensionContext): Promise<ISe
   addInfrastructureServices(services);
 
   // extension
-  addExtensionServices(services)
+  addExtensionServices(services, context.workspaceState, context.secrets)
 
   return await services.build();
 }
 
-function addExtensionServices(services: IServiceCollection) {
+function addExtensionServices(
+  services: IServiceCollection,
+  workspaceState: Memento,
+  secrets: SecretStorage
+) {
   addProviderNames(services);
   addSuggestionOptions(services);
   addVersionLensState(services);
@@ -68,31 +80,39 @@ function addExtensionServices(services: IServiceCollection) {
   addEditorDependencyCache(services);
   addGetSuggestionsUseCase(services);
 
-  // commands
+  // auth
+  addAuthorization(services);
+  addAuthenticationInteractions(services);
+  addAuthenticationProviderFactory(services, secrets);
+  addUrlAuthenticationStore(services, workspaceState);
+  addUrlAuthenticationSession(services);
+  addOnRemoveUrlAuthentication(services, secrets);
+
+  // command events
   addOnClearCache(services);
   addOnFileLinkClick(services);
   addOnUpdateDependencyClick(services);
 
-  // editorTitleBar
+  // editorTitleBar events
   addOnErrorClick(services);
   addOnToggleReleases(services);
   addOnTogglePrereleases(services);
 
-  // install
+  // install events
   addOnPreSaveChanges(services);
   addOnSaveChanges(services);
 
-  // provider
+  // provider events
   addOnProviderEditorActivated(services);
   addOnProviderTextDocumentChange(services);
   addOnProviderTextDocumentClose(services);
 
-  // vscode
+  // vscode events
   addOnActiveTextEditorChange(services);
   addOnTextDocumentChange(services);
   addOnTextDocumentClose(services);
   addOnTextDocumentSave(services);
 
-  // watcher
+  // watcher events
   addOnPackageDependenciesChanged(services);
 }

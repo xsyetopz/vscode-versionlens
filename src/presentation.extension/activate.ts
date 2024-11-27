@@ -64,22 +64,24 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
   // instantiate dependencies that aren't referenced
   const instantiateDeps = [
-    // commands
+    // auth events
+    serviceNames.onRemoveUrlAuthentication,
+    // commands events
     serviceNames.onClearCache,
     serviceNames.onFileLinkClick,
     serviceNames.onUpdateDependencyClick,
-    // editorTitleBar
+    // editorTitleBar events
     serviceNames.onErrorClick,
     serviceNames.onToggleReleases,
     serviceNames.onTogglePrereleases,
-    // install
+    // install events
     serviceNames.onPreSaveChanges, // will instantiate onTextDocumentSave
     serviceNames.onSaveChanges,
-    // provider documents
+    // provider document events
     serviceNames.onProviderEditorActivated, // will instantiate onActiveTextEditorChange
     serviceNames.onProviderTextDocumentChange, // will instantiate onTextDocumentChange
     serviceNames.onProviderTextDocumentClose, // will instantiate onTextDocumentClose
-    // watcher
+    // watcher events
     serviceNames.onPackageDependenciesChanged
   ];
 

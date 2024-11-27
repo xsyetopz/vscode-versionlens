@@ -1,2 +1,2 @@
-export * from './iXhrResponse';
+export * from './definitions';
 export * from './requestLightClient';

@@ -1,14 +1,15 @@
-import { ICachingOptions, IExpiryCache } from '#domain/caching';
+import type { IAuthorization, IUrlAuthenticationSession } from '#domain/authorization';
+import type { ICachingOptions, IExpiryCache } from '#domain/caching';
 import {
+  type IHttpClient,
+  type IJsonHttpClient,
+  type IShellClient,
   HttpClientOptions,
-  IHttpClient,
-  IJsonHttpClient,
-  IShellClient,
   JsonHttpClient
 } from '#domain/clients';
 import { PromiseSpawnClient } from '#domain/clients/promiseSpawn';
 import { RequestLightClient } from "#domain/clients/requestLight";
-import { ILogger } from '#domain/logging';
+import type { ILogger } from '#domain/logging';
 import PromiseSpawn from '@npmcli/promise-spawn';
 import * as RequireLight from 'request-light';
 
@@ -21,15 +22,28 @@ export function createShellClient(
 }
 
 export function createHttpClient(
-  options: HttpClientOptions,
-  logger: ILogger
+  authorization: IAuthorization,
+  authenticationSession: IUrlAuthenticationSession,
+  options: HttpClientOptions
 ): IHttpClient {
-  return new RequestLightClient(RequireLight.xhr, options, logger);
+  return new RequestLightClient(
+    RequireLight,
+    authorization,
+    authenticationSession,
+    options
+  );
 }
 
 export function createJsonClient(
-  options: HttpClientOptions,
-  logger: ILogger
+  authorization: IAuthorization,
+  authenticationSession: IUrlAuthenticationSession,
+  options: HttpClientOptions
 ): IJsonHttpClient {
-  return new JsonHttpClient(createHttpClient(options, logger));
+  return new JsonHttpClient(
+    createHttpClient(
+      authorization,
+      authenticationSession,
+      options
+    )
+  );
 }

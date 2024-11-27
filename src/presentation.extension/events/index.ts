@@ -1,3 +1,5 @@
+export * from './auth/onRemoveUrlAuthentication';
+export * from './auth/serviceFactory';
 export * from './commands/onClearCache';
 export * from './commands/onFileLinkClick';
 export * from './commands/onUpdateDependencyClick';

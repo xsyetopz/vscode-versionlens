@@ -2,14 +2,18 @@ import type { IDomainServices } from '#domain';
 import type { IServiceCollection } from '#domain/di';
 import { nameOf } from '#domain/utils';
 import { type IExtensionServices, SuggestionCommandFeatures } from '#extension';
-import { OnClearCache, OnFileLinkClick, OnUpdateDependencyClick } from '#extension/events';
+import {
+  OnClearCache,
+  OnFileLinkClick,
+  OnUpdateDependencyClick
+} from '#extension/events';
 import { commands } from 'vscode';
 
 export function addOnClearCache(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().onClearCache;
   services.addSingleton(
     serviceName,
-    (container: IDomainServices & IExtensionServices) => {
+    (container: IDomainServices) => {
       // create the event handler
       const handler = new OnClearCache(
         container.packageCache,

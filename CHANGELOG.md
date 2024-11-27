@@ -1,3 +1,25 @@
+# 1.15.0-preview
+
+  - Added an interactive authorization workflow for 401 http responses
+
+    > **NOTE**
+    > 
+    > Does not currently work with Npm because npm uses [@npmcli/config](https://github.com/npm/cli/tree/latest/workspaces/config) and [npm-registry-fetch](https://github.com/npm/npm-registry-fetch) to authorize requests using npmrc files
+
+    Authentication types in this preview are
+    - Basic Auth
+    - Microsoft
+    - Github
+
+    New command(s)
+    - `versionlens.authorization.removeUrlAuthentication` A multi select dialog that lets you clear\remove url authentication data. `Ctrl+P then type 'Remove url authentication data'`
+
+    How authentication data is stored
+    - Credentials are stored in the [ExtensionContext.secrets](https://code.visualstudio.com/api/extension-capabilities/common-capabilities#data-storage) storage
+    - Non-sensitive authentication info per url is stored in the [ExtensionContext.workspaceState](https://code.visualstudio.com/api/extension-capabilities/common-capabilities#data-storage) storage (e.g. remembered each time the workspace is re-opened)
+    - User consent and authentication retries are stored in-memory (per url host) to prevent repeatedly prompting for authentication entry.
+
+
 # 1.14.5
 
 ### Npm

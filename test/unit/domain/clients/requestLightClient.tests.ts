@@ -1,3 +1,4 @@
+import type { IAuthorization, IUrlAuthenticationSession } from '#domain/authorization';
 import { type ICachingOptions, CachingOptions } from '#domain/caching';
 import {
   type HttpClientOptions,
@@ -7,68 +8,93 @@ import {
   HttpClientRequestMethods,
   HttpOptions
 } from '#domain/clients';
-import { RequestLightClient } from '#domain/clients/requestLight';
-import type { ILogger } from '#domain/logging';
+import {
+  type IXhrRequest,
+  type IXhrResponse,
+  httpClientDefaultHeaders,
+  RequestLightClient
+} from '#domain/clients/requestLight';
 import { type KeyStringDictionary, createUrl } from '#domain/utils';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
-import { anything, capture, instance, mock, when } from 'ts-mockito';
-import { RequestLightStub } from './requestLightStub';
+import type { XHROptions } from 'request-light';
+import { anything, capture, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
-let cachingOptsMock: ICachingOptions;
-let httpOptsMock: IHttpOptions;
-let loggerMock: ILogger;
-let requestLightMock: RequestLightStub;
-let rut: RequestLightClient;
+type TestContext = {
+  mockAuthorization: IAuthorization
+  mockAuthenticationSession: IUrlAuthenticationSession
+  mockCachingOpts: ICachingOptions
+  mockHttpOpts: IHttpOptions
+  mockRequestLight: IXhrRequest,
+  rut: RequestLightClient
+}
 
 export const RequestLightClientTests = {
 
-  [test.title]: RequestLightClient.prototype.get.name,
+  [test.title]: RequestLightClient.name,
 
-  beforeEach: () => {
-    cachingOptsMock = mock(CachingOptions);
-    httpOptsMock = mock(HttpOptions);
-    loggerMock = mock<ILogger>();
-    requestLightMock = mock(RequestLightStub);
+  beforeEach: function (this: TestContext) {
+    this.mockAuthorization = mock<IAuthorization>();
+    this.mockAuthenticationSession = mock<IUrlAuthenticationSession>();
+    this.mockCachingOpts = mock(CachingOptions);
+    this.mockHttpOpts = mock(HttpOptions);
+    this.mockRequestLight = mock<IXhrRequest>();
+    const testOptions: HttpClientOptions = {
+      caching: instance(this.mockCachingOpts),
+      http: instance(this.mockHttpOpts)
+    };
 
-    rut = new RequestLightClient(
-      <any>instance(requestLightMock).xhr,
-      <HttpClientOptions>{
-        caching: instance(cachingOptsMock),
-        http: instance(httpOptsMock)
-      },
-      instance(loggerMock)
+    when(this.mockRequestLight.xhr(anything())).thenResolve({
+      status: 0,
+      headers: { ...httpClientDefaultHeaders },
+      responseText: ''
+    });
+
+    // default options
+    when(this.mockCachingOpts.duration).thenReturn(30000);
+    when(this.mockHttpOpts.strictSSL).thenReturn(true);
+
+    // request under test
+    this.rut = new RequestLightClient(
+      instance(this.mockRequestLight),
+      instance(this.mockAuthorization),
+      instance(this.mockAuthenticationSession),
+      testOptions
     );
-
-    when(cachingOptsMock.duration).thenReturn(30000);
-    when(httpOptsMock.strictSSL).thenReturn(true);
   },
 
   "should set strictSSL to $1 and cache duration to $2 in xhr options": [
     [true, 3000],
     [false, 0],
-    async (testStrictSSL: boolean, testDuration: number) => {
-      when(requestLightMock.xhr(anything()))
-        .thenResolve(<any>{
-          responseText: '{}',
-          status: 200
-        })
+    async function (this: TestContext, testStrictSSL: boolean, testDuration: number) {
+      const testOptions: HttpClientOptions = {
+        caching: instance(this.mockCachingOpts),
+        http: instance(this.mockHttpOpts)
+      };
 
-      when(cachingOptsMock.duration).thenReturn(testDuration);
-      when(httpOptsMock.strictSSL).thenReturn(testStrictSSL);
+      when(this.mockRequestLight.xhr(anything()))
+        .thenResolve({
+          status: 200,
+          headers: {},
+          responseText: 'test response'
+        });
+
+      // set test options
+      when(this.mockCachingOpts.duration).thenReturn(testDuration);
+      when(this.mockHttpOpts.strictSSL).thenReturn(testStrictSSL);
 
       const rut = new RequestLightClient(
-        <any>instance(requestLightMock).xhr,
-        <HttpClientOptions>{
-          caching: instance(cachingOptsMock),
-          http: instance(httpOptsMock)
-        },
-        instance(loggerMock)
+        instance(this.mockRequestLight),
+        instance(this.mockAuthorization),
+        instance(this.mockAuthenticationSession),
+        testOptions
       );
 
+      // test
       await rut.get('http://anywhere');
 
-      const [actualOpts] = capture(requestLightMock.xhr).first();
+      // assert
+      const [actualOpts] = capture(this.mockRequestLight.xhr).first();
       assert.equal(actualOpts.strictSSL, testStrictSSL);
     }
   ],
@@ -76,26 +102,28 @@ export const RequestLightClientTests = {
   "generates the expected url $1": [
     ["with no query params", {}],
     ["with query params", { param1: 1, param2: 2 }],
-    async (testTitlePart: string, testQuery: KeyStringDictionary) => {
+    async function (this: TestContext, testTitlePart: string, testQuery: KeyStringDictionary) {
       const testUrl = 'https://test.url.example/path';
-
-      when(requestLightMock.xhr(anything()))
-        .thenResolve(<any>{
-          status: 200,
-          responseText: null
-        })
-
       const expectedUrl = createUrl(testUrl, testQuery);
 
-      await rut.get(testUrl, testQuery);
+      when(this.mockRequestLight.xhr(anything()))
+        .thenResolve({
+          status: 200,
+          headers: {},
+          responseText: null
+        });
 
-      const [actualOpts] = capture(requestLightMock.xhr).first();
+      // test
+      await this.rut.get(testUrl, testQuery);
+
+      // assert
+      const [actualOpts] = capture(this.mockRequestLight.xhr).first();
       assert.equal(actualOpts.url, expectedUrl);
       assert.equal(actualOpts.type, HttpClientRequestMethods.get);
     }
   ],
 
-  "returns successful responses": async () => {
+  "returns successful responses": async function (this: TestContext) {
     const testUrl = 'https://test.url.example/path';
     const testQueryParams = {}
     const testXhrResponse = {
@@ -103,22 +131,28 @@ export const RequestLightClientTests = {
       status: 200,
       responseText: "success test",
     };
-
     const expectedResponse: HttpClientResponse = {
       source: ClientResponseSource.remote,
       status: testXhrResponse.status,
       data: testXhrResponse.responseText,
       rejected: false
-    }
+    };
 
-    when(requestLightMock.xhr(anything())).thenResolve(<any>testXhrResponse)
+    when(this.mockRequestLight.xhr(anything()))
+      .thenResolve({
+        status: testXhrResponse.status,
+        headers: {},
+        responseText: testXhrResponse.responseText
+      });
 
-    const actual = await rut.get(testUrl, testQueryParams);
+    // test
+    const actual = await this.rut.get(testUrl, testQueryParams);
 
+    // assert
     assert.deepEqual(actual, expectedResponse);
   },
 
-  "returns rejected responses": async () => {
+  "returns rejected responses": async function (this: TestContext) {
     const testUrl = 'https://test.url.example/path';
     const testQueryParams = {}
     const testResponse = {
@@ -126,23 +160,163 @@ export const RequestLightClientTests = {
       responseText: "not found",
       source: ClientResponseSource.remote
     };
-
+    const testFailedResponse: IXhrResponse = {
+      status: testResponse.status,
+      headers: {},
+      responseText: testResponse.responseText
+    };
     const expectedResponse: HttpClientResponse = {
       status: testResponse.status,
       data: testResponse.responseText,
       source: ClientResponseSource.remote,
       rejected: true,
-    }
+    };
 
-    when(requestLightMock.xhr(anything())).thenReject(<any>testResponse)
+    when(this.mockRequestLight.xhr(anything()))
+      .thenReject(<any>testFailedResponse);
 
     // test
     try {
-      await rut.get(testUrl, testQueryParams);
+      await this.rut.get(testUrl, testQueryParams);
       assert.ok(false);
     } catch (actual) {
       assert.deepEqual(actual, expectedResponse);
     }
-  }
+  },
 
+  "throws rejected errors": async function (this: TestContext) {
+    const testUrl = 'https://test.url.example/path';
+    when(this.mockRequestLight.xhr(anything())).thenReject(new Error("should be thrown"));
+
+    // test
+    try {
+      await this.rut.get(testUrl);
+      assert.ok(false);
+    } catch (actual) {
+      assert.ok(actual instanceof Error);
+      assert.equal(actual.message, "should be thrown");
+    }
+  },
+
+  "uses provided caller authorization headers": async function (this: TestContext) {
+    const testHost = 'test.url.example';
+    const testUrl = `https://${testHost}/path`;
+    const testAuth = { Authorization: 'test provided token' };
+    const expectedOptions: XHROptions = {
+      url: testUrl,
+      type: HttpClientRequestMethods.get,
+      headers: { ...testAuth, ...httpClientDefaultHeaders },
+      strictSSL: true
+    };
+
+    // test
+    const actual = await this.rut.get(testUrl, {}, testAuth);
+
+    // verify
+    verify(this.mockRequestLight.xhr(deepEqual(expectedOptions))).once();
+
+    // assert
+    assert.ok(!!actual);
+  },
+
+  "$1 headers.Authorization when isUrlAuthorized() is '$2' and authToken is '$3'":
+    [
+      ['auto sets', true, 'test token'],
+      ['does not set', true, undefined],
+      ['does not set', false, undefined],
+      async function (
+        this: TestContext,
+        testTitle: string,
+        testIsUrlAuthorized: boolean,
+        testToken: string
+      ) {
+        const testHost = 'https://test.url.example';
+        const testUrl = `${testHost}/path`;
+        const expectedOptions: XHROptions = {
+          url: testUrl,
+          type: HttpClientRequestMethods.get,
+          headers: httpClientDefaultHeaders,
+          strictSSL: true
+        };
+
+        if (testToken !== undefined) {
+          expectedOptions.headers = {
+            ...expectedOptions.headers,
+            ...{
+              Authorization: testToken,
+            }
+          }
+        }
+
+        // set options
+        when(this.mockHttpOpts.strictSSL).thenReturn(true);
+
+        // set auth
+        when(this.mockAuthorization.isUrlAuthorized(testHost)).thenReturn(testIsUrlAuthorized);
+        when(this.mockAuthorization.getToken(testHost)).thenResolve(testToken);
+
+        // test
+        const actual = await this.rut.get(testUrl);
+
+        // verify
+        verify(this.mockRequestLight.xhr(deepEqual(expectedOptions))).once();
+
+        // assert
+        assert.ok(!!actual);
+      }
+    ],
+
+  "'$1' to authorize when consent is '$2'": [
+    ['retries', true, 'authorized'],
+    ['does not retry', false, 'not authorized'],
+    async function (this: TestContext, testTitle: string, testConsent: boolean, expectedData: string) {
+      let testRetries = 0;
+
+      const testHost = 'https://test.url.example';
+      const testUrl = `${testHost}/path`;
+      const testResponse: IXhrResponse = {
+        status: 401,
+        headers: {},
+        responseText: 'not authorized'
+      };
+
+      when(this.mockRequestLight.xhr(anything()))
+        .thenCall(() => {
+          if (testRetries === 0) return Promise.reject(testResponse);
+
+          testResponse.status = 200;
+          testResponse.responseText = expectedData
+          return Promise.resolve(testResponse)
+        });
+
+      when(this.mockAuthenticationSession.hasRetries(testHost))
+        .thenCall(() => testRetries === 0);
+
+      when(this.mockAuthenticationSession.incrementRetries(testHost))
+        .thenCall(() => testRetries++);
+
+      when(this.mockAuthorization.getConsent(testHost)).thenResolve(testConsent);
+
+      try {
+        // test
+        const actual = await this.rut.get(testUrl);
+        // assert
+        assert.equal(actual.status, 200);
+        assert.equal(actual.data, expectedData);
+      } catch (error) {
+        // assert
+        assert.equal(error.status, 401);
+        assert.equal(error.data, expectedData);
+      }
+
+      // assert
+      assert.equal(testRetries, 1);
+
+      // verify
+      verify(this.mockAuthenticationSession.hasRetries(testHost)).once();
+      verify(this.mockAuthenticationSession.incrementRetries(testHost)).once();
+      verify(this.mockAuthorization.getConsent(testHost)).once();
+      verify(this.mockAuthenticationSession.updateConsent(testHost, testConsent)).once();
+    }
+  ]
 };
