@@ -54,11 +54,12 @@ export function addHttpClient(services: IServiceCollection) {
     serviceName,
     (container: IGoService & IDomainServices) =>
       createHttpClient(
+        container.authorization,
+        container.authenticationSession,
         {
           caching: container.goCachingOpts,
           http: container.goHttpOpts
-        },
-        container.logger.child({ logGroup: serviceName })
+        }
       )
   );
 }

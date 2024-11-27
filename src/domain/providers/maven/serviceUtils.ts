@@ -81,11 +81,12 @@ export function addHttpClient(services: IServiceCollection) {
     serviceName,
     (container: IMavenServices & IDomainServices) =>
       createHttpClient(
+        container.authorization,
+        container.authenticationSession,
         {
           caching: container.mavenCachingOpts,
           http: container.mavenHttpOpts
-        },
-        container.logger.child({ logGroup: serviceName })
+        }
       )
   );
 }

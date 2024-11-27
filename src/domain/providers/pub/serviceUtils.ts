@@ -54,11 +54,12 @@ export function addJsonClient(services: IServiceCollection) {
     serviceName,
     (container: IPubServices & IDomainServices) =>
       createJsonClient(
+        container.authorization,
+        container.authenticationSession,
         {
           caching: container.pubCachingOpts,
           http: container.pubHttpOpts
-        },
-        container.logger.child({ logGroup: serviceName })
+        }
       )
   );
 }

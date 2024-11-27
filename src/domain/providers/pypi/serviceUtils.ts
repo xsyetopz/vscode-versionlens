@@ -54,11 +54,12 @@ export function addHttpClient(services: IServiceCollection) {
     serviceName,
     (container: IPypiService & IDomainServices) =>
       createHttpClient(
+        container.authorization,
+        container.authenticationSession,
         {
           caching: container.pypiCachingOpts,
           http: container.pypiHttpOpts
-        },
-        container.logger.child({ logGroup: serviceName })
+        }
       )
   );
 }

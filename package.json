@@ -20,7 +20,7 @@
   },
   "author": "Peter Flannery",
   "license": "ISC",
-  "version": "1.14.5",
+  "version": "1.15.0-preview",
   "publisher": "pflannery",
   "displayName": "Version Lens",
   "icon": "images/logo.png",
@@ -145,6 +145,11 @@
       {
         "command": "versionlens.suggestions.clearCache",
         "title": "Clear cache",
+        "category": "VersionLens"
+      },
+      {
+        "command": "versionlens.authorization.removeUrlAuthentication",
+        "title": "Remove url authentication data",
         "category": "VersionLens"
       }
     ],

@@ -17,11 +17,8 @@ export class OnClearCache extends Disposable {
     throwUndefinedOrNull("logger", logger);
   }
 
-  /**
-   * Clears all suggestion provider caches
-   */
   execute() {
-    this.logger.debug("Clearing packages cache");
+    this.logger.debug("Clearing package caches");
     this.packageCache.clear();
     this.shellCache.clear();
   }

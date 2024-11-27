@@ -6,6 +6,10 @@ export class Disposable implements IDisposable {
   constructor(disposables: IDisposable[]);
   constructor(readonly disposables: IDisposable[] = []) { }
 
+  get disposable(): IDisposable {
+    return this.disposables[0];
+  }
+
   set disposable(value: IDisposable) {
     this.disposables[0] = value;
   }

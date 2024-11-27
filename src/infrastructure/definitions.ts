@@ -1,1 +1,2 @@
-export interface IInfrastructureServices { }
+export interface IInfrastructureServices {
+}

@@ -95,11 +95,12 @@ export function addJsonClient(services: IServiceCollection) {
     serviceName,
     (container: IDotNetServices & IDomainServices) =>
       createJsonClient(
+        container.authorization,
+        container.authenticationSession,
         {
           caching: container.dotnetCachingOpts,
           http: container.dotnetHttpOpts
-        },
-        container.logger.child({ logGroup: serviceName })
+        }
       )
   );
 }
