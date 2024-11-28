@@ -1,20 +1,23 @@
 import type { ILogger } from '#domain/logging';
 import { Disposable } from '#domain/utils';
+import type { IVsCodeWindow } from '#extension';
 import { VersionLensState } from '#extension/state';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { type OutputChannel, window } from 'vscode';
+import { type OutputChannel } from 'vscode';
 
 export class OnErrorClick extends Disposable {
 
   constructor(
+    readonly window: IVsCodeWindow,
     readonly state: VersionLensState,
     readonly outputChannel: OutputChannel,
     readonly logger: ILogger
   ) {
     super();
-    throwUndefinedOrNull("state", state);
-    throwUndefinedOrNull("outputChannel", outputChannel);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('window', window);
+    throwUndefinedOrNull('state', state);
+    throwUndefinedOrNull('outputChannel', outputChannel);
+    throwUndefinedOrNull('logger', logger);
   }
 
   async execute(): Promise<void> {
@@ -26,7 +29,7 @@ export class OnErrorClick extends Disposable {
     await this.state.clearBusyState();
 
     // focus on the document unhide icons
-    window.showTextDocument(window.activeTextEditor.document);
+    this.window.showTextDocument(this.window.activeTextEditor.document);
   }
 
 }

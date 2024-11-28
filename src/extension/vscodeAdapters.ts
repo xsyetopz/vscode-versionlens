@@ -17,7 +17,10 @@ import type {
   MessageOptions,
   QuickPickItem,
   QuickPickOptions,
-  Uri
+  TextDocument,
+  TextEditor,
+  Uri,
+  ViewColumn
 } from 'vscode';
 
 /***
@@ -65,6 +68,8 @@ export interface IVsCodeAuthentication {
  * Adapter interface for the 'window' namespace
  */
 export interface IVsCodeWindow {
+  activeTextEditor: TextEditor | undefined;
+
   showInputBox(
     options?: InputBoxOptions,
     token?: CancellationToken
@@ -87,11 +92,17 @@ export interface IVsCodeWindow {
     options: MessageOptions,
     ...items: T[]
   ): Thenable<T | undefined>;
+
+  showTextDocument(
+    document: TextDocument,
+    column?: ViewColumn,
+    preserveFocus?: boolean
+  ): Thenable<TextEditor>;
 }
 
 /***
  * Adapter interface for the 'env' namespace
  */
 export interface IVsCodeEnv {
-   openExternal(target: Uri): Thenable<boolean>;
+  openExternal(target: Uri): Thenable<boolean>;
 }

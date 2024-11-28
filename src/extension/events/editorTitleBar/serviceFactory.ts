@@ -3,7 +3,7 @@ import type { IServiceCollection } from '#domain/di';
 import { nameOf } from '#domain/utils';
 import { type IExtensionServices, IconCommandFeatures } from '#extension';
 import { OnErrorClick, OnTogglePrereleases, OnToggleReleases } from '#extension/events';
-import { commands } from 'vscode';
+import { commands, window } from 'vscode';
 
 export function addOnErrorClick(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().onErrorClick;
@@ -12,6 +12,7 @@ export function addOnErrorClick(services: IServiceCollection) {
     (container: IDomainServices & IExtensionServices) => {
       // create the event handler
       const event = new OnErrorClick(
+        window,
         container.extension.state,
         container.outputChannel,
         container.logger.child({ logGroup: serviceName })
