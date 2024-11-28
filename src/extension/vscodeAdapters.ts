@@ -1,5 +1,5 @@
 /**
- * Adapter interfaces for vscode namespaces
+ * Interfaces for vscode namespaces
  */
 import type {
   AuthenticationGetSessionOptions,
@@ -17,6 +17,10 @@ import type {
   MessageOptions,
   QuickPickItem,
   QuickPickOptions,
+  Task,
+  TaskExecution,
+  TaskFilter,
+  TaskProcessEndEvent,
   TextDocument,
   TextEditor,
   Uri,
@@ -105,4 +109,13 @@ export interface IVsCodeWindow {
  */
 export interface IVsCodeEnv {
   openExternal(target: Uri): Thenable<boolean>;
+}
+
+/***
+ * Adapter interface for the 'tasks' namespace
+ */
+export interface IVsCodeTasks {
+  onDidEndTaskProcess: Event<TaskProcessEndEvent>;
+  executeTask(task: Task): Thenable<TaskExecution>;
+  fetchTasks(filter?: TaskFilter): Thenable<Task[]>;
 }

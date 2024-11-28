@@ -3,6 +3,7 @@ import type { IServiceCollection } from '#domain/di';
 import { nameOf } from '#domain/utils';
 import type { IExtensionServices } from '#extension';
 import { OnPreSaveChanges, OnSaveChanges } from '#extension/events';
+import { tasks } from 'vscode';
 
 export function addOnPreSaveChanges(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().onPreSaveChanges
@@ -31,6 +32,7 @@ export function addOnSaveChanges(services: IServiceCollection) {
     (container: IDomainServices & IExtensionServices) => {
       // create the event handler
       const event = new OnSaveChanges(
+        tasks,
         container.logger.child({ logGroup: serviceName })
       );
 

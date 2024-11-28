@@ -1,11 +1,13 @@
 import type { ILogger } from '#domain/logging';
 import type { ISuggestionProvider } from '#domain/providers';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { Task, tasks } from 'vscode';
+import type { IVsCodeTasks } from 'src/extension/vscodeAdapters';
+import type { Task } from 'vscode';
 
 export class OnSaveChanges {
 
-  constructor(readonly logger: ILogger) {
+  constructor(readonly tasks: IVsCodeTasks, readonly logger: ILogger) {
+    throwUndefinedOrNull("tasks", tasks);
     throwUndefinedOrNull("logger", logger);
   }
 
@@ -20,7 +22,7 @@ export class OnSaveChanges {
     }
 
     // fetch the custom task for the provider
-    const availableTasks = await tasks.fetchTasks();
+    const availableTasks = await this.tasks.fetchTasks();
     const filteredTasks = availableTasks.filter(
       x => x.name == provider.config.onSaveChangesTask
     );
@@ -55,9 +57,9 @@ export class OnSaveChanges {
 }
 
 async function executeTask(task: Task): Promise<number> {
-  await tasks.executeTask(task);
+  await this.tasks.executeTask(task);
   return new Promise((resolve, reject) => {
-    const disposable = tasks.onDidEndTaskProcess(e => {
+    const disposable = this.tasks.onDidEndTaskProcess(e => {
       if (task.name === e.execution.task.name) {
         disposable.dispose();
         resolve(e.exitCode);
