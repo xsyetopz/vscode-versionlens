@@ -30,7 +30,6 @@ import {
   addVersionLensProviders,
   addVersionLensState
 } from '#extension';
-import { addInfrastructureServices } from '#infrastructure';
 import { type ExtensionContext, type Memento, type SecretStorage, workspace } from 'vscode';
 import {
   addAuthenticationInteractions,
@@ -38,6 +37,7 @@ import {
   addAuthorization,
   addUrlAuthenticationStore
 } from './authorization/serviceFactory';
+import { addPackageFileWatcher } from './watcher/serviceFactory';
 
 export async function configureContainer(context: ExtensionContext): Promise<IServiceProvider> {
   const serviceCollectionFactory = new AwilixServiceCollectionFactory();
@@ -55,9 +55,6 @@ export async function configureContainer(context: ExtensionContext): Promise<ISe
     workspace.getConfiguration,
     defaultLogGroup
   );
-
-  // infrastructure
-  addInfrastructureServices(services);
 
   // extension
   addExtensionServices(services, context.workspaceState, context.secrets)
@@ -78,6 +75,9 @@ function addExtensionServices(
   addVersionLensProviders(services);
   addEditorDependencyCache(services);
   addGetSuggestionsUseCase(services);
+
+  // file watcher
+  addPackageFileWatcher(services);
 
   // auth
   addAuthorization(services);

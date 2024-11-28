@@ -1,1 +1,0 @@
-export * as Watcher from './watcher/packageFileWatcher.tests';

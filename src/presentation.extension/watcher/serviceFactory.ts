@@ -1,7 +1,7 @@
 import type { IDomainServices } from '#domain';
 import type { IServiceCollection } from '#domain/di';
 import { nameOf } from '#domain/utils';
-import { PackageFileWatcher } from '#infrastructure/vscode';
+import { PackageFileWatcher } from '#extension/watcher';
 import { workspace } from 'vscode';
 
 export function addPackageFileWatcher(services: IServiceCollection) {
