@@ -1,24 +1,30 @@
-# 1.15.0-preview
+# 1.15.1-preview
 
   - Added an interactive authorization workflow for 401 http responses
 
-    > **NOTE**
-    > 
-    > Does not currently work with Npm because npm uses [@npmcli/config](https://github.com/npm/cli/tree/latest/workspaces/config) and [npm-registry-fetch](https://github.com/npm/npm-registry-fetch) to authorize requests using npmrc files
+    Authentication types are
+    - Basic Auth (prompts for a username and password)
+    - Custom (prompts for a custom authentication value)
+    - Microsoft (vscode built-in provider)
+    - Github (vscode built-in provider)
 
-    Authentication types in this preview are
-    - Basic Auth
-    - Microsoft
-    - Github
-
-    New command(s)
-    - `versionlens.authorization.removeUrlAuthentication` A multi select dialog that lets you clear\remove url authentication data. `Ctrl+P then type 'Remove url authentication data'`
+    Management command
+    - `versionlens.authorization.removeUrlAuthentication` A multi select dialog that lets you clear\remove url authentication data. `Ctrl+P` then type `Remove url authentication data`
 
     How authentication data is stored
     - Credentials are stored in the [ExtensionContext.secrets](https://code.visualstudio.com/api/extension-capabilities/common-capabilities#data-storage) storage
-    - Non-sensitive authentication info per url is stored in the [ExtensionContext.workspaceState](https://code.visualstudio.com/api/extension-capabilities/common-capabilities#data-storage) storage (e.g. remembered each time the workspace is re-opened)
-    - User consent and authentication retries are stored in-memory (per url host) to prevent repeatedly prompting for authentication entry.
+    - Non-sensitive authentication info per url is stored in the [ExtensionContext.workspaceState](https://code.visualstudio.com/api/extension-capabilities/common-capabilities#data-storage) storage (e.g. remembered each time the workspace is re-opened). Use `versionlens.authorization.removeUrlAuthentication` to clear authentication info
 
+    > **NOTE**
+    >
+    > - Doesn't support multiple authentications for the same domain
+    > - Doesn't work with Npm because npm uses npmrc files to authorize requests
+
+### Npm
+
+  - Fixed .npmrc `cafile`, `proxy`, `https-proxy` and `strict-ssl` settings not being passed into npm-registry-fetch function
+
+    Relates to [#369](https://gitlab.com/versionlens/vscode-versionlens/-/issues/369) and [#370](https://gitlab.com/versionlens/vscode-versionlens/-/issues/370)
 
 # 1.14.5
 
@@ -26,7 +32,7 @@
 
   -  Added ability to load userconfig set by the $NPM_CONFIG_USERCONFIG env
 
-     Relates to [#375](https://gitlab.com/versionlens/vscode-versionlens/-/issues/371)
+     Relates to [#375](https://gitlab.com/versionlens/vscode-versionlens/-/issues/375)
 
 # 1.14.4
 
