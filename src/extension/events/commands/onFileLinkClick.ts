@@ -1,13 +1,14 @@
 import type { ILogger } from '#domain/logging';
 import { Disposable } from '#domain/utils';
-import { SuggestionCodeLens } from '#extension/suggestions';
+import type { IVsCodeEnv } from '#extension';
+import type { SuggestionCodeLens } from '#extension/suggestions';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { env } from 'vscode';
 
 export class OnFileLinkClick extends Disposable {
 
-  constructor(readonly logger: ILogger) {
+  constructor(readonly env: IVsCodeEnv, readonly logger: ILogger) {
     super();
+    throwUndefinedOrNull("env", env);
     throwUndefinedOrNull("logger", logger);
   }
 
@@ -17,7 +18,7 @@ export class OnFileLinkClick extends Disposable {
    */
   async execute(codeLens: SuggestionCodeLens): Promise<void> {
     const filePath = codeLens.packageResponse.fetchedPackage.version;
-    await env.openExternal(<any>('file:///' + filePath));
+    await this.env.openExternal(<any>('file:///' + filePath));
   }
 
 }

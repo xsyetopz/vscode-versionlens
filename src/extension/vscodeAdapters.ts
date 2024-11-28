@@ -88,3 +88,10 @@ export interface IVsCodeWindow {
     ...items: T[]
   ): Thenable<T | undefined>;
 }
+
+/***
+ * Adapter interface for the 'env' namespace
+ */
+export interface IVsCodeEnv {
+   openExternal(target: Uri): Thenable<boolean>;
+}

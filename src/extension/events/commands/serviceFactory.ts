@@ -7,7 +7,7 @@ import {
   OnFileLinkClick,
   OnUpdateDependencyClick
 } from '#extension/events';
-import { commands } from 'vscode';
+import { commands, env } from 'vscode';
 
 export function addOnClearCache(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().onClearCache;
@@ -41,6 +41,7 @@ export function addOnFileLinkClick(services: IServiceCollection) {
     (container: IDomainServices) => {
       // create the event handler
       const handler = new OnFileLinkClick(
+        env,
         container.logger.child({ logGroup: serviceName })
       );
 
