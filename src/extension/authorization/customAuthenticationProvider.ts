@@ -1,6 +1,6 @@
+import type { IVsCodeAuthentication } from '#extension';
 import {
   type AuthenticationInteractions,
-  type IVsCodeAuthentication,
   AuthenticationScheme,
   createCustomProviderId
 } from '#extension/authorization';

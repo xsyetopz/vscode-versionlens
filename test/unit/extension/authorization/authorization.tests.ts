@@ -1,8 +1,8 @@
 import type { ILogger } from '#domain/logging';
+import type { IVsCodeAuthentication } from '#extension';
 import {
   type AuthenticationInteractions,
   type IAuthenticationProviderFactory,
-  type IVsCodeAuthentication,
   type UrlAuthenticationData,
   type UrlAuthenticationStore,
   AuthenticationScheme,

@@ -1,11 +1,12 @@
-import { ILogger } from '#domain/logging';
-import { DependencyCache, PackageDependency } from '#domain/packages';
-import { IProviderConfig, ISuggestionProvider } from '#domain/providers';
-import { GetDependencyChanges } from '#domain/useCases';
-import { IVsCodeWorkspace, PackageFileWatcher } from '#extension/watcher';
+import type { ILogger } from '#domain/logging';
+import type { DependencyCache, PackageDependency } from '#domain/packages';
+import type { IProviderConfig, ISuggestionProvider } from '#domain/providers';
+import type { GetDependencyChanges } from '#domain/useCases';
+import type { IVsCodeWorkspace } from '#extension';
+import { PackageFileWatcher } from '#extension/watcher';
 import { test } from 'mocha-ui-esm';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
-import { FileSystemWatcher, Uri } from 'vscode';
+import type { FileSystemWatcher, Uri } from 'vscode';
 
 type TestContext = {
   mockGetDependencyChanges: GetDependencyChanges,

@@ -1,9 +1,9 @@
 import type { IAuthorization } from '#domain/authorization';
 import type { ILogger } from '#domain/logging';
+import type { IVsCodeAuthentication } from '#extension';
 import {
   type AuthenticationInteractions,
   type IAuthenticationProviderFactory,
-  type IVsCodeAuthentication,
   type UrlAuthenticationStore,
   AuthenticationScheme,
   createEmptyUrlAuthData

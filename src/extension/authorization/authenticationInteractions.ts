@@ -1,6 +1,6 @@
 import type { ILogger } from '#domain/logging';
+import type { IVsCodeWindow } from '#extension';
 import {
-  type IVsCodeWindow,
   type UrlAuthenticationData,
   AuthenticationScheme,
   authenticationProviders,

@@ -1,10 +1,8 @@
 import type { IDomainServices } from '#domain';
 import type { IServiceCollection } from '#domain/di';
 import { nameOf } from '#domain/utils';
-import type { IExtensionServices } from '#extension';
+import type { IExtensionServices, IVsCodeAuthentication, IVsCodeWindow } from '#extension';
 import {
-  type IVsCodeAuthentication,
-  type IVsCodeWindow,
   AuthenticationInteractions,
   Authorization,
   UrlAuthenticationStore

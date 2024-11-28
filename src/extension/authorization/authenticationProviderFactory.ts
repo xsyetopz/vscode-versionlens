@@ -1,9 +1,9 @@
 import { type KeyDictionary, Disposable } from '#domain/utils';
+import type { IVsCodeAuthentication } from '#extension';
 import type {
   AuthenticationInteractions,
   AuthenticationScheme,
-  IAuthenticationProviderFactory,
-  IVsCodeAuthentication
+  IAuthenticationProviderFactory
 } from '#extension/authorization';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import type { SecretStorage } from 'vscode';
