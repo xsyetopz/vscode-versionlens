@@ -2,7 +2,7 @@ import type { ILogger } from '#domain/logging';
 import type { DependencyCache, PackageDependency } from '#domain/packages';
 import type { IProviderConfig, ISuggestionProvider } from '#domain/providers';
 import type { GetDependencyChanges } from '#domain/useCases';
-import type { IVsCodeWorkspace } from '#extension';
+import type { IVsCodeWorkspace } from '#extension/vscode';
 import { PackageFileWatcher } from '#extension/watcher';
 import { test } from 'mocha-ui-esm';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
@@ -55,7 +55,7 @@ export const packageFileWatcherTests = {
           testConfig.fileMatcher.exclude
         )
       )
-        .thenResolve([testUri])
+        .thenResolve([testUri] as any)
 
       const watcher = new PackageFileWatcher(
         instance(this.mockGetDependencyChanges),

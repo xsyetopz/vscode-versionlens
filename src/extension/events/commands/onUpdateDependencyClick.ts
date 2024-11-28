@@ -1,19 +1,24 @@
 import type { ILogger } from '#domain/logging';
 import { SuggestionTypes, mapToSuggestionUpdate } from '#domain/packages';
 import { Disposable } from '#domain/utils';
-import { VersionLensState } from '#extension/state';
-import { SuggestionCodeLens } from '#extension/suggestions';
+import type { VersionLensState } from '#extension/state';
+import type { SuggestionCodeLens } from '#extension/suggestions';
+import type { IVsCodeConstructFactory, IVsCodeWorkspace } from '#extension/vscode';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { WorkspaceEdit, workspace } from 'vscode';
 
 export class OnUpdateDependencyClick extends Disposable {
 
   constructor(
+    readonly construct: IVsCodeConstructFactory,
+    readonly workspace: IVsCodeWorkspace,
     readonly state: VersionLensState,
     readonly logger: ILogger
   ) {
     super();
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('construct', construct);
+    throwUndefinedOrNull('workspace', workspace);
+    throwUndefinedOrNull('state', state);
+    throwUndefinedOrNull('logger', logger);
   }
 
   /**
@@ -34,9 +39,9 @@ export class OnUpdateDependencyClick extends Disposable {
       : codeLens.replaceVersionFn(suggestionUpdate, version);
 
     // create and apply the edit
-    const edit = new WorkspaceEdit();
+    const edit = this.construct.createWorkspaceEdit();
     edit.replace(codeLens.documentUrl, codeLens.replaceRange, replaceWithVersion);
-    await workspace.applyEdit(edit);
+    await this.workspace.applyEdit(edit);
   }
 
 }

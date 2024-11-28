@@ -1,5 +1,5 @@
 import type { ILogger } from '#domain/logging';
-import { DependencyCache } from '#domain/packages';
+import type { DependencyCache } from '#domain/packages';
 import type { ISuggestionProvider } from '#domain/providers';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
@@ -14,14 +14,10 @@ export class OnProviderTextDocumentClose {
   }
 
   async execute(provider: ISuggestionProvider, packageFilePath: string): Promise<void> {
-
     // remove the packageFilePath from editor dependency cache
     this.editorDependencyCache.remove(provider.name, packageFilePath);
 
-    this.logger.debug(
-      'cleared editor dependency cache for %s',
-      packageFilePath
-    );
+    this.logger.debug('cleared editor dependency cache for %s', packageFilePath);
   }
 
 }

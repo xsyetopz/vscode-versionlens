@@ -5,12 +5,12 @@ import type { IPackageFileWatcher } from '#domain/packages';
 import { nameOf, readJsonFile } from '#domain/utils';
 import {
   type IExtensionServices,
-  configureContainer,
   OnActiveTextEditorChange,
   VersionLensExtension
 } from '#extension';
 import { join } from 'node:path';
 import { type ExtensionContext, window, workspace } from 'vscode';
+import { configureContainer } from './extensionContainer';
 
 let serviceProvider: IServiceProvider;
 

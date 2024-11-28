@@ -1,5 +1,4 @@
 import type { ILogger } from '#domain/logging';
-import type { IVsCodeAuthentication } from '#extension';
 import {
   type AuthenticationInteractions,
   type IAuthenticationProviderFactory,
@@ -10,6 +9,7 @@ import {
   createEmptyUrlAuthData,
   createUrlAuthData
 } from '#extension/authorization';
+import type { IVsCodeAuthentication } from '#extension/vscode';
 import assert from 'assert';
 import { test } from 'mocha-ui-esm';
 import {
@@ -145,7 +145,7 @@ export const AuthorizationTests = {
       when(this.mockUrlAuthStore.get(testUrl)).thenReturn(testUrlAuthData);
 
       when(this.mockAuthentication.getSession(testUrlAuthData.id, anyOfClass(Array)))
-        .thenResolve(testSessionData);
+        .thenResolve(testSessionData as any);
 
       // test
       const actual = await this.testAuthorization.getToken(testUrl);

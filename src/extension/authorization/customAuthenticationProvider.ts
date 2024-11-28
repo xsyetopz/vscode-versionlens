@@ -1,9 +1,9 @@
-import type { IVsCodeAuthentication } from '#extension';
 import {
   type AuthenticationInteractions,
   AuthenticationScheme,
   createCustomProviderId
 } from '#extension/authorization';
+import type { IVsCodeAuthentication } from '#extension/vscode';
 import { throwNotStringOrEmpty, throwUndefinedOrNull } from '@esm-test/guards';
 import {
   type AuthenticationProvider,

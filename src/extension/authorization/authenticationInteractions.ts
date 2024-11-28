@@ -1,5 +1,4 @@
 import type { ILogger } from '#domain/logging';
-import type { IVsCodeWindow } from '#extension';
 import {
   type UrlAuthenticationData,
   AuthenticationScheme,
@@ -7,6 +6,7 @@ import {
   createCustomProviderId,
   createUrlAuthData
 } from '#extension/authorization';
+import type { IVsCodeWindow } from '#extension/vscode';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import type { QuickPickItem } from 'vscode';
 

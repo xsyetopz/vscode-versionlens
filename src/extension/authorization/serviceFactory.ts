@@ -1,12 +1,13 @@
 import type { IDomainServices } from '#domain';
 import type { IServiceCollection } from '#domain/di';
 import { nameOf } from '#domain/utils';
-import type { IExtensionServices, IVsCodeAuthentication, IVsCodeWindow } from '#extension';
+import type { IExtensionServices } from '#extension';
 import {
   AuthenticationInteractions,
   Authorization,
   UrlAuthenticationStore
 } from '#extension/authorization';
+import { IVsCodeAuthentication } from '#extension/vscode';
 import { type Memento, type SecretStorage, authentication, window } from 'vscode';
 import { AuthenticationProviderFactory } from './authenticationProviderFactory';
 
@@ -15,7 +16,7 @@ export function addAuthenticationInteractions(services: IServiceCollection) {
   services.addSingleton(
     serviceName,
     (container: IDomainServices) => new AuthenticationInteractions(
-      window as IVsCodeWindow,
+      window,
       container.logger.child({ logGroup: serviceName })
     )
   );
@@ -29,7 +30,7 @@ export function addAuthenticationProviderFactory(
     nameOf<IExtensionServices>().authenticationProviderFactory,
     (container: IExtensionServices) =>
       new AuthenticationProviderFactory(
-        authentication as IVsCodeAuthentication,
+        authentication,
         container.authenticationInteractions,
         secrets
       ),

@@ -1,8 +1,8 @@
 import type { ILogger } from '#domain/logging';
-import { DependencyCache } from '#domain/packages';
+import type { DependencyCache } from '#domain/packages';
 import type { ISuggestionProvider } from '#domain/providers';
-import { GetDependencyChanges } from '#domain/useCases';
-import { VersionLensState } from '#extension/state';
+import type { GetDependencyChanges } from '#domain/useCases';
+import type { VersionLensState } from '#extension/state';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class OnProviderTextDocumentChange {
@@ -13,9 +13,10 @@ export class OnProviderTextDocumentChange {
     readonly editorDependencyCache: DependencyCache,
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("getDependencyChanges", getDependencyChanges);
-    throwUndefinedOrNull("editorDependencyCache", editorDependencyCache);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('state', state);
+    throwUndefinedOrNull('getDependencyChanges', getDependencyChanges);
+    throwUndefinedOrNull('editorDependencyCache', editorDependencyCache);
+    throwUndefinedOrNull('logger', logger);
   }
 
   async execute(suggestionProvider: ISuggestionProvider, packageFilePath: string, newContent: string): Promise<void> {

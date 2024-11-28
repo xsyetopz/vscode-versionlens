@@ -7,7 +7,7 @@ import {
 import type { ISuggestionProvider } from '#domain/providers';
 import { type DependencyChangesResult, GetDependencyChanges } from '#domain/useCases';
 import { AsyncEmitter } from '#domain/utils';
-import type { IVsCodeWorkspace } from '#extension';
+import type { IVsCodeWorkspace } from '#extension/vscode';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { isMatch } from 'micromatch';
 import type { Uri } from 'vscode';

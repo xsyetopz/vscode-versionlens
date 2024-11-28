@@ -1,6 +1,6 @@
 import type { IExpiryCache } from '#domain/caching';
 import type { ILogger } from '#domain/logging';
-import { PackageCache } from '#domain/packages';
+import type { PackageCache } from '#domain/packages';
 import { Disposable } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
@@ -12,9 +12,9 @@ export class OnClearCache extends Disposable {
     readonly logger: ILogger
   ) {
     super();
-    throwUndefinedOrNull("packageCache", packageCache);
-    throwUndefinedOrNull("shellCache", shellCache);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('packageCache', packageCache);
+    throwUndefinedOrNull('shellCache', shellCache);
+    throwUndefinedOrNull('logger', logger);
   }
 
   execute() {

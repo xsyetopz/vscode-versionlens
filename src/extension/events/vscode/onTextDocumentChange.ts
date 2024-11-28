@@ -1,10 +1,11 @@
 import type { ILogger } from '#domain/logging';
 import type { ISuggestionProvider } from '#domain/providers';
-import { GetSuggestionProvider } from '#domain/useCases';
+import type { GetSuggestionProvider } from '#domain/useCases';
 import { AsyncEmitter } from '#domain/utils';
-import { VersionLensState } from '#extension/state';
+import type { VersionLensState } from '#extension/state';
+import { TextDocumentChangeReason } from '#extension/vscode';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { type TextDocumentChangeEvent, TextDocumentChangeReason } from 'vscode';
+import type { TextDocumentChangeEvent } from 'vscode';
 
 export type ProviderTextDocumentChangeEvent = (
   provider: ISuggestionProvider,

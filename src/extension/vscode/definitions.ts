@@ -24,7 +24,9 @@ import type {
   TextDocument,
   TextEditor,
   Uri,
-  ViewColumn
+  ViewColumn,
+  WorkspaceEdit,
+  WorkspaceEditMetadata
 } from 'vscode';
 
 /***
@@ -36,7 +38,7 @@ export interface IVsCodeWorkspace {
     exclude?: GlobPattern | null,
     maxResults?: number,
     token?: CancellationToken
-  ): Promise<Uri[]>;
+  ): Thenable<Uri[]>;
 
   createFileSystemWatcher(
     globPattern: GlobPattern,
@@ -44,13 +46,15 @@ export interface IVsCodeWorkspace {
     ignoreChangeEvents?: boolean,
     ignoreDeleteEvents?: boolean
   ): FileSystemWatcher;
+
+  applyEdit(edit: WorkspaceEdit, metadata?: WorkspaceEditMetadata): Thenable<boolean>
 }
 
 /***
  * Adapter interface for the 'authentication' namespace
  */
 export interface IVsCodeAuthentication {
-  getAccounts(providerId: string): Promise<readonly AuthenticationSessionAccountInformation[]>;
+  getAccounts(providerId: string): Thenable<readonly AuthenticationSessionAccountInformation[]>;
 
   onDidChangeSessions: Event<AuthenticationSessionsChangeEvent>
 
@@ -58,7 +62,7 @@ export interface IVsCodeAuthentication {
     providerId: string,
     scopes: readonly string[],
     options?: AuthenticationGetSessionOptions
-  ): Promise<AuthenticationSession | undefined>;
+  ): Thenable<AuthenticationSession | undefined>;
 
   registerAuthenticationProvider(
     id: string,
@@ -118,4 +122,22 @@ export interface IVsCodeTasks {
   onDidEndTaskProcess: Event<TaskProcessEndEvent>;
   executeTask(task: Task): Thenable<TaskExecution>;
   fetchTasks(filter?: TaskFilter): Thenable<Task[]>;
+}
+
+/***
+ * Concrete construction factory interface for vscode classes
+ */
+export interface IVsCodeConstructFactory {
+  createWorkspaceEdit(): WorkspaceEdit;
+}
+
+/***
+ * Concrete enums
+ */
+export enum TextDocumentChangeReason {
+  /** The text change is caused by an undo operation. */
+  Undo = 1,
+
+  /** The text change is caused by an redo operation. */
+  Redo = 2,
 }

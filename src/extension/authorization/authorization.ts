@@ -1,6 +1,5 @@
 import type { IAuthorization } from '#domain/authorization';
 import type { ILogger } from '#domain/logging';
-import type { IVsCodeAuthentication } from '#extension';
 import {
   type AuthenticationInteractions,
   type IAuthenticationProviderFactory,
@@ -8,6 +7,7 @@ import {
   AuthenticationScheme,
   createEmptyUrlAuthData
 } from '#extension/authorization';
+import type { IVsCodeAuthentication } from '#extension/vscode';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class Authorization implements IAuthorization {

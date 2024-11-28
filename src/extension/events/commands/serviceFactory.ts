@@ -7,7 +7,8 @@ import {
   OnFileLinkClick,
   OnUpdateDependencyClick
 } from '#extension/events';
-import { commands, env } from 'vscode';
+import { commands, env, workspace } from 'vscode';
+import { VsCodeConstructionFactory } from '../../vscode/vsCodeConstructFactory';
 
 export function addOnClearCache(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().onClearCache;
@@ -65,6 +66,8 @@ export function addOnUpdateDependencyClick(services: IServiceCollection) {
     (container: IDomainServices & IExtensionServices) => {
       // create the event handler
       const handler = new OnUpdateDependencyClick(
+        new VsCodeConstructionFactory(),
+        workspace,
         container.versionLensState,
         container.logger.child({ logGroup: serviceName })
       );

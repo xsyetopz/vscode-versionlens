@@ -1,9 +1,9 @@
 import type { ILogger } from '#domain/logging';
 import { Disposable } from '#domain/utils';
-import type { IVsCodeWindow } from '#extension';
-import { VersionLensState } from '#extension/state';
+import type { VersionLensState } from '#extension/state';
+import type { IVsCodeWindow } from '#extension/vscode';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { type OutputChannel } from 'vscode';
+import type { OutputChannel } from 'vscode';
 
 export class OnErrorClick extends Disposable {
 

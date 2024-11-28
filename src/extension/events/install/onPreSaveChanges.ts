@@ -1,5 +1,5 @@
 import type { ILogger } from '#domain/logging';
-import { DependencyCache } from '#domain/packages';
+import type { DependencyCache } from '#domain/packages';
 import type { ISuggestionProvider } from '#domain/providers';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
@@ -10,9 +10,9 @@ export class OnPreSaveChanges {
     readonly editorDependencyCache: DependencyCache,
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("fileWatcherDependencyCache", fileWatcherDependencyCache);
-    throwUndefinedOrNull("editorDependencyCache", editorDependencyCache);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('fileWatcherDependencyCache', fileWatcherDependencyCache);
+    throwUndefinedOrNull('editorDependencyCache', editorDependencyCache);
+    throwUndefinedOrNull('logger', logger);
   }
 
   async execute(provider: ISuggestionProvider, packageFilePath: string): Promise<void> {
@@ -23,7 +23,7 @@ export class OnPreSaveChanges {
     // remove the packageFilePath from editor dependency cache
     this.editorDependencyCache.remove(provider.name, packageFilePath);
     this.logger.debug(
-      'cleared editor dependency cache for %s',
+      "cleared editor dependency cache for %s",
       packageFilePath
     );
   }

@@ -1,7 +1,7 @@
 import type { ILogger } from '#domain/logging';
 import type { ISuggestionProvider } from '#domain/providers';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import type { IVsCodeTasks } from 'src/extension/vscodeAdapters';
+import type { IVsCodeTasks } from 'src/extension/vscode/definitions';
 import type { Task } from 'vscode';
 
 export class OnSaveChanges {
@@ -44,7 +44,7 @@ export class OnSaveChanges {
     );
 
     // execute the task
-    const exitCode = await executeTask(filteredTasks[0])
+    const exitCode = await this.executeTask(filteredTasks[0])
 
     this.logger.info(
       '%s.onSaveChanges["%s"] task exited with %s.',
@@ -54,16 +54,16 @@ export class OnSaveChanges {
     );
   }
 
-}
-
-async function executeTask(task: Task): Promise<number> {
-  await this.tasks.executeTask(task);
-  return new Promise((resolve, reject) => {
-    const disposable = this.tasks.onDidEndTaskProcess(e => {
-      if (task.name === e.execution.task.name) {
-        disposable.dispose();
-        resolve(e.exitCode);
-      }
+  private async executeTask(task: Task): Promise<number> {
+    await this.tasks.executeTask(task);
+    return new Promise((resolve, reject) => {
+      const disposable = this.tasks.onDidEndTaskProcess(e => {
+        if (task.name === e.execution.task.name) {
+          disposable.dispose();
+          resolve(e.exitCode);
+        }
+      });
     });
-  });
+  }
+
 }
