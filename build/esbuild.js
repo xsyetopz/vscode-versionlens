@@ -9,11 +9,11 @@ const sourcePath = path.resolve(projectPath, 'src');
 const testPath = path.resolve(projectPath, 'test');
 const distPath = isTestEnv
   ? path.resolve(projectPath, 'dist')
-  : path.resolve(projectPath, 'dist', 'src', 'presentation.extension');
+  : path.resolve(projectPath, 'dist', 'src', 'extension');
 
 const extension = isTestEnv ?
   path.resolve(testPath, 'runner.ts') :
-  path.resolve(sourcePath, './presentation.extension/activate.ts');
+  path.resolve(sourcePath, './extension/activate.ts');
 
 const external = isTestEnv
   ? ['vscode', 'mocha']

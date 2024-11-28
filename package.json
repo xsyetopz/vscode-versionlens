@@ -2,13 +2,13 @@
   "name": "vscode-versionlens",
   "preview": false,
   "private": true,
-  "main": "./dist/src/presentation.extension/activate.js",
+  "main": "./dist/src/extension/activate.js",
   "imports": {
     "#domain": "./dist/src/domain/index.js",
     "#domain/*": "./dist/src/domain/*/index.js",
     "#domain/providers/*": "./dist/src/domain/providers/*/index.js",
-    "#extension": "./dist/src/presentation.extension/index.js",
-    "#extension/*": "./dist/src/presentation.extension/*/index.js",
+    "#extension": "./dist/src/extension/index.js",
+    "#extension/*": "./dist/src/extension/*/index.js",
     "#test/utils": "./dist/test/unit/utils.js"
   },
   "description": "Shows the latest version for each package using code lens",

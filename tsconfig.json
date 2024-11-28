@@ -29,10 +29,10 @@
         "./src/domain/providers/*/index"
       ],
       "#extension": [
-        "./src/presentation.extension/index"
+        "./src/extension/index"
       ],
       "#extension/*": [
-        "./src/presentation.extension/*/index"
+        "./src/extension/*/index"
       ]
     }
   }
