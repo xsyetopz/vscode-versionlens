@@ -1,3 +1,12 @@
+# 1.15.2-preview
+
+  - Added added retry authorization prompt when credentials fail
+  - Added url authentication failed status when executing the `Remove url authentication data` command.
+
+    Failed statuses are
+    - Not consented
+    - Credentials failed
+
 # 1.15.1-preview
 
   - Added an interactive authorization workflow for 401 http responses
