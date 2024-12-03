@@ -1,3 +1,7 @@
+# 1.15.3-preview
+
+  - Added ability to change the authorization url to support multiple authentications with the same domain. (see the updated [authorization doc](https://gitlab.com/versionlens/vscode-versionlens/-/blob/master/docs/authorization.md) for more detail)
+
 # 1.15.2-preview
 
   - Added added retry authorization prompt when credentials fail
