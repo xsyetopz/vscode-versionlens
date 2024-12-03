@@ -1,0 +1,95 @@
+import {
+  type UrlAuthenticationData,
+  AuthenticationInteractions,
+  authenticationProviders,
+  AuthPrompt,
+  UrlAuthenticationStatus
+} from '#extension/authorization';
+import type { IVsCodeWindow } from '#extension/vscode';
+import assert from 'assert';
+import { anyOfClass, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import type { QuickPickOptions } from 'vscode';
+
+type TestContext = {
+  mockWindow: IVsCodeWindow
+  testInterations: AuthenticationInteractions
+}
+
+export const ChooseAuthenticationSchemeTests = {
+
+  beforeEach: function (this: TestContext) {
+    this.mockWindow = mock<IVsCodeWindow>();
+    this.testInterations = new AuthenticationInteractions(instance(this.mockWindow));
+  },
+
+  "returns undefined when no choice is made": async function (this: TestContext) {
+    const testAuthUrl = 'https://authurl';
+    const testOptions: QuickPickOptions = {
+      title: AuthPrompt.chooseAuthenticationScheme(testAuthUrl),
+      placeHolder: "Choose an authentication provider"
+    }
+    const expected = undefined;
+
+    when(this.mockWindow.showQuickPick(anything(), <any>deepEqual(testOptions)))
+      .thenResolve(undefined);
+
+    // test
+    const actual = await this.testInterations.chooseAuthenticationScheme(testAuthUrl);
+
+    // verify
+    verify(
+      this.mockWindow.showQuickPick(
+        anyOfClass(Array),
+        <any>deepEqual(testOptions)
+      )
+    ).once();
+
+    // assert
+    assert.equal(actual, expected);
+  },
+
+  "returns UrlAuthenticationData when choice is made": async function (this: TestContext) {
+    const testAuthUrl = 'https://authurl';
+    const testOptions: QuickPickOptions = {
+      title: AuthPrompt.chooseAuthenticationScheme(testAuthUrl),
+      placeHolder: "Choose an authentication provider"
+    }
+    const testProviderId = `(Basic Auth) ${testAuthUrl}`;
+    const testPickedData = {
+      label: authenticationProviders[0].label,
+      detail: authenticationProviders[0].description,
+
+      providerLabel: authenticationProviders[0].label,
+      providerScheme: authenticationProviders[0].scheme,
+      providerBuiltIn: authenticationProviders[0].custom === false,
+      providerId: testProviderId
+    }
+    const expected: UrlAuthenticationData = {
+      id: testProviderId,
+      url: testAuthUrl,
+      label: authenticationProviders[0].label,
+      scheme: authenticationProviders[0].scheme,
+      protocol: 'https:',
+      status: UrlAuthenticationStatus.NoStatus,
+      isCustomProvider: true
+    };
+
+    when(this.mockWindow.showQuickPick(anything(), <any>deepEqual(testOptions)))
+      .thenResolve(<any>testPickedData);
+
+    // test
+    const actual = await this.testInterations.chooseAuthenticationScheme(testAuthUrl);
+
+    // verify
+    verify(
+      this.mockWindow.showQuickPick(
+        anyOfClass(Array),
+        <any>deepEqual(testOptions)
+      )
+    ).once();
+
+    // assert
+    assert.deepEqual(actual, expected);
+  }
+
+}

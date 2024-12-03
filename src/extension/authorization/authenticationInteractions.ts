@@ -51,7 +51,7 @@ export class AuthenticationInteractions {
     return authUrl;
   }
 
-  async chooseAuthenticationType(url: string): Promise<UrlAuthenticationData | undefined> {
+  async chooseAuthenticationScheme(url: string): Promise<UrlAuthenticationData | undefined> {
     const pickItems: QuickPickItem[] = Array.from(
       authenticationProviders,
       authProviderInfo => (<any>{
@@ -73,7 +73,7 @@ export class AuthenticationInteractions {
     const selectedQuickPick = await this.window.showQuickPick(
       pickItems,
       {
-        title: `Authentication is required for ${url}`,
+        title: AuthPrompt.chooseAuthenticationScheme(url),
         placeHolder: "Choose an authentication provider"
       }
     );

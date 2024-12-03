@@ -66,7 +66,7 @@ export const getConsentTests = {
 
       // verify
       verify(this.mockUrlAuthStore.get(testUrl)).once();
-      verify(this.mockInteractions.chooseAuthenticationType(testUrl)).never();
+      verify(this.mockInteractions.chooseAuthenticationScheme(testUrl)).never();
 
       // assert
       assert.equal(actual, false);
@@ -85,7 +85,7 @@ export const getConsentTests = {
       // verify
       verify(this.mockUrlAuthStore.get(testUrl)).once();
       verify(this.mockInteractions.confirmAuthorziationUrl(testUrl, testRequestUrl)).once();
-      verify(this.mockInteractions.chooseAuthenticationType(testUrl)).never();
+      verify(this.mockInteractions.chooseAuthenticationScheme(testUrl)).never();
       verify(
         this.mockUrlAuthStore.update(
           testUrl,
@@ -103,7 +103,7 @@ export const getConsentTests = {
       const testRequestUrl = `${testUrl}/package/path/index.json`;
 
       when(this.mockInteractions.confirmAuthorziationUrl(testUrl, testRequestUrl)).thenResolve(testUrl);
-      when(this.mockInteractions.chooseAuthenticationType(testUrl)).thenResolve(undefined);
+      when(this.mockInteractions.chooseAuthenticationScheme(testUrl)).thenResolve(undefined);
 
       // test
       const actual = await this.testAuthorizer.getConsent(testUrl, testRequestUrl);
@@ -111,7 +111,7 @@ export const getConsentTests = {
       // verify
       verify(this.mockUrlAuthStore.get(testUrl)).once();
       verify(this.mockInteractions.confirmAuthorziationUrl(testUrl, testRequestUrl)).once();
-      verify(this.mockInteractions.chooseAuthenticationType(testUrl)).once();
+      verify(this.mockInteractions.chooseAuthenticationScheme(testUrl)).once();
       verify(
         this.mockUrlAuthStore.update(
           testUrl,
@@ -137,7 +137,7 @@ export const getConsentTests = {
     );
 
     when(this.mockInteractions.confirmAuthorziationUrl(testUrl, testRequestUrl)).thenResolve(testUrl);
-    when(this.mockInteractions.chooseAuthenticationType(testUrl))
+    when(this.mockInteractions.chooseAuthenticationScheme(testUrl))
       .thenResolve(testUrlAuthData);
 
     // test
@@ -146,7 +146,7 @@ export const getConsentTests = {
     // verify
     verify(this.mockUrlAuthStore.get(testUrl)).once();
     verify(this.mockInteractions.confirmAuthorziationUrl(testUrl, testRequestUrl)).once();
-    verify(this.mockInteractions.chooseAuthenticationType(testUrl)).once();
+    verify(this.mockInteractions.chooseAuthenticationScheme(testUrl)).once();
     verify(this.mockProviderFactory.registerCustomAuthProvider(testScheme, testUrl)).once();
   },
 
@@ -168,7 +168,7 @@ export const getConsentTests = {
 
     when(this.mockInteractions.confirmAuthorziationUrl(testUrl, testRequestUrl))
       .thenResolve(testUrl);
-    when(this.mockInteractions.chooseAuthenticationType(testUrl))
+    when(this.mockInteractions.chooseAuthenticationScheme(testUrl))
       .thenResolve(testUrlAuthData);
 
     when(
@@ -185,7 +185,7 @@ export const getConsentTests = {
     // verify
     verify(this.mockUrlAuthStore.get(testUrl)).once();
     verify(this.mockInteractions.confirmAuthorziationUrl(testUrl, testRequestUrl)).once();
-    verify(this.mockInteractions.chooseAuthenticationType(testUrl)).once();
+    verify(this.mockInteractions.chooseAuthenticationScheme(testUrl)).once();
     verify(
       this.mockAuthentication.getSession(
         testUrlAuthData.id,
@@ -219,7 +219,7 @@ export const getConsentTests = {
 
       when(this.mockInteractions.confirmAuthorziationUrl(testUrl, testRequestUrl))
         .thenResolve(testUrl);
-      when(this.mockInteractions.chooseAuthenticationType(testUrl))
+      when(this.mockInteractions.chooseAuthenticationScheme(testUrl))
         .thenResolve(testUrlAuthData);
 
       when(
@@ -236,7 +236,7 @@ export const getConsentTests = {
       // verify
       verify(this.mockUrlAuthStore.get(testUrl)).once();
       verify(this.mockInteractions.confirmAuthorziationUrl(testUrl, testRequestUrl)).once();
-      verify(this.mockInteractions.chooseAuthenticationType(testUrl)).once();
+      verify(this.mockInteractions.chooseAuthenticationScheme(testUrl)).once();
       verify(
         this.mockAuthentication.getSession(
           testUrlAuthData.id,

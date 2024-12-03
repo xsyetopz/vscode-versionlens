@@ -97,7 +97,7 @@ export class Authorizer implements IAuthorizer {
     }
 
     // get the authentication type
-    const authData = await this.interactions.chooseAuthenticationType(authUrl);
+    const authData = await this.interactions.chooseAuthenticationScheme(authUrl);
     if (authData === undefined) {
       // prevent re-prompting the user
       this.urlAuthStore.update(authUrl, createEmptyUrlAuthData(authUrl));
