@@ -1,6 +1,6 @@
-import type { ILogger } from '#domain/logging';
 import {
   type UrlAuthenticationData,
+  AuthPrompt,
   AuthenticationScheme,
   UrlAuthenticationStatus,
   authenticationProviders,
@@ -14,37 +14,38 @@ import type { QuickPickItem } from 'vscode';
 
 export class AuthenticationInteractions {
 
-  constructor(readonly window: IVsCodeWindow, readonly logger: ILogger) {
+  constructor(readonly window: IVsCodeWindow) {
     throwUndefinedOrNull('window', window);
-    throwUndefinedOrNull('logger', logger);
   }
 
   async confirmAuthorziationUrl(url: string, requestUrl: string): Promise<string | undefined> {
     const authUrl = await this.window.showInputBox({
       ignoreFocusOut: true,
-      prompt: "Enter the authorization url for package requests",
+      prompt: AuthPrompt.enterAuthorizationUrl,
       placeHolder: 'Authorization url',
       value: url
     });
-    // check the user made a selection
+    // check the user entered a value
     if (!authUrl) return undefined;
 
     // check the authUrl matches the original url domain
     const parsedRequestUrl = parse(requestUrl, false);
     const parsedAuthUrl = parse(authUrl, false);
     if (parsedAuthUrl.host !== parsedRequestUrl.host) {
-      const retry = this.promptRetry(
-        "The authorization url must be in the same domain as the request url"
-      );
-      return retry ? this.confirmAuthorziationUrl(authUrl, requestUrl) : undefined;
+      const retry = await this.promptRetry(AuthPrompt.authorizationWrongDomain);
+      return retry
+        ? await this.confirmAuthorziationUrl(authUrl, requestUrl)
+        : undefined;
     }
 
     // check the requestUrl starts with the auth url
     if (requestUrl.startsWith(authUrl) === false) {
-      const retry = this.promptRetry(
-        `The authorization url must partially match the request url ${requestUrl}`
+      const retry = await this.promptRetry(
+        AuthPrompt.authorizationUrlPartialMismatch(requestUrl)
       );
-      return retry ? this.confirmAuthorziationUrl(authUrl, requestUrl) : undefined;
+      return retry
+        ? await this.confirmAuthorziationUrl(authUrl, requestUrl)
+        : undefined;
     }
 
     return authUrl;
@@ -205,11 +206,11 @@ export class AuthenticationInteractions {
   async promptRetry(message: string, detail: string = ""): Promise<boolean | undefined> {
     const choice = await this.window.showInformationMessage(
       message,
-      { modal: true, detail: detail },
+      { modal: true, detail },
       'Retry'
     );
 
-    if (choice === undefined) return undefined;
+    if (!choice) return undefined;
 
     return true;
   }
@@ -217,7 +218,7 @@ export class AuthenticationInteractions {
   async promptYesCancel(message: string, detail: string = ""): Promise<boolean> {
     const choice = await this.window.showInformationMessage(
       message,
-      { modal: true, detail: detail },
+      { modal: true, detail },
       'Yes'
     );
 

@@ -65,6 +65,11 @@ export const AuthLog = {
 }
 
 export const AuthPrompt = {
+  enterAuthorizationUrl: "Enter the authorization url for package requests",
+  authorizationWrongDomain: "The authorization url must be in the same domain as the request url",
+  authorizationUrlPartialMismatch: (requestUrl: string) => {
+    return `The authorization url must partially match the request url ${requestUrl}`;
+  },
   couldNotAuthenticate: (url: string) => {
     return `Could not authenticate credentials with ${url}.\n\n`
       + "Would you like to re-enter your credentials?"

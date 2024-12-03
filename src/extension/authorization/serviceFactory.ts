@@ -20,10 +20,7 @@ export function addAuthenticationInteractions(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().authenticationInteractions;
   services.addSingleton(
     serviceName,
-    (container: IDomainServices) => new AuthenticationInteractions(
-      window,
-      container.logger.child({ logGroup: serviceName })
-    )
+    () => new AuthenticationInteractions(window)
   );
 }
 
