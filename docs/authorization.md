@@ -53,7 +53,7 @@ To clear credentials
 
   > **NOTE**
   >
-  > If you have a project\package file opened when running this commandand one of your packages needs re-authorization with the same url then you will be prompted to re-enter authorization. (if you dismiss this prompt then the url will need to be cleared again)
+  > If you have a project\package file opened when running this command and one of the packages needs re-authorization with the same removed url then you will be prompted to re-enter authorization. (if you dismiss this prompt then the url will be re-added to the url authentication data and marked as unconsented)
 
 ## Url Authentication Data
 
