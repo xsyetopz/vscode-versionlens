@@ -4,6 +4,9 @@ import {
   AuthenticationScheme,
   UrlAuthenticationStatus,
   authenticationProviders,
+  basicAuthPrompt,
+  chooseAuthSchemePrompt,
+  confirmAuthUrlPrompt,
   createCustomProviderId,
   createUrlAuthData
 } from '#extension/authorization';
@@ -21,7 +24,7 @@ export class AuthenticationInteractions {
   async confirmAuthorziationUrl(url: string, requestUrl: string): Promise<string | undefined> {
     const authUrl = await this.window.showInputBox({
       ignoreFocusOut: true,
-      prompt: AuthPrompt.enterAuthorizationUrl,
+      prompt: confirmAuthUrlPrompt.enterAuthorizationUrl,
       placeHolder: 'Authorization url',
       value: url
     });
@@ -32,7 +35,7 @@ export class AuthenticationInteractions {
     const parsedRequestUrl = parse(requestUrl, false);
     const parsedAuthUrl = parse(authUrl, false);
     if (parsedAuthUrl.host !== parsedRequestUrl.host) {
-      const retry = await this.promptRetry(AuthPrompt.authorizationWrongDomain);
+      const retry = await this.promptRetry(confirmAuthUrlPrompt.differentDomain);
       return retry
         ? await this.confirmAuthorziationUrl(authUrl, requestUrl)
         : undefined;
@@ -41,7 +44,7 @@ export class AuthenticationInteractions {
     // check the requestUrl starts with the auth url
     if (requestUrl.startsWith(authUrl) === false) {
       const retry = await this.promptRetry(
-        AuthPrompt.authorizationUrlPartialMismatch(requestUrl)
+        confirmAuthUrlPrompt.urlPartialMismatch(requestUrl)
       );
       return retry
         ? await this.confirmAuthorziationUrl(authUrl, requestUrl)
@@ -73,7 +76,7 @@ export class AuthenticationInteractions {
     const selectedQuickPick = await this.window.showQuickPick(
       pickItems,
       {
-        title: AuthPrompt.chooseAuthenticationScheme(url),
+        title: chooseAuthSchemePrompt.chooseAuthenticationScheme(url),
         placeHolder: "Choose an authentication provider"
       }
     );
@@ -101,16 +104,10 @@ export class AuthenticationInteractions {
   }
 
   async enterBasicAuthDetails(url: string): Promise<string | undefined> {
-    // prompt unsecure urls
-    if (url.startsWith('https:') == false) {
-      const allowUnsecured = await this.promptUnsecured(url);
-      if (allowUnsecured === undefined) return undefined;
-    }
-
     // prompt for the username
     const username = await this.window.showInputBox({
       ignoreFocusOut: true,
-      prompt: `Enter the basic auth username for ${url}`,
+      prompt: basicAuthPrompt.enterBasicAuthUsername(url),
       placeHolder: 'Basic auth username',
       password: false
     });
@@ -118,10 +115,7 @@ export class AuthenticationInteractions {
 
     // validate username
     if (username.includes(':')) {
-      const retry = await this.promptRetry(
-        "You cannot have a ':' character in the user name. Do you want re-enter the username or cancel?",
-        `Basic auth username for ${url}`,
-      );
+      const retry = await this.promptRetry(basicAuthPrompt.invalidBasicAuthUsername);
       if (retry === undefined) return undefined;
 
       return await this.enterBasicAuthDetails(url);
@@ -130,7 +124,7 @@ export class AuthenticationInteractions {
     // prompt for the password
     const password = await this.window.showInputBox({
       ignoreFocusOut: true,
-      prompt: `Enter the basic auth password for ${url}`,
+      prompt: basicAuthPrompt.enterBasicAuthPassword(url),
       placeHolder: 'Basic auth password',
       password: true,
     });
@@ -141,12 +135,6 @@ export class AuthenticationInteractions {
   }
 
   async enterRawAuthDetails(url: string): Promise<string | undefined> {
-    // prompt unsecure urls
-    if (url.startsWith('https:') == false) {
-      const allowUnsecure = await this.promptUnsecured(url);
-      if (allowUnsecure === undefined) return undefined;
-    }
-
     // prompt for the value
     const value = await this.window.showInputBox({
       ignoreFocusOut: true,
@@ -227,15 +215,13 @@ export class AuthenticationInteractions {
     return true;
   }
 
-  private async promptUnsecured(url: string): Promise<boolean | undefined> {
+  async promptUnsecured(url: string): Promise<boolean> {
     const choice = await this.window.showInformationMessage(
-      `${url} is using the unsecured HTTP protocol.\n\n` +
-      "Are you sure you want to send your credentials using this url?",
+      AuthPrompt.unsecureAuthorizationUrl(url),
       { modal: true },
       'Yes'
     );
-
-    if (choice === undefined) return undefined;
+    if (!choice) return false;
 
     return true;
   }

@@ -65,14 +65,29 @@ export const AuthLog = {
 }
 
 export const AuthPrompt = {
-  enterAuthorizationUrl: "Enter the authorization url for package requests",
-  authorizationWrongDomain: "The authorization url must be in the same domain as the request url",
-  authorizationUrlPartialMismatch: (requestUrl: string) => {
-    return `The authorization url must partially match the request url ${requestUrl}`;
-  },
-  chooseAuthenticationScheme: (url: string) => `Choose an authentication scheme for ${url}`,
   couldNotAuthenticate: (url: string) => {
     return `Could not authenticate credentials with ${url}.\n\n`
       + "Would you like to re-enter your credentials?"
-  }
+  },
+  unsecureAuthorizationUrl: (url: string) => `${url} is using the unsecured HTTP protocol.\n\n` +
+    "Are you sure you want to send your credentials using this url?"
 }
+
+export const confirmAuthUrlPrompt = {
+  enterAuthorizationUrl: "Enter the authorization url for package requests",
+  differentDomain: "The authorization url must be in the same domain as the request url",
+  urlPartialMismatch: (requestUrl: string) => {
+    return `The authorization url must partially match the request url ${requestUrl}`;
+  },
+};
+
+export const chooseAuthSchemePrompt = {
+  chooseAuthenticationScheme: (url: string) => `Choose an authentication scheme for ${url}`
+}
+
+export const basicAuthPrompt = {
+  enterBasicAuthUsername: (url: string) => `Enter the basic auth username for ${url}`,
+  enterBasicAuthPassword: (url: string) => `Enter the basic auth password for ${url}`,
+  invalidBasicAuthUsername: "You cannot have a ':' character in the user name.\n\n"
+    + "Do you want re-enter the username or cancel?",
+};

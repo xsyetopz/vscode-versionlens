@@ -1,4 +1,4 @@
-import { AuthenticationInteractions, AuthPrompt } from '#extension/authorization';
+import { AuthenticationInteractions, confirmAuthUrlPrompt } from '#extension/authorization';
 import type { IVsCodeWindow } from '#extension/vscode';
 import assert from 'assert';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
@@ -9,7 +9,7 @@ type TestContext = {
   testInterations: AuthenticationInteractions
 }
 
-export const ConfirmAuthorziationUrlTests = {
+export const confirmAuthorziationUrlTests = {
 
   beforeEach: function (this: TestContext) {
     this.mockWindow = mock<IVsCodeWindow>();
@@ -24,7 +24,7 @@ export const ConfirmAuthorziationUrlTests = {
       const testRequestUrl = `${testAuthUrl}/request/package`;
       const testOptions: InputBoxOptions = {
         ignoreFocusOut: true,
-        prompt: AuthPrompt.enterAuthorizationUrl,
+        prompt: confirmAuthUrlPrompt.enterAuthorizationUrl,
         placeHolder: 'Authorization url',
         value: testAuthUrl
       }
@@ -59,7 +59,7 @@ export const ConfirmAuthorziationUrlTests = {
       when(this.mockWindow.showInputBox(anything())).thenResolve(<any>testInput);
       when(
         this.mockWindow.showInformationMessage(
-          AuthPrompt.authorizationWrongDomain,
+          confirmAuthUrlPrompt.differentDomain,
           deepEqual(testRetryOptions),
           'Retry'
         )
@@ -76,7 +76,7 @@ export const ConfirmAuthorziationUrlTests = {
 
       verify(
         this.mockWindow.showInformationMessage(
-          AuthPrompt.authorizationWrongDomain,
+          confirmAuthUrlPrompt.differentDomain,
           deepEqual(testRetryOptions),
           'Retry'
         )
@@ -98,7 +98,7 @@ export const ConfirmAuthorziationUrlTests = {
       when(this.mockWindow.showInputBox(anything())).thenResolve(<any>testInput);
       when(
         this.mockWindow.showInformationMessage(
-          AuthPrompt.authorizationUrlPartialMismatch(testRequestUrl),
+          confirmAuthUrlPrompt.urlPartialMismatch(testRequestUrl),
           deepEqual(testRetryOptions),
           'Retry'
         )
@@ -115,7 +115,7 @@ export const ConfirmAuthorziationUrlTests = {
 
       verify(
         this.mockWindow.showInformationMessage(
-          AuthPrompt.authorizationUrlPartialMismatch(testRequestUrl),
+          confirmAuthUrlPrompt.urlPartialMismatch(testRequestUrl),
           deepEqual(testRetryOptions),
           'Retry'
         )

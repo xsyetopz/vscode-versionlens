@@ -2,7 +2,7 @@ import {
   type UrlAuthenticationData,
   AuthenticationInteractions,
   authenticationProviders,
-  AuthPrompt,
+  chooseAuthSchemePrompt,
   UrlAuthenticationStatus
 } from '#extension/authorization';
 import type { IVsCodeWindow } from '#extension/vscode';
@@ -15,7 +15,7 @@ type TestContext = {
   testInterations: AuthenticationInteractions
 }
 
-export const ChooseAuthenticationSchemeTests = {
+export const chooseAuthenticationSchemeTests = {
 
   beforeEach: function (this: TestContext) {
     this.mockWindow = mock<IVsCodeWindow>();
@@ -25,7 +25,7 @@ export const ChooseAuthenticationSchemeTests = {
   "returns undefined when no choice is made": async function (this: TestContext) {
     const testAuthUrl = 'https://authurl';
     const testOptions: QuickPickOptions = {
-      title: AuthPrompt.chooseAuthenticationScheme(testAuthUrl),
+      title: chooseAuthSchemePrompt.chooseAuthenticationScheme(testAuthUrl),
       placeHolder: "Choose an authentication provider"
     }
     const expected = undefined;
@@ -51,7 +51,7 @@ export const ChooseAuthenticationSchemeTests = {
   "returns UrlAuthenticationData when choice is made": async function (this: TestContext) {
     const testAuthUrl = 'https://authurl';
     const testOptions: QuickPickOptions = {
-      title: AuthPrompt.chooseAuthenticationScheme(testAuthUrl),
+      title: chooseAuthSchemePrompt.chooseAuthenticationScheme(testAuthUrl),
       placeHolder: "Choose an authentication provider"
     }
     const testProviderId = `(Basic Auth) ${testAuthUrl}`;

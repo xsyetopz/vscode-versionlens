@@ -96,6 +96,16 @@ export class Authorizer implements IAuthorizer {
       return false;
     }
 
+    // prompt unsecure urls
+    if (url.startsWith('https:') === false) {
+      const allowUnsecured = await this.interactions.promptUnsecured(url);
+      if (allowUnsecured === false) {
+        // prevent re-prompting the user
+        this.urlAuthStore.update(url, createEmptyUrlAuthData(url));
+        return false;
+      }
+    }
+
     // get the authentication type
     const authData = await this.interactions.chooseAuthenticationScheme(authUrl);
     if (authData === undefined) {
