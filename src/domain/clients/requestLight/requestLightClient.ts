@@ -32,7 +32,7 @@ export class RequestLightClient implements IHttpClient {
     headers: KeyStringDictionary = {}
   ): Promise<HttpClientResponse> {
     const url = createUrl(baseUrl, query);
-    const authUrl = this.authorizer.getRegistryAuthUrl(baseUrl);
+    const authUrl = this.authorizer.getAuthorizationUrl(baseUrl);
     const shouldAutoAuthorize = !headers.Authorization
       && this.authorizer.urlHasAuthConsent(authUrl);
     const autoAuthHeaders: any = {};

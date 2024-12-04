@@ -40,7 +40,7 @@ export class Authorizer implements IAuthorizer {
     return true;
   }
 
-  getRegistryAuthUrl(url: string): string {
+  getAuthorizationUrl(url: string): string {
     // look for url in the user defined registry urls
     const entries = this.urlAuthStore.getAll();
     const registryAuthUrl = entries

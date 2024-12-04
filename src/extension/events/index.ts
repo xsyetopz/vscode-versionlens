@@ -1,3 +1,4 @@
+export * from './auth/onAddUrlAuthentication';
 export * from './auth/onRemoveUrlAuthentication';
 export * from './commands/onClearCache';
 export * from './commands/onFileLinkClick';
