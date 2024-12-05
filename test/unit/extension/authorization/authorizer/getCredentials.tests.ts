@@ -1,11 +1,11 @@
 import type { ILogger } from '#domain/logging';
 import {
   type AuthenticationInteractions,
+  type BasicAuthProvider,
   type UrlAuthenticationData,
   type UrlAuthenticationStore,
   AuthenticationScheme,
   Authorizer,
-  BasicAuthProvider,
   createEmptyUrlAuthData,
   createUrlAuthData,
   UrlAuthenticationStatus
@@ -28,9 +28,9 @@ type TestContext = {
   testAuthorizer: Authorizer
 }
 
-export const getConsentTests = {
+export const getCredentialsTests = {
 
-  [test.title]: Authorizer.prototype.getConsent.name,
+  [test.title]: Authorizer.prototype.getCredentials.name,
 
   beforeEach: function (this: TestContext) {
     this.mockUrlAuthStore = mock<UrlAuthenticationStore>();
@@ -55,7 +55,7 @@ export const getConsentTests = {
       when(this.mockUrlAuthStore.get(testUrl)).thenReturn(testUrlAuthData);
 
       // test
-      const actual = await this.testAuthorizer.getConsent(testUrl, testRequestUrl);
+      const actual = await this.testAuthorizer.getCredentials(testUrl, testRequestUrl);
 
       // verify
       verify(this.mockUrlAuthStore.get(testUrl)).once();
@@ -73,7 +73,7 @@ export const getConsentTests = {
       when(this.mockInteractions.confirmAuthorziationUrl(testUrl, testRequestUrl)).thenResolve(undefined);
 
       // test
-      const actual = await this.testAuthorizer.getConsent(testUrl, testRequestUrl);
+      const actual = await this.testAuthorizer.getCredentials(testUrl, testRequestUrl);
 
       // verify
       verify(this.mockUrlAuthStore.get(testUrl)).once();
@@ -100,7 +100,7 @@ export const getConsentTests = {
       when(this.mockInteractions.promptUnsecured(testUrl)).thenResolve(false);
 
       // test
-      const actual = await this.testAuthorizer.getConsent(testUrl, testRequestUrl);
+      const actual = await this.testAuthorizer.getCredentials(testUrl, testRequestUrl);
 
       // verify
       verify(this.mockUrlAuthStore.get(testUrl)).once();
@@ -126,7 +126,7 @@ export const getConsentTests = {
       when(this.mockInteractions.chooseAuthenticationScheme(testUrl)).thenResolve(undefined);
 
       // test
-      const actual = await this.testAuthorizer.getConsent(testUrl, testRequestUrl);
+      const actual = await this.testAuthorizer.getCredentials(testUrl, testRequestUrl);
 
       // verify
       verify(this.mockUrlAuthStore.get(testUrl)).once();
@@ -165,7 +165,7 @@ export const getConsentTests = {
       .thenResolve(true);
 
     // test
-    const actual = await this.testAuthorizer.getConsent(testUrl, testRequestUrl);
+    const actual = await this.testAuthorizer.getCredentials(testUrl, testRequestUrl);
 
     // verify
     verify(this.mockUrlAuthStore.get(testUrl)).once();
@@ -203,7 +203,7 @@ export const getConsentTests = {
         .thenResolve(false);
 
       // test
-      const actual = await this.testAuthorizer.getConsent(testUrl, testRequestUrl);
+      const actual = await this.testAuthorizer.getCredentials(testUrl, testRequestUrl);
 
       // verify
       verify(this.mockUrlAuthStore.get(testUrl)).once();

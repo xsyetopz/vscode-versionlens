@@ -74,7 +74,7 @@ export class RequestLightClient implements IHttpClient {
       if (errorResponse.status === 401) {
         const consent = shouldAutoAuthorize
           ? await this.authorizer.retryCredentials(authUrl)
-          : await this.authorizer.getConsent(authUrl, baseUrl);
+          : await this.authorizer.getCredentials(authUrl, baseUrl);
 
         if (consent) return await this.get(baseUrl, query, headers);
       }

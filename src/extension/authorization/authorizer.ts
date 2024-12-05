@@ -69,7 +69,7 @@ export class Authorizer implements IAuthorizer {
       : `${urlAuthInfo.scheme} ${accessToken}`;
   }
 
-  async getConsent(url: string, requestUrl: string): Promise<boolean> {
+  async getCredentials(url: string, requestUrl: string): Promise<boolean> {
     // check url isn't already unconsented
     const existingUrlAuthData = this.urlAuthStore.get(url);
     if (existingUrlAuthData?.scheme === AuthenticationScheme.NotSet) {
