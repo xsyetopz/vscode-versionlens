@@ -232,7 +232,7 @@ export class AuthenticationInteractions {
   }
 
   async promptUnsecured(url: string): Promise<boolean> {
-    const choice = await this.window.showInformationMessage(
+    const choice = await this.window.showWarningMessage(
       AuthPrompt.unsecureAuthorizationUrl(url),
       { modal: true },
       'Yes'

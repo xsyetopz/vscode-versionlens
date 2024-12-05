@@ -74,6 +74,12 @@ export interface IVsCodeWindow {
     ...items: T[]
   ): Thenable<T | undefined>;
 
+  showWarningMessage<T extends string>(
+    message: string,
+    options: MessageOptions,
+    ...items: T[]
+  ): Thenable<T | undefined>;
+
   showTextDocument(
     document: TextDocument,
     column?: ViewColumn,
