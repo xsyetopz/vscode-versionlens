@@ -42,16 +42,14 @@ export const getAuthorizationUrlTests = {
         'testId1',
         'test label 1',
         AuthenticationScheme.Basic,
-        UrlAuthenticationStatus.NoStatus,
-        true
+        UrlAuthenticationStatus.NoStatus
       ),
       createUrlAuthData(
         'https://test-registry-2/auth',
         'testId2',
         'test label 2',
         AuthenticationScheme.Basic,
-        UrlAuthenticationStatus.NoStatus,
-        true
+        UrlAuthenticationStatus.NoStatus
       )
     ]);
 

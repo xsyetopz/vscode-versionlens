@@ -21,8 +21,7 @@ export function createUrlAuthData(
   id: string,
   label: string,
   scheme: AuthenticationScheme,
-  status: UrlAuthenticationStatus,
-  isCustomProvider: boolean
+  status: UrlAuthenticationStatus
 ): UrlAuthenticationData {
   const parsedUrl = new URL(url);
   return {
@@ -31,8 +30,7 @@ export function createUrlAuthData(
     id,
     label,
     scheme,
-    status,
-    isCustomProvider
+    status
   };
 }
 
@@ -44,7 +42,6 @@ export function createEmptyUrlAuthData(url: string): UrlAuthenticationData {
     id: null,
     label: null,
     scheme: AuthenticationScheme.NotSet,
-    status: UrlAuthenticationStatus.NotConsented,
-    isCustomProvider: false
+    status: UrlAuthenticationStatus.NotConsented
   };
 }

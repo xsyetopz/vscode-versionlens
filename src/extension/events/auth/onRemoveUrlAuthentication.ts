@@ -1,25 +1,25 @@
 import type { ILogger } from '#domain/logging';
 import type { PackageCache } from '#domain/packages';
-import { Disposable } from '#domain/utils';
+import { type KeyDictionary, Disposable } from '#domain/utils';
 import {
+  type AuthenticationProvider,
   type UrlAuthenticationStore,
   AuthenticationInteractions
 } from '#extension/authorization';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import type { SecretStorage } from 'vscode';
 
 export class OnRemoveUrlAuthentication extends Disposable {
 
   constructor(
+    readonly providers: KeyDictionary<AuthenticationProvider>,
     readonly urlAuthStore: UrlAuthenticationStore,
-    readonly secretStorage: SecretStorage,
     readonly packageCache: PackageCache,
     readonly interactions: AuthenticationInteractions,
     readonly logger: ILogger
   ) {
     super();
+    throwUndefinedOrNull('providers', providers);
     throwUndefinedOrNull('urlAuthStore', urlAuthStore);
-    throwUndefinedOrNull('secretStorage', secretStorage);
     throwUndefinedOrNull('packageCache', packageCache);
     throwUndefinedOrNull('interactions', interactions);
     throwUndefinedOrNull('logger', logger);
@@ -44,7 +44,7 @@ export class OnRemoveUrlAuthentication extends Disposable {
       await this.urlAuthStore.remove(authItem.url);
 
       // clear secret auth persistence
-      await this.secretStorage.delete(authItem.id);
+      await this.providers[authItem.scheme].remove(authItem.id);
     }
 
     // clear package cache

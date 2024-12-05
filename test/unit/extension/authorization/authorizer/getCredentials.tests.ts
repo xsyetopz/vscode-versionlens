@@ -152,8 +152,7 @@ export const getCredentialsTests = {
       'testId',
       'test label',
       testScheme,
-      UrlAuthenticationStatus.NoStatus,
-      true
+      UrlAuthenticationStatus.NoStatus
     );
     when(this.mockInteractions.confirmAuthorziationUrl(testUrl, testRequestUrl))
       .thenResolve(testUrl);
@@ -188,8 +187,7 @@ export const getCredentialsTests = {
         'testId',
         'test label',
         testScheme,
-        UrlAuthenticationStatus.NoStatus,
-        true
+        UrlAuthenticationStatus.NoStatus
       );
       const expectedUrlAuthData = createEmptyUrlAuthData(testUrl);
 

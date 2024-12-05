@@ -55,8 +55,7 @@ export const retryCredentialsTests = {
         'testId',
         'test label',
         AuthenticationScheme.Basic,
-        UrlAuthenticationStatus.NotConsented,
-        true
+        UrlAuthenticationStatus.NotConsented
       );
       const expectedUrlAuthData: UrlAuthenticationData = {
         ...testUrlAuthData,
@@ -87,8 +86,7 @@ export const retryCredentialsTests = {
       'testId',
       'test label',
       testScheme,
-      UrlAuthenticationStatus.NoStatus,
-      true
+      UrlAuthenticationStatus.NoStatus
     );
     const expectedPromptMessage = AuthPrompt.couldNotAuthenticate(testUrl);
 

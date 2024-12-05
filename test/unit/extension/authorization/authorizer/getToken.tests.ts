@@ -73,8 +73,7 @@ export const getTokenTests = {
       'testId',
       'test label',
       testScheme,
-      UrlAuthenticationStatus.NoStatus,
-      true
+      UrlAuthenticationStatus.NoStatus
     );
 
     when(this.mockUrlAuthStore.get(testUrl)).thenReturn(testUrlAuthData);

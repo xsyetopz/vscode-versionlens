@@ -3,7 +3,7 @@ import type { IServiceCollection } from '#domain/di';
 import { nameOf } from '#domain/utils';
 import { type IExtensionServices, AuthorizationCommandFeatures } from '#extension';
 import { OnAddUrlAuthentication, OnRemoveUrlAuthentication } from '#extension/events';
-import { type SecretStorage, commands } from 'vscode';
+import { commands } from 'vscode';
 
 export function addOnAddUrlAuthentication(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().onAddUrlAuthentication;
@@ -32,18 +32,15 @@ export function addOnAddUrlAuthentication(services: IServiceCollection) {
   )
 }
 
-export function addOnRemoveUrlAuthentication(
-  services: IServiceCollection,
-  secrets: SecretStorage
-) {
+export function addOnRemoveUrlAuthentication(services: IServiceCollection) {
   const serviceName = nameOf<IExtensionServices>().onRemoveUrlAuthentication;
   services.addSingleton(
     serviceName,
     (container: IDomainServices & IExtensionServices) => {
       // create the event handler
       const handler = new OnRemoveUrlAuthentication(
+        container.authenticationProviders,
         container.urlAuthenticationStore,
-        secrets,
         container.packageCache,
         container.authenticationInteractions,
         container.logger.child({ logGroup: serviceName })

@@ -18,8 +18,8 @@ export abstract class AuthenticationProvider {
     return await this.secretStorage.get(url);
   }
 
-  async clear(url: string) {
-    await this.secretStorage.store(url, undefined);
+  async remove(url: string) {
+    await this.secretStorage.delete(url);
   }
 
 }

@@ -61,7 +61,6 @@ export const chooseAuthenticationSchemeTests = {
 
       providerLabel: authenticationProviders[0].label,
       providerScheme: authenticationProviders[0].scheme,
-      providerBuiltIn: authenticationProviders[0].custom === false,
       providerId: testProviderId
     }
     const expected: UrlAuthenticationData = {
@@ -70,8 +69,7 @@ export const chooseAuthenticationSchemeTests = {
       label: authenticationProviders[0].label,
       scheme: authenticationProviders[0].scheme,
       protocol: 'https:',
-      status: UrlAuthenticationStatus.NoStatus,
-      isCustomProvider: true
+      status: UrlAuthenticationStatus.NoStatus
     };
 
     when(this.mockWindow.showQuickPick(anything(), <any>deepEqual(testOptions)))

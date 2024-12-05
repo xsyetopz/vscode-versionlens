@@ -18,28 +18,24 @@ export type UrlAuthenticationData = {
   readonly label: string
   readonly scheme: AuthenticationScheme
   readonly status: UrlAuthenticationStatus
-  readonly isCustomProvider: boolean
 }
 
 type AuthenticationProviderInfo = {
   readonly scheme: AuthenticationScheme
   readonly label: string
   readonly description: string,
-  readonly custom: boolean
 }
 
 export const authenticationProviders: Array<AuthenticationProviderInfo> = [
   {
     scheme: AuthenticationScheme.Basic,
     label: 'Basic Auth',
-    description: 'Authenticate using basic auth credentials',
-    custom: true
+    description: 'Authenticate using basic auth credentials'
   },
   {
     scheme: AuthenticationScheme.Custom,
     label: 'Custom Value',
-    description: 'Authenticate using a custom authorization value',
-    custom: true
+    description: 'Authenticate using a custom authorization value'
   },
 ];
 

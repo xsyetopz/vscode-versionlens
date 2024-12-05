@@ -95,7 +95,7 @@ function addExtensionServices(
 
   // auth events
   addOnAddUrlAuthentication(services);
-  addOnRemoveUrlAuthentication(services, secrets);
+  addOnRemoveUrlAuthentication(services);
 
   // command events
   addOnClearCache(services);

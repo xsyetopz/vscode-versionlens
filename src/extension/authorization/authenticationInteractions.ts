@@ -81,10 +81,7 @@ export class AuthenticationInteractions {
         // selected item data
         providerLabel: authProviderInfo.label,
         providerScheme: authProviderInfo.scheme,
-        providerBuiltIn: authProviderInfo.custom === false,
-        providerId: authProviderInfo.custom
-          ? createCustomProviderId(authProviderInfo.scheme, url)
-          : authProviderInfo.label.toLowerCase()
+        providerId: createCustomProviderId(authProviderInfo.scheme, url)
       })
     );
 
@@ -102,7 +99,6 @@ export class AuthenticationInteractions {
 
     // extract the selection data
     const {
-      providerBuiltIn,
       providerId: id,
       providerLabel: label,
       providerScheme: scheme
@@ -114,8 +110,7 @@ export class AuthenticationInteractions {
       id,
       label,
       scheme,
-      UrlAuthenticationStatus.NoStatus,
-      providerBuiltIn === false
+      UrlAuthenticationStatus.NoStatus
     );
   }
 

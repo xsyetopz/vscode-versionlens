@@ -34,8 +34,7 @@ export const UrlAuthenticationStoreTests = {
         `(Test) ${this.testUrl}`,
         'test label',
         AuthenticationScheme.Basic,
-        UrlAuthenticationStatus.NoStatus,
-        true
+        UrlAuthenticationStatus.NoStatus
       )
     };
     when(this.mockMemento.get(this.testStoreKey, deepEqual({}))).thenReturn(this.testData);
@@ -70,8 +69,7 @@ export const UrlAuthenticationStoreTests = {
       `(Test Update) ${this.testUrl}`,
       'test update label',
       AuthenticationScheme.Basic,
-      UrlAuthenticationStatus.NoStatus,
-      false
+      UrlAuthenticationStatus.NoStatus
     );
 
     // test
