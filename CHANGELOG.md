@@ -1,3 +1,13 @@
+# 1.15.4-preview
+
+  - Added ability to enter authorization urls manually using `versionlens.authorization.addUrlAuthentication` command. `Ctrl+P` then type `Add url authentication`
+  - Removed the built in vscode authentication providers
+  - Reduced prompt workflow and made it easier to re-enter credentials without restarting entire worflow.
+
+### Npm
+
+  - Fixed an issue where the process.env wasn't being passed to the npm cli config
+
 # 1.15.3-preview
 
   - Added ability to change the authorization url to support multiple authentications with the same domain. (see the updated [authorization doc](https://gitlab.com/versionlens/vscode-versionlens/-/blob/master/docs/authorization.md) for more detail)

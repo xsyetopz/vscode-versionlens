@@ -2,17 +2,26 @@
 
 > **NOTE**
 >
-> The following isn't available for Npm because npm uses npmrc files to authorize requests
+> Interactive authorization isn't available for Npm registries because npm uses `@npmcli/config` with npmrc files to authorize requests.
+> However it can be used with `github:` prefixed packages. Be aware that github private packages do not emit 401 codes. (TODO add an example of this working)
+
+## Contents
+
+- [Automatically authenticating packages](#automatically-authenticating-packages)
+- [Package registries that do not emit 401](#package-registries-that-do-not-emit-a-401-status-code)
+- [Clearing authentication data](#clearing-url-authentication-data)
+
+## Automatically authenticating packages
 
 By default, when versionlens detects a 401 status code it will prompt you for authentication info.
 
-- `Step 1:` **Confirm the authorization url**
+- **Step 1: Confirm the authorization url**
 
   This url is used to match package request urls and provide them with your credentials.
 
   Urls must:
     - be in the same domain as the package request url
-    - partially match the package request url e.g. packageRequestUrl.startsWith(authorizationUrl)
+    - partially match the package request url e.g. `packageRequestUrl.startsWith(authorizationUrl)`
 
   The default value is the domain host of the package request url.
 
@@ -29,13 +38,35 @@ By default, when versionlens detects a 401 status code it will prompt you for au
   >   'https://gitlab.com/api/v4/projects/some-user/some-project-id'
   >   ```
 
-- `Step 2:` **Choose an authentication scheme**
+- **Step 2: Choose an authentication scheme**
 
   Supported schemes are
   - Basic Auth (username and password)
   - Custom (raw authentication header value e.g. `Bearer {YOUR_API_TOKEN}`)
 
-- `Step 3:` **Enter your authentication credentials**
+- **Step 3: Enter your authentication credentials**
+
+  Depending on the scheme you have choose you will be prompted for consent and your credentials e.g. username and password
+
+## Package registries that do not emit a 401 status code
+
+Press `ctrl+p` then type `Add url authentication`.
+
+- **Step 1: Confirm the authorization url**
+
+  This url is used to match package request urls and provide them with your credentials.
+
+  Urls must:
+    - be in the same domain as the package request url
+    - partially match the package request url e.g. `packageRequestUrl.startsWith(authorizationUrl)`
+
+- **Step 2: Choose an authentication scheme**
+
+  Supported schemes are
+  - Basic Auth (username and password)
+  - Custom (raw authentication header value e.g. `Bearer {YOUR_API_TOKEN}`)
+
+- **Step 3: Enter your authentication credentials**
 
   Depending on the scheme you have choose you will be prompted for consent and your credentials e.g. username and password
 
@@ -43,7 +74,7 @@ By default, when versionlens detects a 401 status code it will prompt you for au
 
 To clear credentials
 
-- Press `ctrl+p` then type `Remove url authentication data`.
+- Press `ctrl+p` then type `Remove url authentication`.
 
   ![alt text](../images/docs/authorization/remove-url-authentication-data.png)
 
@@ -53,9 +84,7 @@ To clear credentials
   >
   > If you have a project\package file opened when running this command and one of the packages needs re-authorization with the same removed url then you will be prompted to re-enter authorization. (if you dismiss this prompt then the url will be re-added to the url authentication data and marked as unconsented)
 
-## Url Authentication Data
-
-### How your data is stored
+## How your data is stored
 
   - Credentials are stored in the [ExtensionContext.secrets](https://code.visualstudio.com/api/extension-capabilities/common-capabilities#data-storage) storage
 
@@ -65,10 +94,10 @@ To clear credentials
 
 ```js
 {
-  url: string
-  protocol: string
-  id: string
-  label: string
-  scheme: AuthenticationScheme
+  url: string,
+  scheme: string,
+  protocol: string,
+  label: string,
+  status: string
 }
 ```
