@@ -2,7 +2,7 @@
 
   -  Fixed a case where calls to the `vscode workspace.findFiles` api was no longer defaulting to the users "files.exclude" settings which may of led to longer start up times
 
-     Relates to [#375](https://gitlab.com/versionlens/vscode-versionlens/-/issues/375)
+     Relates to [#350](https://gitlab.com/versionlens/vscode-versionlens/-/issues/350)
 
 # 1.15.4-preview
 
