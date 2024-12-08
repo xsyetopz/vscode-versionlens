@@ -1,16 +1,17 @@
 import type { IDomainServices } from '#domain';
 import type { IServiceProvider } from '#domain/di';
 import type { ILogger, ILoggingOptions } from '#domain/logging';
-import type { IPackageFileWatcher } from '#domain/packages';
 import { nameOf, readJsonFile } from '#domain/utils';
 import {
   type IExtensionServices,
   OnActiveTextEditorChange,
   VersionLensExtension
 } from '#extension';
+import type { EditorConfig } from '#extension/vscode';
 import { dirname, join } from 'node:path';
-import { type ExtensionContext, window, workspace } from 'vscode';
+import { type ExtensionContext, window } from 'vscode';
 import { configureContainer } from './extensionContainer';
+import type { PackageFileWatcher } from './watcher';
 
 let serviceProvider: IServiceProvider;
 
@@ -29,9 +30,13 @@ export async function activate(context: ExtensionContext): Promise<void> {
     serviceNames.loggingOptions
   );
 
+  // get the editorConfig
+  const editorConfig = serviceProvider.getService<EditorConfig>(
+    serviceNames.editorConfig
+  );
+
   // check editor.codeLens is enabled
-  const codeLensEnabled = workspace.getConfiguration().get('editor.codeLens')
-  if (codeLensEnabled === false) {
+  if (editorConfig.codeLens === false) {
     logger.error(
       "Code lenses are disabled. This extension won't work unless you enable 'editor.codeLens' in your vscode settings"
     );
@@ -55,7 +60,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   logger.info("log folder: %s", logPath);
 
   // setup package dependency watcher
-  const watcher = serviceProvider.getService<IPackageFileWatcher>(
+  const watcher = serviceProvider.getService<PackageFileWatcher>(
     serviceNames.packageFileWatcher
   );
 

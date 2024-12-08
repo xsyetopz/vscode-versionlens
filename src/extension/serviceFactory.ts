@@ -6,7 +6,15 @@ import { DisposableArray, nameOf } from '#domain/utils';
 import { type IExtensionServices, VersionLensExtension } from '#extension';
 import { VersionLensState } from '#extension/state';
 import { SuggestionCodeLensProvider, SuggestionsOptions } from '#extension/suggestions';
+import { EditorConfig } from '#extension/vscode';
 import { window, workspace } from 'vscode';
+
+export function addEditorConfig(services: IServiceCollection) {
+  services.addSingleton(
+    nameOf<IExtensionServices>().editorConfig,
+    () => new EditorConfig(workspace)
+  )
+}
 
 export function addSuggestionOptions(services: IServiceCollection) {
   services.addSingleton(

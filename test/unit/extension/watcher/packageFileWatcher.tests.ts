@@ -2,19 +2,20 @@ import type { ILogger } from '#domain/logging';
 import type { DependencyCache, PackageDependency } from '#domain/packages';
 import type { IProviderConfig, ISuggestionProvider } from '#domain/providers';
 import type { GetDependencyChanges } from '#domain/useCases';
-import type { IVsCodeWorkspace } from '#extension/vscode';
-import { PackageFileWatcher } from '#extension/watcher';
+import type { EditorConfig, IVsCodeWorkspace } from '#extension/vscode';
+import { defaultExcludes, PackageFileWatcher } from '#extension/watcher';
 import { test } from 'mocha-ui-esm';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import type { FileSystemWatcher, Uri } from 'vscode';
 
 type TestContext = {
-  mockGetDependencyChanges: GetDependencyChanges,
-  mockWorkspace: IVsCodeWorkspace;
-  mockProvider: ISuggestionProvider;
-  mockCache: DependencyCache;
-  mockLogger: ILogger;
-  mockConfig: IProviderConfig;
+  mockGetDependencyChanges: GetDependencyChanges
+  mockProvider: ISuggestionProvider
+  mockCache: DependencyCache
+  mockProviderConfig: IProviderConfig;
+  mockEditorConfig: EditorConfig
+  mockWorkspace: IVsCodeWorkspace
+  mockLogger: ILogger
   mockPackageFileWatcher: PackageFileWatcher
 }
 
@@ -24,44 +25,53 @@ export const packageFileWatcherTests = {
 
   beforeEach: function (this: TestContext) {
     this.mockGetDependencyChanges = mock<GetDependencyChanges>();
-    this.mockWorkspace = mock<IVsCodeWorkspace>();
     this.mockProvider = mock<ISuggestionProvider>();
     this.mockCache = mock<DependencyCache>();
+    this.mockWorkspace = mock<IVsCodeWorkspace>();
     this.mockLogger = mock<ILogger>();
-    this.mockConfig = mock<IProviderConfig>()
+    this.mockProviderConfig = mock<IProviderConfig>();
+    this.mockEditorConfig = mock<EditorConfig>();
     this.mockPackageFileWatcher = mock<PackageFileWatcher>();
 
     when(this.mockProvider.name).thenReturn("test provider");
 
-    when(this.mockConfig.fileMatcher).thenReturn({
+    when(this.mockProviderConfig.fileMatcher).thenReturn({
       language: "",
       pattern: "**/package.json",
       scheme: "",
-      exclude: "**/node_modules/**"
+      exclude: ['**/node_modules/**']
     });
   },
+
   watchFolder: {
     "finds files using a provider file pattern": async function (this: TestContext) {
       // setup
       const testProvider = instance(this.mockProvider);
-      const testConfig = instance(this.mockConfig);
+      const testConfig = instance(this.mockProviderConfig);
       const testUri: Uri = <any>{ fsPath: 'some-dir/package.json' };
+      const testUserFileExcludes = { '**/exclude.files/**': true };
+      const testExcludes = [
+        ...defaultExcludes,
+        ...Object.keys(testUserFileExcludes).filter(x => testUserFileExcludes[x]),
+        ...testConfig.fileMatcher.exclude
+      ];
 
       when(this.mockProvider.config).thenReturn(testConfig);
+      when(this.mockEditorConfig.excludeFiles).thenReturn(testUserFileExcludes);
 
       when(
         this.mockWorkspace.findFiles(
           testConfig.fileMatcher.pattern,
-          testConfig.fileMatcher.exclude
+          `{${testExcludes.join(',')}}`
         )
-      )
-        .thenResolve([testUri] as any)
+      ).thenResolve([testUri] as any);
 
       const watcher = new PackageFileWatcher(
         instance(this.mockGetDependencyChanges),
-        instance(this.mockWorkspace),
         [testProvider],
         instance(this.mockCache),
+        instance(this.mockEditorConfig),
+        instance(this.mockWorkspace),
         instance(this.mockLogger)
       );
 
@@ -78,20 +88,22 @@ export const packageFileWatcherTests = {
       verify(this.mockPackageFileWatcher.watch()).once();
     },
   },
+
   watchFile: {
     "finds files using a provider file pattern": async function (this: TestContext) {
       // setup
       const testProvider = instance(this.mockProvider);
-      const testConfig = instance(this.mockConfig);
+      const testConfig = instance(this.mockProviderConfig);
       const testUri: Uri = <any>{ fsPath: 'some-dir/package.json' };
 
       when(this.mockProvider.config).thenReturn(testConfig);
 
       const watcher = new PackageFileWatcher(
         instance(this.mockGetDependencyChanges),
-        instance(this.mockWorkspace),
         [testProvider],
         instance(this.mockCache),
+        instance(this.mockEditorConfig),
+        instance(this.mockWorkspace),
         instance(this.mockLogger)
       );
 
@@ -113,7 +125,7 @@ export const packageFileWatcherTests = {
       // setup
       const mockFileSystemWatcher = mock<FileSystemWatcher>();
       const testProvider = instance(this.mockProvider);
-      const testConfig = instance(this.mockConfig);
+      const testConfig = instance(this.mockProviderConfig);
 
       when(this.mockProvider.config).thenReturn(testConfig);
 
@@ -122,9 +134,10 @@ export const packageFileWatcherTests = {
 
       const watcher = new PackageFileWatcher(
         instance(this.mockGetDependencyChanges),
-        instance(this.mockWorkspace),
         [testProvider],
         instance(this.mockCache),
+        instance(this.mockEditorConfig),
+        instance(this.mockWorkspace),
         instance(this.mockLogger)
       );
 
@@ -163,9 +176,10 @@ export const packageFileWatcherTests = {
 
       const watcher = new PackageFileWatcher(
         instance(this.mockGetDependencyChanges),
-        instance(this.mockWorkspace),
         [],
         instance(this.mockCache),
+        instance(this.mockEditorConfig),
+        instance(this.mockWorkspace),
         instance(this.mockLogger)
       );
 
@@ -223,9 +237,10 @@ export const packageFileWatcherTests = {
 
       const watcher = new PackageFileWatcher(
         instance(this.mockGetDependencyChanges),
-        instance(this.mockWorkspace),
         [],
         instance(this.mockCache),
+        instance(this.mockEditorConfig),
+        instance(this.mockWorkspace),
         instance(this.mockLogger)
       );
 

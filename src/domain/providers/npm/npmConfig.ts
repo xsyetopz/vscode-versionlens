@@ -1,7 +1,7 @@
-import { ICachingOptions } from '#domain/caching';
-import { IHttpOptions } from '#domain/clients';
-import { IFrozenOptions } from '#domain/configuration';
-import { IProviderConfig, TProviderFileMatcher } from '#domain/providers';
+import type { ICachingOptions } from '#domain/caching';
+import type { IHttpOptions } from '#domain/clients';
+import type { IFrozenOptions } from '#domain/configuration';
+import type { FileMatcher, IProviderConfig } from '#domain/providers';
 import { GitHubOptions, NpmFeatures } from '#domain/providers/npm';
 import { nameOf } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
@@ -22,12 +22,11 @@ export class NpmConfig implements IProviderConfig {
     throwUndefinedOrNull(ctorParam.github, github);
   }
 
-  get fileMatcher(): TProviderFileMatcher {
+  get fileMatcher(): FileMatcher {
     return {
       language: 'json',
       scheme: 'file',
-      pattern: this.filePatterns,
-      exclude: '**/node_modules/**'
+      pattern: this.filePatterns
     };
   }
 

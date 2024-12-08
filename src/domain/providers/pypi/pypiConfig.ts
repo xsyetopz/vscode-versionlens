@@ -1,7 +1,7 @@
-import { ICachingOptions } from '#domain/caching';
-import { IHttpOptions } from '#domain/clients';
-import { IFrozenOptions } from '#domain/configuration';
-import { IProviderConfig, TProviderFileMatcher } from '#domain/providers';
+import type { ICachingOptions } from '#domain/caching';
+import type { IHttpOptions } from '#domain/clients';
+import type { IFrozenOptions } from '#domain/configuration';
+import type { FileMatcher, IProviderConfig } from '#domain/providers';
 import { PypiFeatures } from '#domain/providers/pypi';
 import { nameOf } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
@@ -20,12 +20,11 @@ export class PypiConfig implements IProviderConfig {
     throwUndefinedOrNull(ctorParam.http, http);
   }
 
-  get fileMatcher(): TProviderFileMatcher {
+  get fileMatcher(): FileMatcher {
     return {
       language: 'toml',
       scheme: 'file',
-      pattern: this.filePatterns,
-      exclude: ''
+      pattern: this.filePatterns
     };
   }
 

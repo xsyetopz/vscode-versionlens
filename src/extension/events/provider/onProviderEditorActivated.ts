@@ -1,7 +1,7 @@
 import type { ILogger, ILoggerChannel } from '#domain/logging';
-import type { IPackageFileWatcher } from '#domain/packages';
 import type { ISuggestionProvider } from '#domain/providers';
-import { VersionLensExtension } from '#extension';
+import type { VersionLensExtension } from '#extension';
+import type { PackageFileWatcher } from '#extension/watcher';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { dirname } from 'node:path';
 import type { TextDocument } from 'vscode';
@@ -11,11 +11,11 @@ export class OnProviderEditorActivated {
   constructor(
     readonly loggerChannel: ILoggerChannel,
     readonly extension: VersionLensExtension,
-    readonly packageFileWatcher: IPackageFileWatcher,
+    readonly packageFileWatcher: PackageFileWatcher,
     readonly logger: ILogger,
   ) {
     throwUndefinedOrNull("loggerChannel", loggerChannel);
-    throwUndefinedOrNull("extension", VersionLensExtension);
+    throwUndefinedOrNull("extension", extension);
     throwUndefinedOrNull("packageFileWatcher", packageFileWatcher);
     throwUndefinedOrNull("logger", logger);
   }

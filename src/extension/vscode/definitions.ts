@@ -3,6 +3,7 @@
  */
 import type {
   CancellationToken,
+  ConfigurationScope,
   Event,
   FileSystemWatcher,
   GlobPattern,
@@ -18,6 +19,7 @@ import type {
   TextEditor,
   Uri,
   ViewColumn,
+  WorkspaceConfiguration,
   WorkspaceEdit,
   WorkspaceEditMetadata
 } from 'vscode';
@@ -43,6 +45,11 @@ export interface IVsCodeWorkspace {
   applyEdit(edit: WorkspaceEdit, metadata?: WorkspaceEditMetadata): Thenable<boolean>;
 
   openTextDocument(uri: Uri): Thenable<TextDocument>;
+
+  getConfiguration(
+    section?: string,
+    scope?: ConfigurationScope | null
+  ): WorkspaceConfiguration
 }
 
 /***

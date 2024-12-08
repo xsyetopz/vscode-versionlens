@@ -1,7 +1,7 @@
-import { ICachingOptions } from '#domain/caching';
-import { IHttpOptions } from '#domain/clients';
-import { IFrozenOptions } from '#domain/configuration';
-import { IProviderConfig, TProviderFileMatcher } from '#domain/providers';
+import type { ICachingOptions } from '#domain/caching';
+import type { IHttpOptions } from '#domain/clients';
+import type { IFrozenOptions } from '#domain/configuration';
+import type { FileMatcher, IProviderConfig } from '#domain/providers';
 import { DotNetFeatures, INugetOptions } from '#domain/providers/dotnet';
 import { nameOf } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
@@ -26,12 +26,12 @@ export class DotNetConfig implements IProviderConfig {
 
   nuget: INugetOptions;
 
-  get fileMatcher(): TProviderFileMatcher {
+  get fileMatcher(): FileMatcher {
     return {
       language: 'xml',
       scheme: 'file',
       pattern: this.filePatterns,
-      exclude: '**/{obj,bin}/**'
+      exclude: ['**/obj/**', '**/bin/**']
     };
   }
 

@@ -1,26 +1,28 @@
 import type { ILogger } from '#domain/logging';
-import {
-  type IPackageFileWatcher,
-  type OnPackageDependenciesChangedEvent,
-  DependencyCache
-} from '#domain/packages';
+import type { DependencyCache, OnPackageDependenciesChangedEvent } from '#domain/packages';
 import type { ISuggestionProvider } from '#domain/providers';
-import { type DependencyChangesResult, GetDependencyChanges } from '#domain/useCases';
+import type { DependencyChangesResult, GetDependencyChanges } from '#domain/useCases';
 import { AsyncEmitter } from '#domain/utils';
-import type { IVsCodeWorkspace } from '#extension/vscode';
+import type { EditorConfig, IVsCodeWorkspace } from '#extension/vscode';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { isMatch } from 'micromatch';
 import type { Uri } from 'vscode';
 
-export class PackageFileWatcher
-  extends AsyncEmitter<OnPackageDependenciesChangedEvent>
-  implements IPackageFileWatcher {
+export const defaultExcludes = [
+  '**/node_modules/**',
+  '**/bower_components/**',
+  '**/.git/**',
+  '**/.vscode/**'
+];
+
+export class PackageFileWatcher extends AsyncEmitter<OnPackageDependenciesChangedEvent> {
 
   constructor(
     readonly getDependencyChanges: GetDependencyChanges,
-    readonly workspace: IVsCodeWorkspace,
     readonly providers: ISuggestionProvider[],
     readonly dependencyCache: DependencyCache,
+    readonly editorConfig: EditorConfig,
+    readonly workspace: IVsCodeWorkspace,
     readonly logger: ILogger
   ) {
     super();
@@ -28,6 +30,7 @@ export class PackageFileWatcher
     throwUndefinedOrNull("workspace", workspace);
     throwUndefinedOrNull("providers", providers);
     throwUndefinedOrNull("dependencyCache", dependencyCache);
+    throwUndefinedOrNull("editorConfig", editorConfig);
     throwUndefinedOrNull("logger", logger);
   }
 
@@ -144,11 +147,16 @@ export class PackageFileWatcher
   private async findProviderFiles(provider: ISuggestionProvider) {
     // capture start time
     const startedAt = performance.now();
+    const { pattern, exclude } = provider.config.fileMatcher;
+    const excludeFiles = this.editorConfig.excludeFiles;
+    const excludePatterns = [
+      ...defaultExcludes,
+      ...Object.keys(excludeFiles).filter(x => excludeFiles[x])
+    ];
 
-    const files = await this.workspace.findFiles(
-      provider.config.fileMatcher.pattern,
-      provider.config.fileMatcher.exclude
-    );
+    if (exclude) excludePatterns.push(...exclude);
+
+    const files = await this.workspace.findFiles(pattern, `{${excludePatterns.join(',')}}`);
 
     for (const file of files) {
       await this.onFileAdd(provider, file)

@@ -35,6 +35,7 @@ import {
   addOnUpdateDependencyClick
 } from './events/serviceFactory';
 import {
+  addEditorConfig,
   addEditorDependencyCache,
   addGetSuggestionsUseCase,
   addOutputChannel,
@@ -84,6 +85,7 @@ function addExtensionServices(
   workspaceState: Memento,
   secrets: SecretStorage
 ) {
+  addEditorConfig(services);
   addProviderNames(services);
   addSuggestionOptions(services);
   addVersionLensState(services);

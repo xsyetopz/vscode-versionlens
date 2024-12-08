@@ -1,30 +1,25 @@
-import { ICachingOptions } from '#domain/caching';
-import { IHttpOptions } from '#domain/clients';
-import { IServiceCollection, IServiceProvider } from '#domain/di';
-import { ILogger } from '#domain/logging';
-import {
+import type { ICachingOptions } from '#domain/caching';
+import type { IHttpOptions } from '#domain/clients';
+import type { IServiceCollection, IServiceProvider } from '#domain/di';
+import type { ILogger } from '#domain/logging';
+import type {
   IPackageClient,
   PackageDependency,
   TSuggestionReplaceFunction
 } from '#domain/packages';
 
-export type TProviderFileMatcher = {
-  language: string;
-  scheme: string;
-  pattern: string;
-  exclude: string;
+export type FileMatcher = {
+  language: string
+  scheme: string
+  pattern: string
+  exclude?: string[]
 }
 
 export interface IProviderConfig {
-
-  fileMatcher: TProviderFileMatcher;
-
+  fileMatcher: FileMatcher;
   caching: ICachingOptions;
-
   http: IHttpOptions;
-
   onSaveChangesTask: string;
-
 }
 
 export interface IProviderModule {

@@ -1,8 +1,8 @@
-import assert from 'node:assert';
-import { ILogger } from '#domain/logging';
-import { IProviderConfig, ISuggestionProvider } from '#domain/providers';
+import type { ILogger } from '#domain/logging';
+import type { IProviderConfig, ISuggestionProvider } from '#domain/providers';
 import { GetSuggestionProvider } from '#domain/useCases';
 import { test } from 'mocha-ui-esm';
+import assert from 'node:assert';
 import { instance, mock, when } from 'ts-mockito';
 
 type TestContext = {
@@ -18,10 +18,10 @@ export const getSuggestionProviderTests = {
     const mockLogger = mock<ILogger>();
     const mockConfig = mock<IProviderConfig>();
     when(mockConfig.fileMatcher).thenReturn({
-      language: "json",
-      scheme: "file",
-      pattern: "**/package.json",
-      exclude: "**/node_modules/**"
+      language: 'json',
+      scheme: 'file',
+      pattern: '**/package.json',
+      exclude: ['**/node_modules/**']
     });
 
     this.testProviders = [

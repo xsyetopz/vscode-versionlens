@@ -1,8 +1,7 @@
 import type { ClientResponseSource } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
-import type {  TPackageSuggestion, PackageDependency } from '#domain/packages';
+import type { PackageDependency, TPackageSuggestion } from '#domain/packages';
 import type { IProviderConfig, ISuggestionProvider } from '#domain/providers';
-import type { Uri } from "vscode";
 
 export enum PackageVersionType {
   Version = 'version',
@@ -17,16 +16,6 @@ export type OnPackageDependenciesChangedEvent = (
   packageFilePath: string,
   packageDeps: PackageDependency[]
 ) => Promise<void>;
-
-export interface IPackageFileWatcher {
-  watchFolder(): Promise<void>;
-  watchFile(file: Uri): Promise<void>
-  watch: () => void;
-  registerListener: (
-    listener: OnPackageDependenciesChangedEvent,
-    thisArg: any
-  ) => void;
-}
 
 export type TPackageNameVersion = {
   name: string;

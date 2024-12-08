@@ -4,7 +4,7 @@ import type { HttpOptions } from '#domain/clients';
 import type { Config } from '#domain/configuration';
 import type { IServiceCollectionFactory, IServiceProvider } from '#domain/di';
 import type { ILogger, ILoggerChannel, LoggingOptions } from '#domain/logging';
-import type { DependencyCache, IPackageFileWatcher, PackageCache } from '#domain/packages';
+import type { DependencyCache, PackageCache } from '#domain/packages';
 import type { ISuggestionProvider } from '#domain/providers';
 import type { IStorage } from '#domain/storage';
 import type {
@@ -28,7 +28,6 @@ export interface IDomainServices {
   storage: IStorage,
   providerNames: Array<string>;
   suggestionProviders: Array<ISuggestionProvider>;
-  packageFileWatcher: IPackageFileWatcher;
   fileWatcherDependencyCache: DependencyCache;
   packageCache: PackageCache;
   shellCache: IExpiryCache;

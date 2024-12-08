@@ -2,6 +2,7 @@ import type { DependencyCache } from '#domain/packages';
 import type { KeyDictionary } from '#domain/utils';
 import type {
   OnActiveTextEditorChange,
+  OnAddUrlAuthentication,
   OnClearCache,
   OnErrorClick,
   OnFileLinkClick,
@@ -10,7 +11,6 @@ import type {
   OnProviderEditorActivated,
   OnProviderTextDocumentChange,
   OnProviderTextDocumentClose,
-  OnAddUrlAuthentication,
   OnRemoveUrlAuthentication,
   OnSaveChanges,
   OnTextDocumentChange,
@@ -27,7 +27,8 @@ import type {
 } from '#extension/authorization';
 import type { VersionLensState } from '#extension/state';
 import type { SuggestionCodeLensProvider, SuggestionsOptions } from '#extension/suggestions';
-import type { IVsCodeConstructFactory } from '#extension/vscode';
+import type { EditorConfig, IVsCodeConstructFactory } from '#extension/vscode';
+import type { PackageFileWatcher } from '#extension/watcher';
 import type { OutputChannel } from 'vscode';
 import type { AuthenticationProvider } from './authorization/authenticationProviders';
 
@@ -67,49 +68,51 @@ export enum SuggestionFeatures {
 }
 
 export interface IExtensionServices {
-  suggestionOptions: SuggestionsOptions,
-  extension: VersionLensExtension;
-  versionLensState: VersionLensState;
-  outputChannel: OutputChannel;
-  versionLensProviders: Array<SuggestionCodeLensProvider>;
-  editorDependencyCache: DependencyCache;
+  suggestionOptions: SuggestionsOptions
+  extension: VersionLensExtension
+  versionLensState: VersionLensState
+  outputChannel: OutputChannel
+  versionLensProviders: Array<SuggestionCodeLensProvider>
+  editorDependencyCache: DependencyCache
+  packageFileWatcher: PackageFileWatcher;
 
   // vscode
-  vsCodeConstructFactory: IVsCodeConstructFactory;
+  editorConfig: EditorConfig
+  vsCodeConstructFactory: IVsCodeConstructFactory
 
   // auth
-  authenticationProviders: KeyDictionary<AuthenticationProvider>;
-  authenticationInteractions: AuthenticationInteractions;
-  urlAuthenticationStore: UrlAuthenticationStore;
+  authenticationProviders: KeyDictionary<AuthenticationProvider>
+  authenticationInteractions: AuthenticationInteractions
+  urlAuthenticationStore: UrlAuthenticationStore
 
   // auth events
-  onAddUrlAuthentication: OnAddUrlAuthentication;
-  onRemoveUrlAuthentication: OnRemoveUrlAuthentication;
+  onAddUrlAuthentication: OnAddUrlAuthentication
+  onRemoveUrlAuthentication: OnRemoveUrlAuthentication
 
   // command events
-  onClearCache: OnClearCache;
-  onFileLinkClick: OnFileLinkClick;
-  onUpdateDependencyClick: OnUpdateDependencyClick;
+  onClearCache: OnClearCache
+  onFileLinkClick: OnFileLinkClick
+  onUpdateDependencyClick: OnUpdateDependencyClick
 
   // editorTitleBar events
-  onToggleReleases: OnToggleReleases;
-  onTogglePrereleases: OnTogglePrereleases;
-  onErrorClick: OnErrorClick;
+  onToggleReleases: OnToggleReleases
+  onTogglePrereleases: OnTogglePrereleases
+  onErrorClick: OnErrorClick
 
   // install events
-  onPreSaveChanges: OnPreSaveChanges;
-  onSaveChanges: OnSaveChanges;
+  onPreSaveChanges: OnPreSaveChanges
+  onSaveChanges: OnSaveChanges
 
   // provider events
-  onProviderEditorActivated: OnProviderEditorActivated;
-  onProviderTextDocumentChange: OnProviderTextDocumentChange;
-  onProviderTextDocumentClose: OnProviderTextDocumentClose;
+  onProviderEditorActivated: OnProviderEditorActivated
+  onProviderTextDocumentChange: OnProviderTextDocumentChange
+  onProviderTextDocumentClose: OnProviderTextDocumentClose
 
   // vscode events
-  onActiveTextEditorChange: OnActiveTextEditorChange;
-  onTextDocumentChange: OnTextDocumentChange;
-  onTextDocumentClose: OnTextDocumentClose;
-  onTextDocumentSave: OnTextDocumentSave;
+  onActiveTextEditorChange: OnActiveTextEditorChange
+  onTextDocumentChange: OnTextDocumentChange
+  onTextDocumentClose: OnTextDocumentClose
+  onTextDocumentSave: OnTextDocumentSave
 
   // watcher events
   onPackageDependenciesChanged: OnPackageDependenciesChanged
