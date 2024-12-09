@@ -1,5 +1,5 @@
 import type { CachingOptions } from '#domain/caching';
-import type { IHttpOptions } from '#domain/clients';
+import type { HttpOptions } from '#domain/clients';
 import type { IFrozenOptions } from '#domain/configuration';
 import type { FileMatcher, IProviderConfig } from '#domain/providers';
 import { type INugetOptions, DotNetFeatures } from '#domain/providers/dotnet';
@@ -13,7 +13,7 @@ export class DotNetConfig implements IProviderConfig {
   constructor(
     readonly config: IFrozenOptions,
     readonly caching: CachingOptions,
-    readonly http: IHttpOptions,
+    readonly http: HttpOptions,
     nugetOptions: INugetOptions,
   ) {
     throwUndefinedOrNull(ctorParam.config, config);

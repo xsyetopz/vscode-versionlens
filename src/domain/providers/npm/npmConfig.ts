@@ -1,5 +1,5 @@
 import type { CachingOptions } from '#domain/caching';
-import type { IHttpOptions } from '#domain/clients';
+import type { HttpOptions } from '#domain/clients';
 import type { IFrozenOptions } from '#domain/configuration';
 import type { FileMatcher, IProviderConfig } from '#domain/providers';
 import { type GitHubOptions, NpmFeatures } from '#domain/providers/npm';
@@ -13,7 +13,7 @@ export class NpmConfig implements IProviderConfig {
   constructor(
     readonly config: IFrozenOptions,
     readonly caching: CachingOptions,
-    readonly http: IHttpOptions,
+    readonly http: HttpOptions,
     readonly github: GitHubOptions,
   ) {
     throwUndefinedOrNull(ctorParam.config, config);

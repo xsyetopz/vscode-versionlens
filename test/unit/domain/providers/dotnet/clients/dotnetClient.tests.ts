@@ -1,7 +1,6 @@
 import type { CachingOptions } from '#domain/caching';
 import {
   type HttpOptions,
-  type IHttpOptions,
   type IShellClient,
   ClientResponseSource,
 } from '#domain/clients';
@@ -19,7 +18,7 @@ import Fixtures from './fixtures/dotnetSources';
 
 type TestContext = {
   cacheOptsMock: CachingOptions
-  httpOptsMock: IHttpOptions
+  httpOptsMock: HttpOptions
   nugetOptsMock: INugetOptions
   configMock: DotNetConfig
   loggerMock: ILogger

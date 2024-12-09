@@ -1,5 +1,5 @@
 import type { CachingOptions } from '#domain/caching';
-import type { IFrozenOptions } from '#domain/configuration';
+import type { HttpOptions } from '#domain/clients';
 import type { KeyDictionary, KeyStringDictionary } from '#domain/utils';
 
 export enum ClientResponseSource {
@@ -20,14 +20,9 @@ export enum HttpFeatures {
   StrictSSL = 'strictSSL'
 }
 
-export interface IHttpOptions extends IFrozenOptions {
-  config: IFrozenOptions;
-  strictSSL: boolean;
-}
-
 export type HttpClientOptions = {
   caching: CachingOptions,
-  http: IHttpOptions,
+  http: HttpOptions,
 }
 
 export type HttpClientResponse = TClientResponse<number, string>;

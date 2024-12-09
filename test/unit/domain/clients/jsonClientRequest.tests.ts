@@ -3,7 +3,6 @@ import {
   type HttpClientResponse,
   type HttpOptions,
   type IHttpClient,
-  type IHttpOptions,
   ClientResponseSource,
   JsonHttpClient
 } from '#domain/clients';
@@ -12,7 +11,7 @@ import { anything, deepEqual, instance, mock, when } from 'ts-mockito';
 
 type TestContext = {
   cachingOptsMock: CachingOptions;
-  httpOptsMock: IHttpOptions;
+  httpOptsMock: HttpOptions;
   httpClientMock: IHttpClient;
 }
 

@@ -1,5 +1,5 @@
 import type { CachingOptions } from '#domain/caching';
-import type { IHttpOptions } from '#domain/clients';
+import type { HttpOptions } from '#domain/clients';
 import type { IServiceCollection, IServiceProvider } from '#domain/di';
 import type { ILogger } from '#domain/logging';
 import type {
@@ -18,7 +18,7 @@ export type FileMatcher = {
 export interface IProviderConfig {
   fileMatcher: FileMatcher;
   caching: CachingOptions;
-  http: IHttpOptions;
+  http: HttpOptions;
   onSaveChangesTask: string;
 }
 

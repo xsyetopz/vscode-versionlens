@@ -1,8 +1,8 @@
-import { HttpFeatures, IHttpOptions } from '#domain/clients';
-import { IFrozenOptions, OptionsWithFallback } from '#domain/configuration';
-import { Nullable } from '#domain/utils';
+import { HttpFeatures } from '#domain/clients';
+import { type IFrozenOptions, OptionsWithFallback } from '#domain/configuration';
+import type { Nullable } from '#domain/utils';
 
-export class HttpOptions extends OptionsWithFallback implements IHttpOptions {
+export class HttpOptions extends OptionsWithFallback {
 
   constructor(
     config: IFrozenOptions,
