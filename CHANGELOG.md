@@ -1,59 +1,21 @@
-# 1.15.5-preview
+# 1.16.0
 
-  -  Fixed a case where calls to the `vscode workspace.findFiles` api was no longer defaulting to the users "files.exclude" settings which may of led to longer start up times
+  - Added an interactive authorization workflow for 401 http responses.
+    See the [authorization doc](https://gitlab.com/versionlens/vscode-versionlens/-/blob/master/docs/authorization.md) for more info.
 
-     Relates to [#350](https://gitlab.com/versionlens/vscode-versionlens/-/issues/350)
+  - Fixed a case where calls to the `vscode workspace.findFiles` api was no longer defaulting to the users `files.exclude` setting which may of led to longer start up times
 
-# 1.15.4-preview
-
-  - Added ability to enter authorization urls manually using `versionlens.authorization.addUrlAuthentication` command. `Ctrl+P` then type `Add url authentication`
-  - Removed the built in vscode authentication providers
-  - Reduced prompt workflow and made it easier to re-enter credentials without restarting entire worflow.
+    Relates to [#350](https://gitlab.com/versionlens/vscode-versionlens/-/issues/350)
 
 ### Npm
 
-  - Fixed an issue where the process.env wasn't being passed to the npm cli config
-
-# 1.15.3-preview
-
-  - Added ability to change the authorization url to support multiple authentications with the same domain. (see the updated [authorization doc](https://gitlab.com/versionlens/vscode-versionlens/-/blob/master/docs/authorization.md) for more detail)
-
-# 1.15.2-preview
-
-  - Added added retry authorization prompt when credentials fail
-  - Added url authentication failed status when executing the `Remove url authentication data` command.
-
-    Failed statuses are
-    - Not consented
-    - Credentials failed
-
-# 1.15.1-preview
-
-  - Added an interactive authorization workflow for 401 http responses
-
-    Authentication types are
-    - Basic Auth (prompts for a username and password)
-    - Custom (prompts for a custom authentication value)
-    - Microsoft (vscode built-in provider)
-    - Github (vscode built-in provider)
-
-    Management command
-    - `versionlens.authorization.removeUrlAuthentication` A multi select dialog that lets you clear\remove url authentication data. `Ctrl+P` then type `Remove url authentication data`
-
-    How authentication data is stored
-    - Credentials are stored in the [ExtensionContext.secrets](https://code.visualstudio.com/api/extension-capabilities/common-capabilities#data-storage) storage
-    - Non-sensitive authentication info per url is stored in the [ExtensionContext.workspaceState](https://code.visualstudio.com/api/extension-capabilities/common-capabilities#data-storage) storage (e.g. remembered each time the workspace is re-opened). Use `versionlens.authorization.removeUrlAuthentication` to clear authentication info
-
-    > **NOTE**
-    >
-    > - Doesn't support multiple authentications for the same domain
-    > - Doesn't work with Npm because npm uses npmrc files to authorize requests
-
-### Npm
-
-  - Fixed .npmrc `cafile`, `proxy`, `https-proxy` and `strict-ssl` settings not being passed into npm-registry-fetch function
+  - Fixed .npmrc `cafile`, `proxy`, `https-proxy` and `strict-ssl` settings not being passed into `npm-registry-fetch` function
 
     Relates to [#369](https://gitlab.com/versionlens/vscode-versionlens/-/issues/369) and [#370](https://gitlab.com/versionlens/vscode-versionlens/-/issues/370)
+
+  - Fixed an issue where the `process.env` wasn't being passed to the npm cli config
+
+  - Deprecated the `versionlens.github.accessToken` setting. Will be removed in a future version. Use the built in authorization instead.
 
 # 1.14.5
 
