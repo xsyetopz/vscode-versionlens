@@ -1,25 +1,27 @@
 # Authorization
 
-> **NOTE**
->
-> Interactive authorization isn't available for Npm registries because npm uses `@npmcli/config` with npmrc files to authorize requests.
-> However it can be used with `github:` prefixed packages. Be aware that github private packages do not emit 401 codes. (TODO add an example of this working)
-
 ## Contents
 
 - [Automatically authenticating packages](#automatically-authenticating-packages)
 - [Package registries that do not emit 401](#package-registries-that-do-not-emit-a-401-status-code)
 - [Clearing authentication data](#clearing-url-authentication-data)
+- [How your data is stored](#how-your-data-is-stored)
 
 ## Automatically authenticating packages
 
-By default, when versionlens detects a 401 status code it will prompt you for authentication info.
+By default, when versionlens detects a 401 status code it will prompt you for authentication credentials.
+
+> **NOTE**
+>
+> - Interactive authorization isn't available for Npm registries because npm uses `@npmcli/config` with npmrc files to authorize requests.
+> However it can be used with `github:` prefixed packages.
+> - Be aware that the github api does not emit 401 status codes for private packages. See [Package registries that do not emit a 401 status code](#package-registries-that-do-not-emit-a-401-status-code) for setting up private packages with the github api.
 
 - **Step 1: Confirm the authorization url**
 
   This url is used to match package request urls and provide them with your credentials.
 
-  Urls must:
+  Authorization urls must:
     - be in the same domain as the package request url
     - partially match the package request url e.g. `packageRequestUrl.startsWith(authorizationUrl)`
 
@@ -50,15 +52,24 @@ By default, when versionlens detects a 401 status code it will prompt you for au
 
 ## Package registries that do not emit a 401 status code
 
-Press `ctrl+p` then type `Add url authentication`.
+When a package registry doesn't emit a 401 status code you can add an authorization url manually by pressing `ctrl+p` then typing `VersionLens: Add url authentication`.
 
 - **Step 1: Confirm the authorization url**
 
   This url is used to match package request urls and provide them with your credentials.
 
-  Urls must:
+  Authorization urls must:
     - be in the same domain as the package request url
     - partially match the package request url e.g. `packageRequestUrl.startsWith(authorizationUrl)`
+
+  >   example:
+  >   ```js
+  >   // package request url
+  >   'https://api.github.com/repos/owner-or-org/some-repo/tags'
+  >
+  >   // authorization url (entered in this prompt step)
+  >   'https://api.github.com/repos/owner-or-org/some-repo'
+  >   ```
 
 - **Step 2: Choose an authentication scheme**
 
@@ -90,7 +101,7 @@ To clear credentials
 
   - Non-sensitive authentication info (per url) is stored in the [ExtensionContext.workspaceState](https://code.visualstudio.com/api/extension-capabilities/common-capabilities#data-storage) storage (e.g. unique per workspace).<br> Use `versionlens.authorization.removeUrlAuthentication` to clear authentication info
 
-### What data is stored
+### What workspace data is stored
 
 ```js
 {
