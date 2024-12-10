@@ -38,7 +38,11 @@ function buildQueryParams(queryParams: KeyStringDictionary): string {
 }
 
 export function trimEndSlash(url: string): string {
-  return url.endsWith('/') ? url.slice(0, -1) : url;
+  let result = url;
+  while (result.endsWith('/')) {
+    result = result.slice(0, -1)
+  }
+  return result;
 }
 
 export function ensureEndSlash(url: string): string {

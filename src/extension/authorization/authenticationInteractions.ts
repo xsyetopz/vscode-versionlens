@@ -1,3 +1,4 @@
+import { trimEndSlash } from '#domain/utils';
 import {
   type UrlAuthenticationData,
   AuthPrompt,
@@ -38,18 +39,22 @@ export class AuthenticationInteractions {
     // check url is (some what) valid
     new URL(authUrl);
 
-    return authUrl;
+    // remove any end slashes
+    return trimEndSlash(authUrl);
   }
 
   async confirmAuthorziationUrl(url: string, requestUrl: string): Promise<string | undefined> {
-    const authUrl = await this.window.showInputBox({
+    const inputUrl = await this.window.showInputBox({
       ignoreFocusOut: true,
       prompt: confirmAuthUrlPrompt.enterAuthorizationUrl,
       placeHolder: 'Authorization url',
       value: url
     });
     // check the user entered a value
-    if (!authUrl) return undefined;
+    if (!inputUrl) return undefined;
+
+    // remove any end slashes
+    const authUrl = trimEndSlash(inputUrl);
 
     // check the authUrl matches the original url domain
     const parsedRequestUrl = new URL(requestUrl);
