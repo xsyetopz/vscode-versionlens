@@ -1,7 +1,7 @@
 import { IFrozenOptions, Options } from '#domain/configuration';
-import { ILoggingOptions, LoggingFeatures, LogLevelTypes } from '#domain/logging';
+import { LoggingFeatures, LogLevelTypes } from '#domain/logging';
 
-export class LoggingOptions extends Options implements ILoggingOptions {
+export class LoggingOptions extends Options {
 
   constructor(config: IFrozenOptions, section: string) {
     super(config, section);

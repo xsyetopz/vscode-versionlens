@@ -2,9 +2,9 @@ import type { IDomainServices } from '#domain';
 import { CachingOptions, MemoryExpiryCache } from '#domain/caching';
 import { HttpOptions } from '#domain/clients';
 import { type TConfigSectionResolver, Config } from '#domain/configuration';
-import { type IServiceCollection, ServiceInjectionMode } from '#domain/di';
-import { type ILoggingOptions, LoggingOptions } from '#domain/logging';
-import { createWinstonLogger, OutputChannelTransport } from '#domain/logging/winston';
+import type { IServiceCollection } from '#domain/di';
+import { LoggingOptions } from '#domain/logging';
+import { createWinstonLogger } from '#domain/logging/winston';
 import { DependencyCache, PackageCache } from '#domain/packages';
 import { importSuggestionProviders } from '#domain/providers';
 import { FileSystemStorage } from '#domain/storage';
@@ -127,19 +127,6 @@ export function addFetchPackageSuggestionsUseCase(services: IServiceCollection) 
         container.packageCache,
         container.logger.child({ logGroup: serviceName })
       )
-  );
-}
-
-export function addWinstonChannelLogger(services: IServiceCollection) {
-  services.addSingleton(
-    nameOf<IDomainServices>().loggerChannel,
-    (outputChannel, loggingOptions: ILoggingOptions) =>
-      new OutputChannelTransport(
-        outputChannel,
-        loggingOptions
-      ),
-    false,
-    ServiceInjectionMode.classic
   );
 }
 

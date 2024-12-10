@@ -1,6 +1,6 @@
 import type { IDomainServices } from '#domain';
 import type { IServiceProvider } from '#domain/di';
-import type { ILogger, ILoggingOptions } from '#domain/logging';
+import type { ILogger, LoggingOptions } from '#domain/logging';
 import { nameOf, readJsonFile } from '#domain/utils';
 import {
   type IExtensionServices,
@@ -26,7 +26,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
   // get the logger
   const logger = serviceProvider.getService<ILogger>(serviceNames.logger);
-  const loggingOptions = serviceProvider.getService<ILoggingOptions>(
+  const loggingOptions = serviceProvider.getService<LoggingOptions>(
     serviceNames.loggingOptions
   );
 

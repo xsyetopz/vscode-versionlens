@@ -1,5 +1,5 @@
 import type { IDomainServices } from '#domain';
-import type { IServiceCollection } from '#domain/di';
+import { type IServiceCollection } from '#domain/di';
 import { DependencyCache } from '#domain/packages';
 import { GetSuggestions } from '#domain/useCases';
 import { DisposableArray, nameOf } from '#domain/utils';
@@ -7,7 +7,7 @@ import { type IExtensionServices, VersionLensExtension } from '#extension';
 import { VersionLensState } from '#extension/state';
 import { SuggestionCodeLensProvider, SuggestionsOptions } from '#extension/suggestions';
 import { EditorConfig } from '#extension/vscode';
-import { type DocumentFilter, EventEmitter, languages, window, workspace } from 'vscode';
+import { type DocumentFilter, EventEmitter, languages, workspace } from 'vscode';
 
 export function addEditorConfig(services: IServiceCollection) {
   services.addSingleton(
@@ -48,14 +48,6 @@ export function addVersionLensExtension(services: IServiceCollection) {
         container.suggestionOptions,
         projectPath
       )
-  )
-}
-
-export function addOutputChannel(services: IServiceCollection) {
-  services.addSingleton(
-    nameOf<IExtensionServices>().outputChannel,
-    // vscode output channel called "VersionLens"
-    () => window.createOutputChannel(VersionLensExtension.extensionName)
   )
 }
 

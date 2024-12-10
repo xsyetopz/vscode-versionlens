@@ -34,11 +34,11 @@ import {
   addOnToggleReleases,
   addOnUpdateDependencyClick
 } from './events/serviceFactory';
+import { addOutputChannel, addWinstonChannelLogger } from './logging/serviceFactory';
 import {
   addEditorConfig,
   addEditorDependencyCache,
   addGetSuggestionsUseCase,
-  addOutputChannel,
   addProviderNames,
   addSuggestionOptions,
   addVersionLensExtension,
@@ -90,10 +90,13 @@ function addExtensionServices(
   addSuggestionOptions(services);
   addVersionLensState(services);
   addVersionLensExtension(services);
-  addOutputChannel(services);
   addVersionLensProviders(services);
   addEditorDependencyCache(services);
   addGetSuggestionsUseCase(services);
+
+  // logging
+  addOutputChannel(services);
+  addWinstonChannelLogger(services);
 
   // file watcher
   addPackageFileWatcher(services);

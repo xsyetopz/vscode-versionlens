@@ -12,7 +12,6 @@ import {
   addShellCache,
   addSuggestionPackageCache,
   addSuggestionProviders,
-  addWinstonChannelLogger,
   addWinstonLogger
 } from '#domain';
 import type { TConfigSectionResolver } from '#domain/configuration';
@@ -38,7 +37,6 @@ export function addDomainServices(
 
   // logging
   addLoggingOptions(services);
-  addWinstonChannelLogger(services);
   addWinstonLogger(services, defaultLogGroup);
 
   // providers

@@ -1,24 +1,21 @@
-import { ILoggerChannel, ILoggingOptions } from '#domain/logging';
+import type { ILoggerChannel, LoggingOptions } from '#domain/logging';
+import { nameOf } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { setImmediate } from 'node:timers';
-import { OutputChannel } from 'vscode';
+import type { OutputChannel } from 'vscode';
 import * as Winston from 'winston';
 
 // workaround for the invalid index.ds.t export from winston
 const WinstonTransport = (<any>Winston).Transport;
-
-const MESSAGE = Symbol.for('message');
+const MessageSymbol = Symbol.for('message');
+const def = nameOf<OutputChannelTransport>();
 
 export class OutputChannelTransport extends WinstonTransport implements ILoggerChannel {
 
-  constructor(
-    readonly outputChannel: OutputChannel,
-    readonly logging: ILoggingOptions
-  ) {
+  constructor(readonly outputChannel: OutputChannel, readonly logging: LoggingOptions) {
     super({ level: logging.level });
-
-    throwUndefinedOrNull("outputChannel", outputChannel);
-    throwUndefinedOrNull("logging", logging);
+    throwUndefinedOrNull(def.outputChannel, outputChannel);
+    throwUndefinedOrNull(def.logging, logging);
   }
 
   get name() {
@@ -29,7 +26,7 @@ export class OutputChannelTransport extends WinstonTransport implements ILoggerC
 
     setImmediate(() => {
       this.emit('logged', entry)
-      this.outputChannel.appendLine(`${entry[MESSAGE]}`);
+      this.outputChannel.appendLine(entry[MessageSymbol]);
     });
 
     callback();
