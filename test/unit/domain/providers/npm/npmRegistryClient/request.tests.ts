@@ -12,7 +12,7 @@ import {
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
 import npa from 'npm-package-arg';
-import { anything, instance, mock, when } from 'ts-mockito';
+import { anyOfClass, anything, instance, mock, verify, when } from 'ts-mockito';
 
 type TestContext = {
   cachingOptsMock: CachingOptions
@@ -68,7 +68,15 @@ export const RequestsTests = {
       testPackageRes.path
     ) as NpaSpec;
 
-    when(this.npmRegistryMock.json(anything(), anything()))
+    const testClientData = {
+      strictSSL: true,
+      proxy: '',
+      httpsProxy: ''
+    };
+
+    const testUrl = `https://registry.npmjs.org/${testNpaSpec.escapedName}`;
+
+    when(this.npmRegistryMock.json(testUrl, testClientData))
       .thenResolve(testResponse);
 
     const cut = new NpmRegistryClient(
@@ -78,7 +86,18 @@ export const RequestsTests = {
     );
 
     // test
-    const actual = await cut.request(testNpaSpec, anything());
+    const actual = await cut.request(testNpaSpec, testClientData);
+
+    // verify
+    verify(
+      this.loggerMock.debug(
+        "url: {url}, strict-ssl: {strictSSL}, proxy: {proxy}, https-proxy: {httpsProxy}",
+        anyOfClass(URL),
+        testClientData.strictSSL,
+        testClientData.proxy,
+        testClientData.httpsProxy
+      )
+    ).once();
 
     // assert
     assert.deepEqual(actual, expectedResponse);

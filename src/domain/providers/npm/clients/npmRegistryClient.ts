@@ -136,6 +136,15 @@ export class NpmRegistryClient {
     try {
       const registry = this.npmRegistryFetch.pickRegistry(npaSpec, clientData);
       const url = `${ensureEndSlash(registry)}${npaSpec.escapedName}`;
+
+      this.logger.debug(
+        "url: {url}, strict-ssl: {strictSSL}, proxy: {proxy}, https-proxy: {httpsProxy}",
+        new URL(url),
+        clientData.strictSSL,
+        clientData.proxy ? new URL(clientData.proxy) : '',
+        clientData.httpsProxy ? new URL(clientData.httpsProxy) : ''
+      );
+
       const registryResponse = await this.npmRegistryFetch.json(url, clientData);
       const result: TNpmRegistryClientResponse = {
         source: ClientResponseSource.remote,

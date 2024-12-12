@@ -55,8 +55,8 @@ class Logger implements ILogger {
 
 function sanitizeURL(url: URL): string {
   const clone = new URL(url);
-  if (clone.username.length > 0) clone.username = '(protected)';
-  if (clone.password.length > 0) clone.password = '(protected)';
+  if (clone.username.length > 0) clone.username = '***';
+  if (clone.password.length > 0) clone.password = '***';
   return clone.toString();
 }
 
