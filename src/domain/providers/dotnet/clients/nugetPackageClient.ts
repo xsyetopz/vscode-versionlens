@@ -14,6 +14,7 @@ import {
 import { type NuGetClientData, DotNetConfig, parseVersionSpec } from '#domain/providers/dotnet';
 import { ensureEndSlash } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
+import { compareLoose } from 'semver';
 
 export class NuGetPackageClient implements IPackageClient<NuGetClientData> {
 
@@ -103,7 +104,8 @@ export class NuGetPackageClient implements IPackageClient<NuGetClientData> {
     }
 
     // sanitize to semver only versions
-    const rawVersions = VersionUtils.filterSemverVersions(packageInfo.versions);
+    const rawVersions = VersionUtils.filterSemverVersions(packageInfo.versions)
+      .sort(compareLoose);
 
     // seperate versions to releases and prereleases
     const { releases, prereleases } = VersionUtils.splitReleasesFromArray(

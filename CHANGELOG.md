@@ -1,3 +1,9 @@
+# 1.16.1
+
+  - Fixed reversed ordered version output from a github nuget registry
+
+    Relates to [#377](https://gitlab.com/versionlens/vscode-versionlens/-/issues/377)
+
 # 1.16.0
 
   - Added an interactive authorization workflow for 401 http responses.
