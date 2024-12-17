@@ -1,3 +1,4 @@
+export * from './onActiveTextEditorChange.tests';
 export * from './onAddUrlAuthentication.tests';
 export * from './onClearCache.tests';
 export * from './onErrorClick.tests';
