@@ -1,3 +1,11 @@
+# 1.16.2
+
+## Npm
+
+  - Reverted fetch timeout value to the npm-registry-fetch default
+
+    Relates to [#379](https://gitlab.com/versionlens/vscode-versionlens/-/issues/379)
+
 # 1.16.1
 
 ## Dotnet
