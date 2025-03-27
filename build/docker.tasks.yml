@@ -1,4 +1,5 @@
 tasks:
+  # unit tests
   docker:test:
     - var:
         DOCKER_TEST_PATH: ./build/test
@@ -6,6 +7,17 @@ tasks:
         COVERAGE_VOL: $PWD/.coverage:/versionlens/.coverage
     - docker build -t $TEST_IMAGE -f $DOCKER_TEST_PATH/test.dockerfile .
     - docker run --rm -v $COVERAGE_VOL --name test-container $TEST_IMAGE
+
+  # package vsix file
+  docker:package:
+    - var:
+        DOCKER_PACKAGE_PATH: ./build/package
+        PACKAGE_IMAGE: versionlens:package
+        PACKAGE_VOL: $PWD/.package:/versionlens/.package
+    - docker build -t $PACKAGE_IMAGE -f $DOCKER_PACKAGE_PATH/package.dockerfile .
+    - docker run --rm -v $PACKAGE_VOL --name test-container $PACKAGE_IMAGE
+
+  # publish to the marketplace
   docker:publish:
     - var:
         DOCKER_PUBLISH_PATH: ./build/publish
@@ -13,3 +25,20 @@ tasks:
         PUBLISH_VOL: $PWD/.publish:/versionlens/.publish
     - docker build -t $PUBLISH_IMAGE -f $DOCKER_PUBLISH_PATH/publish.dockerfile .
     - docker run --rm -v $PUBLISH_VOL --env-file ./.env --name publish-container $PUBLISH_IMAGE
+
+  # sets the preview property to true in the package.json
+  preview:prepack: node -e "
+    const pkg = require('./package.json');
+    const { writeFileSync } = require('fs');
+    pkg.preview=true;
+    pkg.version = pkg.version.replace('-preview', '');
+    writeFileSync('./package.json', JSON.stringify(pkg,null,'  '));"
+
+  # publish a preview to the marketplace
+  docker:preview:
+    - var:
+        DOCKER_PREVIEW_PATH: ./build/preview
+        PREVIEW_IMAGE: versionlens:preview
+        PREVIEW_VOL: $PWD/.preview:/versionlens/.preview
+    - docker build -t $PREVIEW_IMAGE -f $DOCKER_PREVIEW_PATH/preview.dockerfile .
+    - docker run --rm -v $PREVIEW_VOL --env-file ./.env --name preview-container $PREVIEW_IMAGE
