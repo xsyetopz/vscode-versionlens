@@ -21,3 +21,31 @@ unit_tests:
         path: .coverage/cobertura-coverage.xml
   rules:
     - if: $IS_TEST == "1"
+
+package:
+  script: [task docker:package]
+  artifacts:
+    paths:
+      - .package/*.vsix
+  rules:
+    - if: $IS_PACKAGE == "1"
+
+preview:
+  script:
+    - cp $VSCE_PAT_FILEPATH .env
+    - task docker:preview
+  artifacts:
+    paths:
+      - .preview/*.vsix
+  rules:
+    - if: $IS_PREVIEW == "1"
+
+publish:
+  script:
+    - cp $VSCE_PAT_FILEPATH .env
+    - task docker:publish
+  artifacts:
+    paths:
+      - .publish/*.vsix
+  rules:
+    - if: $IS_PUBLISH == "1"
