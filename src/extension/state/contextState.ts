@@ -1,11 +1,11 @@
 import { throwNotStringOrEmpty } from '@esm-test/guards';
 import { commands } from 'vscode';
+import { IContextState } from '../definitions';
 
-export class ContextState<T> {
+export class ContextState<T> implements IContextState<T> {
 
   constructor(private readonly key: string) {
     throwNotStringOrEmpty("key", key);
-    this.key = this.key;
   }
 
   private _value!: T;

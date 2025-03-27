@@ -33,6 +33,7 @@ export function addOnSaveChanges(services: IServiceCollection) {
       // create the event handler
       const event = new OnSaveChanges(
         tasks,
+        container.extension.state,
         container.loggerFactory.create(serviceName)
       );
 

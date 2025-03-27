@@ -25,7 +25,7 @@ import type {
   AuthenticationInteractions,
   UrlAuthenticationStore
 } from '#extension/authorization';
-import type { VersionLensState } from '#extension/state';
+import type { ContextState, VersionLensState } from '#extension/state';
 import type { SuggestionCodeLensProvider, SuggestionsOptions } from '#extension/suggestions';
 import type { EditorConfig, IVsCodeConstructFactory } from '#extension/vscode';
 import type { PackageFileWatcher } from '#extension/watcher';
@@ -116,4 +116,26 @@ export interface IExtensionServices {
 
   // watcher events
   onPackageDependenciesChanged: OnPackageDependenciesChanged
+}
+
+export interface IVersionLensState {
+  show: ContextState<boolean>
+  showPrereleases: ContextState<boolean>
+  showOutdated: IContextState<boolean>
+  providerActive: ContextState<string>
+  providerBusy: ContextState<number>
+  providerError: ContextState<boolean>
+  codeLensReplace: ContextState<boolean>
+  applyDefaults(): Promise<void>
+  increaseBusyState(): Promise<void>
+  decreaseBusyState(): Promise<void>
+  clearBusyState(): Promise<void>
+  setErrorState(): Promise<void>
+  clearErrorState(): Promise<void>
+  enableCodeLensReplace(state: boolean): Promise<void>
+}
+
+export interface IContextState<T> {
+  get value(): T
+  change(newValue: T): Promise<T>
 }

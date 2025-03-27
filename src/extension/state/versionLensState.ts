@@ -1,9 +1,9 @@
-import { StateFeatures } from '#extension';
+import { IVersionLensState, StateFeatures } from '#extension';
 import { ContextState } from '#extension/state';
 import { SuggestionsOptions } from '#extension/suggestions';
 import { throwUndefinedOrNull } from "@esm-test/guards";
 
-export class VersionLensState {
+export class VersionLensState implements IVersionLensState {
 
   show: ContextState<boolean>;
 

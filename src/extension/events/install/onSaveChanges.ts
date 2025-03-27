@@ -1,23 +1,34 @@
 import type { ILogger } from '#domain/logging';
 import type { ISuggestionProvider } from '#domain/providers';
+import type { IDisposable } from '#domain/utils';
+import type { IVersionLensState } from '#extension';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import type { IVsCodeTasks } from 'src/extension/vscode/definitions';
 import type { Task } from 'vscode';
 
 export class OnSaveChanges {
 
-  constructor(readonly tasks: IVsCodeTasks, readonly logger: ILogger) {
+  static log = {
+    skipSaveChangesTask: 'Skipping "{providerName}.onSaveChanges" because a custom task was not provided.',
+    saveChangesTaskNotFound: 'Could not find the {providerName}.onSaveChanges["{onSaveChangesTask}"] task.',
+    executingTask: 'Executing {providerName}.onSaveChanges["{onSaveChangesTask}"] task.',
+    taskCompleted: '{providerName}.onSaveChanges["{onSaveChangesTask}"] task exited with {exitCode}.'
+  } as const
+
+  constructor(
+    readonly tasks: IVsCodeTasks,
+    readonly state: IVersionLensState,
+    readonly logger: ILogger
+  ) {
     throwUndefinedOrNull("tasks", tasks);
+    throwUndefinedOrNull("state", state);
     throwUndefinedOrNull("logger", logger);
   }
 
   async execute(provider: ISuggestionProvider, packageFilePath: string): Promise<void> {
     // check we have a task to run
     if (provider.config.onSaveChangesTask === null) {
-      this.logger.info(
-        'Skipping "{providerName}.onSaveChanges" because a custom task was not provided.',
-        provider.name
-      );
+      this.logger.info(OnSaveChanges.log.skipSaveChangesTask, provider.name);
       return;
     }
 
@@ -30,7 +41,7 @@ export class OnSaveChanges {
     // check we found a task
     if (filteredTasks.length == 0) {
       this.logger.error(
-        'Could not find the {providerName}.onSaveChanges["{onSaveChangesTask}"] task.',
+        OnSaveChanges.log.saveChangesTaskNotFound,
         provider.name,
         provider.config.onSaveChangesTask
       );
@@ -38,7 +49,7 @@ export class OnSaveChanges {
     }
 
     this.logger.info(
-      'Executing {providerName}.onSaveChanges["{onSaveChangesTask}"] task.',
+      OnSaveChanges.log.executingTask,
       provider.name,
       provider.config.onSaveChangesTask
     );
@@ -47,22 +58,31 @@ export class OnSaveChanges {
     const exitCode = await this.executeTask(filteredTasks[0])
 
     this.logger.info(
-      '{providerName}.onSaveChanges["{onSaveChangesTask}"] task exited with {exitCode}.',
+      OnSaveChanges.log.taskCompleted,
       provider.name,
       provider.config.onSaveChangesTask,
       exitCode
     );
+
+    // reset outdated flag
+    if (exitCode === 0)
+      await this.state.showOutdated.change(false);
   }
 
   private async executeTask(task: Task): Promise<number> {
     await this.tasks.executeTask(task);
     return new Promise((resolve, reject) => {
-      const disposable = this.tasks.onDidEndTaskProcess(e => {
-        if (task.name === e.execution.task.name) {
-          disposable.dispose();
-          resolve(e.exitCode);
-        }
-      });
+      const disposables: IDisposable[] = []
+      disposables.push(
+        this.tasks.onDidEndTaskProcess(
+          e => {
+            if (task.name === e.execution.task.name)
+              resolve(e.exitCode);
+          },
+          this,
+          disposables
+        )
+      )
     });
   }
 

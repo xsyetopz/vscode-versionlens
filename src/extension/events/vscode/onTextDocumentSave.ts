@@ -34,9 +34,6 @@ export class OnTextDocumentSave extends AsyncEmitter<ProviderTextDocumentSaveEve
 
     if (this.state.showOutdated.value) {
       await this.fire(provider as ISuggestionProvider, document.uri.fsPath);
-
-      // reset outdated flag
-      await this.state.showOutdated.change(false);
     }
   }
 
