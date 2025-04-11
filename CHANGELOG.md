@@ -1,3 +1,11 @@
+# 1.16.5
+
+### Rust (cargo)
+
+ - Prevented showing yanked\deleted package versions
+
+   Relates to [#384](https://gitlab.com/versionlens/vscode-versionlens/-/issues/384)
+
 # 1.16.4
 
 ## Dart (pub)
