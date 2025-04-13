@@ -1,3 +1,11 @@
+# 1.16.6
+
+### Php (composer)
+
+ - Fixed a case where ranged versions with 'v' prefixes (e.g. `^v1.18.3`) match the latest version but did not show the latest version indicator
+
+   Relates to [#385](https://gitlab.com/versionlens/vscode-versionlens/-/issues/385)
+
 # 1.16.5
 
 ### Rust (cargo)
