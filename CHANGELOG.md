@@ -1,3 +1,13 @@
+# 1.17.0-preview
+
+### Deno
+
+  - Added [deno.json](https://docs.deno.com/runtime/fundamentals/modules/#managing-third-party-modules-and-libraries) file support
+
+    Relates to [#341](https://gitlab.com/versionlens/vscode-versionlens/-/issues/341)
+
+    ![image](https://gitlab.com/-/project/19418059/uploads/86427a19aff87cdc5a6457ba5ca21963/image.png)
+
 # 1.16.6
 
 ### Php (composer)
