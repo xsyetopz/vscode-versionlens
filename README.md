@@ -20,6 +20,7 @@ The following languages are supported:
 
 - cargo (rust) https://doc.rust-lang.org/cargo/
 - composer (php) https://getcomposer.org/
+- deno (jsr) https://deno.com/
 - dotnet https://www.dotnetfoundation.org/
 - dub https://code.dlang.org/
 - maven (java) https://maven.apache.org/
