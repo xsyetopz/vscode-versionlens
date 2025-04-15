@@ -36,15 +36,12 @@ export class AsyncEmitter<T extends AsyncEvent> extends Disposable {
     this.listeners.delete(listener);
   }
 
-  // @ts-ignore tricks typescript to show event parameters instead of a spread
-  fire: T = fire;
-
-}
-
-async function fire(...args: any[]): Promise<void> {
-  for (const [listener, data] of this.listeners) {
-    await listener.call(data.thisArg, ...args);
+  async fire(...args: Parameters<T>) {
+    for (const [listener, data] of this.listeners) {
+      await listener.call(data.thisArg, ...args);
+    }
   }
+
 }
 
 function prioritizeMap<T>(source: EmitterMap<T>): EmitterMap<T> {
