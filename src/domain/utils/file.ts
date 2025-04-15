@@ -20,8 +20,3 @@ export async function fileExists(absFilePath: string): Promise<boolean> {
 export function readFile(absFilePath: string): Promise<string> {
   return fsReadFile(absFilePath, "utf8")
 }
-
-export async function readJsonFile<T>(absFilePath: string): Promise<T> {
-  const jsonContent = await readFile(absFilePath)
-  return JSON.parse(jsonContent);
-}

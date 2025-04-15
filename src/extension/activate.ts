@@ -1,7 +1,7 @@
 import type { IDomainServices } from '#domain';
 import type { IServiceProvider } from '#domain/di';
 import { LogLevel, type LoggerFactory } from '#domain/logging';
-import { nameOf, readJsonFile } from '#domain/utils';
+import { nameOf } from '#domain/utils';
 import {
   type IExtensionServices,
   OnActiveTextEditorChange,
@@ -48,14 +48,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
     serviceNames.extension
   );
   const extensionPath = context.asAbsolutePath("");
-  const packageJsonPath = context.asAbsolutePath("package.json");
-  const { version } = await readJsonFile<any>(packageJsonPath);
 
   // log general start up info
   logger.info("extension path: {extensionPath}", extensionPath);
   logger.info("resource folder path: {resourceFolderPath}", join(resourceFolderPath, ".."));
   logger.info("workspace mode: {isWorkspaceMode}", extension.isWorkspaceMode);
-  logger.info("version: {version}", version);
+  logger.info("version: {version}", context.extension.packageJSON.version);
   logger.info("log level: {logLevel}", LogLevel[logOutputChannel.logLevel]);
   logger.info("log folder: {logPath}", join(context.logUri.fsPath, ".."));
 
