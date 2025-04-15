@@ -11,7 +11,7 @@ export class VersionLensState implements IVersionLensState {
 
   showOutdated: ContextState<boolean>;
 
-  providerActive: ContextState<string>;
+  providerActive: ContextState<string | null>;
 
   providerBusy: ContextState<number>;
 

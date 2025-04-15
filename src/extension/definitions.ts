@@ -122,7 +122,7 @@ export interface IVersionLensState {
   show: ContextState<boolean>
   showPrereleases: ContextState<boolean>
   showOutdated: IContextState<boolean>
-  providerActive: ContextState<string>
+  providerActive: ContextState<string | null>
   providerBusy: ContextState<number>
   providerError: ContextState<boolean>
   codeLensReplace: ContextState<boolean>
