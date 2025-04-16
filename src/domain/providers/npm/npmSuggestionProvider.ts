@@ -1,9 +1,5 @@
 import type { ILogger } from '#domain/logging';
-import {
-  type TSuggestionReplaceFunction,
-  PackageDependency,
-  createPackageResource,
-} from '#domain/packages';
+import { PackageDependency, createPackageResource } from '#domain/packages';
 import {
   type TJsonPackageParserOptions,
   type TJsonPackageTypeHandler,
@@ -45,15 +41,17 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
     throwUndefinedOrNull("client", client);
     throwUndefinedOrNull("config", config);
     throwUndefinedOrNull("logger", logger);
-
-    this.suggestionReplaceFn = npmReplaceVersion;
   }
 
-  suggestionReplaceFn: TSuggestionReplaceFunction;
+  suggestionReplaceFn = npmReplaceVersion;
 
-  parseDependencies(packagePath: string, packageText: string): Array<PackageDependency> {
+  parseDependencies(
+    packagePath: string,
+    packageText: string,
+    dependencyProperties = this.config.dependencyProperties
+  ): Array<PackageDependency> {
     const options: TJsonPackageParserOptions = {
-      includePropNames: this.config.dependencyProperties,
+      includePropNames: dependencyProperties,
       complexTypeHandlers,
       customDescriptorHandler
     };

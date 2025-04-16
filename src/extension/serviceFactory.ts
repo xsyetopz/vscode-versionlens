@@ -107,6 +107,7 @@ export function addProviderNames(services: IServiceCollection) {
       'dub',
       'maven',
       'npm',
+      'deno',
       'pub',
       'pypi',
       'golang'

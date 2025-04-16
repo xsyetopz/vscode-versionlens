@@ -68,6 +68,8 @@ export async function importSuggestionProvider(
       nameOf<IProviderServices>().suggestionProvider
     );
 
+    serviceProvider.registerService(childServiceProvider.name, childServiceProvider);
+
     logger.debug(
       "Registered provider for {providerName}:\t file pattern: {filePatterns}\t caching: {cacheDuration} seconds\t strict ssl: {strictSSL}",
       providerName,

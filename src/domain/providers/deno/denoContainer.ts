@@ -1,15 +1,13 @@
 import { IServiceCollection, IServiceProvider } from '#domain/di';
 import {
   addCachingOptions,
-  addGitHubClient,
-  addGithubOptions,
+  addDenoClient,
+  addDenoConfig,
   addHttpOptions,
   addJsonClient,
-  addNpmConfig,
-  addNpmPackageClient,
-  addNpmRegistryClient,
+  addJsrClient,
   addSuggestionProvider
-} from '#domain/providers/npm';
+} from '#domain/providers/deno';
 
 export async function configureContainer(
   serviceProvider: IServiceProvider,
@@ -20,19 +18,15 @@ export async function configureContainer(
 
   addHttpOptions(services);
 
-  addGithubOptions(services);
-
-  addNpmConfig(services);
+  addDenoConfig(services);
 
   addJsonClient(services);
 
-  addGitHubClient(services);
+  addJsrClient(services);
 
-  addNpmRegistryClient(services);
-
-  addNpmPackageClient(services);
+  addDenoClient(services);
 
   addSuggestionProvider(services);
 
-  return await services.buildChild("npm", serviceProvider);
+  return await services.buildChild("deno", serviceProvider);
 }

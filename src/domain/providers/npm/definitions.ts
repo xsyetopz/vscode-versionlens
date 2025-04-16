@@ -3,7 +3,6 @@ import { HttpOptions, IJsonHttpClient, TClientResponse } from '#domain/clients';
 import {
   GitHubClient,
   GitHubOptions,
-  JsrClient,
   NpaSpec,
   NpmConfig,
   NpmPackageClient,
@@ -32,7 +31,6 @@ export interface INpmServices {
   npmConfig: NpmConfig;
   githubJsonClient: IJsonHttpClient;
   githubClient: GitHubClient;
-  jsrClient: JsrClient;
   npmRegistryClient: NpmRegistryClient;
   npmClient: NpmPackageClient;
 }

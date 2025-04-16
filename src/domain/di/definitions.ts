@@ -53,6 +53,8 @@ export interface IServiceProvider extends IDisposable {
 
   name: string;
 
+  registerService<T>(name: string, resolver: T)
+
   getService: <T>(name: string) => T;
 
 }

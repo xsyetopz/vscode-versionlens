@@ -1,5 +1,4 @@
 export * from './clients/githubClient'
-export * from './clients/jsrClient'
 export * from './clients/npmPackageClient'
 export * from './clients/npmRegistryClient'
 export * from './definitions'

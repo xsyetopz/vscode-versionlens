@@ -13,7 +13,6 @@ import {
   type NpaSpec,
   type TNpmClientData,
   GitHubClient,
-  JsrClient,
   NpaTypes,
   NpmConfig,
   NpmRegistryClient,
@@ -29,13 +28,11 @@ export class NpmPackageClient implements IPackageClient<TNpmClientData> {
     readonly config: NpmConfig,
     readonly npmRegistryClient: NpmRegistryClient,
     readonly githubClient: GitHubClient,
-    readonly jsrClient: JsrClient,
     readonly logger: ILogger
   ) {
     throwUndefinedOrNull("config", config);
     throwUndefinedOrNull("npmRegistryClient", npmRegistryClient);
     throwUndefinedOrNull("githubClient", githubClient);
-    throwUndefinedOrNull("jsrClient", jsrClient);
     throwUndefinedOrNull("logger", logger);
   }
 
@@ -44,18 +41,9 @@ export class NpmPackageClient implements IPackageClient<TNpmClientData> {
 
     try {
       const requestedPackage = request.parsedDependency.package;
-      const isDeno = requestedPackage.path.endsWith('deno.json');
-      const isDenoJsr = isDeno && requestedPackage.version.startsWith('jsr:');
-      const isDenoNpm = isDeno && requestedPackage.version.startsWith('npm:');
-      if (isDeno && !isDenoJsr && !isDenoNpm) return ClientResponseFactory.createNoSuggestions();
-
-      const parseVersion = isDenoJsr
-        ? requestedPackage.version.replaceAll('jsr:', 'npm:')
-        : requestedPackage.version;
-
       const npaSpec = npa.resolve(
         requestedPackage.name,
-        parseVersion,
+        requestedPackage.version,
         requestedPackage.path
       ) as NpaSpec;
 
@@ -103,9 +91,7 @@ export class NpmPackageClient implements IPackageClient<TNpmClientData> {
       }
 
       // otherwise return registry result
-      return isDenoJsr
-        ? this.jsrClient.fetchPackage(npaSpec)
-        : await this.npmRegistryClient.fetchPackage(request, npaSpec);
+      return await this.npmRegistryClient.fetchPackage(request, npaSpec);
 
     } catch (response) {
       this.logger.debug("Caught exception from {source}: {error}", source, response);
