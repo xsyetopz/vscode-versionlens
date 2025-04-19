@@ -40,7 +40,8 @@ export enum SuggestionStatusText {
   UpdateMinor = 'minor',
   UpdatePatch = 'patch',
   UpdateLatestPrerelease = 'latest prerelease',
-  UpdateRange = 'bump'
+  UpdateRange = 'bump',
+  UpdateBuild = 'build',
 }
 
 export enum SuggestionTypes {
@@ -69,7 +70,7 @@ export type TParsedVersion = {
   minVersion: string
   satisfiesVersion: string
   latestRelease: string
-  latestPreRelease: string
+  latestPreRelease?: string
 }
 
 export type TPreReleaseGroup = {

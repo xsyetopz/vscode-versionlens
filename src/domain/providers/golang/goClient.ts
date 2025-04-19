@@ -18,7 +18,7 @@ import {
 } from '#domain/parsers';
 import { GoConfig } from '#domain/providers/golang';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import semver from 'semver';
+import { coerce, compareLoose } from 'semver';
 
 export class GoClient implements IPackageClient<null> {
 
@@ -57,6 +57,7 @@ export class GoClient implements IPackageClient<null> {
 
     // fetch package suggestions from api
     const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
+    semverSpec.rawVersion = semverSpec.rawVersion.replace('+incompatible', '')
 
     const url = this.config.apiUrl.replace('{base-module}', requestedPackage.name.toLowerCase());
 
@@ -110,13 +111,12 @@ export class GoClient implements IPackageClient<null> {
       .reverse();
 
     // extract semver versions only
-    const { coerce } = semver;
     const semverVersions = VersionUtils.filterSemverVersions(rawVersions)
       .map(x => coerce(x, VersionUtils.loosePrereleases).toString());
 
     // seperate versions to releases and prereleases
     const { releases, prereleases } = VersionUtils.splitReleasesFromArray(
-      semverVersions.sort(semver.compareLoose),
+      semverVersions.sort(compareLoose),
       this.config.prereleaseTagFilter
     );
 

@@ -3,9 +3,11 @@ import {
   type TParsedVersion,
   SuggestionIncrements,
   SuggestionStatusText,
-  UpdateableFactory
+  UpdateableFactory,
+  VersionUtils
 } from '#domain/packages';
 import { compare, inc, maxSatisfying } from 'semver';
+import { findNextEqualBuild } from '../utils/versionUtils.js';
 
 export function getReleaseSuggestions(
   fixedOrRangedVersion: string,
@@ -19,6 +21,17 @@ export function getReleaseSuggestions(
   const suggestLatest = !parsed.isLatest || parsed.hasRangeUpdate;
   if (suggestLatest) {
     potentialSuggestions.push([SuggestionStatusText.UpdateLatest, parsed.latestRelease]);
+  }
+
+  // suggest build?
+  const nextBuild = findNextEqualBuild(parsed.satisfiesVersion, releases, VersionUtils.loosePrereleases)
+  if (nextBuild !== null) {
+    suggestions.push(
+      UpdateableFactory.createNextMaxUpdateable(
+        nextBuild,
+        SuggestionStatusText.UpdateBuild
+      )
+    )
   }
 
   // suggest minor and\or patch?

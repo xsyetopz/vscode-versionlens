@@ -1,8 +1,10 @@
 import {
   type PackageSuggestion,
+  PackageStatusFactory,
   SuggestionCategory,
   SuggestionStatusText,
   SuggestionTypes,
+  UpdateableFactory,
   createSuggestions
 } from '#domain/packages';
 import { test } from 'mocha-ui-esm';
@@ -204,7 +206,26 @@ export const CreateSuggestionsTests = {
         // assert
         assert.deepEqual(results, Fixtures.fixedIsLatestNoSuggestions);
         assert.equal(results[0].version, testVersion);
-      }
+      },
+      "returns 'latest' with next build suggestion": [
+        ['3.0.0', '3.0.0+b1'],
+        ['3.0.0+b1', '3.0.0+b2'],
+        function (testVersion: string, expectedVersion: string) {
+          // setup
+          const testReleases = ['1.0.0', '2.0.0', '2.1.0', '3.0.0', '3.0.0+b1', '3.0.0+b2']
+          const expected = [
+            PackageStatusFactory.createMatchesLatestStatus(testVersion),
+            UpdateableFactory.createNextMaxUpdateable(expectedVersion, SuggestionStatusText.UpdateBuild)
+          ]
+
+          // test
+          const results = createSuggestions(testVersion, testReleases, []);
+
+          // assert
+          assert.deepEqual(results, expected);
+          assert.equal(results[0].version, testVersion);
+        }
+      ]
     },
     "is a prerelease and has no releases": {
       "returns 'fixed' with latest prerelease suggestion": () => {
@@ -257,7 +278,7 @@ export const CreateSuggestionsTests = {
         assert.equal(results[0].version, testVersion);
       }
     },
-    'has latest, minor and patch suggestions': {
+    'matches a release': {
       "$i: returns 'fixed' with latest, minor and patch suggestions": [
         ['1.1.1'],
         (testRange: string) => {
@@ -286,6 +307,26 @@ export const CreateSuggestionsTests = {
           assert.equal(results[0].version, fixedVersion);
         },
       ],
+      "returns 'fixed' with next build suggestion": [
+        ['2.0.0', '2.0.0+b1'],
+        ['2.0.0+b1', '2.0.0+b2'],
+        function (testVersion: string, expectedVersion: string) {
+          // setup
+          const testReleases = ['1.0.0', '2.0.0', '2.0.0+b1', '2.0.0+b2', '3.0.0']
+          const expected = [
+            PackageStatusFactory.createFixedStatus(testVersion),
+            UpdateableFactory.createLatestUpdateable(testReleases[testReleases.length - 1]),
+            UpdateableFactory.createNextMaxUpdateable(expectedVersion, SuggestionStatusText.UpdateBuild)
+          ]
+
+          // test
+          const results = createSuggestions(testVersion, testReleases, []);
+
+          // assert
+          assert.deepEqual(results, expected);
+          assert.equal(results[0].version, testVersion);
+        }
+      ]
     },
   },
 

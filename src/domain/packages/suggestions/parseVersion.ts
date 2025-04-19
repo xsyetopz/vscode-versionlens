@@ -1,5 +1,6 @@
 import { TParsedVersion, VersionUtils } from '#domain/packages';
 import {
+  eq,
   minVersion as getMinVersion,
   maxSatisfying,
   prerelease,
@@ -20,18 +21,14 @@ export function parseVersion(
     : prerelease(requestedVersion) != null;
 
   // detect the latest version satisfying the range
-  let satisfiesVersion: string = maxSatisfying(
-    releases,
-    requestedVersion,
-    VersionUtils.loosePrereleases
-  );
+  let satisfiesVersion: string = isFixedVersion
+    ? VersionUtils.fixedSatisifes(releases, requestedVersion, VersionUtils.loosePrereleases)
+    : maxSatisfying(releases, requestedVersion, VersionUtils.loosePrereleases);
 
   if (!satisfiesVersion && isPreRelease) {
-    satisfiesVersion = maxSatisfying(
-      prereleases,
-      requestedVersion,
-      VersionUtils.loosePrereleases
-    );
+    satisfiesVersion = isFixedVersion
+      ? VersionUtils.fixedSatisifes(prereleases, requestedVersion, VersionUtils.loosePrereleases)
+      : maxSatisfying(prereleases, requestedVersion, VersionUtils.loosePrereleases);
   }
 
   let minVersion = null;
@@ -42,13 +39,13 @@ export function parseVersion(
 
   const latestRelease = distTagVersion || releases[releases.length - 1];
   const latestPreRelease = prereleases[prereleases.length - 1];
-  const isLatest = latestRelease === satisfiesVersion;
+  const isLatest = !!latestRelease && !!satisfiesVersion && eq(latestRelease, satisfiesVersion, VersionUtils.loosePrereleases);
   const isLatestPreRelease = isPreRelease && latestPreRelease === satisfiesVersion;
   const hasInvalidRange = isRangeVersion && !minVersion;
   const hasRangeUpdate =
     isRangeVersion &&
-    satisfiesVersion &&
-    satisfiesVersion !== minVersion;
+    !!satisfiesVersion &&
+    satisfiesVersion.startsWith(minVersion) === false;
 
   return {
     isFixedVersion,

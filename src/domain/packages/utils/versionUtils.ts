@@ -4,7 +4,7 @@ import {
   TPackageVersions,
   TSemverSpec
 } from '#domain/packages';
-import { Range, lte, prerelease, valid, validRange } from 'semver';
+import { Range, SemVer, coerce, eq, lte, prerelease, valid, validRange } from 'semver';
 
 export const formatTagNameRegex = /^[^0-9\-]*/;
 export const loosePrereleases = { loose: true, includePrerelease: true };
@@ -126,4 +126,24 @@ export function preserveLeadingRange(existingVersion, newVersion) {
     return newVersion;
 
   return `${leading}${newVersion}`;
+}
+
+export function fixedSatisifes(versions: string[], fixed: string, options: any): string | null {
+  const sf = new SemVer(fixed, options)
+  for (let index = versions.length - 1; index >= 0; index--) {
+    const v = versions[index];
+    const vr = new SemVer(v, options)
+    if (sf.compare(vr) === 0 && sf.compareBuild(vr) === 0) return v
+  }
+  return null
+}
+
+export function findNextEqualBuild(fixed: string, versions: string[], options: any): string | null {
+  const i = versions.indexOf(fixed)
+  if (i === -1) return null
+  for (let index = i + 1; index < versions.length; index++) {
+    const coerced = coerce(versions[index], options)
+    if (eq(fixed, coerced, options)) return versions[index]
+  }
+  return null
 }

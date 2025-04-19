@@ -1,3 +1,19 @@
+# 1.19.0-preview
+
+  ### All Providers
+
+  - Added a new updateable link called `build`<br>
+    This option appears when a choosen version also has build meta appended after it<br>
+
+    ![BuildUpdateable](https://gitlab.com/-/project/19418059/uploads/7f4145e54e945d2642a2f1af13d0dd43/BuildUpdateable.gif)
+
+    This change also fixes [#325](https://gitlab.com/versionlens/vscode-versionlens/-/issues/325)
+
+    > **NOTE**
+    > 
+    > - Only one build update link will be shown per version
+    > - For more information about using build meta data see: <br> https://semver.org/#spec-item-10
+
 # 1.18.0
 
 ### Deno

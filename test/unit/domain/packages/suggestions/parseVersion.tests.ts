@@ -13,7 +13,7 @@ export const parseVersionTests = {
   [test.title]: parseVersion.name,
 
   beforeEach: function (this: TestContext) {
-    this.testReleases = ['5.3.3', '5.4.3', '5.4.4', '5.4.5'];
+    this.testReleases = ['5.3.3', '5.4.3', '5.4.4', '5.4.4+123', '5.4.5'];
     this.testPrereleases = ['5.3.3-dev.1234', '5.4.3-beta.4567', '5.4.4-rc.6789', '5.4.5-next.1452'];
     this.testVReleases = ['v5.3.3', 'v5.4.3', 'v5.4.4', 'v5.4.5'];
   },
@@ -106,10 +106,11 @@ export const parseVersionTests = {
   },
 
   satisfiesVersion: {
-    'case $i: returns satisifedVersion for matching fixed versions': [
+    'case $i: set when matching fixed versions': [
       '5.3.3',
       '5.4.3',
       '5.4.4',
+      '5.4.4+123',
       '5.4.5',
       '5.3.3-dev.1234',
       '5.4.3-beta.4567',
@@ -120,12 +121,13 @@ export const parseVersionTests = {
         equal(actual.satisfiesVersion, testVersion);
       }
     ],
-    'case $i: returns satisifedVersion for matching ranged versions': [
+    'case $i: set when matching ranged versions': [
       ['5.3.*', '5.3.3'],
       ['5.*', '5.4.5'],
       ['*', '5.4.5'],
       ['5.3.*-pre', '5.3.3'],
       ['5.*.*-pre', '5.4.5'],
+      ['5.4.*+123', '5.4.5'],
       function (this: TestContext, testVersion: string, expected: string) {
         const actual = parseVersion(testVersion, this.testReleases, this.testPrereleases);
         equal(actual.satisfiesVersion, expected);
@@ -135,6 +137,7 @@ export const parseVersionTests = {
       '5.3.1',
       '5.4.0',
       '5.4.0-pre',
+      '5.4.5+1',
       function (this: TestContext, testVersion: string) {
         const actual = parseVersion(testVersion, this.testReleases, []);
         equal(actual.satisfiesVersion, undefined);
