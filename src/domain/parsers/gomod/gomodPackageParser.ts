@@ -9,7 +9,7 @@ import {
 
 const INCOMPAT_BUILD = "+incompatible";
 const PREPEND_V = "v";
-const re = /(\S+(?<!retract))\s*\s((?=v\d+\.\d+\.\d+).[^/ \n]*)/gd
+const re = /(\S+(?<!retract))\s*((?=v\d+\.\d+\.\d+).[^/ \n]*)/gd
 
 export function parsePackagesGoMod(text: string): Array<PackageDescriptor> {
   const matchedDependencies: Array<PackageDescriptor> = [];
