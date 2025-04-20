@@ -1,8 +1,9 @@
-import type { DependencyCache } from '#domain/packages';
+import type { DependencyCache, PackageResponse, TSuggestionReplaceFunction } from '#domain/packages';
 import { nameOf, type KeyDictionary } from '#domain/utils';
 import type {
   OnActiveTextEditorChange,
   OnAddUrlAuthentication,
+  OnChooseBuildClick,
   OnClearCache,
   OnErrorClick,
   OnFileLinkClick,
@@ -23,14 +24,14 @@ import type {
 } from '#extension';
 import type {
   AuthenticationInteractions,
+  AuthenticationProvider,
   UrlAuthenticationStore
 } from '#extension/authorization';
 import type { ContextState, VersionLensState } from '#extension/state';
 import type { SuggestionCodeLensProvider, SuggestionsOptions } from '#extension/suggestions';
 import type { EditorConfig, IVsCodeConstructFactory } from '#extension/vscode';
 import type { PackageFileWatcher } from '#extension/watcher';
-import type { LogOutputChannel } from 'vscode';
-import type { AuthenticationProvider } from './authorization/authenticationProviders';
+import type { LogOutputChannel, Range, Uri } from 'vscode';
 
 export enum AuthorizationCommandFeatures {
   OnAddUrlAuthentication = "versionlens.authorization.addUrlAuthentication",
@@ -58,6 +59,7 @@ export enum StateFeatures {
 export enum SuggestionCommandFeatures {
   OnUpdateDependencyClick = 'versionlens.suggestions.updateDependencyClick',
   OnFileLinkClick = "versionlens.suggestions.fileLinkClick",
+  OnChooseBuildClick = "versionlens.suggestions.chooseBuildClick",
   OnClearCache = "versionlens.suggestions.clearCache"
 }
 
@@ -93,6 +95,7 @@ export interface IExtensionServices {
   onClearCache: OnClearCache
   onFileLinkClick: OnFileLinkClick
   onUpdateDependencyClick: OnUpdateDependencyClick
+  onChooseBuildClick: OnChooseBuildClick
 
   // editorTitleBar events
   onToggleReleases: OnToggleReleases
@@ -124,10 +127,10 @@ export interface IVersionLensState {
   show: ContextState<boolean>
   showPrereleases: ContextState<boolean>
   showOutdated: IContextState<boolean>
-  providerActive: ContextState<string | null>
-  providerBusy: ContextState<number>
-  providerError: ContextState<boolean>
-  codeLensReplace: ContextState<boolean>
+  providerActive: IContextState<string | null>
+  providerBusy: IContextState<number>
+  providerError: IContextState<boolean>
+  codeLensReplace: IContextState<boolean>
   applyDefaults(): Promise<void>
   increaseBusyState(): Promise<void>
   decreaseBusyState(): Promise<void>
@@ -140,4 +143,11 @@ export interface IVersionLensState {
 export interface IContextState<T> {
   get value(): T
   change(newValue: T): Promise<T>
+}
+
+export interface ISuggestionCodeLens {
+  replaceRange: Range,
+  packageResponse: PackageResponse,
+  documentUrl: Uri,
+  replaceVersionFn: TSuggestionReplaceFunction
 }

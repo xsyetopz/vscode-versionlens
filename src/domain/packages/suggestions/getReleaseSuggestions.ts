@@ -7,7 +7,7 @@ import {
   VersionUtils
 } from '#domain/packages';
 import { compare, inc, maxSatisfying } from 'semver';
-import { findNextEqualBuild } from '../utils/versionUtils.js';
+import { findVersionBuilds } from '../utils/versionUtils.js';
 
 export function getReleaseSuggestions(
   fixedOrRangedVersion: string,
@@ -15,23 +15,12 @@ export function getReleaseSuggestions(
   releases: string[]
 ) {
   const potentialSuggestions: Array<[SuggestionStatusText, string]> = [];
-  const suggestions: Array<PackageSuggestion> = [];
+  let suggestions: Array<PackageSuggestion> = [];
 
   // suggest latest?
   const suggestLatest = !parsed.isLatest || parsed.hasRangeUpdate;
   if (suggestLatest) {
     potentialSuggestions.push([SuggestionStatusText.UpdateLatest, parsed.latestRelease]);
-  }
-
-  // suggest build?
-  const nextBuild = findNextEqualBuild(parsed.satisfiesVersion, releases, VersionUtils.loosePrereleases)
-  if (nextBuild !== null) {
-    suggestions.push(
-      UpdateableFactory.createNextMaxUpdateable(
-        nextBuild,
-        SuggestionStatusText.UpdateBuild
-      )
-    )
   }
 
   // suggest minor and\or patch?
@@ -57,9 +46,7 @@ export function getReleaseSuggestions(
     const version = maxSatisfying(releases, range);
     // Only suggest if the version is not already suggested
     if (version && !suggestions.some((s) => s.version === version)) {
-      suggestions.push(
-        UpdateableFactory.createNextMaxUpdateable(version, name)
-      );
+      suggestions.push(UpdateableFactory.createNextMaxUpdateable(version, name));
     }
   }
 
@@ -69,5 +56,13 @@ export function getReleaseSuggestions(
   }
 
   // sort the versions (latest first)
-  return suggestions.sort((a, b) => compare(b.version, a.version));
+  suggestions = suggestions.sort((a, b) => compare(b.version, a.version));
+
+  // suggest build?
+  if (parsed.satisfiesVersion) {
+    const nextBuild = findVersionBuilds(parsed.satisfiesVersion, releases, VersionUtils.loosePrereleases);
+    nextBuild.length > 1 && suggestions.push(UpdateableFactory.createBuildUpdateable(nextBuild.join(',')));
+  }
+
+  return suggestions;
 }

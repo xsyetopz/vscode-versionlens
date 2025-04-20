@@ -208,14 +208,15 @@ export const CreateSuggestionsTests = {
         assert.equal(results[0].version, testVersion);
       },
       "returns 'latest' with next build suggestion": [
-        ['3.0.0', '3.0.0+b1'],
-        ['3.0.0+b1', '3.0.0+b2'],
+        ['3.0.0', '3.0.0,3.0.0+b1,3.0.0+b2'],
+        ['3.0.0+b1', '3.0.0,3.0.0+b1,3.0.0+b2'],
+        ['3.0.0+b2', '3.0.0,3.0.0+b1,3.0.0+b2'],
         function (testVersion: string, expectedVersion: string) {
           // setup
           const testReleases = ['1.0.0', '2.0.0', '2.1.0', '3.0.0', '3.0.0+b1', '3.0.0+b2']
           const expected = [
             PackageStatusFactory.createMatchesLatestStatus(testVersion),
-            UpdateableFactory.createNextMaxUpdateable(expectedVersion, SuggestionStatusText.UpdateBuild)
+            UpdateableFactory.createBuildUpdateable(expectedVersion)
           ]
 
           // test
@@ -308,15 +309,16 @@ export const CreateSuggestionsTests = {
         },
       ],
       "returns 'fixed' with next build suggestion": [
-        ['2.0.0', '2.0.0+b1'],
-        ['2.0.0+b1', '2.0.0+b2'],
+        ['2.0.0', '2.0.0,2.0.0+b1,2.0.0+b2'],
+        ['2.0.0+b1', '2.0.0,2.0.0+b1,2.0.0+b2'],
+        ['2.0.0+b2', '2.0.0,2.0.0+b1,2.0.0+b2'],
         function (testVersion: string, expectedVersion: string) {
           // setup
           const testReleases = ['1.0.0', '2.0.0', '2.0.0+b1', '2.0.0+b2', '3.0.0']
           const expected = [
             PackageStatusFactory.createFixedStatus(testVersion),
             UpdateableFactory.createLatestUpdateable(testReleases[testReleases.length - 1]),
-            UpdateableFactory.createNextMaxUpdateable(expectedVersion, SuggestionStatusText.UpdateBuild)
+            UpdateableFactory.createBuildUpdateable(expectedVersion)
           ]
 
           // test

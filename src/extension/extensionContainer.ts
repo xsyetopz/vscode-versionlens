@@ -16,6 +16,7 @@ import {
 import {
   addOnActiveTextEditorChange,
   addOnAddUrlAuthentication,
+  addOnChooseBuildClick,
   addOnClearCache,
   addOnErrorClick,
   addOnFileLinkClick,
@@ -112,6 +113,7 @@ function addExtensionServices(
   addOnClearCache(services);
   addOnFileLinkClick(services);
   addOnUpdateDependencyClick(services);
+  addOnChooseBuildClick(services);
 
   // editorTitleBar events
   addOnErrorClick(services);

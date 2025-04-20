@@ -138,12 +138,15 @@ export function fixedSatisifes(versions: string[], fixed: string, options: any):
   return null
 }
 
-export function findNextEqualBuild(fixed: string, versions: string[], options: any): string | null {
-  const i = versions.indexOf(fixed)
-  if (i === -1) return null
-  for (let index = i + 1; index < versions.length; index++) {
-    const coerced = coerce(versions[index], options)
-    if (eq(fixed, coerced, options)) return versions[index]
+export function findVersionBuilds(fixed: string, versions: string[], options: any): string[] {
+  const results: string[] = [];
+  for (let index = 0; index < versions.length; index++) {
+    const version = versions[index];
+    if (results.includes(version)) continue;
+
+    const coerced = coerce(version, options);
+    eq(fixed, coerced, options) && results.push(version);
   }
-  return null
+
+  return results;
 }

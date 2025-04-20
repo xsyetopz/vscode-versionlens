@@ -1,19 +1,23 @@
 import type { ILogger } from '#domain/logging';
-import { SuggestionTypes, mapToSuggestionUpdate } from '#domain/packages';
+import { mapToSuggestionUpdate } from '#domain/packages';
 import { Disposable } from '#domain/utils';
-import type { ISuggestionCodeLens, IVersionLensState } from '#extension';
+import type { ISuggestionCodeLens } from '#extension';
+import { VersionLensState } from '#extension/state';
+import { SuggestionInteractions } from '#extension/suggestions';
 import type { IVsCodeConstructFactory, IVsCodeWorkspace } from '#extension/vscode';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
-export class OnUpdateDependencyClick extends Disposable {
+export class OnChooseBuildClick extends Disposable {
 
   constructor(
+    readonly interactions: SuggestionInteractions,
     readonly construct: IVsCodeConstructFactory,
     readonly workspace: IVsCodeWorkspace,
-    readonly state: IVersionLensState,
+    readonly state: VersionLensState,
     readonly logger: ILogger
   ) {
     super();
+    throwUndefinedOrNull('interactions', interactions);
     throwUndefinedOrNull('construct', construct);
     throwUndefinedOrNull('workspace', workspace);
     throwUndefinedOrNull('state', state);
@@ -21,22 +25,30 @@ export class OnUpdateDependencyClick extends Disposable {
   }
 
   /**
-   * Executes when a codelens update suggestion is clicked
+   * Executes when clicking a build suggestion link
    * @param codeLens
    */
   async execute(codeLens: ISuggestionCodeLens): Promise<void> {
     if (this.state.codeLensReplace.value === false) return;
 
+    const { packageResponse } = codeLens;
+    const { package: pkg } = packageResponse.parsedDependency;
+    const buildVersions = packageResponse.suggestion.version.split(',');
+
+    // show interactive choices
+    const selectedBuild = await this.interactions.chooseBuild(
+      buildVersions,
+      pkg.name,
+      pkg.version
+    );
+    if (!selectedBuild) return;
+
     // disable codelens replace to prevent suggestion race condition
     await this.state.enableCodeLensReplace(false);
 
     // get the replace version
-    const { version, type } = codeLens.packageResponse.suggestion!;
-    const isTag = type & SuggestionTypes.tag;
-    const suggestionUpdate = mapToSuggestionUpdate(codeLens.packageResponse);
-    const replaceWithVersion: string = isTag
-      ? version
-      : codeLens.replaceVersionFn(suggestionUpdate, version);
+    const suggestionUpdate = mapToSuggestionUpdate(packageResponse);
+    const replaceWithVersion = codeLens.replaceVersionFn(suggestionUpdate, selectedBuild);
 
     // apply the edit
     const edit = this.construct.createWorkspaceEdit();

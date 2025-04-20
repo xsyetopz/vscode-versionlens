@@ -36,6 +36,15 @@ export function createNextMaxUpdateable(requestedVersion: string, name: string):
   };
 }
 
+export function createBuildUpdateable(requestedVersion: string): PackageSuggestion {
+  return {
+    name: SuggestionStatusText.UpdateBuild,
+    category: SuggestionCategory.Build,
+    version: requestedVersion,
+    type: SuggestionTypes.release
+  };
+}
+
 export function createTaggedPreleaseUpdateable(name: string, version: string): PackageSuggestion {
   return createSuggestion(
     name,

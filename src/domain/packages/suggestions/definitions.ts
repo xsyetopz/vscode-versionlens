@@ -8,6 +8,7 @@ export enum SuggestionCategory {
   NoMatch = 'NoMatch',
   Match = 'Match',
   Updateable = 'Updateable',
+  Build = 'Build'
 }
 
 export enum SuggestionIncrements {

@@ -239,7 +239,8 @@
             "Latest": "🟢",
             "NoMatch": "⚪",
             "Match": "🟡",
-            "Updateable": "↑ "
+            "Updateable": "↑ ",
+            "Build": "≌ "
           },
           "properties": {
             "name": {

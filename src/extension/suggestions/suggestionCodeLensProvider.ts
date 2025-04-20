@@ -5,7 +5,7 @@ import { GetSuggestions } from '#domain/useCases';
 import { Disposable, nameOf } from '#domain/utils';
 import { VersionLensExtension } from '#extension';
 import { VersionLensState } from '#extension/state';
-import { CommandFactory, SuggestionCodeLens } from '#extension/suggestions';
+import { CommandFactory, createFromPackageResponses, SuggestionCodeLens } from '#extension/suggestions';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { dirname } from 'node:path';
 import type {
@@ -87,7 +87,7 @@ export class SuggestionCodeLensProvider extends Disposable implements CodeLensPr
     await this.state.decreaseBusyState();
 
     // convert suggestions in to code lenses
-    return SuggestionCodeLens.createFromPackageResponses(
+    return createFromPackageResponses(
       document,
       suggestions,
       this.suggestionProvider.suggestionReplaceFn || defaultReplaceFn

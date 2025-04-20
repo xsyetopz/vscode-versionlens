@@ -24,6 +24,7 @@
   |⚪|NoMatch|No match found for the version specified
   |🟡|Match|A match was found. So either the <br> - The ranged version specified isn't equal to the latest version; OR<br> - The fixed version specified isn't equal to the latest version
   |↑|Updateable|An update action that will replace the specified version
+  |≌|Build|An update action that will present a choice of build versions available
 
   > **NOTE**
   >

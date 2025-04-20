@@ -1,12 +1,18 @@
 import type { IDomainServices } from '#domain';
 import type { IServiceCollection } from '#domain/di';
-import { ExtensionServiceName, SuggestionCommandFeatures, type IExtensionServices } from '#extension';
 import {
+  ExtensionServiceName,
+  SuggestionCommandFeatures,
+  type IExtensionServices
+} from '#extension';
+import {
+  OnChooseBuildClick,
   OnClearCache,
   OnFileLinkClick,
   OnUpdateDependencyClick
 } from '#extension/events';
-import { commands, env, workspace } from 'vscode';
+import { SuggestionInteractions } from '#extension/suggestions';
+import { commands, env, window, workspace } from 'vscode';
 import { VsCodeConstructionFactory } from '../../vscode/vsCodeConstructFactory';
 
 export function addOnClearCache(services: IServiceCollection) {
@@ -74,6 +80,33 @@ export function addOnUpdateDependencyClick(services: IServiceCollection) {
       // register the vscode command
       handler.disposable = commands.registerCommand(
         SuggestionCommandFeatures.OnUpdateDependencyClick,
+        handler.execute,
+        handler
+      );
+
+      return handler;
+    },
+    true
+  )
+}
+
+export function addOnChooseBuildClick(services: IServiceCollection) {
+  const serviceName = ExtensionServiceName.onChooseBuildClick;
+  services.addSingleton(
+    serviceName,
+    (container: IDomainServices & IExtensionServices) => {
+      // create the event handler
+      const handler = new OnChooseBuildClick(
+        new SuggestionInteractions(window),
+        new VsCodeConstructionFactory(),
+        workspace,
+        container.versionLensState,
+        container.loggerFactory.create(serviceName)
+      );
+
+      // register the vscode command
+      handler.disposable = commands.registerCommand(
+        SuggestionCommandFeatures.OnChooseBuildClick,
         handler.execute,
         handler
       );

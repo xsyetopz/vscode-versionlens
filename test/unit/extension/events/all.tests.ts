@@ -9,3 +9,4 @@ export * from './onProviderTextDocumentClose.tests';
 export * from './onRemoveUrlAuthentication.tests';
 export * from './onSaveChanges.tests';
 export * from './onTextDocumentChange.tests';
+export * from './onUpdateDependencyClick.tests';

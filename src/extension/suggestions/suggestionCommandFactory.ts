@@ -31,6 +31,11 @@ export function createDirectoryLinkCommand(title: string, codeLens: SuggestionCo
   return codeLens.setCommand(title, cmd, [codeLens]);
 }
 
+export function createChooseBuildCommand(title: string, codeLens: SuggestionCodeLens) {
+  const cmd = SuggestionCommandFeatures.OnChooseBuildClick as string;
+  return codeLens.setCommand(title, cmd, [codeLens]);
+}
+
 export function createSuggestedVersionCommand(
   codeLens: SuggestionCodeLens,
   indicators: KeyDictionary<string>
@@ -41,27 +46,31 @@ export function createSuggestedVersionCommand(
 
   // get the category indicator
   const indicator = indicators[category] + (isWindows ? '' : ' ');
-  const indicatedName = indicator
-    ? `${indicator}${name}`
-    : name;
+  const indicatedName = indicator ? `${indicator}${name}` : name;
 
   // create the indicated command title
   const cmdTitle = type === SuggestionTypes.tag
     ? indicatedName.trim()
-    : `${indicatedName} ${version}`.trim();
+    : category === SuggestionCategory.Build
+      ? indicatedName
+      : `${indicatedName} ${version}`.trim();
 
   // create the suggestion command
   switch (category) {
     case SuggestionCategory.Updateable:
-      createUpdateableCommand(cmdTitle, codeLens)
+      createUpdateableCommand(cmdTitle, codeLens);
       break;
 
     case SuggestionCategory.Directory:
-      createDirectoryLinkCommand(cmdTitle, codeLens)
+      createDirectoryLinkCommand(cmdTitle, codeLens);
+      break;
+
+    case SuggestionCategory.Build:
+      createChooseBuildCommand(cmdTitle, codeLens);
       break;
 
     default:
-      createStatusCommand(cmdTitle, codeLens)
+      createStatusCommand(cmdTitle, codeLens);
       break;
   }
 }
