@@ -32,4 +32,4 @@ RUN mkdir $PRERELEASE_OUT_PATH
 
 # package and publish
 CMD vsce package --pre-release --out $PRERELEASE_OUT_PATH \
-    && ovsx publish $(find $PRERELEASE_OUT_PATH/*.vsix)
+    && ovsx publish --pre-release $(find $PRERELEASE_OUT_PATH/*.vsix)
