@@ -31,7 +31,7 @@
 
   ### GoLang
 
-    - Fixed an issue that breaks versions when replacing versions that have comments
+  - Fixed an issue that breaks versions when replacing versions that have comments
 
 # 1.18.0
 
