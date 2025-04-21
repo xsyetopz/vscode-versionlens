@@ -36,7 +36,7 @@ tasks:
   docker:prerelease:vsce:
     - var:
         PRERELEASE_IMAGE: versionlens:prerelease-vsce
-        PRERELEASE_VOL: $PWD/.prerelease:/versionlens/.prerelease-vsce
+        PRERELEASE_VOL: $PWD/.prerelease-vsce:/versionlens/.prerelease
     - docker build -t $PRERELEASE_IMAGE -f $DOCKER_FILE_PATH/prerelease.vsce.dockerfile .
     - docker run --rm -v $PRERELEASE_VOL --env-file ./.env --name prerelease-vsce-container $PRERELEASE_IMAGE
 
@@ -44,6 +44,6 @@ tasks:
   docker:prerelease:ovsx:
     - var:
         PRERELEASE_IMAGE: versionlens:prerelease-ovsx
-        PRERELEASE_VOL: $PWD/.prerelease:/versionlens/.prerelease-ovsx
+        PRERELEASE_VOL: $PWD/.prerelease-ovsx:/versionlens/.prerelease
     - docker build -t $PRERELEASE_IMAGE -f $DOCKER_FILE_PATH/prerelease.ovsx.dockerfile .
     - docker run --rm -v $PRERELEASE_VOL --env-file ./.env --name prerelease-osvx-container $PRERELEASE_IMAGE
