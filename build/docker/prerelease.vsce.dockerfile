@@ -24,6 +24,9 @@ RUN task build:test
 # bundle
 RUN task bundle
 
+# strip '-prerelease' from version in package.json
+RUN task prerelease:prepack
+
 # create the artifacts folder
 RUN mkdir $PRERELEASE_OUT_PATH
 
