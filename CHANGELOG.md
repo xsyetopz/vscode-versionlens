@@ -1,4 +1,4 @@
-# 1.19.0-prerelease
+# 1.19.2-prerelease
 
   ### All Providers
 
@@ -16,9 +16,16 @@
 
   ### Docker
 
-  - Added dockerfile `FROM <image>[:<tag>]` analysis
+  - Added dockerfile `FROM <image>[:<tag>]` analysis<br>
+
+    *Preview*
 
     ![image](https://gitlab.com/-/project/19418059/uploads/5161cf0f88c8701db036cc710ee59673/docker.gif)
+
+    |Setting|Default|
+    |-|-|
+    |versionlens.docker.apiUrl|https://hub.docker.com/v2/namespaces/{namespace}/repositories/{repository}/tags|
+    |versionlens.docker.files|`**/{dockerfile,*.dockerfile}`|
 
     > **NOTE**
     > - Only supports [docker hub api v2](https://docs.docker.com/reference/api/hub/latest/#tag/repositories/paths/~1v2~1namespaces~1%7Bnamespace%7D~1repositories~1%7Brepository%7D~1tags/get)
