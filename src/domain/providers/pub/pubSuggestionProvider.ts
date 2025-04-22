@@ -1,8 +1,9 @@
 import { ILogger } from '#domain/logging';
 import {
   PackageDependency,
-  TSuggestionReplaceFunction,
+  TSuggestionUpdate,
   createPackageResource,
+  defaultReplaceFn
 } from '#domain/packages';
 import {
   PackageDescriptorType,
@@ -11,14 +12,17 @@ import {
   TPackagePathDescriptor,
   TPackageVersionDescriptor,
   TYamlPackageParserOptions,
-  createGitDescFromYamlNode,
-  createHostedDescFromYamlNode,
-  createPathDescFromYamlNode,
   createVersionDescFromYamlNode,
   parsePackagesYaml,
 } from '#domain/parsers';
 import { ISuggestionProvider } from '#domain/providers';
-import { PubClient, PubConfig, pubReplaceVersion } from '#domain/providers/pub';
+import {
+  PubClient,
+  PubConfig,
+  createGitDescFromYamlNode,
+  createHostedDescFromYamlNode,
+  createPathDescFromYamlNode
+} from '#domain/providers/pub';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 const complexTypeHandlers = {
@@ -42,7 +46,13 @@ export class PubSuggestionProvider implements ISuggestionProvider {
     throwUndefinedOrNull("logger", logger);
   }
 
-  suggestionReplaceFn?: TSuggestionReplaceFunction = pubReplaceVersion;
+  suggestionReplaceFn(suggestionUpdate: TSuggestionUpdate, newVersion: string): string {
+    return defaultReplaceFn(
+      suggestionUpdate,
+      // handle cases for blank entries and # comments
+      `${suggestionUpdate.parsedVersionPrepend}${newVersion}${suggestionUpdate.parsedVersionAppend}`
+    );
+  }
 
   parseDependencies(
     packagePath: string,
