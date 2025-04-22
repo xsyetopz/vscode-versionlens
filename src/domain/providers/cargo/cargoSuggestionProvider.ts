@@ -1,16 +1,16 @@
-import { ILogger } from '#domain/logging';
+import type { ILogger } from '#domain/logging';
 import { PackageDependency, createPackageResource } from '#domain/packages';
 import {
+  type PackageGitDescriptor,
+  type PackageNameDescriptor,
+  type PackagePathDescriptor,
+  type PackageVersionDescriptor,
+  type TomlParserOptions,
   PackageDescriptorType,
-  TPackageGitDescriptor,
-  TPackageNameDescriptor,
-  TPackagePathDescriptor,
-  TPackageVersionDescriptor,
-  TTomlPackageParserOptions,
   getTomlComplexTypeHandlers,
   parsePackagesToml,
 } from '#domain/parsers';
-import { ISuggestionProvider } from '#domain/providers';
+import type { ISuggestionProvider } from '#domain/providers';
 import { CargoConfig, CratesClient } from '#domain/providers/cargo';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
@@ -29,8 +29,7 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
   }
 
   parseDependencies(packagePath: string, packageText: string): Array<PackageDependency> {
-
-    const options: TTomlPackageParserOptions = {
+    const options: TomlParserOptions = {
       includePropNames: this.config.dependencyProperties,
       complexTypeHandlers: getTomlComplexTypeHandlers()
     };
@@ -41,13 +40,13 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
 
     for (const descriptors of parsedPackages) {
 
-      const nameDesc = descriptors.getType<TPackageNameDescriptor>(
+      const nameDesc = descriptors.getType<PackageNameDescriptor>(
         PackageDescriptorType.name
       );
 
       // map the version descriptor to a package dependency
       if (descriptors.hasType(PackageDescriptorType.version)) {
-        const versionDesc = descriptors.getType<TPackageVersionDescriptor>(
+        const versionDesc = descriptors.getType<PackageVersionDescriptor>(
           PackageDescriptorType.version
         );
 
@@ -67,7 +66,7 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
 
       // map the path descriptor to a package dependency
       if (descriptors.hasType(PackageDescriptorType.path)) {
-        const pathType = descriptors.getType<TPackagePathDescriptor>(
+        const pathType = descriptors.getType<PackagePathDescriptor>(
           PackageDescriptorType.path
         );
 
@@ -87,7 +86,7 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
 
       // map the git descriptor to a package dependency
       if (descriptors.hasType(PackageDescriptorType.git)) {
-        const gitType = descriptors.getType<TPackageGitDescriptor>(
+        const gitType = descriptors.getType<PackageGitDescriptor>(
           PackageDescriptorType.git
         );
 

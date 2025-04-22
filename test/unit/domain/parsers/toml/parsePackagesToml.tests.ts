@@ -1,5 +1,5 @@
 import {
-  TTomlPackageParserOptions,
+  TomlParserOptions,
   getTomlComplexTypeHandlers,
   parsePackagesToml
 } from '#domain/parsers';
@@ -14,7 +14,7 @@ export const extractPackageDependenciesFromTomlTests = {
   "returns empty when no dependency entry names match": () => {
     const includePropNames = ["non-dependencies"];
 
-    const testOptions: TTomlPackageParserOptions = {
+    const testOptions: TomlParserOptions = {
       includePropNames,
       complexTypeHandlers: getTomlComplexTypeHandlers()
     };
@@ -32,7 +32,7 @@ export const extractPackageDependenciesFromTomlTests = {
     Fixtures.parsesPackageVersionEntries,
     Fixtures.parsesProjectVersionEntries,
     (fixture: any) => {
-      const testOptions: TTomlPackageParserOptions = {
+      const testOptions: TomlParserOptions = {
         includePropNames: [
           'project',
           'package',

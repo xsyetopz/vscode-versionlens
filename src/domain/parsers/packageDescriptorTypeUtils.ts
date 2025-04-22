@@ -1,17 +1,17 @@
 import {
-  PackageDescriptorType,
-  TPackageGitDescriptor,
-  TPackageHostedDescriptor,
-  TPackageIgnoreChangesDescriptor,
-  TPackageNameDescriptor,
-  TPackageParentDescriptor,
-  TPackagePathDescriptor,
-  TPackageProjectVersionDescriptor,
-  TPackageTextRange,
-  TPackageVersionDescriptor
+  type PackageGitDescriptor,
+  type PackageHostedDescriptor,
+  type PackageIgnoreChangesDescriptor,
+  type PackageNameDescriptor,
+  type PackageParentDescriptor,
+  type PackagePathDescriptor,
+  type PackageProjectVersionDescriptor,
+  type PackageTextRange,
+  type PackageVersionDescriptor,
+  PackageDescriptorType
 } from '#domain/parsers';
 
-export function createPackageNameDesc(name: string, nameRange: TPackageTextRange): TPackageNameDescriptor {
+export function createPackageNameDesc(name: string, nameRange: PackageTextRange): PackageNameDescriptor {
   return {
     type: PackageDescriptorType.name,
     name,
@@ -21,10 +21,10 @@ export function createPackageNameDesc(name: string, nameRange: TPackageTextRange
 
 export function createPackageVersionDesc(
   version: string,
-  versionRange: TPackageTextRange,
+  versionRange: PackageTextRange,
   versionPrepend: string = '',
   versionAppend: string = ''
-): TPackageVersionDescriptor {
+): PackageVersionDescriptor {
   return {
     type: PackageDescriptorType.version,
     version,
@@ -38,7 +38,7 @@ export function createPackageGitDescType(
   gitUrl: string,
   gitPath: string = '',
   gitRef: string = ''
-): TPackageGitDescriptor {
+): PackageGitDescriptor {
   return {
     type: PackageDescriptorType.git,
     gitUrl,
@@ -49,8 +49,8 @@ export function createPackageGitDescType(
 
 export function createPackagePathDescType(
   path: string,
-  pathRange: TPackageTextRange
-): TPackagePathDescriptor {
+  pathRange: PackageTextRange
+): PackagePathDescriptor {
   return {
     type: PackageDescriptorType.path,
     path,
@@ -61,7 +61,7 @@ export function createPackagePathDescType(
 export function createPackageHostedDescType(
   hostUrl: string,
   hostPackageName: string = '',
-): TPackageHostedDescriptor {
+): PackageHostedDescriptor {
   return {
     type: PackageDescriptorType.hosted,
     hostPackageName,
@@ -69,17 +69,17 @@ export function createPackageHostedDescType(
   }
 }
 
-export function createPackageParentDescType(path: string): TPackageParentDescriptor {
+export function createPackageParentDescType(path: string): PackageParentDescriptor {
   return {
     type: PackageDescriptorType.parent,
     path
   }
 }
 
-export function createIgnoreChangesDesc(): TPackageIgnoreChangesDescriptor {
+export function createIgnoreChangesDesc(): PackageIgnoreChangesDescriptor {
   return { type: PackageDescriptorType.ignoreChanges }
 }
 
-export function createProjectVersionTypeDesc(): TPackageProjectVersionDescriptor {
+export function createProjectVersionTypeDesc(): PackageProjectVersionDescriptor {
   return { type: PackageDescriptorType.projectVersion }
 }

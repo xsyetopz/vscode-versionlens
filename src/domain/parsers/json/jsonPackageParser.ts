@@ -1,17 +1,18 @@
 import {
+  type FoundNode,
+  type JsonPackageTypeHandler,
+  type JsonParserOptions,
   PackageDescriptor,
-  TJsonPackageParserOptions,
-  TJsonPackageTypeHandler,
   createNameDescFromJsonNode,
   createPackageParentDescType,
   createVersionDescFromJsonNode
 } from '#domain/parsers';
-import { KeyDictionary, Undefinable } from '#domain/utils';
+import type { KeyDictionary } from '#domain/utils';
 import * as JsonC from 'jsonc-parser';
 
 export function parsePackagesJson(
   json: string,
-  options: TJsonPackageParserOptions
+  options: JsonParserOptions
 ): Array<PackageDescriptor> {
   const jsonErrors: Array<JsonC.ParseError> = [];
   const rootNode = JsonC.parseTree(json, jsonErrors);
@@ -27,7 +28,7 @@ export function parsePackagesJson(
 
 function parsePackageNodes(
   rootNode: JsonC.Node,
-  options: TJsonPackageParserOptions
+  options: JsonParserOptions
 ): Array<PackageDescriptor> {
   const matchedDependencies: Array<PackageDescriptor> = [];
   const { includePropNames, customDescriptorHandler, complexTypeHandlers } = options;
@@ -61,7 +62,7 @@ function parsePackageNodes(
 function descendChildNodes(
   path: string,
   nodes: Array<JsonC.Node>,
-  complexTypeHandlers: KeyDictionary<TJsonPackageTypeHandler>
+  complexTypeHandlers: KeyDictionary<JsonPackageTypeHandler>
 ): Array<PackageDescriptor> {
   const matchedDependencies: Array<PackageDescriptor> = [];
 
@@ -130,12 +131,7 @@ function descendChildNodes(
   return matchedDependencies;
 }
 
-type FoundNode = {
-  path: string,
-  node: JsonC.Node | Array<JsonC.Node>
-}
-
-function findNodesAtLocation(jsonTree: JsonC.Node, expression: string): Undefinable<FoundNode> {
+function findNodesAtLocation(jsonTree: JsonC.Node, expression: string): FoundNode | undefined {
   const pathSegments: Array<JsonC.Segment> = expression.split(".");
 
   // if the path doesn't end with * then process a standard path

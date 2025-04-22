@@ -1,16 +1,16 @@
-import { ILogger } from '#domain/logging';
+import type { ILogger } from '#domain/logging';
 import { createPackageResource, PackageDependency } from '#domain/packages';
 import {
-  PackageDescriptorType,
-  TPackageNameDescriptor,
-  TPackageVersionDescriptor
+  type PackageNameDescriptor,
+  type PackageVersionDescriptor,
+  PackageDescriptorType
 } from '#domain/parsers';
-import { ISuggestionProvider } from '#domain/providers';
+import type { ISuggestionProvider } from '#domain/providers';
 import {
-  MavenClient,
-  MavenClientData,
-  MavenConfig,
-  MvnCli,
+  type MavenClient,
+  type MavenClientData,
+  type MavenConfig,
+  type MvnCli,
   parseMavenPackagesXml
 } from '#domain/providers/maven';
 import { RegistryProtocols } from '#domain/utils';
@@ -45,11 +45,11 @@ export class MavenSuggestionProvider implements ISuggestionProvider {
       .filter(x => x.hasType(PackageDescriptorType.version))
       .map(
         descriptors => {
-          const nameDesc = descriptors.getType<TPackageNameDescriptor>(
+          const nameDesc = descriptors.getType<PackageNameDescriptor>(
             PackageDescriptorType.name
           );
 
-          const versionDesc = descriptors.getType<TPackageVersionDescriptor>(
+          const versionDesc = descriptors.getType<PackageVersionDescriptor>(
             PackageDescriptorType.version
           );
 

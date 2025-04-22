@@ -1,17 +1,17 @@
 import {
+  type TomlParserOptions,
   PackageDescriptor,
-  TTomlPackageParserOptions,
   complexHasProperty,
   createNameDescFromTomlNode,
   createProjectVersionDescFromTomlNode,
   createVersionDescFromTomlNode,
   matchesTableExpression
 } from '#domain/parsers';
-import { AST, parseTOML } from "toml-eslint-parser";
+import { type AST, parseTOML } from "toml-eslint-parser";
 
 export function parsePackagesToml(
   toml: string,
-  options: TTomlPackageParserOptions
+  options: TomlParserOptions
 ): Array<PackageDescriptor> {
   try {
     const rootNode = parseTOML(toml);
@@ -27,7 +27,7 @@ export function parsePackagesToml(
 
 function parsePackageNodes(
   bodyNode: AST.TOMLTopLevelTable,
-  options: TTomlPackageParserOptions
+  options: TomlParserOptions
 ): Array<PackageDescriptor> {
   const matchedDependencies: Array<PackageDescriptor> = [];
   const { includePropNames } = options;
@@ -89,7 +89,7 @@ function parseSimpleNode(node: AST.TOMLKeyValue, isNameFromTable: boolean): Pack
 function parseComplexNode(
   nameNode: AST.TOMLKeyValue,
   valueNode: AST.TOMLInlineTable,
-  options: TTomlPackageParserOptions
+  options: TomlParserOptions
 ): PackageDescriptor {
   const packageDesc = new PackageDescriptor([]);
   const complexTypeHandlers = options.complexTypeHandlers;

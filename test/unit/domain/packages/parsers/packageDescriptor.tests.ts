@@ -1,15 +1,15 @@
-import assert from 'node:assert';
 import {
+  type PackageNameDescriptor,
+  type PackagePathDescriptor,
+  type PackageTypeDescriptor,
   PackageDescriptor,
   PackageDescriptorType,
-  TPackageNameDescriptor,
-  TPackagePathDescriptor,
-  TPackageTypeDescriptor,
   createPackageVersionDesc
 } from '#domain/parsers';
 import { test } from 'mocha-ui-esm';
+import assert from 'node:assert';
 
-const testNameDesc: TPackageNameDescriptor = {
+const testNameDesc: PackageNameDescriptor = {
   type: PackageDescriptorType.name,
   name: "testName",
   nameRange: { start: 1, end: 1 }
@@ -20,7 +20,7 @@ const testVersionDesc = createPackageVersionDesc(
   { start: 2, end: 2 }
 );
 
-const testPathDesc: TPackagePathDescriptor = {
+const testPathDesc: PackagePathDescriptor = {
   type: "path",
   path: "test/path",
   pathRange: { start: 100, end: 111 }
@@ -35,7 +35,7 @@ export const PackageDescriptorTests = {
     "can add $1 types": [
       ["single", [testVersionDesc]],
       ["multiple", [testNameDesc, testVersionDesc, testPathDesc]],
-      (testTitle: string, testDescriptors: Array<TPackageTypeDescriptor>) => {
+      (testTitle: string, testDescriptors: Array<PackageTypeDescriptor>) => {
         // setup
         const testPackageDesc = new PackageDescriptor([]);
 
@@ -58,7 +58,7 @@ export const PackageDescriptorTests = {
     "returns true for $1 types": [
       ["single", [testVersionDesc]],
       ["multiple", [testNameDesc, testVersionDesc, testPathDesc]],
-      (testTitle: string, testDescriptors: Array<TPackageTypeDescriptor>) => {
+      (testTitle: string, testDescriptors: Array<PackageTypeDescriptor>) => {
         // setup
         const testPackageDesc = new PackageDescriptor([]);
 

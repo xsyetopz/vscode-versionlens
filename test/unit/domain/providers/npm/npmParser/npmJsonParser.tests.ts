@@ -1,18 +1,18 @@
 import {
+  type JsonPackageTypeHandler,
+  type JsonParserOptions,
   createPathDescFromJsonNode,
   createRepoDescFromJsonNode,
   createVersionDescFromJsonNode,
-  parsePackagesJson,
-  TJsonPackageParserOptions,
-  TJsonPackageTypeHandler
+  parsePackagesJson
 } from '#domain/parsers';
 import { customDescriptorHandler } from '#domain/providers/npm';
-import { KeyDictionary } from '#domain/utils';
+import type { KeyDictionary } from '#domain/utils';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
 import Fixtures from './npmJsonParser.fixtures';
 
-const complexTypeHandlers: KeyDictionary<TJsonPackageTypeHandler> = {
+const complexTypeHandlers: KeyDictionary<JsonPackageTypeHandler> = {
   "version": createVersionDescFromJsonNode,
   "path": createPathDescFromJsonNode,
   "repository": createRepoDescFromJsonNode
@@ -29,7 +29,7 @@ export const extractPackageDependenciesFromJsonTests = {
     (testFixture: any) => {
       const includePropNames = ['packageManager'];
 
-      const testOptions: TJsonPackageParserOptions = {
+      const testOptions: JsonParserOptions = {
         includePropNames,
         complexTypeHandlers,
         customDescriptorHandler

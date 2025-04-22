@@ -1,30 +1,30 @@
 import { createPackageResource, PackageDependency } from '#domain/packages';
 import {
+  type PackageBuildDescriptor,
+  type PackageImageDescriptor,
+  type PackageParentDescriptor,
+  type YamlParserOptions,
   createPackageNameDesc,
   createPackagePathDescType,
   createPackageVersionDesc,
   createTextRange,
   isNodeQuoted,
   PackageDescriptor,
-  parsePackagesYaml,
-  TPackageBuildDescriptor,
-  TPackageImageDescriptor,
-  TPackageParentDescriptor,
-  TYamlPackageParserOptions
+  parsePackagesYaml
 } from '#domain/parsers';
 import { DockerfileParser } from 'dockerfile-ast';
 
 export function parseDockerCompose(
   packagePath: string,
   packageText: string,
-  options: TYamlPackageParserOptions
+  options: YamlParserOptions
 ): Array<PackageDependency> {
   const packageDependencies: Array<PackageDependency> = [];
   const parsedPackages = parsePackagesYaml(packageText, options);
   for (const descriptors of parsedPackages) {
-    const parentDesc = descriptors.getType<TPackageParentDescriptor>('parent')
-    const imageDesc = descriptors.getType<TPackageImageDescriptor>('image');
-    const buildDesc = descriptors.getType<TPackageBuildDescriptor>('build');
+    const parentDesc = descriptors.getType<PackageParentDescriptor>('parent')
+    const imageDesc = descriptors.getType<PackageImageDescriptor>('image');
+    const buildDesc = descriptors.getType<PackageBuildDescriptor>('build');
 
     let nameDesc
     let versionDesc
@@ -106,7 +106,7 @@ export function parseDockerfile(packagePath: string, packageText: string): Array
   return packageDependencies;
 }
 
-export function createImageDescFromYamlNode(valueNode: any): TPackageImageDescriptor {
+export function createImageDescFromYamlNode(valueNode: any): PackageImageDescriptor {
   const valueRange = {
     start: valueNode.range[0],
     end: valueNode.range[1],
@@ -139,7 +139,7 @@ export function createImageDescFromYamlNode(valueNode: any): TPackageImageDescri
   };
 }
 
-export function createBuildDescFromYamlNode(valueNode: any): TPackageBuildDescriptor {
+export function createBuildDescFromYamlNode(valueNode: any): PackageBuildDescriptor {
   const valueRange = {
     start: valueNode.range[0],
     end: valueNode.range[1],

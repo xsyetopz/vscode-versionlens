@@ -1,12 +1,12 @@
 import {
-  TPackageNameDescriptor,
-  TPackageVersionDescriptor,
-  XmlNode,
+  type PackageNameDescriptor,
+  type PackageVersionDescriptor,
+  type XmlNode,
   createPackageNameDesc,
   createPackageVersionDesc
 } from '#domain/parsers';
 
-export function createNameDescFromXmlAttr(node: XmlNode): TPackageNameDescriptor {
+export function createNameDescFromXmlAttr(node: XmlNode): PackageNameDescriptor {
   const includeAttr = node.attributes.include || node.attributes.update;
   if (!includeAttr) return undefined;
 
@@ -18,7 +18,7 @@ export function createNameDescFromXmlAttr(node: XmlNode): TPackageNameDescriptor
   return createPackageNameDesc(includeAttr.value, nameRange);
 }
 
-export function createVersionDescFromXmlAttr(keyNode: XmlNode): TPackageVersionDescriptor {
+export function createVersionDescFromXmlAttr(keyNode: XmlNode): PackageVersionDescriptor {
   const versionAttr = keyNode.attributes.version || keyNode.attributes.versionoverride;
   if (!versionAttr) return undefined;
 
@@ -30,7 +30,7 @@ export function createVersionDescFromXmlAttr(keyNode: XmlNode): TPackageVersionD
   return createPackageVersionDesc(versionAttr.value, versionRange);
 }
 
-export function createSdkNameDescFromXmlAttr(node: XmlNode): TPackageNameDescriptor {
+export function createSdkNameDescFromXmlAttr(node: XmlNode): PackageNameDescriptor {
   const nameAttr = node.attributes.name;
   if (!nameAttr) return undefined;
 
@@ -42,7 +42,7 @@ export function createSdkNameDescFromXmlAttr(node: XmlNode): TPackageNameDescrip
   return createPackageNameDesc(nameAttr.value, nameRange);
 }
 
-export function createBlankVersionDescFromXmlAttr(node: XmlNode): TPackageVersionDescriptor {
+export function createBlankVersionDescFromXmlAttr(node: XmlNode): PackageVersionDescriptor {
   const end = node.isSelfClosing ? node.tagCloseStart : node.tagOpenEnd - 1;
   const versionRange = {
     start: end,

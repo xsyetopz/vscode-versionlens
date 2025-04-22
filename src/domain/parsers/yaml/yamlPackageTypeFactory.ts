@@ -1,7 +1,7 @@
 import {
+  type PackageNameDescriptor,
+  type PackageVersionDescriptor,
   PackageDescriptor,
-  TPackageNameDescriptor,
-  TPackageVersionDescriptor,
   createPackageNameDesc,
   createPackageVersionDesc,
   createProjectVersionTypeDesc
@@ -13,7 +13,7 @@ export function isNodeQuoted(node: any) {
     || node.type === "QUOTE_DOUBLE";
 }
 
-export function createNameDescFromYamlNode(keyNode: any): TPackageNameDescriptor {
+export function createNameDescFromYamlNode(keyNode: any): PackageNameDescriptor {
   const name = keyNode.value;
 
   const nameRange = {
@@ -27,7 +27,7 @@ export function createNameDescFromYamlNode(keyNode: any): TPackageNameDescriptor
 export function createVersionDescFromYamlNode(
   valueNode: any,
   isQuoteType: boolean
-): TPackageVersionDescriptor {
+): PackageVersionDescriptor {
 
   const versionRange = {
     start: valueNode.range[0],

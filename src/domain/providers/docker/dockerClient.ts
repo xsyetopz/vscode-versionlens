@@ -14,7 +14,7 @@ import {
   UpdateableFactory,
   VersionUtils
 } from '#domain/packages';
-import { PackageDescriptorType, TPackagePathDescriptor } from '#domain/parsers';
+import { type PackagePathDescriptor, PackageDescriptorType } from '#domain/parsers';
 import {
   createVersionMapper,
   DockerApiTagResult,
@@ -41,7 +41,7 @@ export class DockerClient implements IPackageClient<null> {
 
     // process build context path types
     if (dependency.descriptors.hasType('path')) {
-      const pathDesc = dependency.descriptors.getType<TPackagePathDescriptor>(
+      const pathDesc = dependency.descriptors.getType<PackagePathDescriptor>(
         PackageDescriptorType.path
       );
       return await ClientResponseFactory.createDirectory(
@@ -64,8 +64,7 @@ export class DockerClient implements IPackageClient<null> {
       }
 
       return await this.fetch(requestedPackage, repo, namespace);
-    }
-    catch (error) {
+    } catch (error) {
       const errorResponse = error as HttpClientResponse;
 
       this.logger.debug(

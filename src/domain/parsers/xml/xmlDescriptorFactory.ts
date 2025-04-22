@@ -1,14 +1,14 @@
 import type { XmlNode } from '#domain/parsers';
 import {
+  type PackageNameDescriptor,
+  type PackageVersionDescriptor,
   PackageDescriptor,
-  TPackageNameDescriptor,
-  TPackageVersionDescriptor,
   createPackageNameDesc,
   createPackageVersionDesc,
   createProjectVersionTypeDesc
 } from '#domain/parsers';
 
-export function createNameDescFromXmlElem(keyNode: XmlNode): TPackageNameDescriptor {
+export function createNameDescFromXmlElem(keyNode: XmlNode): PackageNameDescriptor {
   const nameRange = {
     start: keyNode.tagOpenStart,
     end: keyNode.tagOpenStart
@@ -17,7 +17,7 @@ export function createNameDescFromXmlElem(keyNode: XmlNode): TPackageNameDescrip
   return createPackageNameDesc(keyNode.name, nameRange);
 }
 
-export function createVersionDescFromXmlElem(keyNode: XmlNode): TPackageVersionDescriptor {
+export function createVersionDescFromXmlElem(keyNode: XmlNode): PackageVersionDescriptor {
   const versionText = keyNode.text ?? '';
   const versionRange = {
     start: keyNode.tagOpenEnd,

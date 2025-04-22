@@ -1,10 +1,10 @@
 import {
+  type PackageGitDescriptor,
+  type PackageNameDescriptor,
+  type PackagePathDescriptor,
+  type PackageVersionDescriptor,
   PackageDescriptor,
   PackageDescriptorType,
-  TPackageGitDescriptor,
-  TPackageNameDescriptor,
-  TPackagePathDescriptor,
-  TPackageVersionDescriptor,
   createPackageGitDescType,
   createPackageNameDesc,
   createPackagePathDescType,
@@ -22,7 +22,7 @@ export function getTomlComplexTypeHandlers() {
   }
 }
 
-export function createNameDescFromTomlNode(keyNode: AST.TOMLKey, isNameFromTable: boolean): TPackageNameDescriptor {
+export function createNameDescFromTomlNode(keyNode: AST.TOMLKey, isNameFromTable: boolean): PackageNameDescriptor {
   const nameNode = isNameFromTable
     ? (keyNode.parent.parent as TOMLTable).key.keys[1] as AST.TOMLBare
     : keyNode.keys[0] as AST.TOMLBare;
@@ -37,7 +37,7 @@ export function createNameDescFromTomlNode(keyNode: AST.TOMLKey, isNameFromTable
 
 export function createVersionDescFromTomlNode(
   valueNode: AST.TOMLValue
-): TPackageVersionDescriptor {
+): PackageVersionDescriptor {
 
   const version = valueNode.value as string;
 
@@ -50,7 +50,7 @@ export function createVersionDescFromTomlNode(
   return createPackageVersionDesc(version, versionRange);
 }
 
-export function createPathDescFromTomlNode(valueNode: any): TPackagePathDescriptor {
+export function createPathDescFromTomlNode(valueNode: any): PackagePathDescriptor {
   const path = valueNode.value as string;
 
   // +1 and -1 to be inside quotes
@@ -62,7 +62,7 @@ export function createPathDescFromTomlNode(valueNode: any): TPackagePathDescript
   return createPackagePathDescType(path, pathRange);
 }
 
-export function createGitDescFromTomlNode(valueNode: AST.TOMLValue): TPackageGitDescriptor {
+export function createGitDescFromTomlNode(valueNode: AST.TOMLValue): PackageGitDescriptor {
   return createPackageGitDescType(valueNode.value as string);
 }
 

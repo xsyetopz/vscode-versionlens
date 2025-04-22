@@ -1,12 +1,12 @@
-import { PackageResponse, TSuggestionUpdate } from '#domain/packages';
-import { PackageDescriptorType, TPackageVersionDescriptor } from '#domain/parsers';
+import type { PackageResponse, TSuggestionUpdate } from '#domain/packages';
+import { type PackageVersionDescriptor, PackageDescriptorType } from '#domain/parsers';
 
 export function mapToSuggestionUpdate(packageResponse: PackageResponse): TSuggestionUpdate {
   let parsedVersionPrepend = "";
   let parsedVersionAppend = "";
 
   if (packageResponse.parsedDependency.descriptors.hasType(PackageDescriptorType.version)) {
-    const versionDesc = packageResponse.parsedDependency.descriptors.getType<TPackageVersionDescriptor>(PackageDescriptorType.version);
+    const versionDesc = packageResponse.parsedDependency.descriptors.getType<PackageVersionDescriptor>(PackageDescriptorType.version);
     parsedVersionPrepend = versionDesc.versionPrepend;
     parsedVersionAppend = versionDesc.versionAppend;
   }

@@ -1,5 +1,5 @@
 import type { PackageSourceType, PackageVersionType } from '#domain/packages';
-import type { TPackageTextRange } from '#domain/parsers';
+import type { PackageTextRange } from '#domain/parsers';
 
 export enum SuggestionCategory {
   Directory = 'Directory',
@@ -86,7 +86,7 @@ export type TSuggestionUpdate = {
 
   parsedName: string,
   parsedVersion: string,
-  parsedVersionRange: TPackageTextRange,
+  parsedVersionRange: PackageTextRange,
   parsedVersionPrepend: string,
   parsedVersionAppend: string,
 

@@ -1,17 +1,17 @@
-import { ILogger } from '#domain/logging';
+import type { ILogger } from '#domain/logging';
 import { createPackageResource, PackageDependency } from '#domain/packages';
 import {
+  type PackageGitDescriptor,
+  type PackageNameDescriptor,
+  type PackagePathDescriptor,
+  type PackageVersionDescriptor,
+  type TomlParserOptions,
   getTomlComplexTypeHandlers,
   PackageDescriptorType,
-  parsePackagesToml,
-  TPackageGitDescriptor,
-  TPackageNameDescriptor,
-  TPackagePathDescriptor,
-  TPackageVersionDescriptor,
-  TTomlPackageParserOptions,
+  parsePackagesToml
 } from '#domain/parsers';
-import { ISuggestionProvider } from '#domain/providers';
-import { PypiClient, PypiConfig } from '#domain/providers/pypi';
+import type { ISuggestionProvider } from '#domain/providers';
+import type { PypiClient, PypiConfig } from '#domain/providers/pypi';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class PypiSuggestionProvider implements ISuggestionProvider {
@@ -29,8 +29,7 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
   }
 
   parseDependencies(packagePath: string, packageText: string): Array<PackageDependency> {
-
-    const options: TTomlPackageParserOptions = {
+    const options: TomlParserOptions = {
       includePropNames: this.config.dependencyProperties,
       complexTypeHandlers: getTomlComplexTypeHandlers()
     };
@@ -41,13 +40,13 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
 
     for (const descriptors of parsedPackages) {
 
-      const nameDesc = descriptors.getType<TPackageNameDescriptor>(
+      const nameDesc = descriptors.getType<PackageNameDescriptor>(
         PackageDescriptorType.name
       );
 
       // map the version descriptor to a package dependency
       if (descriptors.hasType(PackageDescriptorType.version)) {
-        const versionDesc = descriptors.getType<TPackageVersionDescriptor>(
+        const versionDesc = descriptors.getType<PackageVersionDescriptor>(
           PackageDescriptorType.version
         );
 
@@ -67,7 +66,7 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
 
       // map the path descriptor to a package dependency
       if (descriptors.hasType(PackageDescriptorType.path)) {
-        const pathType = descriptors.getType<TPackagePathDescriptor>(
+        const pathType = descriptors.getType<PackagePathDescriptor>(
           PackageDescriptorType.path
         );
 
@@ -87,7 +86,7 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
 
       // map the git descriptor to a package dependency
       if (descriptors.hasType(PackageDescriptorType.git)) {
-        const gitType = descriptors.getType<TPackageGitDescriptor>(
+        const gitType = descriptors.getType<PackageGitDescriptor>(
           PackageDescriptorType.git
         );
 

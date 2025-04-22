@@ -1,10 +1,10 @@
 import type { ILogger } from '#domain/logging';
 import { PackageDependency, createPackageResource } from '#domain/packages';
 import {
-  type TJsonPackageParserOptions,
-  type TJsonPackageTypeHandler,
-  type TPackageNameDescriptor,
-  type TPackageVersionDescriptor,
+  type JsonPackageTypeHandler,
+  type JsonParserOptions,
+  type PackageNameDescriptor,
+  type PackageVersionDescriptor,
   PackageDescriptorType,
   createVersionDescFromJsonNode,
   parsePackagesJson
@@ -25,7 +25,7 @@ import { throwUndefinedOrNull } from '@esm-test/guards';
 import { homedir } from 'node:os';
 import { resolve } from 'node:path';
 
-const complexTypeHandlers: KeyDictionary<TJsonPackageTypeHandler> = {
+const complexTypeHandlers: KeyDictionary<JsonPackageTypeHandler> = {
   [PackageDescriptorType.version]: createVersionDescFromJsonNode
 };
 
@@ -50,7 +50,7 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
     packageText: string,
     dependencyProperties = this.config.dependencyProperties
   ): Array<PackageDependency> {
-    const options: TJsonPackageParserOptions = {
+    const options: JsonParserOptions = {
       includePropNames: dependencyProperties,
       complexTypeHandlers,
       customDescriptorHandler
@@ -62,7 +62,7 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
 
     for (const descriptors of parsedPackages) {
 
-      const nameDesc = descriptors.getType<TPackageNameDescriptor>(
+      const nameDesc = descriptors.getType<PackageNameDescriptor>(
         PackageDescriptorType.name
       );
 
@@ -75,7 +75,7 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
 
       // map the version descriptor to a package dependency
       if (descriptors.hasType(PackageDescriptorType.version)) {
-        const versionDesc = descriptors.getType<TPackageVersionDescriptor>(
+        const versionDesc = descriptors.getType<PackageVersionDescriptor>(
           PackageDescriptorType.version
         );
 

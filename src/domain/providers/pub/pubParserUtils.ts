@@ -1,19 +1,18 @@
 import {
-  TPackageGitDescriptor,
-  TPackageHostedDescriptor,
-  TPackagePathDescriptor,
+  type PackageGitDescriptor,
+  type PackageHostedDescriptor,
+  type PackagePathDescriptor,
   createPackageGitDescType,
   createPackageHostedDescType,
   createPackagePathDescType
 } from '#domain/parsers';
-import { Undefinable } from '#domain/utils';
-import { YAMLMap } from 'yaml';
+import type { YAMLMap } from 'yaml';
 import { findPair } from 'yaml/util';
 
 export function createPathDescFromYamlNode(
   valueNode: any,
   isQuoteType: boolean
-): TPackagePathDescriptor {
+): PackagePathDescriptor {
 
   const pathRange = {
     start: valueNode.range[0],
@@ -31,7 +30,7 @@ export function createPathDescFromYamlNode(
 export function createHostedDescFromYamlNode(
   valueNode: any,
   isQuoteType: boolean
-): Undefinable<TPackageHostedDescriptor> {
+): PackageHostedDescriptor | undefined {
 
   const map = valueNode as YAMLMap;
 
@@ -64,7 +63,7 @@ export function createHostedDescFromYamlNode(
 export function createGitDescFromYamlNode(
   valueNode: any,
   isQuoteType: boolean
-): Undefinable<TPackageGitDescriptor> {
+): PackageGitDescriptor | undefined {
 
   let gitUrl = "";
   let gitRef = "";

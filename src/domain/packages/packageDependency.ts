@@ -1,10 +1,10 @@
 import type { TPackageResource } from '#domain/packages';
 import type {
   PackageDescriptor,
-  TPackageNameDescriptor,
-  TPackagePathDescriptor,
-  TPackageTextRange,
-  TPackageVersionDescriptor
+  PackageNameDescriptor,
+  PackagePathDescriptor,
+  PackageTextRange,
+  PackageVersionDescriptor
 } from '#domain/parsers';
 
 export class PackageDependency {
@@ -15,15 +15,15 @@ export class PackageDependency {
   ) {
     this.package = packageRes;
     this.descriptors = descriptors;
-    this.nameRange = descriptors.getType<TPackageNameDescriptor>('name')?.nameRange
-    this.versionRange = descriptors.getType<TPackageVersionDescriptor>('version')?.versionRange
-      ?? descriptors.getType<TPackagePathDescriptor>('path')?.pathRange
+    this.nameRange = descriptors.getType<PackageNameDescriptor>('name')?.nameRange
+    this.versionRange = descriptors.getType<PackageVersionDescriptor>('version')?.versionRange
+      ?? descriptors.getType<PackagePathDescriptor>('path')?.pathRange
       ?? this.nameRange
   }
 
-  nameRange: TPackageTextRange;
+  nameRange: PackageTextRange;
 
-  versionRange: TPackageTextRange;
+  versionRange: PackageTextRange;
 
   package: TPackageResource;
 

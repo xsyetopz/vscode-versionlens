@@ -1,9 +1,9 @@
-import { PackageDescriptorType, TPackageTypeDescriptor } from "#domain/parsers";
-import { KeyDictionary } from '#domain/utils';
+import type { PackageDescriptorType, PackageTypeDescriptor } from "#domain/parsers";
+import type { KeyDictionary } from '#domain/utils';
 
 export class PackageDescriptor {
 
-  constructor(descriptors: TPackageTypeDescriptor[]) {
+  constructor(descriptors: PackageTypeDescriptor[]) {
     this.types = descriptors.length > 0
       ? Object.assign({}, ...descriptors.map(x => ({ [x.type]: x })))
       : {};
@@ -11,11 +11,11 @@ export class PackageDescriptor {
     this.typeCount = descriptors.length;
   }
 
-  types: KeyDictionary<TPackageTypeDescriptor>;
+  types: KeyDictionary<PackageTypeDescriptor>;
 
   typeCount: number;
 
-  addType(desc: TPackageTypeDescriptor) {
+  addType(desc: PackageTypeDescriptor) {
     this.types[desc.type] = desc;
     this.typeCount++;
   }
@@ -24,7 +24,7 @@ export class PackageDescriptor {
     return Reflect.has(this.types, descType);
   }
 
-  getType<T extends TPackageTypeDescriptor>(descType: keyof typeof PackageDescriptorType): T {
+  getType<T extends PackageTypeDescriptor>(descType: keyof typeof PackageDescriptorType): T {
     return this.types[descType] as T;
   }
 

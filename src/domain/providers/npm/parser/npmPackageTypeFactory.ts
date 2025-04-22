@@ -1,10 +1,11 @@
 import {
+  type PackageVersionDescriptor,
   PackageDescriptor,
-  TPackageVersionDescriptor,
   createIgnoreChangesDesc,
+  createNameDescFromJsonNode,
   createPackageParentDescType,
+  createVersionDescFromJsonNode,
 } from '#domain/parsers';
-import { createNameDescFromJsonNode, createVersionDescFromJsonNode } from '#domain/parsers';
 import * as JsonC from 'jsonc-parser';
 
 /**
@@ -27,7 +28,7 @@ export function createPackageManagerDesc(path: string, node: JsonC.Node): Packag
   ]);
 }
 
-function createPackageManagerVersionFromJsonNode(valueNode: any): TPackageVersionDescriptor {
+function createPackageManagerVersionFromJsonNode(valueNode: any): PackageVersionDescriptor {
   const versionDesc = createVersionDescFromJsonNode(valueNode);
 
   // Handle packageManager field

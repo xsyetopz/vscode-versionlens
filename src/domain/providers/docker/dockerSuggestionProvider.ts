@@ -1,6 +1,6 @@
 import { ILogger } from '#domain/logging';
 import { defaultReplaceFn, PackageDependency, TSuggestionUpdate } from '#domain/packages';
-import { TYamlPackageParserOptions } from '#domain/parsers';
+import { YamlParserOptions } from '#domain/parsers';
 import { ISuggestionProvider } from '#domain/providers';
 import {
   createBuildDescFromYamlNode,
@@ -12,7 +12,7 @@ import {
 } from '#domain/providers/docker';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
-const parserOptions: TYamlPackageParserOptions = {
+const parserOptions: YamlParserOptions = {
   includePropNames: ['services.*'],
   complexTypeHandlers: {
     image: createImageDescFromYamlNode,

@@ -1,7 +1,7 @@
 import {
-  TPackageNameDescriptor,
-  TPackageVersionDescriptor,
-  XmlNode,
+  type PackageNameDescriptor,
+  type PackageVersionDescriptor,
+  type XmlNode,
   createPackageNameDesc,
   createPackageVersionDesc
 } from '#domain/parsers';
@@ -10,7 +10,7 @@ export function createNameDescFromXmlNodes(
   parentNode: XmlNode,
   nodes: XmlNode[],
   propertyNodes: XmlNode[]
-): TPackageNameDescriptor {
+): PackageNameDescriptor {
   let [groupIdNode] = nodes.filter(x => x.name === "groupId");
   if (!groupIdNode) return undefined;
 
@@ -32,7 +32,7 @@ export function createNameDescFromXmlNodes(
 export function createVersionDescFromXmlNodes(
   nodes: XmlNode[],
   propertyNodes: XmlNode[]
-): TPackageVersionDescriptor {
+): PackageVersionDescriptor {
   let [versionNode] = nodes.filter(x => x.name === "version");
   if (!versionNode) return undefined;
 

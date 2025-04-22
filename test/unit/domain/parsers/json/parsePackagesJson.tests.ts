@@ -1,17 +1,17 @@
 import {
+  type JsonPackageTypeHandler,
+  type JsonParserOptions,
   createPathDescFromJsonNode,
   createRepoDescFromJsonNode,
   createVersionDescFromJsonNode,
-  parsePackagesJson,
-  TJsonPackageParserOptions,
-  TJsonPackageTypeHandler
+  parsePackagesJson
 } from '#domain/parsers';
-import { KeyDictionary } from '#domain/utils';
+import type { KeyDictionary } from '#domain/utils';
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
 import Fixtures from './parsePackagesJson.fixtures';
 
-const complexTypeHandlers: KeyDictionary<TJsonPackageTypeHandler> = {
+const complexTypeHandlers: KeyDictionary<JsonPackageTypeHandler> = {
   "version": createVersionDescFromJsonNode,
   "path": createPathDescFromJsonNode,
   "repository": createRepoDescFromJsonNode
@@ -24,7 +24,7 @@ export const extractPackageDependenciesFromJsonTests = {
   "returns empty when no matches found": () => {
     const includePropNames: Array<string> = []
 
-    const testOptions: TJsonPackageParserOptions = {
+    const testOptions: JsonParserOptions = {
       includePropNames,
       complexTypeHandlers
     };
@@ -39,7 +39,7 @@ export const extractPackageDependenciesFromJsonTests = {
   "returns empty when no dependency entry names match": () => {
     const includePropNames = ["non-dependencies"];
 
-    const testOptions: TJsonPackageParserOptions = {
+    const testOptions: JsonParserOptions = {
       includePropNames,
       complexTypeHandlers
     };
@@ -55,7 +55,7 @@ export const extractPackageDependenciesFromJsonTests = {
   "parses dependency entries from json": () => {
     const includePropNames = ["dependencies"];
 
-    const testOptions: TJsonPackageParserOptions = {
+    const testOptions: JsonParserOptions = {
       includePropNames,
       complexTypeHandlers
     };
@@ -71,7 +71,7 @@ export const extractPackageDependenciesFromJsonTests = {
   "matches json expression paths": () => {
     const includePropNames = ["overrides.*"];
 
-    const testOptions: TJsonPackageParserOptions = {
+    const testOptions: JsonParserOptions = {
       includePropNames,
       complexTypeHandlers
     };

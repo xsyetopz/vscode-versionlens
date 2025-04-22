@@ -1,17 +1,17 @@
-import { ILogger } from '#domain/logging';
+import type { ILogger } from '#domain/logging';
 import {
+  type TSuggestionUpdate,
   PackageDependency,
-  TSuggestionUpdate,
   createPackageResource,
   defaultReplaceFn
 } from '#domain/packages';
 import {
+  type PackageNameDescriptor,
+  type PackageVersionDescriptor,
   PackageDescriptorType,
-  TPackageNameDescriptor,
-  TPackageVersionDescriptor,
   parsePackagesGoMod,
 } from '#domain/parsers';
-import { ISuggestionProvider } from '#domain/providers';
+import type { ISuggestionProvider } from '#domain/providers';
 import { GoClient, GoConfig } from '#domain/providers/golang';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
@@ -47,13 +47,13 @@ export class GoSuggestionProvider implements ISuggestionProvider {
 
     for (const descriptors of parsedPackages) {
 
-      const nameDesc = descriptors.getType<TPackageNameDescriptor>(
+      const nameDesc = descriptors.getType<PackageNameDescriptor>(
         PackageDescriptorType.name
       );
 
       // map the version descriptor to a package dependency
       if (descriptors.hasType(PackageDescriptorType.version)) {
-        const versionDesc = descriptors.getType<TPackageVersionDescriptor>(
+        const versionDesc = descriptors.getType<PackageVersionDescriptor>(
           PackageDescriptorType.version
         );
 

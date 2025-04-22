@@ -12,8 +12,8 @@ import {
   createSuggestions
 } from '#domain/packages';
 import {
-  type TPackageGitDescriptor,
-  type TPackagePathDescriptor,
+  type PackageGitDescriptor,
+  type PackagePathDescriptor,
   PackageDescriptorType
 } from '#domain/parsers';
 import { type ICratesApiItem, CargoConfig } from '#domain/providers/cargo';
@@ -37,7 +37,7 @@ export class CratesClient implements IPackageClient<null> {
     const requestedPackage = request.parsedDependency.package;
 
     // return a directory response if this a path type
-    const pathDesc = request.parsedDependency.descriptors.getType<TPackagePathDescriptor>(
+    const pathDesc = request.parsedDependency.descriptors.getType<PackagePathDescriptor>(
       PackageDescriptorType.path
     );
     if (pathDesc) {
@@ -49,7 +49,7 @@ export class CratesClient implements IPackageClient<null> {
     }
 
     // return a git response if this a git type
-    const gitDesc = request.parsedDependency.descriptors.getType<TPackageGitDescriptor>(
+    const gitDesc = request.parsedDependency.descriptors.getType<PackageGitDescriptor>(
       PackageDescriptorType.git
     );
     if (gitDesc) return ClientResponseFactory.createGit();

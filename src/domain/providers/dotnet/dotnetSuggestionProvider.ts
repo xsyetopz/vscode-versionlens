@@ -1,21 +1,21 @@
-import { ILogger } from '#domain/logging';
+import type { ILogger } from '#domain/logging';
 import {
+  type TSuggestionReplaceFunction,
   PackageDependency,
-  TSuggestionReplaceFunction,
   createPackageResource
 } from '#domain/packages';
 import {
-  PackageDescriptorType,
-  TPackageNameDescriptor,
-  TPackageVersionDescriptor
+  type PackageNameDescriptor,
+  type PackageVersionDescriptor,
+  PackageDescriptorType
 } from '#domain/parsers';
-import { ISuggestionProvider } from '#domain/providers';
+import type { ISuggestionProvider } from '#domain/providers';
 import {
-  DotNetCli,
-  DotNetConfig,
-  NuGetClientData,
-  NuGetPackageClient,
-  NuGetResourceClient,
+  type DotNetCli,
+  type DotNetConfig,
+  type NuGetClientData,
+  type NuGetPackageClient,
+  type NuGetResourceClient,
   dotnetReplaceVersion,
   parseDotNetPackagesXml
 } from '#domain/providers/dotnet';
@@ -53,11 +53,11 @@ export class DotNetSuggestionProvider implements ISuggestionProvider {
       .filter(x => x.hasType(PackageDescriptorType.version))
       .map(
         descriptors => {
-          const nameDesc = descriptors.getType<TPackageNameDescriptor>(
+          const nameDesc = descriptors.getType<PackageNameDescriptor>(
             PackageDescriptorType.name
           );
 
-          const versionDesc = descriptors.getType<TPackageVersionDescriptor>(
+          const versionDesc = descriptors.getType<PackageVersionDescriptor>(
             PackageDescriptorType.version
           );
 

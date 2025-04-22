@@ -11,67 +11,67 @@ export enum PackageDescriptorType {
   build = 'build'
 }
 
-export type TPackageTextRange = {
+export type PackageTextRange = {
   start: number;
   end: number;
 };
 
-export type TPackageType = {
+export type PackageType = {
   type: keyof typeof PackageDescriptorType
 }
 
-export type TPackageNameDescriptor = TPackageType & {
+export type PackageNameDescriptor = PackageType & {
   name: string
-  nameRange: TPackageTextRange
+  nameRange: PackageTextRange
 }
 
-export type TPackageVersionDescriptor = TPackageType & {
+export type PackageVersionDescriptor = PackageType & {
   version: string
-  versionRange: TPackageTextRange
+  versionRange: PackageTextRange
   versionPrepend: string
   versionAppend: string
 }
 
-export type TPackagePathDescriptor = TPackageType & {
+export type PackagePathDescriptor = PackageType & {
   path: string
-  pathRange: TPackageTextRange
+  pathRange: PackageTextRange
 }
 
-export type TPackageHostedDescriptor = TPackageType & {
+export type PackageHostedDescriptor = PackageType & {
   hostPackageName: string
   hostUrl: string
 }
 
-export type TPackageGitDescriptor = TPackageType & {
+export type PackageGitDescriptor = PackageType & {
   gitUrl: string
   gitRef?: string
   gitPath?: string
 }
 
-export type TPackageParentDescriptor = TPackageType & {
+export type PackageParentDescriptor = PackageType & {
   path: string
 }
 
-export type TPackageIgnoreChangesDescriptor = TPackageType & {}
+export type PackageIgnoreChangesDescriptor = PackageType & {}
 
-export type TPackageProjectVersionDescriptor = TPackageType & {}
+export type PackageProjectVersionDescriptor = PackageType & {}
 
-export type TPackageImageDescriptor = TPackageType & {
-  nameDesc: TPackageNameDescriptor
-  versionDesc: TPackageVersionDescriptor
+export type PackageImageDescriptor = PackageType & {
+  nameDesc: PackageNameDescriptor
+  versionDesc: PackageVersionDescriptor
 }
 
-export type TPackageBuildDescriptor = TPackageType & {
-  pathDesc: TPackagePathDescriptor
+export type PackageBuildDescriptor = PackageType & {
+  pathDesc: PackagePathDescriptor
 }
 
-export type TPackageTypeDescriptor = TPackageNameDescriptor
-  | TPackageVersionDescriptor
-  | TPackagePathDescriptor
-  | TPackageHostedDescriptor
-  | TPackageGitDescriptor
-  | TPackageParentDescriptor
-  | TPackageIgnoreChangesDescriptor
-  | TPackageProjectVersionDescriptor
-  | TPackageImageDescriptor
-  | TPackageBuildDescriptor
+export type PackageTypeDescriptor = PackageNameDescriptor
+  | PackageVersionDescriptor
+  | PackagePathDescriptor
+  | PackageHostedDescriptor
+  | PackageGitDescriptor
+  | PackageParentDescriptor
+  | PackageIgnoreChangesDescriptor
+  | PackageProjectVersionDescriptor
+  | PackageImageDescriptor
+  | PackageBuildDescriptor

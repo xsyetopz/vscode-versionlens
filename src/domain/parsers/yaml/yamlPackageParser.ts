@@ -6,8 +6,8 @@ import {
   getPackageProjectVersionDesc,
   isNodeQuoted,
   PackageDescriptor,
-  TYamlPackageParserOptions,
-  TYamlPackageTypeHandler
+  YamlParserOptions,
+  YamlTypeDescriptorHandler
 } from '#domain/parsers';
 import { KeyDictionary } from '#domain/utils';
 import { Document, isMap, Pair, ParsedNode, parseDocument, YAMLMap } from 'yaml';
@@ -15,9 +15,8 @@ import { findPair } from 'yaml/util';
 
 export function parsePackagesYaml(
   yaml: string,
-  options: TYamlPackageParserOptions
+  options: YamlParserOptions
 ): Array<PackageDescriptor> {
-
   const yamlDoc = parseDocument(yaml)
   if (!yamlDoc || !yamlDoc.contents || yamlDoc.errors.length > 0) return [];
 
@@ -26,7 +25,7 @@ export function parsePackagesYaml(
 
 function parsePackageNodes(
   rootNode: Document.Parsed<ParsedNode>,
-  options: TYamlPackageParserOptions
+  options: YamlParserOptions
 ): PackageDescriptor[] {
   const matchedDependencies: Array<PackageDescriptor> = [];
   const { includePropNames, complexTypeHandlers } = options;
@@ -51,7 +50,7 @@ function parsePackageNodes(
 function descendChildNodes(
   path: string,
   pairs: Array<Pair<any, any>>,
-  complexTypeHandlers: KeyDictionary<TYamlPackageTypeHandler>
+  complexTypeHandlers: KeyDictionary<YamlTypeDescriptorHandler>
 ): Array<PackageDescriptor> {
   const matchedDependencies: Array<PackageDescriptor> = [];
 

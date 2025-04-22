@@ -1,9 +1,9 @@
 import {
+  type PackageGitDescriptor,
+  type PackageNameDescriptor,
+  type PackagePathDescriptor,
+  type PackageVersionDescriptor,
   PackageDescriptor,
-  TPackageGitDescriptor,
-  TPackageNameDescriptor,
-  TPackagePathDescriptor,
-  TPackageVersionDescriptor,
   createPackageGitDescType,
   createPackageNameDesc,
   createPackageParentDescType,
@@ -13,7 +13,7 @@ import {
 } from '#domain/parsers';
 import * as JsonC from 'jsonc-parser';
 
-export function createNameDescFromJsonNode(keyNode: JsonC.Node): TPackageNameDescriptor {
+export function createNameDescFromJsonNode(keyNode: JsonC.Node): PackageNameDescriptor {
   const name = keyNode.value;
 
   const nameRange = {
@@ -24,7 +24,7 @@ export function createNameDescFromJsonNode(keyNode: JsonC.Node): TPackageNameDes
   return createPackageNameDesc(name, nameRange);
 }
 
-export function createVersionDescFromJsonNode(valueNode: JsonC.Node): TPackageVersionDescriptor {
+export function createVersionDescFromJsonNode(valueNode: JsonC.Node): PackageVersionDescriptor {
   // +1 and -1 to be inside quotes
   const versionRange = {
     start: valueNode.offset + 1,
@@ -36,7 +36,7 @@ export function createVersionDescFromJsonNode(valueNode: JsonC.Node): TPackageVe
   return createPackageVersionDesc(version, versionRange);
 }
 
-export function createPathDescFromJsonNode(valueNode: JsonC.Node): TPackagePathDescriptor {
+export function createPathDescFromJsonNode(valueNode: JsonC.Node): PackagePathDescriptor {
   // +1 and -1 to be inside quotes
   const pathRange = {
     start: valueNode.offset + 1,
@@ -46,7 +46,7 @@ export function createPathDescFromJsonNode(valueNode: JsonC.Node): TPackagePathD
   return createPackagePathDescType(valueNode.value, pathRange);
 }
 
-export function createRepoDescFromJsonNode(valueNode: JsonC.Node): TPackageGitDescriptor {
+export function createRepoDescFromJsonNode(valueNode: JsonC.Node): PackageGitDescriptor {
   return createPackageGitDescType(valueNode.value);
 }
 

@@ -1,22 +1,22 @@
-import { ILogger } from '#domain/logging';
+import type { ILogger } from '#domain/logging';
 import { PackageDependency, createPackageResource } from '#domain/packages';
 import {
+  type PackageNameDescriptor,
+  type PackageVersionDescriptor,
+  type JsonParserOptions,
+  type JsonPackageTypeHandler,
   PackageDescriptorType,
-  TJsonPackageParserOptions,
-  TJsonPackageTypeHandler,
-  TPackageNameDescriptor,
-  TPackageVersionDescriptor,
   createPathDescFromJsonNode,
   createRepoDescFromJsonNode,
   createVersionDescFromJsonNode,
   parsePackagesJson,
 } from '#domain/parsers';
-import { ISuggestionProvider } from '#domain/providers';
-import { DubClient, DubConfig } from '#domain/providers/dub';
-import { KeyDictionary } from '#domain/utils';
+import type { ISuggestionProvider } from '#domain/providers';
+import type { DubClient, DubConfig } from '#domain/providers/dub';
+import type { KeyDictionary } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
-const complexTypeHandlers: KeyDictionary<TJsonPackageTypeHandler> = {
+const complexTypeHandlers: KeyDictionary<JsonPackageTypeHandler> = {
   [PackageDescriptorType.version]: createVersionDescFromJsonNode,
   [PackageDescriptorType.path]: createPathDescFromJsonNode,
   "repository": createRepoDescFromJsonNode
@@ -37,8 +37,7 @@ export class DubSuggestionProvider implements ISuggestionProvider {
   }
 
   parseDependencies(packagePath: string, packageText: string): Array<PackageDependency> {
-
-    const options: TJsonPackageParserOptions = {
+    const options: JsonParserOptions = {
       includePropNames: this.config.dependencyProperties,
       complexTypeHandlers
     };
@@ -51,11 +50,11 @@ export class DubSuggestionProvider implements ISuggestionProvider {
 
       // map the version descriptor to a package dependency
       if (descriptors.hasType(PackageDescriptorType.version)) {
-        const nameDesc = descriptors.getType<TPackageNameDescriptor>(
+        const nameDesc = descriptors.getType<PackageNameDescriptor>(
           PackageDescriptorType.name
         );
 
-        const versionDesc = descriptors.getType<TPackageVersionDescriptor>(
+        const versionDesc = descriptors.getType<PackageVersionDescriptor>(
           PackageDescriptorType.version
         );
 

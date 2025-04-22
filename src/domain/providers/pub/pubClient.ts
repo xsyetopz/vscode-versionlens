@@ -12,9 +12,9 @@ import {
   createSuggestions
 } from '#domain/packages';
 import {
-  type TPackageGitDescriptor,
-  type TPackageHostedDescriptor,
-  type TPackagePathDescriptor,
+  type PackageGitDescriptor,
+  type PackageHostedDescriptor,
+  type PackagePathDescriptor,
   PackageDescriptorType
 } from '#domain/parsers';
 import { PubConfig } from '#domain/providers/pub';
@@ -37,7 +37,7 @@ export class PubClient implements IPackageClient<null> {
     const requestedPackage = request.parsedDependency.package;
 
     // return a directory response if this a path type
-    const pathDesc = request.parsedDependency.descriptors.getType<TPackagePathDescriptor>(
+    const pathDesc = request.parsedDependency.descriptors.getType<PackagePathDescriptor>(
       PackageDescriptorType.path
     );
     if (pathDesc) {
@@ -49,7 +49,7 @@ export class PubClient implements IPackageClient<null> {
     }
 
     // return a git response if this a git type
-    const gitDesc = request.parsedDependency.descriptors.getType<TPackageGitDescriptor>(
+    const gitDesc = request.parsedDependency.descriptors.getType<PackageGitDescriptor>(
       PackageDescriptorType.git
     );
     if (gitDesc) {
@@ -60,7 +60,7 @@ export class PubClient implements IPackageClient<null> {
     const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
 
     // use the hosted entry if it exists
-    const hosted = request.parsedDependency.descriptors.getType<TPackageHostedDescriptor>(
+    const hosted = request.parsedDependency.descriptors.getType<PackageHostedDescriptor>(
       PackageDescriptorType.hosted
     );
 

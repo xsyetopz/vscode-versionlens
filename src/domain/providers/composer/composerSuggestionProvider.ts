@@ -1,24 +1,24 @@
-import { ILogger } from '#domain/logging';
+import type { ILogger } from '#domain/logging';
 import { PackageDependency, createPackageResource } from '#domain/packages';
 import {
+  type JsonPackageTypeHandler,
+  type JsonParserOptions,
+  type PackageNameDescriptor,
+  type PackageVersionDescriptor,
   PackageDescriptorType,
-  TJsonPackageParserOptions,
-  TJsonPackageTypeHandler,
-  TPackageNameDescriptor,
-  TPackageVersionDescriptor,
   createVersionDescFromJsonNode,
   parsePackagesJson,
 } from '#domain/parsers';
-import { ISuggestionProvider } from '#domain/providers';
+import type { ISuggestionProvider } from '#domain/providers';
 import {
   ComposerClient,
   ComposerConfig,
   customDescriptorHandler
 } from '#domain/providers/composer';
-import { KeyDictionary } from '#domain/utils';
+import type { KeyDictionary } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
-const complexTypeHandlers: KeyDictionary<TJsonPackageTypeHandler> = {
+const complexTypeHandlers: KeyDictionary<JsonPackageTypeHandler> = {
   [PackageDescriptorType.version]: createVersionDescFromJsonNode
 };
 
@@ -37,8 +37,7 @@ export class ComposerSuggestionProvider implements ISuggestionProvider {
   }
 
   parseDependencies(packagePath: string, packageText: string): Array<PackageDependency> {
-
-    const options: TJsonPackageParserOptions = {
+    const options: JsonParserOptions = {
       includePropNames: this.config.dependencyProperties,
       customDescriptorHandler,
       complexTypeHandlers
@@ -50,11 +49,11 @@ export class ComposerSuggestionProvider implements ISuggestionProvider {
       .filter(x => x.hasType(PackageDescriptorType.version))
       .map(
         descriptors => {
-          const nameDesc = descriptors.getType<TPackageNameDescriptor>(
+          const nameDesc = descriptors.getType<PackageNameDescriptor>(
             PackageDescriptorType.name
           );
 
-          const versionDesc = descriptors.getType<TPackageVersionDescriptor>(
+          const versionDesc = descriptors.getType<PackageVersionDescriptor>(
             PackageDescriptorType.version
           );
 

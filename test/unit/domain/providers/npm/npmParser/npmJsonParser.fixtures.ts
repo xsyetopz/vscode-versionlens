@@ -1,12 +1,12 @@
 import {
-  PackageDescriptor,
-  PackageDescriptorType,
-  TPackageNameDescriptor,
-  TPackageParentDescriptor,
-  TPackageTypeDescriptor,
-  TPackageVersionDescriptor
+  type PackageDescriptor,
+  type PackageNameDescriptor,
+  type PackageParentDescriptor,
+  type PackageTypeDescriptor,
+  type PackageVersionDescriptor,
+  PackageDescriptorType
 } from '#domain/parsers';
-import { KeyDictionary } from '#domain/utils';
+import type { KeyDictionary } from '#domain/utils';
 
 export default {
 
@@ -17,11 +17,11 @@ export default {
     expected: [
       <PackageDescriptor>{
         typeCount: 4,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
+        types: <KeyDictionary<PackageTypeDescriptor>>{
           ignoreChanges: {
             type: 'ignoreChanges'
           },
-          name: <TPackageNameDescriptor>{
+          name: <PackageNameDescriptor>{
             type: PackageDescriptorType.name,
             name: "pnpm@9.1.2",
             nameRange: {
@@ -29,7 +29,7 @@ export default {
               end: 18
             },
           },
-          version: <TPackageVersionDescriptor>{
+          version: <PackageVersionDescriptor>{
             type: "version",
             version: "9.1.2",
             versionAppend: "",
@@ -39,7 +39,7 @@ export default {
               end: 29
             },
           },
-          parent: <TPackageParentDescriptor>{
+          parent: <PackageParentDescriptor>{
             type: "parent",
             path: "packageManager"
           }
@@ -56,11 +56,11 @@ export default {
     expected: [
       <PackageDescriptor>{
         typeCount: 4,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
+        types: <KeyDictionary<PackageTypeDescriptor>>{
           ignoreChanges: {
             type: 'ignoreChanges',
           },
-          name: <TPackageNameDescriptor>{
+          name: <PackageNameDescriptor>{
             type: PackageDescriptorType.name,
             name: 'pnpm@9.1.2+sha512.14e915759c11f77eac07faba4d019c193ec8637229e62ec99eefb7cf3c3b75c64447882b7c485142451ee3a6b408059cdfb7b7fa0341b975f12d0f7629c71195',
             nameRange: {
@@ -68,7 +68,7 @@ export default {
               end: 18,
             },
           },
-          version: <TPackageVersionDescriptor>{
+          version: <PackageVersionDescriptor>{
             type: 'version',
             version:
               '9.1.2+sha512.14e915759c11f77eac07faba4d019c193ec8637229e62ec99eefb7cf3c3b75c64447882b7c485142451ee3a6b408059cdfb7b7fa0341b975f12d0f7629c71195',
@@ -79,7 +79,7 @@ export default {
               end: 165,
             },
           },
-          parent: <TPackageParentDescriptor>{
+          parent: <PackageParentDescriptor>{
             type: 'parent',
             path: 'packageManager',
           },
@@ -96,11 +96,11 @@ export default {
     expected: [
       <PackageDescriptor>{
         typeCount: 4,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
+        types: <KeyDictionary<PackageTypeDescriptor>>{
           ignoreChanges: {
             type: 'ignoreChanges',
           },
-          name: <TPackageNameDescriptor>{
+          name: <PackageNameDescriptor>{
             type: PackageDescriptorType.name,
             name: 'pnpm@9.0.0-rc.2+sha.6d21a1f908b66fe37f42f3170d4ba8fd5e2dcde886ec85863a5e7cac',
             nameRange: {
@@ -108,7 +108,7 @@ export default {
               end: 18,
             },
           },
-          version: <TPackageVersionDescriptor>{
+          version: <PackageVersionDescriptor>{
             type: 'version',
             version:
               '9.0.0-rc.2+sha.6d21a1f908b66fe37f42f3170d4ba8fd5e2dcde886ec85863a5e7cac',
@@ -119,7 +119,7 @@ export default {
               end: 95,
             },
           },
-          parent: <TPackageParentDescriptor>{
+          parent: <PackageParentDescriptor>{
             type: 'parent',
             path: 'packageManager',
           },
@@ -127,5 +127,5 @@ export default {
       },
     ],
   },
-  
+
 };

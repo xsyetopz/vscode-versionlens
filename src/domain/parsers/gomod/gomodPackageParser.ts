@@ -1,8 +1,8 @@
 import {
+  type PackageNameDescriptor,
+  type PackageTextRange,
+  type PackageVersionDescriptor,
   PackageDescriptor,
-  TPackageNameDescriptor,
-  TPackageTextRange,
-  TPackageVersionDescriptor,
   createPackageNameDesc,
   createPackageVersionDesc
 } from '#domain/parsers';
@@ -45,8 +45,8 @@ export function parsePackagesGoMod(text: string): Array<PackageDescriptor> {
   return matchedDependencies;
 }
 
-function createGoNameDescType(name: string, start: number): TPackageNameDescriptor {
-  const nameRange: TPackageTextRange = {
+function createGoNameDescType(name: string, start: number): PackageNameDescriptor {
+  const nameRange: PackageTextRange = {
     start,
     end: start
   };
@@ -54,7 +54,7 @@ function createGoNameDescType(name: string, start: number): TPackageNameDescript
   return createPackageNameDesc(name, nameRange);
 }
 
-function createGoVersionDescType(version: string, start: number, end: number): TPackageVersionDescriptor {
+function createGoVersionDescType(version: string, start: number, end: number): PackageVersionDescriptor {
   const versionRange = {
     start,
     end

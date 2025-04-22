@@ -1,9 +1,9 @@
 import {
-  PackageDescriptor,
-  PackageDescriptorType,
-  TPackageNameDescriptor,
-  TPackageTypeDescriptor,
-  TPackageVersionDescriptor
+  type PackageDescriptor,
+  type PackageNameDescriptor,
+  type PackageTypeDescriptor,
+  type PackageVersionDescriptor,
+  PackageDescriptorType
 } from '#domain/parsers';
 import { KeyDictionary } from '#domain/utils';
 
@@ -44,8 +44,8 @@ export default {
     expected: [
       <PackageDescriptor>{
         typeCount: 2,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
+        types: <KeyDictionary<PackageTypeDescriptor>>{
+          name: <PackageNameDescriptor>{
             type: PackageDescriptorType.name,
             name: "example.com/othermodule",
             nameRange: {
@@ -53,7 +53,7 @@ export default {
               end: 63
             },
           },
-          version: <TPackageVersionDescriptor>{
+          version: <PackageVersionDescriptor>{
             type: PackageDescriptorType.version,
             version: "v1.2.3",
             versionAppend: "",
@@ -67,8 +67,8 @@ export default {
       },
       <PackageDescriptor>{
         typeCount: 2,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
+        types: <KeyDictionary<PackageTypeDescriptor>>{
+          name: <PackageNameDescriptor>{
             type: PackageDescriptorType.name,
             name: "github.com/spf13/cobra",
             nameRange: {
@@ -76,7 +76,7 @@ export default {
               end: 119
             },
           },
-          version: <TPackageVersionDescriptor>{
+          version: <PackageVersionDescriptor>{
             type: PackageDescriptorType.version,
             version: "v1.8.0",
             versionAppend: "",
@@ -90,8 +90,8 @@ export default {
       },
       <PackageDescriptor>{
         typeCount: 2,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
+        types: <KeyDictionary<PackageTypeDescriptor>>{
+          name: <PackageNameDescriptor>{
             type: PackageDescriptorType.name,
             name: "gopkg.in/yaml.v3",
             nameRange: {
@@ -99,7 +99,7 @@ export default {
               end: 157
             },
           },
-          version: <TPackageVersionDescriptor>{
+          version: <PackageVersionDescriptor>{
             type: PackageDescriptorType.version,
             version: "v3.0.1",
             versionAppend: "",
@@ -113,8 +113,8 @@ export default {
       },
       <PackageDescriptor>{
         typeCount: 2,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
+        types: <KeyDictionary<PackageTypeDescriptor>>{
+          name: <PackageNameDescriptor>{
             type: PackageDescriptorType.name,
             name: "k8s.io/klog/v2",
             nameRange: {
@@ -122,7 +122,7 @@ export default {
               end: 189
             },
           },
-          version: <TPackageVersionDescriptor>{
+          version: <PackageVersionDescriptor>{
             type: PackageDescriptorType.version,
             version: "v2.110.1",
             versionAppend: "",
@@ -136,8 +136,8 @@ export default {
       },
       <PackageDescriptor>{
         typeCount: 2,
-        types: <KeyDictionary<TPackageTypeDescriptor>>{
-          name: <TPackageNameDescriptor>{
+        types: <KeyDictionary<PackageTypeDescriptor>>{
+          name: <PackageNameDescriptor>{
             type: PackageDescriptorType.name,
             name: "github.com/docker/go-units",
             nameRange: {
@@ -145,7 +145,7 @@ export default {
               end: 501
             },
           },
-          version: <TPackageVersionDescriptor>{
+          version: <PackageVersionDescriptor>{
             type: PackageDescriptorType.version,
             version: "v0.5.0",
             versionAppend: "",

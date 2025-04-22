@@ -1,24 +1,24 @@
-import { ILogger } from '#domain/logging';
+import type { ILogger } from '#domain/logging';
 import {
+  type TSuggestionUpdate,
   PackageDependency,
-  TSuggestionUpdate,
   createPackageResource,
   defaultReplaceFn
 } from '#domain/packages';
 import {
+  type PackageGitDescriptor,
+  type PackageNameDescriptor,
+  type PackagePathDescriptor,
+  type PackageVersionDescriptor,
+  type YamlParserOptions,
   PackageDescriptorType,
-  TPackageGitDescriptor,
-  TPackageNameDescriptor,
-  TPackagePathDescriptor,
-  TPackageVersionDescriptor,
-  TYamlPackageParserOptions,
   createVersionDescFromYamlNode,
   parsePackagesYaml,
 } from '#domain/parsers';
 import { ISuggestionProvider } from '#domain/providers';
 import {
-  PubClient,
-  PubConfig,
+  type PubClient,
+  type PubConfig,
   createGitDescFromYamlNode,
   createHostedDescFromYamlNode,
   createPathDescFromYamlNode
@@ -59,7 +59,7 @@ export class PubSuggestionProvider implements ISuggestionProvider {
     packageText: string
   ): Array<PackageDependency> {
 
-    const options: TYamlPackageParserOptions = {
+    const options: YamlParserOptions = {
       includePropNames: this.config.dependencyProperties,
       complexTypeHandlers
     };
@@ -69,13 +69,13 @@ export class PubSuggestionProvider implements ISuggestionProvider {
     const packageDependencies = [];
 
     for (const descriptors of parsedPackages) {
-      const nameDesc = descriptors.getType<TPackageNameDescriptor>(
+      const nameDesc = descriptors.getType<PackageNameDescriptor>(
         PackageDescriptorType.name
       );
 
       // map the version descriptor to a package dependency
       if (descriptors.hasType(PackageDescriptorType.version)) {
-        const versionType = descriptors.getType<TPackageVersionDescriptor>(
+        const versionType = descriptors.getType<PackageVersionDescriptor>(
           PackageDescriptorType.version
         );
 
@@ -95,7 +95,7 @@ export class PubSuggestionProvider implements ISuggestionProvider {
 
       // map the path descriptor to a package dependency
       if (descriptors.hasType(PackageDescriptorType.path)) {
-        const pathType = descriptors.getType<TPackagePathDescriptor>(
+        const pathType = descriptors.getType<PackagePathDescriptor>(
           PackageDescriptorType.path
         );
 
@@ -113,7 +113,7 @@ export class PubSuggestionProvider implements ISuggestionProvider {
 
       // map the git descriptor to a package dependency
       if (descriptors.hasType(PackageDescriptorType.git)) {
-        const gitType = descriptors.getType<TPackageGitDescriptor>(
+        const gitType = descriptors.getType<PackageGitDescriptor>(
           PackageDescriptorType.git
         );
 
