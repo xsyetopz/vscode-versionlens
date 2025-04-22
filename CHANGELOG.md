@@ -17,6 +17,7 @@
   ### Docker
 
   - Added dockerfile `FROM <image>[:<tag>]` analysis<br>
+  - Added docker compose file analysis
 
     *Preview*
 
@@ -25,13 +26,12 @@
     |Setting|Default|
     |-|-|
     |versionlens.docker.apiUrl|https://hub.docker.com/v2/namespaces/{namespace}/repositories/{repository}/tags|
-    |versionlens.docker.files|`**/{dockerfile,*.dockerfile}`|
+    |versionlens.docker.files|`**/{dockerfile,*.dockerfile,compose.yaml,compose.yml,*.compose.yaml,*.compose.yml,docker-compose.yaml,docker-compose.yml}`|
 
     > **NOTE**
     > - Only supports [docker hub api v2](https://docs.docker.com/reference/api/hub/latest/#tag/repositories/paths/~1v2~1namespaces~1%7Bnamespace%7D~1repositories~1%7Brepository%7D~1tags/get)
     > - Prereleases aren't supported yet
     > - `ARG` used in `<image>[:<tag>]` is not supported
-    > - Docker compose files aren't supported yet
     > - Docker hub api doesn't currently provide a fast and minimal lookup of tags.<br>
         So api fetch calls have to be limited to fetching 3 pages per repository.<br>
         This means only recent tags can be found by version lens

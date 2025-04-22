@@ -2,6 +2,7 @@ import {
   createNameDescFromYamlNode,
   createPackageParentDescType,
   createVersionDescFromYamlNode,
+  findByPath,
   getPackageProjectVersionDesc,
   isNodeQuoted,
   PackageDescriptor,
@@ -32,25 +33,19 @@ function parsePackageNodes(
 
   for (const incPropName of includePropNames) {
     const segments = incPropName.split(".");
-
-    if (rootNode.has(incPropName) === false) continue;
+    const found = findByPath(rootNode, segments);
+    if (found.length === 0) continue;
 
     if (incPropName === 'version') {
-      matchedDependencies.push(getPackageProjectVersionDesc(rootNode.contents as YAMLMap))
+      matchedDependencies.push(getPackageProjectVersionDesc(rootNode.contents as YAMLMap));
       continue;
     }
 
-    const node = rootNode.getIn(segments) as YAMLMap;
-    if (!node) continue;
-
-    const children = node instanceof Array
-      ? descendChildNodes(incPropName, node, complexTypeHandlers)
-      : descendChildNodes(incPropName, node.items, complexTypeHandlers);
-
+    const children = descendChildNodes(incPropName, found, complexTypeHandlers);
     matchedDependencies.push.apply(matchedDependencies, children);
   }
 
-  return matchedDependencies
+  return matchedDependencies;
 }
 
 function descendChildNodes(

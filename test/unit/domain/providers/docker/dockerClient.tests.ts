@@ -1,6 +1,11 @@
 import { ClientResponseSource } from '#domain/clients';
 import { ILogger } from '#domain/logging';
-import { ClientResponseFactory, createPackageResource, PackageDependency, TPackageClientRequest } from '#domain/packages';
+import {
+  ClientResponseFactory,
+  createPackageResource,
+  PackageDependency,
+  TPackageClientRequest
+} from '#domain/packages';
 import {
   createPackageNameDesc,
   createPackageVersionDesc,

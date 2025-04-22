@@ -1,1 +1,1 @@
-export * from './parsePackagesYaml.tests';
+export * from './pubSuggestionProvider.tests';

@@ -14,6 +14,7 @@ import {
   UpdateableFactory,
   VersionUtils
 } from '#domain/packages';
+import { PackageDescriptorType, TPackagePathDescriptor } from '#domain/parsers';
 import {
   createVersionMapper,
   DockerApiTagResult,
@@ -35,7 +36,20 @@ export class DockerClient implements IPackageClient<null> {
   }
 
   async fetchPackage(request: TPackageClientRequest<null>): Promise<TPackageClientResponse> {
-    const requestedPackage = request.parsedDependency.package;
+    const dependency = request.parsedDependency
+    const requestedPackage = dependency.package;
+
+    // process build context path types
+    if (dependency.descriptors.hasType('path')) {
+      const pathDesc = dependency.descriptors.getType<TPackagePathDescriptor>(
+        PackageDescriptorType.path
+      );
+      return await ClientResponseFactory.createDirectory(
+        requestedPackage.name,
+        requestedPackage.path,
+        pathDesc.path
+      );
+    }
 
     // ignore FROMs composed using arguments
     if (requestedPackage.name.includes('$') || requestedPackage.version.includes('$')) {

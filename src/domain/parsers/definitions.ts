@@ -6,7 +6,9 @@ export enum PackageDescriptorType {
   hosted = "hosted",
   parent = "parent",
   ignoreChanges = "ignoreChanges",
-  projectVersion = "projectVersion"
+  projectVersion = "projectVersion",
+  image = "image",
+  build = 'build'
 }
 
 export type TPackageTextRange = {
@@ -54,6 +56,15 @@ export type TPackageIgnoreChangesDescriptor = TPackageType & {}
 
 export type TPackageProjectVersionDescriptor = TPackageType & {}
 
+export type TPackageImageDescriptor = TPackageType & {
+  nameDesc: TPackageNameDescriptor
+  versionDesc: TPackageVersionDescriptor
+}
+
+export type TPackageBuildDescriptor = TPackageType & {
+  pathDesc: TPackagePathDescriptor
+}
+
 export type TPackageTypeDescriptor = TPackageNameDescriptor
   | TPackageVersionDescriptor
   | TPackagePathDescriptor
@@ -62,3 +73,5 @@ export type TPackageTypeDescriptor = TPackageNameDescriptor
   | TPackageParentDescriptor
   | TPackageIgnoreChangesDescriptor
   | TPackageProjectVersionDescriptor
+  | TPackageImageDescriptor
+  | TPackageBuildDescriptor

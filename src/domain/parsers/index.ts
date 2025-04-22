@@ -16,3 +16,4 @@ export * from './yaml/tYamlPackageParserOptions';
 export * from './yaml/tYamlPackageTypeHandler';
 export * from "./yaml/yamlPackageParser";
 export * from './yaml/yamlPackageTypeFactory';
+export * from './yaml/yamlUtils';

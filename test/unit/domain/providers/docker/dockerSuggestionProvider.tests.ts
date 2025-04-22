@@ -24,17 +24,30 @@ export const dockerSuggestionProviderTests = {
     this.loggerMock = mock<ILogger>()
   },
 
-  "parses lf dockerfile text": function (this: TestContext) {
-    const testPackagePath = 'test/path'
+  "parses dockerfiles": function (this: TestContext) {
+    const testPackagePath = 'test/path/dockerfile'
     const put = new DockerSuggestionProvider(
       instance(this.dockerClientMock),
       instance(this.dockerConfigMock),
       instance(this.loggerMock)
     )
     // test
-    const actual = put.parseDependencies(testPackagePath, fixtures.test)
+    const actual = put.parseDependencies(testPackagePath, fixtures.dockerfile.test)
     // assert
-    deepEqual(actual, fixtures.expected)
+    deepEqual(actual, fixtures.dockerfile.expected)
+  },
+
+  "parses docker compose files": function (this: TestContext) {
+    const testPackagePath = 'test/path/compose.yaml'
+    const put = new DockerSuggestionProvider(
+      instance(this.dockerClientMock),
+      instance(this.dockerConfigMock),
+      instance(this.loggerMock)
+    )
+    // test
+    const actual = put.parseDependencies(testPackagePath, fixtures.compose.test)
+    // assert
+    deepEqual(actual, fixtures.compose.expected)
   }
 
 }

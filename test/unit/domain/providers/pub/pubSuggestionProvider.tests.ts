@@ -3,7 +3,7 @@ import { PubClient, PubConfig, PubSuggestionProvider } from '#domain/providers/p
 import { test } from 'mocha-ui-esm';
 import assert from 'node:assert';
 import { instance, mock, when } from 'ts-mockito';
-import Fixtures from './parsePackagesYaml.fixtures';
+import Fixtures from './pubSuggestionProvider.fixtures';
 
 type TestContext = {
   pubClientMock: PubClient
@@ -58,7 +58,7 @@ export const pubSuggestionProviderTests = {
     Fixtures.parsesProjectVersionWithComment,
     Fixtures.parsesEmptyProjectVersionWithComment,
     function (this: TestContext, fixture: any) {
-      const includePropNames = ["version", "dependencies"];
+      const includePropNames = ["version", "dependencies.*"];
       const put = new PubSuggestionProvider(
         instance(this.pubClientMock),
         instance(this.pubConfigMock),

@@ -67,23 +67,17 @@ export function addVersionLensProviders(services: IServiceCollection) {
             );
 
             // map FileMatcher to DocumentFilter
-            const language = suggestionProvider.config.fileLanguage;
-            const selectors: DocumentFilter[] = [suggestionProvider.config.filePatterns].map(
-              pattern => ({
-                language,
-                pattern,
-                scheme: 'file'
-              })
-            );
+            const fileLanguage = suggestionProvider.config.fileLanguage instanceof Array
+              ? suggestionProvider.config.fileLanguage
+              : [suggestionProvider.config.fileLanguage];
 
-            // add support for JsonC
-            if (language === 'json') {
-              selectors.push(
-                ...Array.from(
-                  selectors,
-                  x => ({ ...x, language: 'jsonc' })
-                )
-              )
+            const selectors: DocumentFilter[] = [];
+            for (const language of fileLanguage) {
+              selectors.push({
+                language,
+                pattern: suggestionProvider.config.filePatterns,
+                scheme: 'file'
+              });
             }
 
             // register codelens provider with vscode

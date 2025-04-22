@@ -11,7 +11,7 @@ import type {
 export interface IProviderConfig {
   readonly caching: CachingOptions
   readonly http: HttpOptions
-  readonly fileLanguage: string
+  readonly fileLanguage: string | string[]
   readonly filePatterns: string
   readonly fileExcludePatterns?: string[]
   onSaveChangesTask: string | null

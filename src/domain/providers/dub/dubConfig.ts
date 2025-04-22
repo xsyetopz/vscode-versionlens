@@ -20,7 +20,7 @@ export class DubConfig implements IProviderConfig {
     throwUndefinedOrNull(def.http, http);
   }
 
-  readonly fileLanguage = 'json';
+  readonly fileLanguage = ['json', 'jsonc'];
 
   get filePatterns(): string {
     return this.config.get(DubFeatures.FilePatterns);

@@ -400,8 +400,8 @@
           "minItems": 1,
           "default": [
             "version",
-            "dependencies",
-            "dev_dependencies"
+            "dependencies.*",
+            "dev_dependencies.*"
           ],
           "description": "Defines which properties in pubspec.yaml should be parsed by this extension"
         },
@@ -649,7 +649,7 @@
         },
         "versionlens.docker.files": {
           "type": "string",
-          "default": "**/{dockerfile,*.dockerfile}",
+          "default": "**/{dockerfile,*.dockerfile,compose.yaml,compose.yml,*.compose.yaml,*.compose.yml,docker-compose.yaml,docker-compose.yml}",
           "description": "Specifies which files to register with version lenses. You can use [micromatch](https://github.com/micromatch/micromatch) expressions to match file names. You will need to restart vscode when changing this setting."
         },
         "versionlens.docker.caching.duration": {

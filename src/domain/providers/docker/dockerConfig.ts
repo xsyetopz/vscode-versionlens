@@ -20,7 +20,7 @@ export class DockerConfig implements IProviderConfig {
     throwUndefinedOrNull(def.http, http);
   }
 
-  readonly fileLanguage = 'dockerfile';
+  readonly fileLanguage = ['dockerfile', 'yaml'];
 
   get filePatterns(): string {
     return this.config.get(DockerFeatures.FilePatterns);
