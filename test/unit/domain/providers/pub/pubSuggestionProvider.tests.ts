@@ -58,7 +58,7 @@ export const pubSuggestionProviderTests = {
     Fixtures.parsesProjectVersionWithComment,
     Fixtures.parsesEmptyProjectVersionWithComment,
     function (this: TestContext, fixture: any) {
-      const includePropNames = ["version", "dependencies.*"];
+      const includePropNames = ["version", "dependencies"];
       const put = new PubSuggestionProvider(
         instance(this.pubClientMock),
         instance(this.pubConfigMock),

@@ -1,6 +1,6 @@
 import { findByPath } from '#domain/parsers';
 import { deepEqual, equal } from 'node:assert';
-import { isCollection, parseDocument } from 'yaml';
+import { parseDocument } from 'yaml';
 import fixtures from './yamlUtils.fixtures';
 
 export const yamlUtilTests = {
@@ -41,8 +41,7 @@ export const yamlUtilTests = {
         const rootNode = parseDocument(testYaml)
         const pathSegments = testPath.split(".");
         const actual = findByPath(rootNode, pathSegments)
-        const mapped = actual.map(x => isCollection(x) ? x.toJSON() : x.value)
-          .map(x => JSON.parse(JSON.stringify(x, null, '')))
+        const mapped = actual.map(x => JSON.parse(JSON.stringify(x, null, '')))
 
         equal(mapped.length, expected.length)
         deepEqual(mapped, expected)

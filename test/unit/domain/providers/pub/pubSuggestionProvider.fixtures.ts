@@ -50,7 +50,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('efts', createTextRange(376, 376)),
           createPackageVersionDesc('^2.0.4', createTextRange(382, 388)),
-          createPackageParentDescType('dependencies.*')
+          createPackageParentDescType('dependencies')
         ])
       ),
       new PackageDependency(
@@ -58,7 +58,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('http', createTextRange(391, 391)),
           createPackageVersionDesc('*', createTextRange(397, 397), '', ' '),
-          createPackageParentDescType('dependencies.*')
+          createPackageParentDescType('dependencies')
         ])
       ),
       new PackageDependency(
@@ -66,7 +66,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('transmogrify', createTextRange(421, 421)),
           createPackageVersionDesc('^0.4.0', createTextRange(448, 454), '', ''),
-          createPackageParentDescType('dependencies.*')
+          createPackageParentDescType('dependencies')
         ])
       ),
       new PackageDependency(
@@ -74,7 +74,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('test', createTextRange(489, 489)),
           createPackageVersionDesc('>=0.5.0 <0.12.0', createTextRange(496, 511)),
-          createPackageParentDescType('dependencies.*')
+          createPackageParentDescType('dependencies')
         ])
       ),
       new PackageDependency(
@@ -82,7 +82,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('collection', createTextRange(515, 515)),
           createPackageVersionDesc('^1.1.0', createTextRange(528, 534)),
-          createPackageParentDescType('dependencies.*')
+          createPackageParentDescType('dependencies')
         ])
       ),
     ]
@@ -103,7 +103,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('pathify1', createTextRange(17, 17)),
           createPackagePathDescType('./some/test/path1', createTextRange(37, 54)),
-          createPackageParentDescType('dependencies.*')
+          createPackageParentDescType('dependencies')
         ])
       ),
       new PackageDependency(
@@ -111,7 +111,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('pathify2', createTextRange(57, 57)),
           createPackagePathDescType('./some/test/path2', createTextRange(77, 94)),
-          createPackageParentDescType('dependencies.*')
+          createPackageParentDescType('dependencies')
         ])
       ),
     ]
@@ -139,7 +139,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('gitify1', createTextRange(17, 17)),
           createPackageGitDescType('git@github.com:munificent/kittens.git'),
-          createPackageParentDescType('dependencies.*')
+          createPackageParentDescType('dependencies')
         ])
       ),
       new PackageDependency(
@@ -147,7 +147,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('gitify2', createTextRange(76, 76)),
           createPackageGitDescType('git@github.com:munificent/dogs.git', '', 'some-branch'),
-          createPackageParentDescType('dependencies.*')
+          createPackageParentDescType('dependencies')
         ])
       ),
       new PackageDependency(
@@ -155,7 +155,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('gitify3', createTextRange(167, 167)),
           createPackageGitDescType('git@github.com:munificent/birds.git', 'path/to/birds'),
-          createPackageParentDescType('dependencies.*')
+          createPackageParentDescType('dependencies')
         ])
       ),
       new PackageDependency(
@@ -163,7 +163,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('gitify4', createTextRange(262, 262)),
           createPackageGitDescType('git@github.com:munificent/foxes.git'),
-          createPackageParentDescType('dependencies.*')
+          createPackageParentDescType('dependencies')
         ])
       ),
     ]
@@ -192,7 +192,7 @@ dependencies:
           createPackageNameDesc('hostify1', createTextRange(17, 17)),
           createPackageVersionDesc('1.0.0', createTextRange(40, 45)),
           createPackageHostedDescType('https://some-package-server.com'),
-          createPackageParentDescType('dependencies.*')
+          createPackageParentDescType('dependencies')
         ])
       ),
       new PackageDependency(
@@ -201,7 +201,7 @@ dependencies:
           createPackageNameDesc('hostify2', createTextRange(93, 93)),
           createPackageVersionDesc('2.0.0', createTextRange(116, 121), '', ''),
           createPackageHostedDescType('https://some-package-server.com'),
-          createPackageParentDescType('dependencies.*')
+          createPackageParentDescType('dependencies')
         ])
       ),
       new PackageDependency(
@@ -210,7 +210,7 @@ dependencies:
           createPackageNameDesc('hostify3', createTextRange(180, 180)),
           createPackageVersionDesc('3.0.0', createTextRange(203, 208)),
           createPackageHostedDescType('https://some-package-server.com', 'testHostPackageAlias'),
-          createPackageParentDescType('dependencies.*')
+          createPackageParentDescType('dependencies')
         ])
       ),
     ]

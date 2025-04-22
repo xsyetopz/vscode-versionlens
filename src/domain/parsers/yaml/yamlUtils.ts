@@ -5,32 +5,28 @@ type YamlCollection = YAMLMap<string, any> | YAMLSeq
 export function findByPath(root: YamlCollection | Document, path: Iterable<string>): Array<Pair<string, any>>;
 export function findByPath(root: any, [key, ...rest]: string[]): Array<any> {
   const results = [];
-  const hasKey = key.length > 0
+  const hasKey = key.length > 0;
   const lastKey = rest.length === 0;
-  if (hasKey === false && lastKey === true) return results
+  if (hasKey === false && lastKey === true) return results;
 
   const isStar = key === '*';
   if (isStar && !root.items)
     return results
-
   else if (isStar && lastKey) {
     for (const child of root.items) {
       results.push(child);
     }
     return results;
-
   } else if (isStar) {
     for (const child of root.items) {
       results.push(...findByPath(child.value, rest));
     }
     return results;
-
   }
 
   const node = root.get(key, true);
-  if (!node) return results
-  if (lastKey) return [node];
+  if (!node) return results;
+  if (lastKey) return node.items ? node.items : [node];
   if (isCollection(node)) return findByPath(node, rest);
-
   return results
 }

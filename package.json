@@ -400,8 +400,8 @@
           "minItems": 1,
           "default": [
             "version",
-            "dependencies.*",
-            "dev_dependencies.*"
+            "dependencies",
+            "dev_dependencies"
           ],
           "description": "Defines which properties in pubspec.yaml should be parsed by this extension"
         },
