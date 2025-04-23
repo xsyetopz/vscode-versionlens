@@ -1,4 +1,4 @@
-import { createDigestMapper, createVersionMapper, extract } from '#domain/providers/docker';
+import { createDigestMapper, createVersionMapper, extract, findSimilarBuild } from '#domain/providers/docker';
 import { deepEqual, equal, notEqual } from 'assert';
 import fixtures from './dockerUtils.fixtures';
 
@@ -87,6 +87,29 @@ export const dockerUtilsTests = {
         const actual = extract(testTag)
         // assert
         equal(actual.tag, expected)
+      }
+    ]
+  },
+
+  [findSimilarBuild.name]: {
+    "returns null when no version provided": () => {
+      const actual = findSimilarBuild('', ['1.2.3-xyz', '2.2.3-aba'])
+      equal(actual, null)
+    },
+    "returns null when no builds are provided": () => {
+      const actual = findSimilarBuild('1.2.3-abc', [])
+      equal(actual, null)
+    },
+    "returns null when no match found": () => {
+      const actual = findSimilarBuild('1.2.3-abc', ['1.2.3-xyz', '2.2.3-aba'])
+      equal(actual, null)
+    },
+    "case $i: returns similar build version": [
+      ['1.2.3-abc', '2.0.0-abc'],
+      ['20.19.1-bookworm', '23.11.0-bookworm'],
+      (testVersion: string, expected: string) => {
+        const actual = findSimilarBuild(testVersion, ['2.0.0-abc', '3.0.0-aba', '23.11.0-bookworm'])
+        equal(actual, expected)
       }
     ]
   }

@@ -165,3 +165,12 @@ function createReverseLookup(versionMap: Record<string, string[]>, digestMapper:
 
   return tagMap;
 }
+
+const removeNumbersRegEx = /[0-9]/g
+export function findSimilarBuild(version: string, matchBuilds: string[]): string | null {
+  const strippedVersion = version.replaceAll(removeNumbersRegEx, '');
+  const similarBuild = matchBuilds.filter(x => x.replaceAll(removeNumbersRegEx, '') === strippedVersion)
+  return similarBuild.length > 0
+    ? similarBuild[0]
+    : null;
+}

@@ -21,12 +21,12 @@
 
     *Preview*
 
-    ![image](https://gitlab.com/-/project/19418059/uploads/5161cf0f88c8701db036cc710ee59673/docker.gif)
+    ![image](https://gitlab.com/-/project/19418059/uploads/92d8a8ac6bddd0573e119f86977c2a52/docker.gif)
 
     |Setting|Default|
     |-|-|
     |versionlens.docker.apiUrl|https://hub.docker.com/v2/namespaces/{namespace}/repositories/{repository}/tags|
-    |versionlens.docker.files|`**/{dockerfile,*.dockerfile,compose.yaml,compose.yml,*.compose.yaml,*.compose.yml,docker-compose.yaml,docker-compose.yml}`|
+    |versionlens.docker.files|`**/{dockerfile,*.dockerfile,Dockerfile,*.Dockerfile,compose.yaml,compose.yml,*.compose.yaml,*.compose.yml,docker-compose.yaml,docker-compose.yml}`|
 
     > **NOTE**
     > - Only supports [docker hub api v2](https://docs.docker.com/reference/api/hub/latest/#tag/repositories/paths/~1v2~1namespaces~1%7Bnamespace%7D~1repositories~1%7Brepository%7D~1tags/get)

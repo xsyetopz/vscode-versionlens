@@ -66,34 +66,59 @@ export const dockerClientTests = {
       const actual = await this.cut.fetchPackage(testRequest)
       deepEqual(actual, ClientResponseFactory.createNotSupported())
     },
-    "creates suggestions": {
-      async function(this: TestContext) {
-        const testNs = 'library'
-        const testRepo = 'node'
-        const testRequest = {
-          providerName: 'docker',
-          attempt: 1,
-          clientData: {},
-          parsedDependency: new PackageDependency(
-            createPackageResource(testRepo, '23', 'test/path'),
-            new PackageDescriptor([
-              createPackageNameDesc(testRepo, createTextRange(1, 20)),
-              createPackageVersionDesc('23', createTextRange(25, 30)),
-            ])
-          )
-        } as TPackageClientRequest<null>
+    "creates latest status with build suggestions": async function (this: TestContext) {
+      const testNs = 'library'
+      const testRepo = 'node'
+      const testRequest = {
+        providerName: 'docker',
+        attempt: 1,
+        clientData: {},
+        parsedDependency: new PackageDependency(
+          createPackageResource(testRepo, '23', 'test/path'),
+          new PackageDescriptor([
+            createPackageNameDesc(testRepo, createTextRange(1, 20)),
+            createPackageVersionDesc('23', createTextRange(25, 30)),
+          ])
+        )
+      } as TPackageClientRequest<null>
 
-        when(this.dockerHubClientMock.get(testRepo, testNs))
-          .thenResolve({
-            data: fixtures.test,
-            source: ClientResponseSource.remote,
-            status: 200
-          })
+      when(this.dockerHubClientMock.get(testRepo, testNs))
+        .thenResolve({
+          data: fixtures.test,
+          source: ClientResponseSource.remote,
+          status: 200
+        })
 
-        const actual = await this.cut.fetchPackage(testRequest)
-        equal(actual.suggestions.length, 2)
-        deepEqual(actual.suggestions, fixtures.expected)
-      }
+      const actual = await this.cut.fetchPackage(testRequest)
+      equal(actual.suggestions.length, 2)
+      deepEqual(actual.suggestions, fixtures.expected1)
+    },
+    "creates fixed status with latest and build suggestions": async function (this: TestContext) {
+      const testNs = 'library'
+      const testRepo = 'node'
+      const testRequest = {
+        providerName: 'docker',
+        attempt: 1,
+        clientData: {},
+        parsedDependency: new PackageDependency(
+          createPackageResource(testRepo, '22-bookworm', 'test/path'),
+          new PackageDescriptor([
+            createPackageNameDesc(testRepo, createTextRange(1, 20)),
+            createPackageVersionDesc('22-bookworm', createTextRange(25, 30)),
+          ])
+        )
+      } as TPackageClientRequest<null>
+
+      when(this.dockerHubClientMock.get(testRepo, testNs))
+        .thenResolve({
+          data: fixtures.test,
+          source: ClientResponseSource.remote,
+          status: 200
+        })
+
+      const actual = await this.cut.fetchPackage(testRequest)
+      equal(actual.suggestions.length, 3)
+      deepEqual(actual.suggestions, fixtures.expected2)
     }
   }
 

@@ -19,7 +19,8 @@ import {
   type DockerApiTagResult,
   type DockerConfig,
   type DockerHubClient,
-  createVersionMapper
+  createVersionMapper,
+  findSimilarBuild
 } from '#domain/providers/docker';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
@@ -137,8 +138,14 @@ export class DockerClient implements IPackageClient<null> {
           break;
         case SuggestionCategory.Latest:
         case SuggestionCategory.Match:
-        case SuggestionCategory.Updateable:
           suggestion.version = VersionUtils.stripBuild(suggestion.version)!
+          break;
+        case SuggestionCategory.Updateable:
+          const suggestionBuilds = versionMap[suggestion.version] ?? []
+          const similarBuild = findSimilarBuild(pkg.version, suggestionBuilds)
+          suggestion.version = similarBuild !== null
+            ? similarBuild
+            : VersionUtils.stripBuild(suggestion.version)!
       }
     }
 
