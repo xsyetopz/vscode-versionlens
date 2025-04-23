@@ -20,14 +20,14 @@ export class DockerConfig implements IProviderConfig {
     throwUndefinedOrNull(def.http, http);
   }
 
-  readonly fileLanguage = ['dockerfile', 'yaml'];
+  readonly fileLanguage = ['dockerfile', 'dockercompose', 'yaml'];
 
   get filePatterns(): string {
-    return this.config.get(DockerFeatures.FilePatterns);
+    return this.config.get(DockerFeatures.FilePatterns)!;
   }
 
   get apiUrl(): string {
-    return this.config.get(DockerFeatures.ApiUrl);
+    return this.config.get(DockerFeatures.ApiUrl)!;
   }
 
   get onSaveChangesTask(): string | null {
