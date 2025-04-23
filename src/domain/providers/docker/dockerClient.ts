@@ -16,12 +16,12 @@ import {
 } from '#domain/packages';
 import { type PackagePathDescriptor, PackageDescriptorType } from '#domain/parsers';
 import {
-  createVersionMapper,
-  DockerApiTagResult,
-  DockerConfig
+  type DockerApiTagResult,
+  type DockerConfig,
+  type DockerHubClient,
+  createVersionMapper
 } from '#domain/providers/docker';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { DockerHubClient } from './dockerHubClient.js';
 
 export class DockerClient implements IPackageClient<null> {
 
@@ -47,7 +47,8 @@ export class DockerClient implements IPackageClient<null> {
       return await ClientResponseFactory.createDirectory(
         requestedPackage.name,
         requestedPackage.path,
-        pathDesc.path
+        pathDesc.path,
+        PackageSourceType.File
       );
     }
 

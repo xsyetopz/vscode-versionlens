@@ -16,6 +16,7 @@ import type {
   TaskFilter,
   TaskProcessEndEvent,
   TextDocument,
+  TextDocumentShowOptions,
   TextEditor,
   Uri,
   ViewColumn,
@@ -92,6 +93,12 @@ export interface IVsCodeWindow {
     column?: ViewColumn,
     preserveFocus?: boolean
   ): Thenable<TextEditor>;
+
+  showTextDocument(
+    uri: Uri,
+    coluoptionsmn?: TextDocumentShowOptions
+  ): Thenable<TextEditor>;
+
 }
 
 /***

@@ -47,6 +47,8 @@ export function addOnFileLinkClick(services: IServiceCollection) {
     (container: IDomainServices) => {
       // create the event handler
       const handler = new OnFileLinkClick(
+        new VsCodeConstructionFactory(),
+        window,
         env,
         container.loggerFactory.create(serviceName)
       );

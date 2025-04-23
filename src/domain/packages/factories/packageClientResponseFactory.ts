@@ -103,9 +103,9 @@ export function createFixed(
 export async function createDirectory(
   packageName: string,
   packageFilePath: string,
-  path: string
+  path: string,
+  source = PackageSourceType.Directory
 ): Promise<TPackageClientResponse> {
-  const source = PackageSourceType.Directory;
   const type = PackageVersionType.Version;
   const resolvedPath = join(dirname(packageFilePath), path);
   const exists = await fileExists(resolvedPath)
