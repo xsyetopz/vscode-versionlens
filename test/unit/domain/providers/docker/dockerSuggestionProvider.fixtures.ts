@@ -19,6 +19,7 @@ export default {
     FROM image/test2 # test comments
     FROM image/test3 as AliasName
     FROM image/test4 as AliasNameWithComments # test comments
+    FROM
     `,
     expected: <PackageDependency[]>[
       new PackageDependency(
@@ -95,6 +96,10 @@ export default {
           build:
             context: .
             dockerfile: custom.dockerfile
+        empty-image:
+          image:
+        empty-build:
+          build:
     `,
     expected: <PackageDependency[]>[
       new PackageDependency(

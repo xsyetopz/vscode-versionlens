@@ -100,10 +100,7 @@ function descendChildNodes(
           const handler = complexTypeHandlers[typeName];
 
           // add the handled type to the package desc
-          const typeDesc = handler(
-            pair.value,
-            isQuotedType
-          );
+          const typeDesc = handler(pair.value, isQuotedType);
 
           // skip types that are't fully defined
           if (!typeDesc) continue;

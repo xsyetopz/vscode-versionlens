@@ -33,7 +33,8 @@ export function parseDockerCompose(
       versionDesc = imageDesc.versionDesc
     } else if (buildDesc) {
       nameDesc = createPackageNameDesc(buildDesc.pathDesc.path, buildDesc.pathDesc.pathRange)
-    }
+    } else
+      continue
 
     packageDependencies.push(
       new PackageDependency(
@@ -58,17 +59,19 @@ const eofRegEx = /\n/g
 export function parseDockerfile(packagePath: string, packageText: string): Array<PackageDependency> {
   const eofPositions = [0];
   eofRegEx.lastIndex = 0;
-  let r: RegExpExecArray;
+  let r: RegExpExecArray | null;
   while (r = eofRegEx.exec(packageText)) eofPositions.push(r.index + 1);
 
   const packageDependencies = [];
   const dockerfile = DockerfileParser.parse(packageText);
   for (const from of dockerfile.getFROMs()) {
     const imageName = from.getImageName();
-    const imageTag = from.getImageTag() ?? '';
     const imageNameRange = from.getImageNameRange();
+    if (imageName === null || imageNameRange === null) continue;
 
-    let imageTagRange = from.getImageTagRange();
+    const imageTag = from.getImageTag() ?? '';
+    let imageTagRange = from.getImageTagRange()
+
     const hasTag = !!imageTagRange;
     if (hasTag === false) {
       imageTagRange = {
@@ -78,14 +81,14 @@ export function parseDockerfile(packagePath: string, packageText: string): Array
     }
 
     const nameStart = eofPositions[imageNameRange.start.line];
-    const versionStart = eofPositions[imageTagRange.start.line];
+    const versionStart = eofPositions[imageTagRange!.start.line];
     const nameRange = createTextRange(
       nameStart + imageNameRange.start.character,
       nameStart + imageNameRange.end.character
     );
     const versionRange = createTextRange(
-      versionStart + imageTagRange.start.character,
-      versionStart + imageTagRange.end.character
+      versionStart + imageTagRange!.start.character,
+      versionStart + imageTagRange!.end.character
     );
 
     packageDependencies.push(
@@ -106,16 +109,18 @@ export function parseDockerfile(packagePath: string, packageText: string): Array
   return packageDependencies;
 }
 
-export function createImageDescFromYamlNode(valueNode: any): PackageImageDescriptor {
+export function createImageDescFromYamlNode(valueNode: any): PackageImageDescriptor | undefined {
+  if (!valueNode.value) return
+
   const valueRange = {
     start: valueNode.range[0],
     end: valueNode.range[1],
-  };
+  }
 
   if (isNodeQuoted(valueNode)) {
     valueRange.start++;
     valueRange.end--;
-  };
+  }
 
   const [image, tag] = valueNode.value.split(':');
   const imageRange = {
@@ -139,7 +144,9 @@ export function createImageDescFromYamlNode(valueNode: any): PackageImageDescrip
   };
 }
 
-export function createBuildDescFromYamlNode(valueNode: any): PackageBuildDescriptor {
+export function createBuildDescFromYamlNode(valueNode: any): PackageBuildDescriptor | undefined {
+  if (valueNode.value === null) return
+
   const valueRange = {
     start: valueNode.range[0],
     end: valueNode.range[1],

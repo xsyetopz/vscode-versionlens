@@ -9,4 +9,4 @@ export type YamlParserOptions = {
 export type YamlTypeDescriptorHandler = (
   valueNode: any,
   isQuoteType: boolean
-) => PackageTypeDescriptor;
+) => PackageTypeDescriptor | undefined;
