@@ -3,8 +3,9 @@ import {
   type HttpClientOptions,
   type HttpClientResponse,
   type IHttpClient,
+  type QueryDictionary,
   ClientResponseSource,
-  HttpClientRequestMethods
+  HttpClientRequestMethods,
 } from '#domain/clients';
 import type { IXhrRequest, IXhrResponse } from '#domain/clients/requestLight';
 import { type KeyStringDictionary, createUrl } from '#domain/utils';
@@ -28,7 +29,7 @@ export class RequestLightClient implements IHttpClient {
 
   async get(
     baseUrl: string,
-    query: KeyStringDictionary = {},
+    query: QueryDictionary = {},
     headers: KeyStringDictionary = {}
   ): Promise<HttpClientResponse> {
     const url = createUrl(baseUrl, query);

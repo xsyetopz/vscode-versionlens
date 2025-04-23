@@ -32,10 +32,12 @@ export enum HttpClientRequestMethods {
   head = 'HEAD'
 }
 
+export type QueryDictionary = KeyDictionary<string | number | boolean>
+
 export interface THttpClientRequestFn {
   (
     url: string,
-    query?: KeyStringDictionary,
+    query?: QueryDictionary,
     headers?: KeyStringDictionary,
   ): Promise<HttpClientResponse>;
 }
@@ -50,7 +52,7 @@ export interface IJsonHttpClient {
   httpClient: IHttpClient;
   get: (
     url: string,
-    query?: KeyDictionary<string | number | boolean>,
+    query?: QueryDictionary,
     headers?: KeyStringDictionary,
   ) => Promise<JsonClientResponse>;
 }

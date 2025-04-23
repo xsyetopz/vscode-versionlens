@@ -1,4 +1,4 @@
-import { KeyStringDictionary } from '#domain/utils';
+import type { QueryDictionary } from '#domain/clients';
 import { parse } from 'node:url';
 
 export enum RegistryProtocols {
@@ -16,7 +16,7 @@ export function getProtocolFromUrl(url: string): RegistryProtocols {
   return registryProtocol || RegistryProtocols.file;
 }
 
-export function createUrl(baseUrl: string, queryParams: KeyStringDictionary): string {
+export function createUrl(baseUrl: string, queryParams: QueryDictionary): string {
   const query = buildQueryParams(queryParams);
 
   const slashedUrl = query.length > 0
@@ -26,7 +26,7 @@ export function createUrl(baseUrl: string, queryParams: KeyStringDictionary): st
   return slashedUrl + query;
 }
 
-function buildQueryParams(queryParams: KeyStringDictionary): string {
+function buildQueryParams(queryParams: QueryDictionary): string {
   let query = '';
   if (queryParams) {
     query = Object.keys(queryParams)
