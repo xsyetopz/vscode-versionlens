@@ -18,13 +18,13 @@
 
   |Prefix|Indicator|Description|
   |-|-|-|
-  |📁|Directory|The version entry matches a file location
-  |🔴|Error|An error occurred
   |🟢|Latest|Latest
-  |⚪|NoMatch|No match found for the version specified
-  |🟡|Match|A match was found. So either the <br> - The ranged version specified isn't equal to the latest version; OR<br> - The fixed version specified isn't equal to the latest version
+  |🟡|Match|A match was found that is not the latest version.
+  |⚪|No Match|No match found for the version specified
+  |🔴|Error|An error occurred
   |↑|Updateable|An update action that will replace the specified version
-  |≌|Build|An update action that will present a choice of build versions available
+  |≌|Change Build|An update action that will present a choice of build versions available
+  |📁|Directory|The version entry is a file or folder location
 
   > **NOTE**
   >
@@ -40,7 +40,8 @@ The following rules only apply when a matching version is available for a packag
 |Name|Description|
 |-|-|
 |Latest|Shows latest release|
+|Major|Shows the next maximum major release|
 |Minor|Shows the next maximum minor release|
 |Patch|Shows the next maximum patch release|
-|Bump|Shows the next available release within the given ranged version <br> <blockquote>Useful for updating the range or creating a change detection for the versionlens install task to activate when saving the document</blockquote>|
+|Bump|Shows the maximum release within the given ranged version|
 |Pre-release|Shows the next available pre-releases. Pre-releases are grouped by their tag name|

@@ -4,7 +4,7 @@ import {
   TPackageVersions,
   TSemverSpec
 } from '#domain/packages';
-import { Range, SemVer, coerce, eq, lte, prerelease, valid, validRange } from 'semver';
+import { Range, SemVer, coerce, eq, lte, major, prerelease, valid, validRange } from 'semver';
 
 export const formatTagNameRegex = /^[^0-9\-]*/;
 export const loosePrereleases = { loose: true, includePrerelease: true };
@@ -157,4 +157,16 @@ export function stripBuild(version?: string): string | undefined {
   return version && version.includes('+')
     ? version.substring(0, version.indexOf('+'))
     : version;
+}
+
+export function findNextMajor(startFromVersion: string, versions: string[]): string | null {
+  let index = versions.indexOf(startFromVersion);
+  if (index === -1) return null;
+
+  const startMajor = major(startFromVersion);
+  for (; index < versions.length; index++) {
+    const testMajor = major(versions[index])
+    if (testMajor > startMajor) return testMajor
+  }
+  return null
 }

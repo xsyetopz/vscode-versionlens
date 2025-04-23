@@ -6,8 +6,7 @@ import {
   UpdateableFactory,
   VersionUtils
 } from '#domain/packages';
-import { compare, inc, maxSatisfying } from 'semver';
-import { findVersionBuilds } from '../utils/versionUtils.js';
+import { compare, inc, major, maxSatisfying } from 'semver';
 
 export function getReleaseSuggestions(
   fixedOrRangedVersion: string,
@@ -29,6 +28,11 @@ export function getReleaseSuggestions(
     const nextMaxMajor = inc(testVersion, SuggestionIncrements.major);
     const nextMaxMinor = inc(testVersion, SuggestionIncrements.minor);
     const nextMaxPatch = inc(testVersion, SuggestionIncrements.patch);
+    const nextMajor = VersionUtils.findNextMajor(testVersion, releases);
+
+    if (nextMajor) potentialSuggestions.push(
+      [SuggestionStatusText.UpdateMajor, `>${major(testVersion)} <=${nextMajor}`]
+    )
 
     potentialSuggestions.push(
       [SuggestionStatusText.UpdateMinor, `>=${nextMaxMinor} <${nextMaxMajor}`],
@@ -60,7 +64,11 @@ export function getReleaseSuggestions(
 
   // suggest build?
   if (parsed.satisfiesVersion) {
-    const nextBuild = findVersionBuilds(parsed.satisfiesVersion, releases, VersionUtils.loosePrereleases);
+    const nextBuild = VersionUtils.findVersionBuilds(
+      parsed.satisfiesVersion,
+      releases,
+      VersionUtils.loosePrereleases
+    );
     nextBuild.length > 1 && suggestions.push(UpdateableFactory.createBuildUpdateable(nextBuild.join(',')));
   }
 

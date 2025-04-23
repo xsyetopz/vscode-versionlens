@@ -8,6 +8,7 @@ export const getReleaseSuggestionsTests = {
 
   beforeEach: function (this: any) {
     this.testReleases = [
+      '2.1.2',
       '3.0.0',
       '3.1.0',
       '4.0.0',
@@ -41,6 +42,29 @@ export const getReleaseSuggestionsTests = {
       )
     }
   ],
+
+  "case $i: suggests next major maximum": [
+    ['2.1.2', '3.1.0'],
+    ['3.1.0', '4.1.10'],
+    function (this: any, testVersion: string, expected: string) {
+      const testParsed = parseVersion(testVersion, this.testReleases, [])
+
+      // test
+      const actual = getReleaseSuggestions(testVersion, testParsed, this.testReleases)
+
+      // assert
+      ok(actual.length > 1)
+
+      deepEqual(
+        actual[actual.length - 1],
+        UpdateableFactory.createNextMaxUpdateable(
+          expected,
+          'major'
+        )
+      )
+    }
+  ],
+
 
   "case $i: suggests minor": [
     ['3.0.0', '3.1.0'],

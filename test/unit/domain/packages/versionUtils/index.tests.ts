@@ -1,6 +1,7 @@
 export * from './extractTaggedVersions.tests';
 export * from './filterPrereleaseTags.tests';
 export * from './filterSemverVersions.tests';
+export * from './findNextMajor.tests';
 export * from './isFixedVersion.tests';
 export * from './isFourSegmentedVersion.tests';
 export * from './lteFromArray.tests';

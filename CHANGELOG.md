@@ -2,6 +2,10 @@
 
   ### All Providers
 
+  - Added a suggestion link for the next available `major` version.
+
+    ![MajorUpdateable](https://gitlab.com/-/project/19418059/uploads/5d5bb712870321e032a48c3892aa452e/image.png)
+
   - Added an interactive picker for choosing build versions <br>
 
     ![BuildUpdateable](https://gitlab.com/-/project/19418059/uploads/58f0cb983df7877cfbff7780107f25df/pub.gif)
