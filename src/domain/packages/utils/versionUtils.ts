@@ -110,7 +110,7 @@ export function parseSemver(packageVersion: string): TSemverSpec {
 }
 
 export function filterSemverVersions(versions: Array<string>): Array<string> {
-  const semverVersions = [];
+  const semverVersions: Array<string> = [];
   versions.forEach(version => {
     if (validRange(version, loosePrereleases)) semverVersions.push(version);
   });
@@ -119,7 +119,7 @@ export function filterSemverVersions(versions: Array<string>): Array<string> {
 
 export const extractSymbolFromVersionRegex = /^([^0-9]*)?.*$/;
 export const semverLeadingChars = ['^', '~', '<', '<=', '>', '>=', '~>'];
-export function preserveLeadingRange(existingVersion, newVersion) {
+export function preserveLeadingRange(existingVersion: string, newVersion: string) {
   const regExResult = extractSymbolFromVersionRegex.exec(existingVersion);
   const leading = regExResult && regExResult[1];
   if (!leading || !semverLeadingChars.includes(leading))
