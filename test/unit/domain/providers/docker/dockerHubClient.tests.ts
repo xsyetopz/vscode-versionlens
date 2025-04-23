@@ -1,6 +1,7 @@
+import { MemoryExpiryCache } from '#domain/caching';
 import { ClientResponseSource, JsonHttpClient } from '#domain/clients';
-import { ILogger } from '#domain/logging';
-import { DockerConfig, DockerHubClient } from '#domain/providers/docker';
+import type { ILogger } from '#domain/logging';
+import { type DockerConfig, DockerHubClient } from '#domain/providers/docker';
 import { deepEqual } from 'node:assert';
 import { anything, instance, mock, when } from 'ts-mockito';
 import fixtures from './dockerHubClient.fixtures.js';
@@ -8,6 +9,7 @@ import fixtures from './dockerHubClient.fixtures.js';
 type TestContext = {
   configMock: DockerConfig;
   jsonClientMock: JsonHttpClient;
+  requestCache: MemoryExpiryCache;
   loggerMock: ILogger;
 }
 
@@ -16,8 +18,9 @@ export const dockerHubClientTests = {
   title: DockerHubClient.name,
 
   beforeEach: function (this: TestContext) {
-    this.configMock = mock(DockerConfig);
-    this.jsonClientMock = mock(JsonHttpClient);
+    this.configMock = mock<DockerConfig>();
+    this.jsonClientMock = mock<JsonHttpClient>();
+    this.requestCache = new MemoryExpiryCache('test-docker-cache');
     this.loggerMock = mock<ILogger>();
   },
 
@@ -40,6 +43,7 @@ export const dockerHubClientTests = {
     const cut = new DockerHubClient(
       instance(this.configMock),
       instance(this.jsonClientMock),
+      this.requestCache,
       instance(this.loggerMock)
     );
 
@@ -50,6 +54,7 @@ export const dockerHubClientTests = {
     const actual = await cut.get(testRepo, testNs)
     // assert
     deepEqual(actual, expectedResp)
+    deepEqual(this.requestCache.get(testUrl, 3), expectedResp)
   }
 
 }

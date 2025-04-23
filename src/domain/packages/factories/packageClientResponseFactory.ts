@@ -180,7 +180,7 @@ export function mapStatusFromHttpResponse(
 }
 
 export function mapStatusFromJsonResponse(
-  response: JsonClientResponse
+  response: JsonClientResponse<any>
 ): TPackageClientResponseStatus {
   return {
     source: response.source,

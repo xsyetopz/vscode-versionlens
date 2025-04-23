@@ -46,15 +46,15 @@ export interface IHttpClient {
   get: THttpClientRequestFn;
 }
 
-export type JsonClientResponse = TClientResponse<number, KeyDictionary<any>>;
+export type JsonClientResponse<TData> = TClientResponse<number, TData>;
 
 export interface IJsonHttpClient {
   httpClient: IHttpClient;
-  get: (
+  get<TData = KeyDictionary<any>>(
     url: string,
     query?: QueryDictionary,
     headers?: KeyStringDictionary,
-  ) => Promise<JsonClientResponse>;
+  ): Promise<JsonClientResponse<TData>>;
 }
 
 export type ShellClientResponse = TClientResponse<string, string>;

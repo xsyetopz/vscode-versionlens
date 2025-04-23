@@ -1,4 +1,4 @@
-import type { HttpClientResponse, JsonClientResponse } from '#domain/clients';
+import type { HttpClientResponse } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
   type IPackageClient,
@@ -16,7 +16,6 @@ import {
 } from '#domain/packages';
 import { type PackagePathDescriptor, PackageDescriptorType } from '#domain/parsers';
 import {
-  type DockerApiTagResult,
   type DockerConfig,
   type DockerHubClient,
   createVersionMapper,
@@ -90,13 +89,10 @@ export class DockerClient implements IPackageClient<null> {
   }
 
   async fetch(pkg: TPackageResource, repo: string, namespace: string): Promise<TPackageClientResponse> {
-    const jsonResponse: JsonClientResponse = await this.dockerHubClient.get(repo, namespace)
-
-    // process api response
-    const results = jsonResponse.data as DockerApiTagResult[]
+    const jsonResponse = await this.dockerHubClient.get(repo, namespace);
 
     // map docker tags to semver
-    const { versionMap, tagMap, releases, latest } = createVersionMapper(results);
+    const { versionMap, tagMap, releases, latest } = createVersionMapper(jsonResponse.data);
 
     const tagged = Object.keys(tagMap);
     let versionRange = pkg.version || latest || '';

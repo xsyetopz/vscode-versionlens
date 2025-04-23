@@ -1,38 +1,42 @@
-import { CachingOptions } from '#domain/caching';
-import { HttpOptions, JsonHttpClient } from '#domain/clients';
-import { DockerClient, DockerConfig, DockerHubClient } from '#domain/providers/docker';
+import type { CachingOptions, MemoryExpiryCache } from '#domain/caching';
+import type { HttpOptions, JsonClientResponse, JsonHttpClient } from '#domain/clients';
+import type { DockerClient, DockerConfig, DockerHubClient } from '#domain/providers/docker';
 
 export enum DockerFeatures {
   Caching = 'docker.caching',
   Http = 'docker.http',
-  DependencyProperties = 'docker.dependencyProperties',
   ApiUrl = 'docker.apiUrl',
   FilePatterns = 'docker.files',
   OnSaveChangesTask = 'docker.onSaveChanges',
-  PrereleaseTagFilter = 'docker.prereleaseTagFilter'
+  // PrereleaseTagFilter = 'docker.prereleaseTagFilter'
 }
 
 export interface IDockerServices {
-  dockerCachingOpts: CachingOptions;
-  dockerHttpOpts: HttpOptions;
-  dockerConfig: DockerConfig;
-  dockerJsonClient: JsonHttpClient;
-  dockerHubClient: DockerHubClient;
-  dockerClient: DockerClient;
+  dockerCachingOpts: CachingOptions
+  dockerHttpOpts: HttpOptions
+  dockerConfig: DockerConfig
+  dockerJsonClient: JsonHttpClient
+  dockerHubClient: DockerHubClient
+  dockerHubClientCache: MemoryExpiryCache
+  dockerClient: DockerClient
 }
 
-export type DockerApiResponse<T> = {
-  count: number,
-  next: string,
-  name: string,
-  results: T[]
-}
-
-export type DockerApiTagResult = {
+export type DockerHubRepository = {
   name: string
   tag_status: 'active' | 'inactive'
   digest: string
 }
+
+export type DockerHubListReposResult = {
+  count: number
+  next: string
+  name: string
+  results: DockerHubRepository[]
+}
+
+export type DockerHubListReposResponse = JsonClientResponse<DockerHubListReposResult>
+
+export type DockerHubListClientResponse = JsonClientResponse<DockerHubRepository[]>
 
 export type DockerDigestMapper = {
   tagMap: Record<string, string>

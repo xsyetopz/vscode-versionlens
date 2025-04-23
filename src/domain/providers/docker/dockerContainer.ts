@@ -3,6 +3,7 @@ import {
   addCachingOptions,
   addDockerClient,
   addDockerConfig,
+  addDockerHubCache,
   addDockerHubClient,
   addHttpOptions,
   addJsonClient,
@@ -21,6 +22,8 @@ export async function configureContainer(
   addDockerConfig(services);
 
   addJsonClient(services);
+
+  addDockerHubCache(services);
 
   addDockerHubClient(services);
 

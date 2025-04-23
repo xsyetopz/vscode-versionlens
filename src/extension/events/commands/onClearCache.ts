@@ -9,11 +9,13 @@ export class OnClearCache extends Disposable {
   constructor(
     readonly packageCache: PackageCache,
     readonly shellCache: IExpiryCache,
+    readonly dockerHubCache: IExpiryCache,
     readonly logger: ILogger
   ) {
     super();
     throwUndefinedOrNull('packageCache', packageCache);
     throwUndefinedOrNull('shellCache', shellCache);
+    throwUndefinedOrNull('dockerHubCache', dockerHubCache);
     throwUndefinedOrNull('logger', logger);
   }
 
@@ -21,6 +23,7 @@ export class OnClearCache extends Disposable {
     this.logger.debug("Clearing package caches");
     this.packageCache.clear();
     this.shellCache.clear();
+    this.dockerHubCache.clear();
   }
 
 }

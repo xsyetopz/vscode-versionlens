@@ -1,8 +1,8 @@
 import { PackageStatusFactory, PackageSuggestion, UpdateableFactory } from '#domain/packages';
-import { DockerApiTagResult } from '#domain/providers/docker';
+import { DockerHubRepository } from '#domain/providers/docker';
 
 export default {
-  test: <DockerApiTagResult[]>[
+  test: <DockerHubRepository[]>[
     {
       "name": "latest",
       "tag_status": "active",

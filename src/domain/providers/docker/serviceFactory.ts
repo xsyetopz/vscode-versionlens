@@ -1,5 +1,5 @@
 import type { IDomainServices } from '#domain';
-import { CachingOptions } from '#domain/caching';
+import { CachingOptions, MemoryExpiryCache } from '#domain/caching';
 import { createJsonClient, HttpOptions } from '#domain/clients';
 import type { IServiceCollection } from '#domain/di';
 import type { IProviderServices } from '#domain/providers';
@@ -64,6 +64,14 @@ export function addJsonClient(services: IServiceCollection) {
   );
 }
 
+export function addDockerHubCache(services: IServiceCollection) {
+  const serviceName = nameOf<IDockerServices>().dockerHubClientCache;
+  services.addSingleton(
+    serviceName,
+    () => new MemoryExpiryCache(serviceName)
+  );
+}
+
 export function addDockerHubClient(services: IServiceCollection) {
   const serviceName = nameOf<IDockerServices>().dockerHubClient;
   services.addSingleton(
@@ -72,6 +80,7 @@ export function addDockerHubClient(services: IServiceCollection) {
       new DockerHubClient(
         container.dockerConfig,
         container.dockerJsonClient,
+        container.dockerHubClientCache,
         container.loggerFactory.create(serviceName)
       )
   );

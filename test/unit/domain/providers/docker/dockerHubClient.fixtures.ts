@@ -1,7 +1,7 @@
-import { DockerApiResponse, DockerApiTagResult } from '#domain/providers/docker';
+import { DockerHubListReposResult, DockerHubRepository } from '#domain/providers/docker';
 
 export default {
-  test: <DockerApiResponse<DockerApiTagResult>>{
+  test: <DockerHubListReposResult>{
     "results": [
       {
         "name": "latest",
@@ -25,7 +25,7 @@ export default {
       },
     ]
   },
-  expected: <DockerApiTagResult[]>[
+  expected: <DockerHubRepository[]>[
     {
       "name": "latest",
       "tag_status": "active",

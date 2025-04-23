@@ -57,7 +57,7 @@ export const fetchGithubTests = {
       testRequest.package.path
     ) as NpaSpec;
 
-    const testResponse: JsonClientResponse = {
+    const testResponse: JsonClientResponse<any> = {
       status: 200,
       data: githubFixtures.tags,
       source: ClientResponseSource.remote
@@ -128,7 +128,7 @@ export const fetchGithubTests = {
       testRequest.package.path
     ) as NpaSpec;
 
-    const testResponse: JsonClientResponse = {
+    const testResponse: JsonClientResponse<any> = {
       status: 200,
       data: githubFixtures.tags,
       source: ClientResponseSource.remote
@@ -199,7 +199,7 @@ export const fetchGithubTests = {
       testRequest.package.path
     ) as NpaSpec;
 
-    const testResponse: JsonClientResponse = {
+    const testResponse: JsonClientResponse<any> = {
       status: 200,
       data: githubFixtures.commits,
       source: ClientResponseSource.remote
@@ -259,7 +259,7 @@ export const fetchGithubTests = {
 
     const testToken = 'testToken';
 
-    const testResponse: JsonClientResponse = {
+    const testResponse: JsonClientResponse<any> = {
       status: 200,
       data: githubFixtures.commits,
       source: ClientResponseSource.remote

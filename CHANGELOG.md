@@ -27,6 +27,7 @@
     |-|-|
     |versionlens.docker.apiUrl|https://hub.docker.com/v2/namespaces/{namespace}/repositories/{repository}/tags|
     |versionlens.docker.files|`**/{dockerfile,*.dockerfile,Dockerfile,*.Dockerfile,compose.yaml,compose.yml,*.compose.yaml,*.compose.yml,docker-compose.yaml,docker-compose.yml}`|
+    |versionlens.docker.caching.duration|Defaults to `versionlens.caching.duration` which is 3 minutes.<br>Can be cleared using `VersionLens: Clear cache` command|
 
     > **NOTE**
     > - Only supports [docker hub api v2](https://docs.docker.com/reference/api/hub/latest/#tag/repositories/paths/~1v2~1namespaces~1%7Bnamespace%7D~1repositories~1%7Brepository%7D~1tags/get)

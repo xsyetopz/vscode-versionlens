@@ -16,11 +16,11 @@ export class JsonHttpClient implements IJsonHttpClient {
     this.httpClient = httpClient;
   }
 
-  async get(
+  async get<TData>(
     url: string,
     query: QueryDictionary = {},
     headers: KeyStringDictionary = {}
-  ): Promise<JsonClientResponse> {
+  ): Promise<JsonClientResponse<TData>> {
     const response = await this.httpClient.get(url, query, { ...defaultHeaders, ...headers })
     return {
       source: response.source,
