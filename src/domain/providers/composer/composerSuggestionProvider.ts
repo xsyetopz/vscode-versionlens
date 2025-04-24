@@ -13,7 +13,7 @@ import type { ISuggestionProvider } from '#domain/providers';
 import {
   ComposerClient,
   ComposerConfig,
-  customDescriptorHandler
+  createComposerProjectVersionDesc
 } from '#domain/providers/composer';
 import type { KeyDictionary } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
@@ -39,7 +39,7 @@ export class ComposerSuggestionProvider implements ISuggestionProvider {
   parseDependencies(packagePath: string, packageText: string): Array<PackageDependency> {
     const options: JsonParserOptions = {
       includePropNames: this.config.dependencyProperties,
-      customDescriptorHandler,
+      customDescriptorHandler: createComposerProjectVersionDesc,
       complexTypeHandlers
     };
 
