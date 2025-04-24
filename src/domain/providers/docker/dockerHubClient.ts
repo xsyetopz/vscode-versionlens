@@ -46,8 +46,6 @@ export class DockerHubClient {
             }
           );
 
-          if (jsonResponse.rejected) return { ...jsonResponse } as any;
-
           pagedData = jsonResponse.data;
           results.push(...pagedData.results);
           page++;

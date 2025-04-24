@@ -19,7 +19,6 @@ export class JsrClient {
     const url = `https://jsr.io/${packageName}/meta.json`;
 
     const jsonResponse = await this.jsonClient.get(url) as JsrApiResponse;
-    if (jsonResponse.rejected) return jsonResponse as any;
 
     // reduce the dataset
     const versions = Object.keys(jsonResponse.data.versions)

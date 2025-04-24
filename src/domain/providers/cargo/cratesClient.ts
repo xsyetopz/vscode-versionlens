@@ -22,7 +22,7 @@ export class CratesClient {
   async get(packageName: string): Promise<CratesPackageVersionsResponse> {
     const url = `${this.config.apiUrl}${packageName}/versions`;
     const jsonResponse = await this.jsonClient.get(url) as CratesPackageVersionsResponse;
-    if (jsonResponse.rejected) return jsonResponse as any;
+
     // reduce the dataset
     const data = {
       versions: jsonResponse.data.versions.map<CratesPackageVersionEntry>(

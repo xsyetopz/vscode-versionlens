@@ -18,7 +18,7 @@ export class PackagistClient {
   async get(packageName: string): Promise<PackagistPackagesResponse> {
     const url = `${this.config.apiUrl}${packageName}.json`;
     const jsonResponse = await this.jsonClient.get(url) as PackagistPackagesResponse;
-    if (jsonResponse.rejected) return jsonResponse as any;
+
     // reduce the dataset
     let packageData = jsonResponse.data.packages[packageName]
 
