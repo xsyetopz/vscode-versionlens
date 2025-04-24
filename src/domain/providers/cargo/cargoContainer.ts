@@ -5,7 +5,6 @@ import {
   addCargoConfig,
   addCratesClient,
   addHttpOptions,
-  addJsonClient,
   addSuggestionProvider
 } from '#domain/providers/cargo';
 
@@ -19,8 +18,6 @@ export async function configureContainer(
   addHttpOptions(services);
 
   addCargoConfig(services);
-
-  addJsonClient(services);
 
   addCratesClient(services);
 

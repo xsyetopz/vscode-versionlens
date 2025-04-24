@@ -50,21 +50,6 @@ export function addCargoConfig(services: IServiceCollection) {
   );
 }
 
-export function addJsonClient(services: IServiceCollection) {
-  const serviceName = CargoService.cargoJsonClient;
-  services.addSingleton(
-    serviceName,
-    (container: ICargoServices & IDomainServices) =>
-      createJsonClient(
-        container.authorizer,
-        {
-          caching: container.cargoCachingOpts,
-          http: container.cargoHttpOpts
-        }
-      )
-  );
-}
-
 export function addCratesClient(services: IServiceCollection) {
   const serviceName = CargoService.cratesClient;
   services.addSingleton(
@@ -72,7 +57,13 @@ export function addCratesClient(services: IServiceCollection) {
     (container: ICargoServices & IDomainServices) =>
       new CratesClient(
         container.cargoConfig,
-        container.cargoJsonClient,
+        createJsonClient(
+          container.authorizer,
+          {
+            caching: container.cargoCachingOpts,
+            http: container.cargoHttpOpts
+          }
+        ),
         container.loggerFactory.create(serviceName)
       )
   );

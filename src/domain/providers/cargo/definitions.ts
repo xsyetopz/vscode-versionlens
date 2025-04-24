@@ -1,5 +1,5 @@
 import type { CachingOptions } from '#domain/caching';
-import type { HttpOptions, IJsonHttpClient, JsonClientResponse } from '#domain/clients';
+import type { HttpOptions, JsonClientResponse } from '#domain/clients';
 import type { CargoClient, CargoConfig, CratesClient } from "#domain/providers/cargo";
 import { nameOf } from '#domain/utils';
 
@@ -17,7 +17,6 @@ export interface ICargoServices {
   cargoCachingOpts: CachingOptions
   cargoHttpOpts: HttpOptions
   cargoConfig: CargoConfig
-  cargoJsonClient: IJsonHttpClient
   cratesClient: CratesClient
   cargoClient: CargoClient
 }
