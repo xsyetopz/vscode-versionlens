@@ -1,6 +1,7 @@
-import { CachingOptions } from '#domain/caching';
-import { HttpOptions, IJsonHttpClient } from '#domain/clients';
-import { CargoConfig, CratesClient } from "#domain/providers/cargo";
+import type { CachingOptions } from '#domain/caching';
+import type { HttpOptions, IJsonHttpClient, JsonClientResponse } from '#domain/clients';
+import type { CargoClient, CargoConfig, CratesClient } from "#domain/providers/cargo";
+import { nameOf } from '#domain/utils';
 
 export enum CargoFeatures {
   Caching = 'cargo.caching',
@@ -12,17 +13,24 @@ export enum CargoFeatures {
   PrereleaseTagFilter = 'cargo.prereleaseTagFilter',
 }
 
-export interface ICratesApiItem {
-  versions: [{
-    num: string,
-    yanked: boolean
-  }];
+export interface ICargoServices {
+  cargoCachingOpts: CachingOptions
+  cargoHttpOpts: HttpOptions
+  cargoConfig: CargoConfig
+  cargoJsonClient: IJsonHttpClient
+  cratesClient: CratesClient
+  cargoClient: CargoClient
 }
 
-export interface ICargoService {
-  cargoCachingOpts: CachingOptions;
-  cargoHttpOpts: HttpOptions;
-  cargoConfig: CargoConfig;
-  cargoJsonClient: IJsonHttpClient;
-  cratesClient: CratesClient;
+export const CargoService = nameOf<ICargoServices>()
+
+export type CratesPackageVersionEntry = {
+  num: string,
+  yanked: boolean
 }
+
+export type CratesPackageVersionsResult = {
+  versions: CratesPackageVersionEntry[]
+}
+
+export type CratesPackageVersionsResponse = JsonClientResponse<CratesPackageVersionsResult>

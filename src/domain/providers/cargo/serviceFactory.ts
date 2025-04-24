@@ -4,9 +4,11 @@ import { createJsonClient, HttpOptions } from '#domain/clients';
 import type { IServiceCollection } from '#domain/di';
 import type { IProviderServices } from '#domain/providers';
 import {
-  type ICargoService,
+  type ICargoServices,
+  CargoClient,
   CargoConfig,
   CargoFeatures,
+  CargoService,
   CargoSuggestionProvider,
   CratesClient
 } from "#domain/providers/cargo";
@@ -14,7 +16,7 @@ import { nameOf } from '#domain/utils';
 
 export function addCachingOptions(services: IServiceCollection) {
   services.addSingleton(
-    nameOf<ICargoService>().cargoCachingOpts,
+    CargoService.cargoCachingOpts,
     (container: IDomainServices) =>
       new CachingOptions(
         container.appConfig,
@@ -26,7 +28,7 @@ export function addCachingOptions(services: IServiceCollection) {
 
 export function addHttpOptions(services: IServiceCollection) {
   services.addSingleton(
-    nameOf<ICargoService>().cargoHttpOpts,
+    CargoService.cargoHttpOpts,
     (container: IDomainServices) =>
       new HttpOptions(
         container.appConfig,
@@ -38,8 +40,8 @@ export function addHttpOptions(services: IServiceCollection) {
 
 export function addCargoConfig(services: IServiceCollection) {
   services.addSingleton(
-    nameOf<ICargoService>().cargoConfig,
-    (container: ICargoService & IDomainServices) =>
+    CargoService.cargoConfig,
+    (container: ICargoServices & IDomainServices) =>
       new CargoConfig(
         container.appConfig,
         container.cargoCachingOpts,
@@ -49,10 +51,10 @@ export function addCargoConfig(services: IServiceCollection) {
 }
 
 export function addJsonClient(services: IServiceCollection) {
-  const serviceName = nameOf<ICargoService>().cargoJsonClient;
+  const serviceName = CargoService.cargoJsonClient;
   services.addSingleton(
     serviceName,
-    (container: ICargoService & IDomainServices) =>
+    (container: ICargoServices & IDomainServices) =>
       createJsonClient(
         container.authorizer,
         {
@@ -64,10 +66,10 @@ export function addJsonClient(services: IServiceCollection) {
 }
 
 export function addCratesClient(services: IServiceCollection) {
-  const serviceName = nameOf<ICargoService>().cratesClient;
+  const serviceName = CargoService.cratesClient;
   services.addSingleton(
     serviceName,
-    (container: ICargoService & IDomainServices) =>
+    (container: ICargoServices & IDomainServices) =>
       new CratesClient(
         container.cargoConfig,
         container.cargoJsonClient,
@@ -76,12 +78,25 @@ export function addCratesClient(services: IServiceCollection) {
   );
 }
 
+export function addCargoClient(services: IServiceCollection) {
+  const serviceName = CargoService.cargoClient;
+  services.addSingleton(
+    serviceName,
+    (container: ICargoServices & IDomainServices) =>
+      new CargoClient(
+        container.cargoConfig,
+        container.cratesClient,
+        container.loggerFactory.create(serviceName)
+      )
+  );
+}
+
 export function addSuggestionProvider(services: IServiceCollection) {
   services.addScoped(
     nameOf<IProviderServices>().suggestionProvider,
-    (container: ICargoService & IDomainServices) =>
+    (container: ICargoServices & IDomainServices) =>
       new CargoSuggestionProvider(
-        container.cratesClient,
+        container.cargoClient,
         container.cargoConfig,
         container.loggerFactory.create(CargoSuggestionProvider.name)
       )

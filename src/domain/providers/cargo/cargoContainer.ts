@@ -1,6 +1,7 @@
-import { IServiceCollection, IServiceProvider } from '#domain/di';
+import type { IServiceCollection, IServiceProvider } from '#domain/di';
 import {
   addCachingOptions,
+  addCargoClient,
   addCargoConfig,
   addCratesClient,
   addHttpOptions,
@@ -22,6 +23,8 @@ export async function configureContainer(
   addJsonClient(services);
 
   addCratesClient(services);
+
+  addCargoClient(services);
 
   addSuggestionProvider(services);
 

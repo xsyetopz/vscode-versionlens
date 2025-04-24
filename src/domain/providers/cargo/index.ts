@@ -1,3 +1,4 @@
+export * from './cargoClient';
 export * from './cargoConfig';
 export * from './cargoContainer';
 export * from './cargoSuggestionProvider';

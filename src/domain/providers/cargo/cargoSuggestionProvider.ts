@@ -11,7 +11,7 @@ import {
   parsePackagesToml,
 } from '#domain/parsers';
 import type { ISuggestionProvider } from '#domain/providers';
-import { CargoConfig, CratesClient } from '#domain/providers/cargo';
+import type { CargoClient, CargoConfig } from '#domain/providers/cargo';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class CargoSuggestionProvider implements ISuggestionProvider {
@@ -19,7 +19,7 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
   readonly name: string = 'cargo';
 
   constructor(
-    readonly client: CratesClient,
+    readonly client: CargoClient,
     readonly config: CargoConfig,
     readonly logger: ILogger
   ) {

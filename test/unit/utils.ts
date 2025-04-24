@@ -1,5 +1,6 @@
-import path from 'node:path';
+import { PackageDependency } from '#domain/packages';
 import fs from 'node:fs';
+import path from 'node:path';
 import util from 'node:util';
 
 const fsMkDir = util.promisify(fs.mkdir);
@@ -63,4 +64,19 @@ export async function delay(delay: number) {
       }
     }, delay);
   });
+}
+
+export function packageDependenciesToString(suggestions: PackageDependency[]) {
+  const builder = []
+  for (const item of suggestions) {
+    builder.push('new PackageDependency(')
+    builder.push(`createPackageResource('${item.package.name}', '${item.package.version}', '${item.package.path}'),`)
+    builder.push('new PackageDescriptor([')
+    builder.push(`createPackageNameDesc('${item.package.name}', createTextRange(${item.nameRange.start}, ${item.nameRange.end})),`)
+    builder.push(`createPackageVersionDesc('${item.package.version}', createTextRange(${item.versionRange.start}, ${item.versionRange.end})),`)
+    builder.push('])')
+    builder.push('),')
+  }
+
+  return builder.join('\n')
 }

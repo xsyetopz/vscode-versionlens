@@ -1,3 +1,4 @@
+export * as CargoProvider from './cargo/index.tests';
 export * as DockerProvider from './docker/index.tests';
 export * as DotNetProvider from './dotnet/index.tests';
 export * as GoProvider from './golang/index.tests';

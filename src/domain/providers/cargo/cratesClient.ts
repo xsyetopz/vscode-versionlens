@@ -1,25 +1,13 @@
-import type { HttpClientResponse, IJsonHttpClient } from '#domain/clients';
+import type { IJsonHttpClient } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
-import {
-  type IPackageClient,
-  type PackageClientRequest,
-  type PackageClientResponse,
-  type SemverSpec,
-  ClientResponseFactory,
-  PackageSourceType,
-  PackageStatusFactory,
-  VersionUtils,
-  createSuggestions
-} from '#domain/packages';
-import {
-  type PackageGitDescriptor,
-  type PackagePathDescriptor,
-  PackageDescriptorType
-} from '#domain/parsers';
-import { type ICratesApiItem, CargoConfig } from '#domain/providers/cargo';
+import type {
+  CargoConfig,
+  CratesPackageVersionEntry,
+  CratesPackageVersionsResponse
+} from '#domain/providers/cargo';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
-export class CratesClient implements IPackageClient<null> {
+export class CratesClient {
 
   constructor(
     readonly config: CargoConfig,
@@ -31,100 +19,18 @@ export class CratesClient implements IPackageClient<null> {
     throwUndefinedOrNull("logger", logger);
   }
 
-  async fetchPackage<TClientData>(
-    request: PackageClientRequest<TClientData>
-  ): Promise<PackageClientResponse> {
-    const requestedPackage = request.parsedDependency.package;
-
-    // return a directory response if this a path type
-    const pathDesc = request.parsedDependency.descriptors.getType<PackagePathDescriptor>(
-      PackageDescriptorType.path
-    );
-    if (pathDesc) {
-      return await ClientResponseFactory.createDirectory(
-        requestedPackage.name,
-        requestedPackage.path,
-        pathDesc.path
-      );
-    }
-
-    // return a git response if this a git type
-    const gitDesc = request.parsedDependency.descriptors.getType<PackageGitDescriptor>(
-      PackageDescriptorType.git
-    );
-    if (gitDesc) return ClientResponseFactory.createGit();
-
-    // fetch package suggestions from api
-    const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
-    const url = `${this.config.apiUrl}${requestedPackage.name}/versions`;
-    try {
-      return await this.createRemotePackageDocument(url, request, semverSpec)
-    } catch (error) {
-      const errorResponse = error as HttpClientResponse;
-
-      this.logger.debug(
-        "Caught exception from {packageSource}: {error}",
-        PackageSourceType.Registry,
-        errorResponse
-      );
-
-      const suggestion = PackageStatusFactory.createFromHttpStatus(errorResponse.status);
-      if (suggestion != null) {
-        return ClientResponseFactory.create(
-          PackageSourceType.Registry,
-          errorResponse,
-          [suggestion]
-        )
-      }
-
-      throw errorResponse;
-    }
+  async get(packageName: string): Promise<CratesPackageVersionsResponse> {
+    const url = `${this.config.apiUrl}${packageName}/versions`;
+    const jsonResponse = await this.jsonClient.get(url) as CratesPackageVersionsResponse;
+    if (jsonResponse.rejected) return jsonResponse as any;
+    // reduce the dataset
+    const data = {
+      versions: jsonResponse.data.versions.map<CratesPackageVersionEntry>(
+        x => ({ num: x.num, yanked: x.yanked })
+      )
+    };
+    // return the response
+    return { ...jsonResponse, data };
   }
 
-  async createRemotePackageDocument<TClientData>(
-    url: string,
-    request: PackageClientRequest<TClientData>,
-    semverSpec: SemverSpec
-  ): Promise<PackageClientResponse> {
-    // fetch package from api
-    const httpResponse = await this.jsonClient.get(url);
-
-    const requestPackage = request.parsedDependency.package;
-    const versionRange = semverSpec.rawVersion;
-
-    const resolved = {
-      name: requestPackage.name,
-      version: versionRange,
-    };
-
-    const responseVersions = httpResponse.data as ICratesApiItem;
-    let rawVersions = responseVersions.versions
-      .filter(p => p.yanked === false)
-      .reverse()
-      .map(p => p.num);
-
-    // extract semver versions only
-    const semverVersions = VersionUtils.filterSemverVersions(rawVersions);
-
-    // seperate versions to releases and prereleases
-    const { releases, prereleases } = VersionUtils.splitReleasesFromArray(
-      semverVersions,
-      this.config.prereleaseTagFilter
-    );
-
-    // analyse suggestions
-    const suggestions = createSuggestions(
-      versionRange,
-      releases,
-      prereleases
-    );
-
-    return {
-      source: PackageSourceType.Registry,
-      responseStatus: ClientResponseFactory.mapStatusFromJsonResponse(httpResponse),
-      type: semverSpec.type,
-      resolved,
-      suggestions,
-    };
-  }
 }
