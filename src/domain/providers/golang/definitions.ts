@@ -1,6 +1,7 @@
-import { CachingOptions } from '#domain/caching';
-import { HttpOptions, IHttpClient } from '#domain/clients';
-import { GoClient, GoConfig } from '#domain/providers/golang';
+import type { CachingOptions } from '#domain/caching';
+import type { HttpOptions, JsonClientResponse } from '#domain/clients';
+import type { GoClient, GoConfig, GoHttpClient } from '#domain/providers/golang';
+import { nameOf } from '#domain/utils';
 
 export enum GoFeatures {
   Caching = 'golang.caching',
@@ -15,6 +16,14 @@ export interface IGoService {
   goCachingOpts: CachingOptions;
   goHttpOpts: HttpOptions;
   goConfig: GoConfig;
-  goHttpClient: IHttpClient;
+  goHttpClient: GoHttpClient;
   goClient: GoClient;
 }
+
+export const GoService = nameOf<IGoService>()
+
+export type GoApiClientResult = {
+  versions: string[]
+}
+
+export type GoApiClientResponse = JsonClientResponse<GoApiClientResult>

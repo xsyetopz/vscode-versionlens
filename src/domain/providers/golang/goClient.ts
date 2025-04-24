@@ -1,4 +1,4 @@
-import type { HttpClientResponse, IHttpClient } from '#domain/clients';
+import type { HttpClientResponse } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
   type IPackageClient,
@@ -16,7 +16,7 @@ import {
   type PackagePathDescriptor,
   PackageDescriptorType,
 } from '#domain/parsers';
-import { GoConfig } from '#domain/providers/golang';
+import { GoConfig, GoHttpClient } from '#domain/providers/golang';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { coerce, compareLoose } from 'semver';
 
@@ -24,11 +24,11 @@ export class GoClient implements IPackageClient<null> {
 
   constructor(
     readonly config: GoConfig,
-    readonly httpClient: IHttpClient,
+    readonly goHttpClient: GoHttpClient,
     readonly logger: ILogger
   ) {
     throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("httpClient", httpClient);
+    throwUndefinedOrNull("goApiClient", goHttpClient);
     throwUndefinedOrNull("logger", logger);
   }
 
@@ -55,14 +55,10 @@ export class GoClient implements IPackageClient<null> {
     );
     if (gitDesc) return ClientResponseFactory.createGit();
 
-    // fetch package suggestions from api
-    const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
-    semverSpec.rawVersion = semverSpec.rawVersion.replace('+incompatible', '')
-
-    const url = this.config.apiUrl.replace('{base-module}', requestedPackage.name.toLowerCase());
-
     try {
-      return await this.createRemotePackageDocument(url, request, semverSpec)
+      const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
+      semverSpec.rawVersion = semverSpec.rawVersion.replace('+incompatible', '')
+      return await this.createRemotePackageDocument(request, semverSpec)
     } catch (error) {
       const errorResponse = error as HttpClientResponse;
 
@@ -86,14 +82,15 @@ export class GoClient implements IPackageClient<null> {
   }
 
   async createRemotePackageDocument<TClientData>(
-    url: string,
     request: PackageClientRequest<TClientData>,
     semverSpec: SemverSpec
   ): Promise<PackageClientResponse> {
-    // fetch package from api
-    const httpResponse = await this.httpClient.get(url);
-
+    // fetch
     const requestPackage = request.parsedDependency.package;
+    const httpResponse = await this.goHttpClient.get(requestPackage.name);
+
+    // process response
+    const { data } = httpResponse;
     const versionRange = semverSpec.rawVersion;
 
     const resolved = {
@@ -106,9 +103,8 @@ export class GoClient implements IPackageClient<null> {
       status: httpResponse.status,
     };
 
-    const rawVersions = httpResponse.data.split('\n')
-      .filter(x => !!x)
-      .reverse();
+    // sort versions
+    const rawVersions = data.versions.toSorted(VersionUtils.compareVersionsAndBuilds)
 
     // extract semver versions only
     const semverVersions = VersionUtils.filterSemverVersions(rawVersions)

@@ -8,6 +8,7 @@ import {
   GoClient,
   GoConfig,
   GoFeatures,
+  GoHttpClient,
   GoSuggestionProvider
 } from '#domain/providers/golang';
 import { nameOf } from '#domain/utils';
@@ -48,17 +49,21 @@ export function addGoConfig(services: IServiceCollection) {
   );
 }
 
-export function addHttpClient(services: IServiceCollection) {
+export function addGoHttpClient(services: IServiceCollection) {
   const serviceName = nameOf<IGoService>().goHttpClient;
   services.addSingleton(
     serviceName,
     (container: IGoService & IDomainServices) =>
-      createHttpClient(
-        container.authorizer,
-        {
-          caching: container.goCachingOpts,
-          http: container.goHttpOpts
-        }
+      new GoHttpClient(
+        container.goConfig,
+        createHttpClient(
+          container.authorizer,
+          {
+            caching: container.goCachingOpts,
+            http: container.goHttpOpts
+          }
+        ),
+        container.loggerFactory.create(serviceName)
       )
   );
 }

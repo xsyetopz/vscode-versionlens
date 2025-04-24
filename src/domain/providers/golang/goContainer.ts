@@ -1,9 +1,9 @@
-import { IServiceCollection, IServiceProvider } from '#domain/di';
+import type { IServiceCollection, IServiceProvider } from '#domain/di';
 import {
   addCachingOptions,
   addGoClient,
   addGoConfig,
-  addHttpClient,
+  addGoHttpClient,
   addHttpOptions,
   addSuggestionProvider
 } from '#domain/providers/golang';
@@ -19,7 +19,9 @@ export async function configureContainer(
 
   addGoConfig(services);
 
-  addHttpClient(services);
+  addGoHttpClient(services);
+
+  addGoClient(services);
 
   addGoClient(services);
 
