@@ -18,12 +18,20 @@ tasks:
     - docker run --rm -v $PACKAGE_VOL --name test-container $PACKAGE_IMAGE
 
   # publish to the marketplace
-  docker:publish:
+  docker:publish:vsce:
     - var:
-        PUBLISH_IMAGE: versionlens:publish
-        PUBLISH_VOL: $PWD/.publish:/versionlens/.publish
-    - docker build -t $PUBLISH_IMAGE -f $DOCKER_FILE_PATH/publish.dockerfile .
-    - docker run --rm -v $PUBLISH_VOL --env-file ./.env --name publish-container $PUBLISH_IMAGE
+        PUBLISH_IMAGE: versionlens:publish-vsce
+        PUBLISH_VOL: $PWD/.publish-vsce:/versionlens/.publish
+    - docker build -t $PUBLISH_IMAGE -f $DOCKER_FILE_PATH/publish.vsce.dockerfile .
+    - docker run --rm -v $PUBLISH_VOL --env-file ./.env --name publish-vsce-container $PUBLISH_IMAGE
+
+  # publish to ovsx
+  docker:publish:ovsx:
+    - var:
+        PUBLISH_IMAGE: versionlens:publish-ovsx
+        PUBLISH_VOL: $PWD/.publish-ovsx:/versionlens/.publish
+    - docker build -t $PUBLISH_IMAGE -f $DOCKER_FILE_PATH/publish.ovsx.dockerfile .
+    - docker run --rm -v $PUBLISH_VOL --env-file ./.env --name publish-ovsx-container $PUBLISH_IMAGE
 
   # strip '-prerelease' from the version in the package.json
   prerelease:prepack: node -e "

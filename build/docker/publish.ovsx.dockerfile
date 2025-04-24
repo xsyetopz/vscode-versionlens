@@ -1,5 +1,5 @@
 # see ./docker.publish.tasks.yml on how this container is created
-FROM node:20.19
+FROM node:20.19-alpine
 ARG TARGET_PATH=/versionlens
 ENV PACKAGE_OUT_PATH=.publish
 
@@ -13,7 +13,7 @@ COPY / $TARGET_PATH
 WORKDIR $TARGET_PATH
 
 # update npm to latest
-RUN npm install -g npm @vscode/vsce js-build-tasks
+RUN npm install -g npm @vscode/vsce ovsx js-build-tasks
 
 # install dependencies
 RUN npm ci
@@ -29,4 +29,4 @@ RUN mkdir $PACKAGE_OUT_PATH
 
 # package into the artifact folder then publish
 CMD vsce package --out $PACKAGE_OUT_PATH \
-    && vsce publish --packagePath $(find $PACKAGE_OUT_PATH/*.vsix)
+    && ovsx publish --packagePath $(find $PACKAGE_OUT_PATH/*.vsix)

@@ -50,12 +50,22 @@ prerelease:ovsx:
   rules:
     - if: $IS_PRERELEASE == "1"
 
-publish:
+publish:vsce:
   script:
     - cp $VSCE_PAT_FILEPATH .env
-    - task docker:publish
+    - task docker:publish:vsce
   artifacts:
     paths:
-      - .publish/*.vsix
+      - .publish-vsce/*.vsix
+  rules:
+    - if: $IS_PUBLISH == "1"
+
+publish:ovsx:
+  script:
+    - cp $OVSX_PAT_FILEPATH .env
+    - task docker:publish:ovsx
+  artifacts:
+    paths:
+      - .publish-ovsx/*.vsix
   rules:
     - if: $IS_PUBLISH == "1"
