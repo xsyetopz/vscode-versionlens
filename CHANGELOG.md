@@ -31,6 +31,8 @@
 
     ![image](https://gitlab.com/-/project/19418059/uploads/2a5a8a9af78c704359057b8a0f573372/docker.gif)
 
+    Relates to [#372](https://gitlab.com/versionlens/vscode-versionlens/-/issues/372)
+
     > **NOTE**
     > - Only supports [docker hub api v2](https://docs.docker.com/reference/api/hub/latest/#tag/repositories/paths/~1v2~1namespaces~1%7Bnamespace%7D~1repositories~1%7Brepository%7D~1tags/get)
     > - Prereleases aren't supported yet
