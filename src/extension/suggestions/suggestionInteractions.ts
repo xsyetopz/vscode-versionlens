@@ -9,14 +9,12 @@ export class SuggestionInteractions {
   }
 
   async chooseBuild(buildVersions: string[], packageName: string, packageVersion: string): Promise<string | undefined> {
-    const versionWithoutBuild = packageVersion.substring(0, packageVersion.indexOf('+'))
     const pickItems = buildVersions.map(x => <QuickPickItem>{ label: x, picked: x === packageVersion });
-
     // show interactive choices
     const selected = await this.window.showQuickPick(
       pickItems,
       {
-        title: `Choose a build for ${packageName}@${versionWithoutBuild}`,
+        title: `Choose a build for ${packageName}`,
         placeHolder: "Choose a build or press escape to cancel",
       }
     );
