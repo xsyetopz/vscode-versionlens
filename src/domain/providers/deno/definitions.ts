@@ -1,5 +1,5 @@
 import type { CachingOptions } from '#domain/caching';
-import type { HttpOptions, IJsonHttpClient, JsonClientResponse } from '#domain/clients';
+import type { HttpOptions, JsonClientResponse } from '#domain/clients';
 import type { DenoClient, DenoConfig, JsrClient } from "#domain/providers/deno";
 import { nameOf } from '#domain/utils';
 
@@ -16,7 +16,6 @@ export interface IDenoServices {
   denoCachingOpts: CachingOptions
   denoHttpOpts: HttpOptions
   denoConfig: DenoConfig
-  denoJsonClient: IJsonHttpClient
   jsrClient: JsrClient
   denoClient: DenoClient
 }

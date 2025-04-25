@@ -1,10 +1,9 @@
-import { IServiceCollection, IServiceProvider } from '#domain/di';
+import type { IServiceCollection, IServiceProvider } from '#domain/di';
 import {
   addCachingOptions,
   addDenoClient,
   addDenoConfig,
   addHttpOptions,
-  addJsonClient,
   addJsrClient,
   addSuggestionProvider
 } from '#domain/providers/deno';
@@ -19,8 +18,6 @@ export async function configureContainer(
   addHttpOptions(services);
 
   addDenoConfig(services);
-
-  addJsonClient(services);
 
   addJsrClient(services);
 

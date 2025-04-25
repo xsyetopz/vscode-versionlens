@@ -51,21 +51,6 @@ export function addDenoConfig(services: IServiceCollection) {
   );
 }
 
-export function addJsonClient(services: IServiceCollection) {
-  const serviceName = DenoService.denoJsonClient;
-  services.addSingleton(
-    serviceName,
-    (container: IDenoServices & IDomainServices) =>
-      createJsonClient(
-        container.authorizer,
-        {
-          caching: container.denoCachingOpts,
-          http: container.denoHttpOpts
-        }
-      )
-  );
-}
-
 export function addJsrClient(services: IServiceCollection) {
   const serviceName = DenoService.jsrClient;
   services.addSingleton(
@@ -73,7 +58,13 @@ export function addJsrClient(services: IServiceCollection) {
     (container: IDenoServices & IDomainServices) =>
       new JsrClient(
         container.denoConfig,
-        container.denoJsonClient,
+        createJsonClient(
+          container.authorizer,
+          {
+            caching: container.denoCachingOpts,
+            http: container.denoHttpOpts
+          }
+        ),
         container.loggerFactory.create(serviceName)
       )
   );
