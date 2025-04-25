@@ -1,7 +1,7 @@
 import type { HttpClientResponse, IHttpClient } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
+import { type MavenApiResponse, getVersionsFromPackageXml } from '#domain/providers/maven';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { type MavenApiResponse, getVersionsFromPackageXml } from '../index.js';
 
 export class MavenHttpClient {
 

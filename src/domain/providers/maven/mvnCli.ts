@@ -1,6 +1,6 @@
-import { IShellClient } from '#domain/clients';
-import { ILogger } from '#domain/logging';
-import { MavenConfig, MavenRepository, extractReposUrlsFromXml } from '#domain/providers/maven';
+import type { IShellClient } from '#domain/clients';
+import type { ILogger } from '#domain/logging';
+import { type MavenConfig, type MavenRepository, extractReposUrlsFromXml } from '#domain/providers/maven';
 import { getProtocolFromUrl } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
