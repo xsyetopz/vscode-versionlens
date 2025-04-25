@@ -20,7 +20,6 @@ import {
 } from '#domain/providers/npm';
 import { ensureEndSlash } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import semver from 'semver';
 
 export class NpmRegistryClient {
 
@@ -49,8 +48,6 @@ export class NpmRegistryClient {
     // fetch the package from the npm's registry
     const response = await this.request(spec, request.clientData);
 
-    const { compareLoose } = semver;
-
     let versionRange = spec.rawSpec;
 
     const resolved = {
@@ -66,7 +63,8 @@ export class NpmRegistryClient {
     const packumentResponse = response.data;
 
     // extract raw versions and sort
-    const rawVersions = Object.keys(packumentResponse.versions || {}).sort(compareLoose);
+    const rawVersions = Object.keys(packumentResponse.versions || {})
+      .sort(VersionUtils.compareVersionsAndBuilds);
 
     // seperate versions to releases and prereleases
     let { releases, prereleases } = VersionUtils.splitReleasesFromArray(
