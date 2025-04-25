@@ -51,27 +51,18 @@ export function addMavenConfig(services: IServiceCollection) {
   );
 }
 
-export function addProcessClient(services: IServiceCollection) {
-  const serviceName = MavenService.mvnShellClient;
-  services.addSingleton(
-    serviceName,
-    (container: IMavenServices & IDomainServices) =>
-      createShellClient(
-        container.shellCache,
-        container.mavenCachingOpts,
-        container.loggerFactory.create(serviceName)
-      )
-  );
-}
-
-export function addCliClient(services: IServiceCollection) {
+export function addMvnCliClient(services: IServiceCollection) {
   const serviceName = MavenService.mvnCli;
   services.addSingleton(
     serviceName,
     (container: IMavenServices & IDomainServices) =>
       new MvnCli(
         container.mavenConfig,
-        container.mvnShellClient,
+        createShellClient(
+          container.shellCache,
+          container.mavenCachingOpts,
+          container.loggerFactory.create(serviceName)
+        ),
         container.loggerFactory.create(serviceName)
       )
   );

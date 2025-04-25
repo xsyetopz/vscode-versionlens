@@ -1,5 +1,5 @@
 import type { CachingOptions } from '#domain/caching';
-import type { HttpOptions, IShellClient, JsonClientResponse } from '#domain/clients';
+import type { HttpOptions, JsonClientResponse } from '#domain/clients';
 import type { MavenClient, MavenConfig, MavenHttpClient, MvnCli } from '#domain/providers/maven';
 import { type RegistryProtocols, nameOf } from '#domain/utils';
 
@@ -17,7 +17,6 @@ export interface IMavenServices {
   mavenCachingOpts: CachingOptions;
   mavenHttpOpts: HttpOptions;
   mavenConfig: MavenConfig;
-  mvnShellClient: IShellClient;
   mvnCli: MvnCli;
   mavenHttpClient: MavenHttpClient;
   mavenClient: MavenClient;
