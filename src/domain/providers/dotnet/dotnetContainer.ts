@@ -7,7 +7,6 @@ import {
   addHttpOptions,
   addNuGetClient,
   addNugetOptions,
-  addProcessClient,
   addSuggestionProvider
 } from '#domain/providers/dotnet';
 
@@ -23,8 +22,6 @@ export async function configureContainer(
   addHttpOptions(services);
 
   addDotNetConfig(services);
-
-  addProcessClient(services);
 
   addCliClient(services);
 

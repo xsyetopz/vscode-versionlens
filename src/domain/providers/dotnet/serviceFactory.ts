@@ -64,19 +64,6 @@ export function addDotNetConfig(services: IServiceCollection) {
   );
 }
 
-export function addProcessClient(services: IServiceCollection) {
-  const serviceName = DotNetService.dotnetShellClient;
-  services.addSingleton(
-    serviceName,
-    (container: IDotNetServices & IDomainServices) =>
-      createShellClient(
-        container.shellCache,
-        container.dotnetCachingOpts,
-        container.loggerFactory.create(serviceName)
-      )
-  );
-}
-
 export function addCliClient(services: IServiceCollection) {
   const serviceName = DotNetService.dotnetCli;
   services.addSingleton(
@@ -84,7 +71,11 @@ export function addCliClient(services: IServiceCollection) {
     (container: IDotNetServices & IDomainServices) =>
       new DotNetCli(
         container.dotnetConfig,
-        container.dotnetShellClient,
+        createShellClient(
+          container.shellCache,
+          container.dotnetCachingOpts,
+          container.loggerFactory.create(serviceName)
+        ),
         container.loggerFactory.create(serviceName)
       )
   );
