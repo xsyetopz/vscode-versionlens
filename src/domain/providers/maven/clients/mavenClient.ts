@@ -1,4 +1,4 @@
-import type { HttpClientResponse, IHttpClient } from '#domain/clients';
+import type { HttpClientResponse } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
   type IPackageClient,
@@ -11,7 +11,11 @@ import {
   VersionUtils,
   createSuggestions
 } from '#domain/packages';
-import { type MavenClientData, MavenConfig, getVersionsFromPackageXml } from '#domain/providers/maven';
+import type {
+  MavenClientData,
+  MavenConfig,
+  MavenHttpClient
+} from '#domain/providers/maven';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { valid } from 'semver';
 
@@ -19,11 +23,11 @@ export class MavenClient implements IPackageClient<MavenClientData> {
 
   constructor(
     readonly config: MavenConfig,
-    readonly httpClient: IHttpClient,
+    readonly mavenHttpClient: MavenHttpClient,
     readonly logger: ILogger
   ) {
     throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("httpClient", httpClient);
+    throwUndefinedOrNull("mavenHttpClient", mavenHttpClient);
     throwUndefinedOrNull("logger", logger);
   }
 
@@ -32,15 +36,11 @@ export class MavenClient implements IPackageClient<MavenClientData> {
   ): Promise<PackageClientResponse> {
     const requestedPackage = request.parsedDependency.package;
     const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
-
     const { repositories } = request.clientData;
-    const url = repositories[0].url
-    let [group, artifact] = requestedPackage.name.split(':');
-    let search = group.replace(/\./g, "/") + "/" + artifact
-    const queryUrl = `${url}${search}/maven-metadata.xml`;
+    const repoUrls = repositories.map(x => x.url);
 
     try {
-      return await this.createRemotePackageDocument(queryUrl, request, semverSpec);
+      return await this.createRemotePackageDocument(repoUrls, request, semverSpec);
     } catch (error) {
       const errorResponse = error as HttpClientResponse;
 
@@ -64,24 +64,22 @@ export class MavenClient implements IPackageClient<MavenClientData> {
   }
 
   async createRemotePackageDocument(
-    url: string,
+    repos: string[],
     request: PackageClientRequest<MavenClientData>,
     semverSpec: SemverSpec
   ): Promise<PackageClientResponse> {
-    // fetch package from api
-    const httpResponse = await this.httpClient.get(url);
+    // fetch
+    const requestedPackage = request.parsedDependency.package;
+    const httpResponse = await this.mavenHttpClient.get(requestedPackage.name, repos);
 
-    const { data } = httpResponse;
+    // process response
     const source = PackageSourceType.Registry;
     const versionRange = semverSpec.rawVersion;
-    const requestedPackage = request.parsedDependency.package;
-
-    // extract versions form xml
-    const rawVersions = getVersionsFromPackageXml(data);
 
     // extract semver versions only
-    const semverVersions = VersionUtils.filterSemverVersions(rawVersions)
-      .filter(x => !!valid(x));
+    const semverVersions = VersionUtils.filterSemverVersions(httpResponse.data)
+      .filter(x => !!valid(x))
+      .toSorted(VersionUtils.compareVersionsAndBuilds);
 
     // seperate versions to releases and prereleases
     const { releases, prereleases } = VersionUtils.splitReleasesFromArray(
@@ -103,7 +101,7 @@ export class MavenClient implements IPackageClient<MavenClientData> {
 
     return {
       source,
-      responseStatus: ClientResponseFactory.mapStatusFromHttpResponse(httpResponse),
+      responseStatus: ClientResponseFactory.mapStatusFromJsonResponse(httpResponse),
       type: semverSpec.type,
       resolved,
       suggestions,

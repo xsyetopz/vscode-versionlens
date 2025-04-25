@@ -8,6 +8,8 @@ import {
   MavenClient,
   MavenConfig,
   MavenFeatures,
+  MavenHttpClient,
+  MavenService,
   MavenSuggestionProvider,
   MvnCli
 } from '#domain/providers/maven';
@@ -15,7 +17,7 @@ import { nameOf } from '#domain/utils';
 
 export function addCachingOptions(services: IServiceCollection) {
   services.addSingleton(
-    nameOf<IMavenServices>().mavenCachingOpts,
+    MavenService.mavenCachingOpts,
     (container: IDomainServices) =>
       new CachingOptions(
         container.appConfig,
@@ -27,7 +29,7 @@ export function addCachingOptions(services: IServiceCollection) {
 
 export function addHttpOptions(services: IServiceCollection) {
   services.addSingleton(
-    nameOf<IMavenServices>().mavenHttpOpts,
+    MavenService.mavenHttpOpts,
     (container: IDomainServices) =>
       new HttpOptions(
         container.appConfig,
@@ -39,7 +41,7 @@ export function addHttpOptions(services: IServiceCollection) {
 
 export function addMavenConfig(services: IServiceCollection) {
   services.addSingleton(
-    nameOf<IMavenServices>().mavenConfig,
+    MavenService.mavenConfig,
     (container: IMavenServices & IDomainServices) =>
       new MavenConfig(
         container.appConfig,
@@ -50,7 +52,7 @@ export function addMavenConfig(services: IServiceCollection) {
 }
 
 export function addProcessClient(services: IServiceCollection) {
-  const serviceName = nameOf<IMavenServices>().mvnShellClient;
+  const serviceName = MavenService.mvnShellClient;
   services.addSingleton(
     serviceName,
     (container: IMavenServices & IDomainServices) =>
@@ -63,7 +65,7 @@ export function addProcessClient(services: IServiceCollection) {
 }
 
 export function addCliClient(services: IServiceCollection) {
-  const serviceName = nameOf<IMavenServices>().mvnCli;
+  const serviceName = MavenService.mvnCli;
   services.addSingleton(
     serviceName,
     (container: IMavenServices & IDomainServices) =>
@@ -75,23 +77,26 @@ export function addCliClient(services: IServiceCollection) {
   );
 }
 
-export function addHttpClient(services: IServiceCollection) {
-  const serviceName = nameOf<IMavenServices>().mavenHttpClient;
+export function addMavenHttpClient(services: IServiceCollection) {
+  const serviceName = MavenService.mavenHttpClient;
   services.addSingleton(
     serviceName,
     (container: IMavenServices & IDomainServices) =>
-      createHttpClient(
-        container.authorizer,
-        {
-          caching: container.mavenCachingOpts,
-          http: container.mavenHttpOpts
-        }
+      new MavenHttpClient(
+        createHttpClient(
+          container.authorizer,
+          {
+            caching: container.mavenCachingOpts,
+            http: container.mavenHttpOpts
+          }
+        ),
+        container.loggerFactory.create(serviceName)
       )
   );
 }
 
 export function addMavenClient(services: IServiceCollection) {
-  const serviceName = nameOf<IMavenServices>().mavenClient;
+  const serviceName = MavenService.mavenClient;
   services.addSingleton(
     serviceName,
     (container: IMavenServices & IDomainServices) =>

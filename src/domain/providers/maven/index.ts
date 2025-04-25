@@ -1,4 +1,5 @@
 export * from './clients/mavenClient'
+export * from './clients/mavenHttpClient'
 export * from './clients/mvnCli'
 export * from './definitions'
 export * from './mavenConfig'
