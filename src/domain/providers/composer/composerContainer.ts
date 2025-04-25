@@ -4,7 +4,6 @@ import {
   addComposerClient,
   addComposerConfig,
   addHttpOptions,
-  addJsonClient,
   addPackagistClient,
   addSuggestionProvider
 } from '#domain/providers/composer';
@@ -19,8 +18,6 @@ export async function configureContainer(
   addHttpOptions(services);
 
   addComposerConfig(services);
-
-  addJsonClient(services);
 
   addPackagistClient(services);
 

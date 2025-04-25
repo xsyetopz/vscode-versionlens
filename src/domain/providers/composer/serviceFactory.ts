@@ -50,21 +50,6 @@ export function addComposerConfig(services: IServiceCollection) {
   );
 }
 
-export function addJsonClient(services: IServiceCollection) {
-  const serviceName = ComposerService.composerJsonClient;
-  services.addSingleton(
-    serviceName,
-    (container: IComposerService & IDomainServices) =>
-      createJsonClient(
-        container.authorizer,
-        {
-          caching: container.composerCachingOpts,
-          http: container.composerHttpOpts
-        }
-      )
-  );
-}
-
 export function addPackagistClient(services: IServiceCollection) {
   const serviceName = ComposerService.packagistClient;
   services.addSingleton(
@@ -72,7 +57,13 @@ export function addPackagistClient(services: IServiceCollection) {
     (container: IComposerService & IDomainServices) =>
       new PackagistClient(
         container.composerConfig,
-        container.composerJsonClient,
+        createJsonClient(
+          container.authorizer,
+          {
+            caching: container.composerCachingOpts,
+            http: container.composerHttpOpts
+          }
+        ),
         container.loggerFactory.create(serviceName)
       )
   );

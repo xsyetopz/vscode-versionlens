@@ -1,5 +1,5 @@
 import type { CachingOptions } from '#domain/caching';
-import type { HttpOptions, IJsonHttpClient, JsonClientResponse } from '#domain/clients';
+import type { HttpOptions, JsonClientResponse } from '#domain/clients';
 import type { ComposerClient, ComposerConfig, PackagistClient } from "#domain/providers/composer";
 import { nameOf } from '#domain/utils';
 
@@ -21,7 +21,6 @@ export interface IComposerService {
   composerCachingOpts: CachingOptions;
   composerHttpOpts: HttpOptions;
   composerConfig: ComposerConfig;
-  composerJsonClient: IJsonHttpClient;
   packagistClient: PackagistClient;
   composerClient: ComposerClient;
 }
