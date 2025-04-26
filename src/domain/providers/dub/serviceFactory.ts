@@ -8,13 +8,15 @@ import {
   DubClient,
   DubConfig,
   DubFeatures,
+  DubJsonClient,
+  DubService,
   DubSuggestionProvider
 } from '#domain/providers/dub';
 import { nameOf } from '#domain/utils';
 
 export function addCachingOptions(services: IServiceCollection) {
   services.addSingleton(
-    nameOf<IDubServices>().dubCachingOpts,
+    DubService.dubCachingOpts,
     (container: IDomainServices) =>
       new CachingOptions(
         container.appConfig,
@@ -26,7 +28,7 @@ export function addCachingOptions(services: IServiceCollection) {
 
 export function addHttpOptions(services: IServiceCollection) {
   services.addSingleton(
-    nameOf<IDubServices>().dubHttpOpts,
+    DubService.dubHttpOpts,
     (container: IDomainServices) =>
       new HttpOptions(
         container.appConfig,
@@ -38,7 +40,7 @@ export function addHttpOptions(services: IServiceCollection) {
 
 export function addDubConfig(services: IServiceCollection) {
   services.addSingleton(
-    nameOf<IDubServices>().dubConfig,
+    DubService.dubConfig,
     (container: IDubServices & IDomainServices) =>
       new DubConfig(
         container.appConfig,
@@ -48,12 +50,12 @@ export function addDubConfig(services: IServiceCollection) {
   );
 }
 
-export function addDubClient(services: IServiceCollection) {
-  const serviceName = nameOf<IDubServices>().dubClient;
+export function addDubJsonClient(services: IServiceCollection) {
+  const serviceName = DubService.dubJsonClient;
   services.addSingleton(
     serviceName,
     (container: IDubServices & IDomainServices) =>
-      new DubClient(
+      new DubJsonClient(
         container.dubConfig,
         createJsonClient(
           container.authorizer,
@@ -62,6 +64,19 @@ export function addDubClient(services: IServiceCollection) {
             http: container.dubHttpOpts
           }
         ),
+        container.loggerFactory.create(serviceName)
+      )
+  );
+}
+
+export function addDubClient(services: IServiceCollection) {
+  const serviceName = DubService.dubClient;
+  services.addSingleton(
+    serviceName,
+    (container: IDubServices & IDomainServices) =>
+      new DubClient(
+        container.dubConfig,
+        container.dubJsonClient,
         container.loggerFactory.create(serviceName)
       )
   );

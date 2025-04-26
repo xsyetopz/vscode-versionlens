@@ -1,6 +1,7 @@
 import type { CachingOptions } from '#domain/caching';
-import type { HttpOptions } from '#domain/clients';
-import type { DubClient, DubConfig } from '#domain/providers/dub';
+import type { HttpOptions, JsonClientResponse } from '#domain/clients';
+import type { DubClient, DubConfig, DubJsonClient } from '#domain/providers/dub';
+import { nameOf } from '#domain/utils';
 
 export enum DubFeatures {
   Caching = 'dub.caching',
@@ -16,5 +17,14 @@ export interface IDubServices {
   dubCachingOpts: CachingOptions;
   dubHttpOpts: HttpOptions;
   dubConfig: DubConfig;
+  dubJsonClient: DubJsonClient;
   dubClient: DubClient;
 }
+
+export const DubService = nameOf<IDubServices>()
+
+export type DubApiResult = {
+  versions: [{ version }]
+}
+
+export type DubJsonClientResponse = JsonClientResponse<string[]>

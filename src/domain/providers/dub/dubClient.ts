@@ -1,4 +1,4 @@
-import type { HttpClientResponse, IJsonHttpClient } from '#domain/clients';
+import type { HttpClientResponse } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
   type IPackageClient,
@@ -12,7 +12,7 @@ import {
   VersionUtils,
   createSuggestions
 } from '#domain/packages';
-import { DubConfig } from '#domain/providers/dub';
+import type { DubConfig, DubJsonClient } from '#domain/providers/dub';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { valid } from 'semver';
 
@@ -20,12 +20,12 @@ export class DubClient implements IPackageClient<null> {
 
   constructor(
     readonly config: DubConfig,
-    readonly jsonClient: IJsonHttpClient,
+    readonly dubJsonClient: DubJsonClient,
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("jsonClient", jsonClient);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('dubJsonClient', dubJsonClient);
+    throwUndefinedOrNull('logger', logger);
   }
 
   async fetchPackage(request: PackageClientRequest<null>): Promise<PackageClientResponse> {
@@ -63,12 +63,9 @@ export class DubClient implements IPackageClient<null> {
     semverSpec: SemverSpec
   ): Promise<PackageClientResponse> {
     const requestedPackage = request.parsedDependency.package;
-    const query = { minimize: 'true' }
+    const jsonResponse = await this.dubJsonClient.get(requestedPackage.name);
 
-    // fetch package from api
-    const jsonResponse = await this.jsonClient.get(url, query);
-
-    const packageInfo = jsonResponse.data;
+    // process response
     const versionRange = semverSpec.rawVersion;
 
     const resolved = {
@@ -76,11 +73,9 @@ export class DubClient implements IPackageClient<null> {
       version: versionRange,
     };
 
-    const rawVersions = VersionUtils.extractVersionsFromMap(packageInfo.versions);
-
     // seperate versions to releases and prereleases
     const { releases, prereleases } = VersionUtils.splitReleasesFromArray(
-      rawVersions,
+      jsonResponse.data,
       this.config.prereleaseTagFilter
     );
 

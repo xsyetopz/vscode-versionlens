@@ -35,14 +35,6 @@ export function filterPrereleaseTags(
   );
 }
 
-export function extractVersionsFromMap(
-  versions: Array<PackageNameVersion>
-): Array<string> {
-  return versions.map(function (pnv: PackageNameVersion) {
-    return pnv.version;
-  });
-}
-
 export function extractTaggedVersions(
   versions: Array<string>
 ): Array<PackageNameVersion> {
