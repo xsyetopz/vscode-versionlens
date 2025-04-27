@@ -1,13 +1,10 @@
-import type { HttpClientResponse } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
-  type IPackageClient,
   type PackageClientRequest,
   type PackageClientResponse,
   type SemverSpec,
   ClientResponseFactory,
   PackageSourceType,
-  PackageStatusFactory,
   VersionUtils,
   createSuggestions
 } from '#domain/packages';
@@ -19,51 +16,19 @@ import type {
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { valid } from 'semver';
 
-export class MavenClient implements IPackageClient<MavenClientData> {
+export class MavenSuggestionResolver {
 
   constructor(
     readonly config: MavenConfig,
     readonly mavenHttpClient: MavenHttpClient,
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("mavenHttpClient", mavenHttpClient);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('mavenHttpClient', mavenHttpClient);
+    throwUndefinedOrNull('logger', logger);
   }
 
-  async fetchPackage(
-    request: PackageClientRequest<MavenClientData>
-  ): Promise<PackageClientResponse> {
-    const requestedPackage = request.parsedDependency.package;
-    const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
-    const { repositories } = request.clientData;
-    const repoUrls = repositories.map(x => x.url);
-
-    try {
-      return await this.createRemotePackageDocument(repoUrls, request, semverSpec);
-    } catch (error) {
-      const errorResponse = error as HttpClientResponse;
-
-      this.logger.debug(
-        "Caught exception from {packageSource}: {error}",
-        PackageSourceType.Registry,
-        errorResponse
-      );
-
-      const suggestion = PackageStatusFactory.createFromHttpStatus(errorResponse.status);
-      if (suggestion != null) {
-        return ClientResponseFactory.create(
-          PackageSourceType.Registry,
-          errorResponse,
-          [suggestion]
-        )
-      }
-
-      throw errorResponse;
-    }
-  }
-
-  async createRemotePackageDocument(
+  async fromMavenApi(
     repos: string[],
     request: PackageClientRequest<MavenClientData>,
     semverSpec: SemverSpec

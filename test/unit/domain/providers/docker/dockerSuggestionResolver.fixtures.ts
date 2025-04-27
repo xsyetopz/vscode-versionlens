@@ -1,5 +1,5 @@
-import { PackageStatusFactory, PackageSuggestion, UpdateableFactory } from '#domain/packages';
-import { DockerHubRepository } from '#domain/providers/docker';
+import { type PackageSuggestion, PackageStatusFactory, UpdateableFactory } from '#domain/packages';
+import type { DockerHubRepository } from '#domain/providers/docker';
 
 export default {
   test: <DockerHubRepository[]>[

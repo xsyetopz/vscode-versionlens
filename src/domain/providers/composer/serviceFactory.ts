@@ -5,11 +5,11 @@ import type { IServiceCollection } from '#domain/di';
 import type { IProviderServices } from '#domain/providers';
 import {
   type IComposerService,
-  ComposerClient,
   ComposerConfig,
   ComposerFeatures,
   ComposerService,
   ComposerSuggestionProvider,
+  ComposerSuggestionResolver,
   PackagistClient
 } from '#domain/providers/composer';
 import { nameOf } from '#domain/utils';
@@ -70,12 +70,12 @@ export function addPackagistClient(services: IServiceCollection) {
   );
 }
 
-export function addComposerClient(services: IServiceCollection) {
-  const serviceName = ComposerService.composerClient;
+export function addComposerSuggestionResolver(services: IServiceCollection) {
+  const serviceName = ComposerService.composerSuggestionResolver;
   services.addSingleton(
     serviceName,
     (container: IComposerService & IDomainServices) =>
-      new ComposerClient(
+      new ComposerSuggestionResolver(
         container.composerConfig,
         container.packagistClient,
         container.loggerFactory.create(serviceName)
@@ -88,7 +88,7 @@ export function addSuggestionProvider(services: IServiceCollection) {
     nameOf<IProviderServices>().suggestionProvider,
     (container: IComposerService & IDomainServices) =>
       new ComposerSuggestionProvider(
-        container.composerClient,
+        container.composerSuggestionResolver,
         container.composerConfig,
         container.loggerFactory.create(ComposerSuggestionProvider.name)
       )

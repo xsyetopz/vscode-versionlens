@@ -5,12 +5,12 @@ import type { IServiceCollection } from '#domain/di';
 import type { IProviderServices } from '#domain/providers';
 import {
   type IPypiServices,
-  PypiClient,
   PypiConfig,
   PypiFeatures,
   PypiHttpClient,
   PypiService,
-  PypiSuggestionProvider
+  PypiSuggestionProvider,
+  PypiSuggestionResolver
 } from '#domain/providers/pypi';
 import { nameOf } from '#domain/utils';
 
@@ -70,12 +70,12 @@ export function addPypiHttpClient(services: IServiceCollection) {
   );
 }
 
-export function addPypiClient(services: IServiceCollection) {
-  const serviceName = PypiService.pypiClient;
+export function addPypiSuggestionResolver(services: IServiceCollection) {
+  const serviceName = PypiService.pypiSuggestionResolver;
   services.addSingleton(
     serviceName,
     (container: IPypiServices & IDomainServices) =>
-      new PypiClient(
+      new PypiSuggestionResolver(
         container.pypiConfig,
         container.pypiHttpClient,
         container.loggerFactory.create(serviceName)
@@ -88,7 +88,7 @@ export function addSuggestionProvider(services: IServiceCollection) {
     nameOf<IProviderServices>().suggestionProvider,
     (container: IPypiServices & IDomainServices) =>
       new PypiSuggestionProvider(
-        container.pypiClient,
+        container.pypiSuggestionResolver,
         container.pypiConfig,
         container.loggerFactory.create(PypiSuggestionProvider.name)
       )

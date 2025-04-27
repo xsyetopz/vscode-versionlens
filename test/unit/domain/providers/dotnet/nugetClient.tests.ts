@@ -1,5 +1,10 @@
 import { type CachingOptions, MemoryExpiryCache } from '#domain/caching';
-import { type IJsonHttpClient, type JsonClientResponse, ClientResponseSource } from '#domain/clients';
+import {
+  type IJsonHttpClient,
+  type JsonClientResponse,
+  ClientResponseSource,
+  HttpRequestError
+} from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import { type DotNetConfig, NuGetClient } from '#domain/providers/dotnet';
 import { RegistryProtocols } from '#domain/utils';
@@ -73,12 +78,6 @@ export const NuGetClientTests = {
       const testPackageName = 'test-package-name'
       const failUrl = `http://failed`
       const successUrl = `http://success`
-      const testFailResp: JsonClientResponse<any> = {
-        data: [],
-        source: ClientResponseSource.remote,
-        status: 404,
-        rejected: true
-      }
       const successResp: JsonClientResponse<any> = {
         data: [],
         source: ClientResponseSource.remote,
@@ -87,7 +86,7 @@ export const NuGetClientTests = {
       }
 
       when(this.jsonClientMock.get(`${failUrl}/${testPackageName}/index.json`))
-        .thenReject(testFailResp as any)
+        .thenReject(new HttpRequestError(ClientResponseSource.remote, 404, '') as any)
 
       when(this.jsonClientMock.get(`${successUrl}/${testPackageName}/index.json`))
         .thenResolve(successResp as any)

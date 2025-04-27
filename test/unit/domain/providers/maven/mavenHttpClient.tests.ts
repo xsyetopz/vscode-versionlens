@@ -2,7 +2,8 @@ import { type CachingOptions, MemoryExpiryCache } from '#domain/caching';
 import {
   type IHttpClient,
   type JsonClientResponse,
-  ClientResponseSource
+  ClientResponseSource,
+  HttpRequestError
 } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import { MavenConfig, MavenHttpClient } from '#domain/providers/maven';
@@ -72,12 +73,6 @@ export const MavenHttpClientTests = {
       const testPackageName = `${testGroup}:${testArtifact}`
       const failUrl = `http://failed/`
       const successUrl = `http://success/`
-      const testFailResp: JsonClientResponse<any> = {
-        data: [],
-        source: ClientResponseSource.remote,
-        status: 404,
-        rejected: true
-      }
       const successResp: JsonClientResponse<any> = {
         data: [],
         source: ClientResponseSource.remote,
@@ -86,7 +81,7 @@ export const MavenHttpClientTests = {
       }
 
       when(this.httpClientMock.get(`${failUrl}${testGroup}/${testArtifact}/maven-metadata.xml`))
-        .thenReject(testFailResp as any)
+        .thenReject(new HttpRequestError(ClientResponseSource.remote, 404, '') as any)
 
       when(this.httpClientMock.get(`${successUrl}${testGroup}/${testArtifact}/maven-metadata.xml`))
         .thenResolve(successResp as any)

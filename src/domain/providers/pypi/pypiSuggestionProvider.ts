@@ -1,5 +1,11 @@
 import type { ILogger } from '#domain/logging';
-import { createPackageResource, PackageDependency } from '#domain/packages';
+import {
+  type PackageClientRequest,
+  type PackageClientResponse,
+  createPackageResource,
+  PackageDependency,
+  VersionUtils
+} from '#domain/packages';
 import {
   type PackageGitDescriptor,
   type PackageNameDescriptor,
@@ -11,7 +17,7 @@ import {
   parsePackagesToml
 } from '#domain/parsers';
 import type { ISuggestionProvider } from '#domain/providers';
-import type { PypiClient, PypiConfig } from '#domain/providers/pypi';
+import type { PypiConfig, PypiSuggestionResolver } from '#domain/providers/pypi';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class PypiSuggestionProvider implements ISuggestionProvider {
@@ -19,13 +25,13 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
   readonly name: string = 'pypi';
 
   constructor(
-    readonly client: PypiClient,
+    readonly resolver: PypiSuggestionResolver,
     readonly config: PypiConfig,
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("client", client);
-    throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('resolver', resolver);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('logger', logger);
   }
 
   parseDependencies(packagePath: string, packageText: string): Array<PackageDependency> {
@@ -107,6 +113,24 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
     } // end map loop
 
     return packageDependencies;
+  }
+
+  async fetchSuggestions(request: PackageClientRequest<any>): Promise<PackageClientResponse> {
+    for (const type in request.parsedDependency.descriptors.types) {
+      switch (type) {
+        case 'path':
+          return this.resolver.fromPath(
+            request.parsedDependency,
+            request.parsedDependency.descriptors.getType(type)
+          );
+        case 'git':
+          return this.resolver.fromGit();
+      }
+    }
+
+    const requestedPackage = request.parsedDependency.package;
+    const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
+    return await this.resolver.fromPypiApi(request, semverSpec);
   }
 
 }

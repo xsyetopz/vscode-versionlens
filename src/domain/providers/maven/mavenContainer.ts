@@ -2,7 +2,7 @@ import { IServiceCollection, IServiceProvider } from '#domain/di';
 import {
   addCachingOptions,
   addHttpOptions,
-  addMavenClient,
+  addMavenSuggestionResolver,
   addMavenConfig,
   addMavenHttpClient,
   addMvnCliClient,
@@ -24,7 +24,7 @@ export async function configureContainer(
 
   addMavenHttpClient(services);
 
-  addMavenClient(services);
+  addMavenSuggestionResolver(services);
 
   addSuggestionProvider(services);
 

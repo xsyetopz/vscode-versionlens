@@ -1,6 +1,6 @@
 import type { CachingOptions } from '#domain/caching';
 import type { HttpOptions, JsonClientResponse } from '#domain/clients';
-import type { GoClient, GoConfig, GoHttpClient } from '#domain/providers/golang';
+import type { GoConfig, GoHttpClient, GoSuggestionResolver } from '#domain/providers/golang';
 import { nameOf } from '#domain/utils';
 
 export enum GoFeatures {
@@ -17,7 +17,7 @@ export interface IGoService {
   goHttpOpts: HttpOptions;
   goConfig: GoConfig;
   goHttpClient: GoHttpClient;
-  goClient: GoClient;
+  goSuggestionResolver: GoSuggestionResolver;
 }
 
 export const GoService = nameOf<IGoService>()

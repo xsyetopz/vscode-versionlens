@@ -1,6 +1,6 @@
 import type { CachingOptions } from '#domain/caching';
 import type { HttpOptions, JsonClientResponse } from '#domain/clients';
-import type { PubClient, PubConfig, PubJsonClient } from '#domain/providers/pub';
+import type { PubConfig, PubJsonClient, PubSuggestionResolver } from '#domain/providers/pub';
 import { nameOf } from '#domain/utils';
 
 export enum PubFeatures {
@@ -18,7 +18,7 @@ export interface IPubServices {
   pubHttpOpts: HttpOptions;
   pubConfig: PubConfig;
   pubJsonClient: PubJsonClient;
-  pubClient: PubClient;
+  pubSuggestionResolver: PubSuggestionResolver;
 }
 
 export const PubService = nameOf<IPubServices>()

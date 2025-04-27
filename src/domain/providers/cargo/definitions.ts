@@ -1,6 +1,6 @@
 import type { CachingOptions } from '#domain/caching';
 import type { HttpOptions, JsonClientResponse } from '#domain/clients';
-import type { CargoClient, CargoConfig, CratesClient } from "#domain/providers/cargo";
+import type { CargoConfig, CargoSuggestionResolver, CratesClient } from '#domain/providers/cargo';
 import { nameOf } from '#domain/utils';
 
 export enum CargoFeatures {
@@ -18,7 +18,7 @@ export interface ICargoServices {
   cargoHttpOpts: HttpOptions
   cargoConfig: CargoConfig
   cratesClient: CratesClient
-  cargoClient: CargoClient
+  cargoSuggestionResolver: CargoSuggestionResolver
 }
 
 export const CargoService = nameOf<ICargoServices>()

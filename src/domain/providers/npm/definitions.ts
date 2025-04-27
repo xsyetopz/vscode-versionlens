@@ -3,8 +3,8 @@ import type { HttpOptions, JsonClientResponse } from '#domain/clients';
 import type {
   NpmConfig,
   NpmGitHubClient,
-  NpmPackageClient,
-  NpmRegistryClient
+  NpmRegistryClient,
+  NpmSuggestionResolver
 } from '#domain/providers/npm';
 import { nameOf } from '#domain/utils';
 
@@ -23,7 +23,7 @@ export interface INpmServices {
   npmConfig: NpmConfig;
   npmGithubClient: NpmGitHubClient;
   npmRegistryClient: NpmRegistryClient;
-  npmClient: NpmPackageClient;
+  npmSuggestionResolver: NpmSuggestionResolver;
 }
 
 export const NpmService = nameOf<INpmServices>()

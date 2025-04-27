@@ -2,8 +2,8 @@ import type { ILogger } from '#domain/logging';
 import {
   type NpmClientData,
   NpmConfig,
-  NpmPackageClient,
-  NpmSuggestionProvider
+  NpmSuggestionProvider,
+  NpmSuggestionResolver
 } from '#domain/providers/npm';
 import { fileExists } from '#domain/utils';
 import { createDir, createFile, fileDir, removeDir, removeFile } from '#test/utils';
@@ -30,7 +30,7 @@ type AllTestContext = {
 }
 
 type TestContext = {
-  clientMock: NpmPackageClient,
+  resolverMock: NpmSuggestionResolver,
   configMock: NpmConfig,
   loggerMock: ILogger
 }
@@ -52,10 +52,10 @@ export const NpmSuggestionProviderTests = {
   preFetchSuggestions: {
 
     beforeEach: async function (this: TestContext) {
-      this.clientMock = mock<NpmPackageClient>();
+      this.resolverMock = mock<NpmSuggestionResolver>();
       this.configMock = mock<NpmConfig>();
       this.loggerMock = mock<ILogger>();
-      when(this.clientMock.config).thenReturn(instance(this.configMock));
+      when(this.resolverMock.config).thenReturn(instance(this.configMock));
     },
 
     "returns client data using .npmrc settings $1": [
@@ -67,7 +67,7 @@ export const NpmSuggestionProviderTests = {
         const testEnvFilePath = path.join(testPackagePath, '.env');
         const testUserConfigPath = resolve(homedir(), testEnvUserConfig ? ".npmrcenv" : ".npmrc");
         const put = new NpmSuggestionProvider(
-          instance(this.clientMock),
+          instance(this.resolverMock),
           instance(this.configMock),
           instance(this.loggerMock)
         );
@@ -115,7 +115,7 @@ export const NpmSuggestionProviderTests = {
 
     "returns client data when no .npmrc": async function (this: TestContext) {
       const put = new NpmSuggestionProvider(
-        instance(this.clientMock),
+        instance(this.resolverMock),
         instance(this.configMock),
         instance(this.loggerMock)
       );
@@ -146,7 +146,7 @@ export const NpmSuggestionProviderTests = {
       const testNpmRcFilePath = path.join(testPackagePath, '.npmrc');
 
       const put = new NpmSuggestionProvider(
-        instance(this.clientMock),
+        instance(this.resolverMock),
         instance(this.configMock),
         instance(this.loggerMock)
       );
@@ -192,7 +192,7 @@ export const NpmSuggestionProviderTests = {
       const testPemFilePath = path.join(testPackagePath, 'test-cafile.pem');
 
       const put = new NpmSuggestionProvider(
-        instance(this.clientMock),
+        instance(this.resolverMock),
         instance(this.configMock),
         instance(this.loggerMock)
       );

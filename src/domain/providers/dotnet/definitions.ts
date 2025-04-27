@@ -4,7 +4,7 @@ import type { PackageVersionType } from '#domain/packages';
 import type {
   DotNetCli,
   DotNetConfig,
-  DotnetClient,
+  DotnetSuggestionResolver,
   NuGetClient,
   NugetOptions
 } from '#domain/providers/dotnet';
@@ -70,7 +70,7 @@ export interface IDotNetServices {
   dotnetConfig: DotNetConfig;
   dotnetCli: DotNetCli;
   nugetClient: NuGetClient;
-  dotnetClient: DotnetClient;
+  dotnetSuggestionResolver: DotnetSuggestionResolver;
 }
 
 export const DotNetService = nameOf<IDotNetServices>()

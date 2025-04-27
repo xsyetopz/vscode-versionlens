@@ -1,6 +1,6 @@
 import type { CachingOptions } from '#domain/caching';
 import type { HttpOptions, JsonClientResponse } from '#domain/clients';
-import type { PypiClient, PypiConfig, PypiHttpClient } from '#domain/providers/pypi';
+import type { PypiConfig, PypiHttpClient, PypiSuggestionResolver } from '#domain/providers/pypi';
 import { nameOf } from '#domain/utils';
 
 export enum PypiFeatures {
@@ -18,7 +18,7 @@ export interface IPypiServices {
   pypiHttpOpts: HttpOptions;
   pypiConfig: PypiConfig;
   pypiHttpClient: PypiHttpClient;
-  pypiClient: PypiClient;
+  pypiSuggestionResolver: PypiSuggestionResolver;
 }
 
 export const PypiService = nameOf<IPypiServices>()

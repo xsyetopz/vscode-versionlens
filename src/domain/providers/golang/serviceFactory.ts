@@ -5,17 +5,18 @@ import type { IServiceCollection } from '#domain/di';
 import type { IProviderServices } from '#domain/providers';
 import {
   type IGoService,
-  GoClient,
   GoConfig,
   GoFeatures,
   GoHttpClient,
-  GoSuggestionProvider
+  GoService,
+  GoSuggestionProvider,
+  GoSuggestionResolver
 } from '#domain/providers/golang';
 import { nameOf } from '#domain/utils';
 
 export function addCachingOptions(services: IServiceCollection) {
   services.addSingleton(
-    nameOf<IGoService>().goCachingOpts,
+    GoService.goCachingOpts,
     (container: IDomainServices) =>
       new CachingOptions(
         container.appConfig,
@@ -27,7 +28,7 @@ export function addCachingOptions(services: IServiceCollection) {
 
 export function addHttpOptions(services: IServiceCollection) {
   services.addSingleton(
-    nameOf<IGoService>().goHttpOpts,
+    GoService.goHttpOpts,
     (container: IDomainServices) =>
       new HttpOptions(
         container.appConfig,
@@ -39,7 +40,7 @@ export function addHttpOptions(services: IServiceCollection) {
 
 export function addGoConfig(services: IServiceCollection) {
   services.addSingleton(
-    nameOf<IGoService>().goConfig,
+    GoService.goConfig,
     (container: IGoService & IDomainServices) =>
       new GoConfig(
         container.appConfig,
@@ -50,7 +51,7 @@ export function addGoConfig(services: IServiceCollection) {
 }
 
 export function addGoHttpClient(services: IServiceCollection) {
-  const serviceName = nameOf<IGoService>().goHttpClient;
+  const serviceName = GoService.goHttpClient;
   services.addSingleton(
     serviceName,
     (container: IGoService & IDomainServices) =>
@@ -69,12 +70,12 @@ export function addGoHttpClient(services: IServiceCollection) {
   );
 }
 
-export function addGoClient(services: IServiceCollection) {
-  const serviceName = nameOf<IGoService>().goClient;
+export function addGoSuggestionResolver(services: IServiceCollection) {
+  const serviceName = GoService.goSuggestionResolver;
   services.addSingleton(
     serviceName,
     (container: IGoService & IDomainServices) =>
-      new GoClient(
+      new GoSuggestionResolver(
         container.goConfig,
         container.goHttpClient,
         container.loggerFactory.create(serviceName)
@@ -87,7 +88,7 @@ export function addSuggestionProvider(services: IServiceCollection) {
     nameOf<IProviderServices>().suggestionProvider,
     (container: IGoService & IDomainServices) =>
       new GoSuggestionProvider(
-        container.goClient,
+        container.goSuggestionResolver,
         container.goConfig,
         container.loggerFactory.create(GoSuggestionProvider.name)
       )

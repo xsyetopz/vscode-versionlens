@@ -5,11 +5,11 @@ import type { IServiceCollection } from '#domain/di';
 import type { IProviderServices } from '#domain/providers';
 import {
   type ICargoServices,
-  CargoClient,
   CargoConfig,
   CargoFeatures,
   CargoService,
   CargoSuggestionProvider,
+  CargoSuggestionResolver,
   CratesClient
 } from "#domain/providers/cargo";
 import { nameOf } from '#domain/utils';
@@ -70,12 +70,12 @@ export function addCratesClient(services: IServiceCollection) {
   );
 }
 
-export function addCargoClient(services: IServiceCollection) {
-  const serviceName = CargoService.cargoClient;
+export function addCargoSuggestionResolver(services: IServiceCollection) {
+  const serviceName = CargoService.cargoSuggestionResolver;
   services.addSingleton(
     serviceName,
     (container: ICargoServices & IDomainServices) =>
-      new CargoClient(
+      new CargoSuggestionResolver(
         container.cargoConfig,
         container.cratesClient,
         container.loggerFactory.create(serviceName)
@@ -88,7 +88,7 @@ export function addSuggestionProvider(services: IServiceCollection) {
     nameOf<IProviderServices>().suggestionProvider,
     (container: ICargoServices & IDomainServices) =>
       new CargoSuggestionProvider(
-        container.cargoClient,
+        container.cargoSuggestionResolver,
         container.cargoConfig,
         container.loggerFactory.create(CargoSuggestionProvider.name)
       )

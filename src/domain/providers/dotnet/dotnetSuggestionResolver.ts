@@ -1,12 +1,9 @@
-import type { HttpClientResponse } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
-  type IPackageClient,
   type PackageClientRequest,
   type PackageClientResponse,
   ClientResponseFactory,
   PackageSourceType,
-  PackageStatusFactory,
   PackageVersionType,
   VersionUtils,
   createSuggestions
@@ -19,7 +16,7 @@ import {
 } from '#domain/providers/dotnet';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
-export class DotnetClient implements IPackageClient<NuGetClientData> {
+export class DotnetSuggestionResolver {
 
   constructor(
     readonly config: DotNetConfig,
@@ -31,29 +28,7 @@ export class DotnetClient implements IPackageClient<NuGetClientData> {
     throwUndefinedOrNull("logger", logger);
   }
 
-  async fetchPackage(request: PackageClientRequest<NuGetClientData>): Promise<PackageClientResponse> {
-    try {
-      return await this.fetch(request);
-    }
-    catch (error) {
-      const errorResponse = error as HttpClientResponse;
-
-      // attempt to create a suggestion from the http status
-      const suggestion = PackageStatusFactory.createFromHttpStatus(errorResponse.status);
-      if (suggestion != null) {
-        return ClientResponseFactory.create(
-          PackageSourceType.Registry,
-          errorResponse,
-          [suggestion]
-        );
-      }
-
-      // unexpected
-      return Promise.reject(errorResponse);
-    };
-  }
-
-  async fetch(request: PackageClientRequest<NuGetClientData>): Promise<PackageClientResponse> {
+  async fromNuGet(request: PackageClientRequest<NuGetClientData>): Promise<PackageClientResponse> {
     // fetch
     const requestedPackage = request.parsedDependency.package;
     const jsonResponse = await this.nugetClient.get(

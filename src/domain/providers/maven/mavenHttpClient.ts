@@ -1,5 +1,5 @@
 import type { IExpiryCache } from '#domain/caching';
-import { type HttpClientResponse, type IHttpClient, ClientResponseSource } from '#domain/clients';
+import { type IHttpClient, ClientResponseSource, HttpRequestError } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
   type MavenApiResponse,
@@ -41,28 +41,27 @@ export class MavenHttpClient {
       const result = { ...httpResponse, data };
       return this.requestCache.set(url, result);
     } catch (error) {
-      const errorResponse = error as HttpClientResponse;
-
-      this.logger.debug(
-        "request failed for '{packageName}' from '{resourceUrl}': {error}",
-        packageName,
-        new URL(url),
-        errorResponse
-      );
-
-      // retry if 404 and we have more urls to try
-      if (errorResponse.status === 404 && fallbacks.length > 0) {
+      if (error instanceof HttpRequestError) {
         this.logger.debug(
-          "attempting to fetch '{packageName}' from '{url}'",
+          "request failed for '{packageName}' from '{resourceUrl}': {error}",
           packageName,
-          new URL(url)
+          new URL(url),
+          error
         );
-        return this.get(packageName, fallbacks);
+
+        // retry if 404 and we have more urls to try
+        if (error.status === 404 && fallbacks.length > 0) {
+          this.logger.debug(
+            "attempting to fetch '{packageName}' from '{url}'",
+            packageName,
+            new URL(url)
+          );
+          return this.get(packageName, fallbacks);
+        }
       }
 
       throw error;
     }
-
   }
 
 }

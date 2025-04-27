@@ -1,5 +1,15 @@
+import { ClientResponseSource } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
-import { PackageDependency, createPackageResource } from '#domain/packages';
+import {
+  type PackageClientRequest,
+  type PackageClientResponse,
+  type PackageSuggestion,
+  ClientResponseFactory,
+  PackageDependency,
+  PackageSourceType,
+  PackageStatusFactory,
+  createPackageResource
+} from '#domain/packages';
 import {
   type JsonPackageTypeHandler,
   type JsonParserOptions,
@@ -11,11 +21,15 @@ import {
 } from '#domain/parsers';
 import { ISuggestionProvider } from '#domain/providers';
 import {
+  type NpaSpec,
   type NpmClientData,
+  type NpmConfig,
+  type NpmSuggestionResolver,
   type TNpmCliConfigParams,
-  NpmConfig,
-  NpmPackageClient,
+  NpaTypes,
+  convertNpmErrorToResponse,
   createNpmRegistryClientData,
+  createNpmSuggestionFromErrorCode,
   customDescriptorHandler,
   npmReplaceVersion,
   resolveDotFilePath
@@ -24,6 +38,7 @@ import type { KeyDictionary } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { homedir } from 'node:os';
 import { resolve } from 'node:path';
+import npa from 'npm-package-arg';
 
 const complexTypeHandlers: KeyDictionary<JsonPackageTypeHandler> = {
   [PackageDescriptorType.version]: createVersionDescFromJsonNode
@@ -34,13 +49,13 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
   readonly name: string = 'npm';
 
   constructor(
-    readonly client: NpmPackageClient,
+    readonly resolver: NpmSuggestionResolver,
     readonly config: NpmConfig,
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("client", client);
-    throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('resolver', resolver);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('logger', logger);
   }
 
   suggestionReplaceFn = npmReplaceVersion;
@@ -131,6 +146,70 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
     };
 
     return createNpmRegistryClientData(packagePath, npmCliConfigData)
+  }
+
+  async fetchSuggestions(request: PackageClientRequest<any>): Promise<PackageClientResponse> {
+    let source: PackageSourceType;
+
+    try {
+      const requestedPackage = request.parsedDependency.package;
+      const npaSpec = npa.resolve(
+        requestedPackage.name,
+        requestedPackage.version,
+        requestedPackage.path
+      ) as NpaSpec;
+
+      switch (npaSpec.type) {
+        case NpaTypes.Directory:
+          source = PackageSourceType.Directory
+        case NpaTypes.File:
+          source = PackageSourceType.File
+          return await this.resolver.fromFileProtocol(requestedPackage);
+
+        case NpaTypes.Git:
+          source = PackageSourceType.Git
+          return await this.resolver.fromGit(npaSpec);
+
+        default:
+          // case NpaTypes.Version:
+          // case NpaTypes.Range:
+          // case NpaTypes.Remote:
+          // case NpaTypes.Alias:
+          // case NpaTypes.Tag:
+          source = PackageSourceType.Registry
+          return await this.resolver.fromRegistry(request, npaSpec)
+      }
+
+    } catch (response) {
+      this.logger.debug("Caught exception from {source}: {error}", source, response);
+
+      if (!response.data) {
+        response = convertNpmErrorToResponse(
+          response,
+          ClientResponseSource.remote
+        );
+      }
+
+      const status = response.status
+      const statusIsNumber = Number.isInteger(status);
+      let suggestions: Array<PackageSuggestion>;
+
+      if (statusIsNumber)
+        suggestions = [
+          status === 128
+            ? PackageStatusFactory.createNotFoundStatus()
+            : PackageStatusFactory.createFromHttpStatus(status)
+        ];
+      else
+        suggestions = createNpmSuggestionFromErrorCode(status);
+
+      return ClientResponseFactory.create(
+        source,
+        ClientResponseFactory.createResponseStatus(response.source, response.status),
+        suggestions
+      );
+    };
+
   }
 
 }

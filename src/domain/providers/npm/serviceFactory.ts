@@ -8,10 +8,10 @@ import {
   NpmConfig,
   NpmFeatures,
   NpmGitHubClient,
-  NpmPackageClient,
   NpmRegistryClient,
   NpmService,
-  NpmSuggestionProvider
+  NpmSuggestionProvider,
+  NpmSuggestionResolver
 } from '#domain/providers/npm';
 import { nameOf } from '#domain/utils';
 import NpmRegistryFetch from 'npm-registry-fetch';
@@ -89,12 +89,12 @@ export function addNpmRegistryClient(services: IServiceCollection) {
   );
 }
 
-export function addNpmPackageClient(services: IServiceCollection) {
-  const serviceName = NpmService.npmClient;
+export function addNpmSuggestionResolver(services: IServiceCollection) {
+  const serviceName = NpmService.npmSuggestionResolver;
   services.addSingleton(
     serviceName,
     (container: INpmServices & IDomainServices) =>
-      new NpmPackageClient(
+      new NpmSuggestionResolver(
         container.npmConfig,
         container.npmRegistryClient,
         container.npmGithubClient,
@@ -108,7 +108,7 @@ export function addSuggestionProvider(services: IServiceCollection) {
     nameOf<IProviderServices>().suggestionProvider,
     (container: INpmServices & IDomainServices) =>
       new NpmSuggestionProvider(
-        container.npmClient,
+        container.npmSuggestionResolver,
         container.npmConfig,
         container.loggerFactory.create(NpmSuggestionProvider.name)
       )

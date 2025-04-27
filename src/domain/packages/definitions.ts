@@ -1,7 +1,6 @@
 import type { ClientResponseSource } from '#domain/clients';
-import type { ILogger } from '#domain/logging';
 import type { PackageDependency, PackageSuggestion } from '#domain/packages';
-import type { IProviderConfig, ISuggestionProvider } from '#domain/providers';
+import type { ISuggestionProvider } from '#domain/providers';
 
 export enum PackageVersionType {
   Version = 'version',
@@ -52,13 +51,6 @@ export enum PackageSourceType {
   Git = 'git',
   Github = 'github',
   Registry = 'registry'
-}
-
-export interface IPackageClient<TClientData> {
-  logger: ILogger;
-  config: IProviderConfig,
-  fetchPackage: (request: PackageClientRequest<TClientData>)
-    => Promise<PackageClientResponse>;
 }
 
 export type PackageClientRequest<TClientData> = {

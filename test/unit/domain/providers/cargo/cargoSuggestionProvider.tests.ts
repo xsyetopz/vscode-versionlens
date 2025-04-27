@@ -1,6 +1,6 @@
 import type { ILogger } from '#domain/logging';
 import {
-  type CargoClient,
+  type CargoSuggestionResolver,
   type CargoConfig,
   CargoSuggestionProvider
 } from '#domain/providers/cargo';
@@ -9,7 +9,7 @@ import { instance, mock, when } from 'ts-mockito';
 import fixtures from './cargoSuggestionProvider.fixtures';
 
 type TestContext = {
-  cargoClientMock: CargoClient
+  cargoClientMock: CargoSuggestionResolver
   cargoConfigMock: CargoConfig
   loggerMock: ILogger
   put: CargoSuggestionProvider
@@ -20,7 +20,7 @@ export const cargoSuggestionProviderTests = {
   title: CargoSuggestionProvider.name,
 
   beforeEach: function (this: TestContext) {
-    this.cargoClientMock = mock<CargoClient>()
+    this.cargoClientMock = mock<CargoSuggestionResolver>()
     this.cargoConfigMock = mock<CargoConfig>()
     this.loggerMock = mock<ILogger>()
     this.put = new CargoSuggestionProvider(

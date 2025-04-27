@@ -3,7 +3,8 @@ import type { HttpOptions } from '#domain/clients';
 import type { IServiceCollection, IServiceProvider } from '#domain/di';
 import type { ILogger } from '#domain/logging';
 import type {
-  IPackageClient,
+  PackageClientRequest,
+  PackageClientResponse,
   PackageDependency,
   SuggestionReplaceFunction
 } from '#domain/packages';
@@ -27,7 +28,6 @@ export interface IProviderModule {
 export interface ISuggestionProvider {
   readonly name: string;
   readonly config: IProviderConfig;
-  readonly client: IPackageClient<any>
   readonly logger: ILogger;
   suggestionReplaceFn?: SuggestionReplaceFunction;
   parseDependencies(packagePath: string, packageText: string): Array<PackageDependency>;
@@ -37,6 +37,8 @@ export interface ISuggestionProvider {
    * @param packagePath 
    */
   preFetchSuggestions?(projectPath: string, packagePath: string): Promise<any>;
+
+  fetchSuggestions(request: PackageClientRequest<any>): Promise<PackageClientResponse>;
 }
 
 export interface IProviderServices {

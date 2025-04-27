@@ -1,5 +1,11 @@
 import type { ILogger } from '#domain/logging';
-import { createPackageResource, PackageDependency } from '#domain/packages';
+import {
+  type PackageClientRequest,
+  type PackageClientResponse,
+  createPackageResource,
+  PackageDependency,
+  VersionUtils
+} from '#domain/packages';
 import {
   type PackageNameDescriptor,
   type PackageVersionDescriptor,
@@ -7,9 +13,9 @@ import {
 } from '#domain/parsers';
 import type { ISuggestionProvider } from '#domain/providers';
 import {
-  type MavenClient,
   type MavenClientData,
   type MavenConfig,
+  type MavenSuggestionResolver,
   type MvnCli,
   parseMavenPackagesXml
 } from '#domain/providers/maven';
@@ -21,15 +27,15 @@ export class MavenSuggestionProvider implements ISuggestionProvider {
   readonly name: string = 'maven';
 
   constructor(
-    readonly client: MavenClient,
+    readonly resolver: MavenSuggestionResolver,
     readonly mvnCli: MvnCli,
     readonly config: MavenConfig,
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("client", client);
-    throwUndefinedOrNull("mvnCli", mvnCli);
-    throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('resolver', resolver);
+    throwUndefinedOrNull('mvnCli', mvnCli);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('logger', logger);
   }
 
   parseDependencies(
@@ -78,6 +84,14 @@ export class MavenSuggestionProvider implements ISuggestionProvider {
 
     // return the client data
     return { repositories };
+  }
+
+  async fetchSuggestions(request: PackageClientRequest<any>): Promise<PackageClientResponse> {
+    const requestedPackage = request.parsedDependency.package;
+    const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
+    const { repositories } = request.clientData;
+    const repoUrls = repositories.map(x => x.url);
+    return await this.resolver.fromMavenApi(repoUrls, request, semverSpec);
   }
 
 }

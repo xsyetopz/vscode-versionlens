@@ -1,9 +1,9 @@
 import { IServiceCollection, IServiceProvider } from '#domain/di';
 import {
   addCachingOptions,
-  addDubClient,
   addDubConfig,
   addDubJsonClient,
+  addDubSuggestionResolver,
   addHttpOptions,
   addSuggestionProvider
 } from '#domain/providers/dub';
@@ -21,7 +21,7 @@ export async function configureContainer(
 
   addDubJsonClient(services);
 
-  addDubClient(services);
+  addDubSuggestionResolver(services);
 
   addSuggestionProvider(services);
 

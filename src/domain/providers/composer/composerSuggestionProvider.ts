@@ -1,5 +1,11 @@
 import type { ILogger } from '#domain/logging';
-import { PackageDependency, createPackageResource } from '#domain/packages';
+import {
+  PackageClientRequest,
+  PackageClientResponse,
+  PackageDependency,
+  VersionUtils,
+  createPackageResource
+} from '#domain/packages';
 import {
   type JsonPackageTypeHandler,
   type JsonParserOptions,
@@ -11,8 +17,8 @@ import {
 } from '#domain/parsers';
 import type { ISuggestionProvider } from '#domain/providers';
 import {
-  ComposerClient,
-  ComposerConfig,
+  type ComposerConfig,
+  type ComposerSuggestionResolver,
   createComposerProjectVersionDesc
 } from '#domain/providers/composer';
 import type { KeyDictionary } from '#domain/utils';
@@ -27,13 +33,13 @@ export class ComposerSuggestionProvider implements ISuggestionProvider {
   readonly name: string = 'composer';
 
   constructor(
-    readonly client: ComposerClient,
+    readonly resolver: ComposerSuggestionResolver,
     readonly config: ComposerConfig,
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("client", client);
-    throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('resolver', resolver);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('logger', logger);
   }
 
   parseDependencies(packagePath: string, packageText: string): Array<PackageDependency> {
@@ -69,6 +75,12 @@ export class ComposerSuggestionProvider implements ISuggestionProvider {
       );
 
     return packageDependencies;
+  }
+
+  async fetchSuggestions(request: PackageClientRequest<any>): Promise<PackageClientResponse> {
+    const requestedPackage = request.parsedDependency.package;
+    const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
+    return await this.resolver.fromPackagist(request, semverSpec)
   }
 
 }

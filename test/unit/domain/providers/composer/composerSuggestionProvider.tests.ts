@@ -1,7 +1,7 @@
 import type { ILogger } from '#domain/logging';
 import {
-  type ComposerClient,
   type ComposerConfig,
+  type ComposerSuggestionResolver,
   ComposerSuggestionProvider
 } from '#domain/providers/composer';
 import { deepEqual } from 'node:assert';
@@ -9,8 +9,8 @@ import { instance, mock, when } from 'ts-mockito';
 import fixtures from './composerSuggestionProvider.fixtures';
 
 type TestContext = {
-  ComposerClientMock: ComposerClient
-  ComposerConfigMock: ComposerConfig
+  resolverMock: ComposerSuggestionResolver
+  configMock: ComposerConfig
   loggerMock: ILogger
   put: ComposerSuggestionProvider
 }
@@ -20,12 +20,12 @@ export const composerSuggestionProviderTests = {
   title: ComposerSuggestionProvider.name,
 
   beforeEach: function (this: TestContext) {
-    this.ComposerClientMock = mock<ComposerClient>()
-    this.ComposerConfigMock = mock<ComposerConfig>()
+    this.resolverMock = mock<ComposerSuggestionResolver>()
+    this.configMock = mock<ComposerConfig>()
     this.loggerMock = mock<ILogger>()
     this.put = new ComposerSuggestionProvider(
-      instance(this.ComposerClientMock),
-      instance(this.ComposerConfigMock),
+      instance(this.resolverMock),
+      instance(this.configMock),
       instance(this.loggerMock)
     )
   },
@@ -37,7 +37,7 @@ export const composerSuggestionProviderTests = {
       'require',
       'require-dev'
     ];
-    when(this.ComposerConfigMock.dependencyProperties).thenReturn(testProps);
+    when(this.configMock.dependencyProperties).thenReturn(testProps);
     // test
     const actual = this.put.parseDependencies(testPackagePath, fixtures.test)
     // assert

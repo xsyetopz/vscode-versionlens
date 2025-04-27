@@ -1,7 +1,5 @@
-import type { HttpClientResponse } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
-  type IPackageClient,
   type PackageClientRequest,
   type PackageClientResponse,
   type PackageSuggestion,
@@ -16,7 +14,7 @@ import type { DubConfig, DubJsonClient } from '#domain/providers/dub';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { valid } from 'semver';
 
-export class DubClient implements IPackageClient<null> {
+export class DubSuggestionResolver {
 
   constructor(
     readonly config: DubConfig,
@@ -28,37 +26,7 @@ export class DubClient implements IPackageClient<null> {
     throwUndefinedOrNull('logger', logger);
   }
 
-  async fetchPackage(request: PackageClientRequest<null>): Promise<PackageClientResponse> {
-    const requestedPackage = request.parsedDependency.package;
-    const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
-    const url = `${this.config.apiUrl}${encodeURIComponent(requestedPackage.name)}/info`;
-
-    try {
-      return await this.createRemotePackageDocument(url, request, semverSpec);
-    } catch (error) {
-      const errorResponse = error as HttpClientResponse;
-
-      this.logger.debug(
-        "Caught exception from {packageSource}: {error}",
-        PackageSourceType.Registry,
-        errorResponse
-      );
-
-      const suggestion = PackageStatusFactory.createFromHttpStatus(errorResponse.status);
-      if (suggestion != null) {
-        return ClientResponseFactory.create(
-          PackageSourceType.Registry,
-          errorResponse,
-          [suggestion]
-        );
-      }
-
-      throw errorResponse;
-    }
-  }
-
-  async createRemotePackageDocument(
-    url: string,
+  async fromDubApi(
     request: PackageClientRequest<null>,
     semverSpec: SemverSpec
   ): Promise<PackageClientResponse> {
@@ -97,7 +65,7 @@ export class DubClient implements IPackageClient<null> {
 
 }
 
-export function parseSuggestions(
+function parseSuggestions(
   versionRange: string,
   releases: string[],
   prereleases: string[]

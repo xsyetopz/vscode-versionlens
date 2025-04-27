@@ -4,7 +4,7 @@ import type { ILogger } from '#domain/logging';
 import { type DockerConfig, DockerHubClient } from '#domain/providers/docker';
 import { deepEqual } from 'node:assert';
 import { anything, instance, mock, when } from 'ts-mockito';
-import fixtures from './dockerHubClient.fixtures.js';
+import fixtures from './dockerHubClient.fixtures';
 
 type TestContext = {
   configMock: DockerConfig;

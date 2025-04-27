@@ -1,7 +1,10 @@
 import type { ILogger } from '#domain/logging';
 import {
+  type PackageClientRequest,
+  type PackageClientResponse,
   type SuggestionUpdate,
   PackageDependency,
+  VersionUtils,
   createPackageResource,
   defaultReplaceFn
 } from '#domain/packages';
@@ -11,7 +14,7 @@ import {
   PackageDescriptorType
 } from '#domain/parsers';
 import type { ISuggestionProvider } from '#domain/providers';
-import { type GoClient, type GoConfig, parsePackagesGoMod } from '#domain/providers/golang';
+import { type GoConfig, type GoSuggestionResolver, parsePackagesGoMod } from '#domain/providers/golang';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class GoSuggestionProvider implements ISuggestionProvider {
@@ -19,13 +22,13 @@ export class GoSuggestionProvider implements ISuggestionProvider {
   readonly name: string = 'golang';
 
   constructor(
-    readonly client: GoClient,
+    readonly resolver: GoSuggestionResolver,
     readonly config: GoConfig,
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("client", client);
-    throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('resolver', resolver);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('logger', logger);
   }
 
   suggestionReplaceFn(suggestionUpdate: SuggestionUpdate, newVersion: string): string {
@@ -73,6 +76,25 @@ export class GoSuggestionProvider implements ISuggestionProvider {
     } // end map loop
 
     return packageDependencies;
+  }
+
+  async fetchSuggestions(request: PackageClientRequest<any>): Promise<PackageClientResponse> {
+    for (const type in request.parsedDependency.descriptors.types) {
+      switch (type) {
+        case 'path':
+          return this.resolver.fromPath(
+            request.parsedDependency,
+            request.parsedDependency.descriptors.getType(type)
+          )
+        case 'git':
+          return this.resolver.fromGit()
+      }
+    }
+
+    const requestedPackage = request.parsedDependency.package;
+    const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
+    semverSpec.rawVersion = semverSpec.rawVersion.replace('+incompatible', '')
+    return await this.resolver.fromGoApi(request, semverSpec)
   }
 
 }

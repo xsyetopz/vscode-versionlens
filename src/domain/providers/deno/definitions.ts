@@ -1,6 +1,6 @@
 import type { CachingOptions } from '#domain/caching';
 import type { HttpOptions, JsonClientResponse } from '#domain/clients';
-import type { DenoClient, DenoConfig, JsrClient } from "#domain/providers/deno";
+import type { DenoSuggestionResolver, DenoConfig, JsrClient } from "#domain/providers/deno";
 import { nameOf } from '#domain/utils';
 
 export enum DenoFeatures {
@@ -17,7 +17,7 @@ export interface IDenoServices {
   denoHttpOpts: HttpOptions
   denoConfig: DenoConfig
   jsrClient: JsrClient
-  denoClient: DenoClient
+  denoClient: DenoSuggestionResolver
 }
 
 export const DenoService = nameOf<IDenoServices>()

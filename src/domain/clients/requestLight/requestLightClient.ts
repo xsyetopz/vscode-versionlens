@@ -6,6 +6,7 @@ import {
   type QueryDictionary,
   ClientResponseSource,
   HttpClientRequestMethods,
+  HttpRequestError,
 } from '#domain/clients';
 import type { IXhrRequest, IXhrResponse } from '#domain/clients/requestLight';
 import { type KeyStringDictionary, createUrl } from '#domain/utils';
@@ -80,15 +81,12 @@ export class RequestLightClient implements IHttpClient {
         if (consent) return await this.get(baseUrl, query, headers);
       }
 
-      // throw the error response
-      const result: HttpClientResponse = {
-        source: ClientResponseSource.remote,
-        status: errorResponse.status,
-        data: errorResponse.responseText,
-        rejected: true
-      };
-
-      throw result;
+      // throw a request error
+      throw new HttpRequestError(
+        ClientResponseSource.remote,
+        errorResponse.status,
+        errorResponse.responseText,
+      )
     }
   }
 

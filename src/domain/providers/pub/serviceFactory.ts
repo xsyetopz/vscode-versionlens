@@ -5,12 +5,12 @@ import type { IServiceCollection } from '#domain/di';
 import type { IProviderServices } from '#domain/providers';
 import {
   type IPubServices,
-  PubClient,
   PubConfig,
   PubFeatures,
   PubJsonClient,
   PubService,
-  PubSuggestionProvider
+  PubSuggestionProvider,
+  PubSuggestionResolver
 } from '#domain/providers/pub';
 import { nameOf } from '#domain/utils';
 
@@ -70,12 +70,12 @@ export function addPubJsonClient(services: IServiceCollection) {
   );
 }
 
-export function addPubClient(services: IServiceCollection) {
-  const serviceName = PubService.pubClient;
+export function addPubSuggestionResolver(services: IServiceCollection) {
+  const serviceName = PubService.pubSuggestionResolver;
   services.addSingleton(
     serviceName,
     (container: IPubServices & IDomainServices) =>
-      new PubClient(
+      new PubSuggestionResolver(
         container.pubConfig,
         container.pubJsonClient,
         container.loggerFactory.create(serviceName)
@@ -88,7 +88,7 @@ export function addSuggestionProvider(services: IServiceCollection) {
     nameOf<IProviderServices>().suggestionProvider,
     (container: IPubServices & IDomainServices) =>
       new PubSuggestionProvider(
-        container.pubClient,
+        container.pubSuggestionResolver,
         container.pubConfig,
         container.loggerFactory.create(PubSuggestionProvider.name)
       )

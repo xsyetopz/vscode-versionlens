@@ -1,7 +1,6 @@
-import { ClientResponseSource } from '#domain/clients';
+import { ClientResponseSource, HttpRequestError } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
-  type IPackageClient,
   type PackageClientRequest,
   type PackageClientResponse,
   type PackageNameVersion,
@@ -25,17 +24,15 @@ import {
 import type { IProviderConfig, ISuggestionProvider } from '#domain/providers';
 import { FetchPackage } from '#domain/useCases';
 import { test } from 'mocha-ui-esm';
-import assert from 'node:assert';
+import { deepEqual, equal } from 'node:assert';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 type TestContext = {
   loggerMock: ILogger;
   configMock: IProviderConfig,
-  clientMock: IPackageClient<any>,
   providerMock: ISuggestionProvider,
   testLogger: ILogger;
   testConfig: IProviderConfig
-  testClient: IPackageClient<any>;
   testProvider: ISuggestionProvider;
   testPackageCache: PackageCache,
   testPackageRes: PackageResource;
@@ -50,7 +47,6 @@ export const fetchPackageTests = <any>{
   beforeEach: function (this: TestContext) {
     // mocks
     this.loggerMock = mock<ILogger>();
-    this.clientMock = mock<IPackageClient<any>>();
     this.providerMock = mock<ISuggestionProvider>();
     this.configMock = mock<IProviderConfig>();
 
@@ -63,13 +59,8 @@ export const fetchPackageTests = <any>{
     // config
     this.testConfig = instance(this.configMock);
 
-    // client
-    when(this.clientMock.config).thenReturn(this.testConfig);
-    this.testClient = instance(this.clientMock);
-
     // provider
     when(this.providerMock.name).thenReturn(testProviderName);
-    when(this.providerMock.client).thenReturn(this.testClient);
     when(this.providerMock.config).thenReturn(this.testConfig);
     when(this.providerMock.logger).thenReturn(this.testLogger);
     this.testProvider = instance(this.providerMock);
@@ -140,7 +131,7 @@ export const fetchPackageTests = <any>{
     ]
 
     // setup client
-    when(this.clientMock.fetchPackage(this.testRequest)).thenResolve(testRespDoc);
+    when(this.providerMock.fetchSuggestions(this.testRequest)).thenResolve(testRespDoc);
 
     // create the use case
     const useCase = new FetchPackage(this.testPackageCache, this.testLogger);
@@ -164,11 +155,11 @@ export const fetchPackageTests = <any>{
       )
     ).once();
 
-    verify(this.clientMock.fetchPackage(this.testRequest)).once();
+    verify(this.providerMock.fetchSuggestions(this.testRequest)).once();
 
     // assert
-    assert.equal(actual.length, 1);
-    assert.deepEqual(actual, expected);
+    equal(actual.length, 1);
+    deepEqual(actual, expected);
   },
 
   "writes error status code to log for packages with handled errors":
@@ -193,7 +184,14 @@ export const fetchPackageTests = <any>{
       };
 
       // client
-      when(this.clientMock.fetchPackage(this.testRequest)).thenResolve(testRespDoc);
+      when(this.providerMock.fetchSuggestions(this.testRequest))
+        .thenReject(
+          new HttpRequestError(
+            testRespDoc.responseStatus.source,
+            testRespDoc.responseStatus.status,
+            ''
+          ) as any
+        );
 
       // create the use case
       const useCase = new FetchPackage(this.testPackageCache, this.testLogger);
@@ -202,7 +200,7 @@ export const fetchPackageTests = <any>{
       await useCase.execute(this.testProvider, this.testRequest);
 
       // verify
-      verify(this.clientMock.fetchPackage(this.testRequest)).once();
+      verify(this.providerMock.fetchSuggestions(this.testRequest)).once();
       verify(
         this.loggerMock.error(
           "{packageName}@{packageVersion} was rejected with the status code {responseStatus}",

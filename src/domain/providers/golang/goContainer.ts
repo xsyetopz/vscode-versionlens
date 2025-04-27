@@ -1,7 +1,7 @@
 import type { IServiceCollection, IServiceProvider } from '#domain/di';
 import {
   addCachingOptions,
-  addGoClient,
+  addGoSuggestionResolver,
   addGoConfig,
   addGoHttpClient,
   addHttpOptions,
@@ -21,9 +21,7 @@ export async function configureContainer(
 
   addGoHttpClient(services);
 
-  addGoClient(services);
-
-  addGoClient(services);
+  addGoSuggestionResolver(services);
 
   addSuggestionProvider(services);
 

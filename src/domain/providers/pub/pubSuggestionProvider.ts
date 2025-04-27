@@ -1,12 +1,16 @@
 import type { ILogger } from '#domain/logging';
 import {
+  type PackageClientRequest,
+  type PackageClientResponse,
   type SuggestionUpdate,
   PackageDependency,
+  VersionUtils,
   createPackageResource,
   defaultReplaceFn
 } from '#domain/packages';
 import {
   type PackageGitDescriptor,
+  type PackageHostedDescriptor,
   type PackageNameDescriptor,
   type PackagePathDescriptor,
   type PackageVersionDescriptor,
@@ -16,8 +20,8 @@ import {
 } from '#domain/parsers';
 import { ISuggestionProvider } from '#domain/providers';
 import {
-  type PubClient,
   type PubConfig,
+  type PubSuggestionResolver,
   createGitDescFromYamlNode,
   createHostedDescFromYamlNode,
   createPathDescFromYamlNode,
@@ -37,13 +41,13 @@ export class PubSuggestionProvider implements ISuggestionProvider {
   readonly name: string = 'pub';
 
   constructor(
-    readonly client: PubClient,
+    readonly resolver: PubSuggestionResolver,
     readonly config: PubConfig,
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("client", client);
-    throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('resolver', resolver);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('logger', logger);
   }
 
   suggestionReplaceFn(suggestionUpdate: SuggestionUpdate, newVersion: string): string {
@@ -134,6 +138,39 @@ export class PubSuggestionProvider implements ISuggestionProvider {
     } // end map loop
 
     return packageDependencies;
+  }
+
+  async fetchSuggestions(request: PackageClientRequest<any>): Promise<PackageClientResponse> {
+    for (const type in request.parsedDependency.descriptors.types) {
+      switch (type) {
+        case 'path':
+          return this.resolver.fromPath(
+            request.parsedDependency,
+            request.parsedDependency.descriptors.getType(type)
+          )
+        case 'git':
+          return this.resolver.fromGit()
+      }
+    }
+
+    // parse the version
+    const requestedPackage = request.parsedDependency.package;
+    const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
+
+    // use the hosted entry if it exists
+    const hosted = request.parsedDependency.descriptors.getType<PackageHostedDescriptor>(
+      PackageDescriptorType.hosted
+    );
+
+    const url = hosted
+      ? `${hosted.hostUrl}/${requestedPackage.name}`
+      : `${this.config.apiUrl}${requestedPackage.name}`;
+
+    return await this.resolver.fromPubApi(
+      url,
+      requestedPackage.name,
+      semverSpec
+    );
   }
 
 }

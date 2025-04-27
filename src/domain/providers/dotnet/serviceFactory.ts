@@ -10,7 +10,7 @@ import {
   DotNetFeatures,
   DotNetService,
   DotNetSuggestionProvider,
-  DotnetClient,
+  DotnetSuggestionResolver,
   NuGetClient,
   NugetOptions
 } from '#domain/providers/dotnet';
@@ -101,12 +101,12 @@ export function addNuGetClient(services: IServiceCollection) {
   );
 }
 
-export function addDotnetClient(services: IServiceCollection) {
-  const serviceName = DotNetService.dotnetClient;
+export function addDotnetSuggestionResolver(services: IServiceCollection) {
+  const serviceName = DotNetService.dotnetSuggestionResolver;
   services.addSingleton(
     serviceName,
     (container: IDotNetServices & IDomainServices) =>
-      new DotnetClient(
+      new DotnetSuggestionResolver(
         container.dotnetConfig,
         container.nugetClient,
         container.loggerFactory.create(serviceName)
@@ -119,7 +119,7 @@ export function addSuggestionProvider(services: IServiceCollection) {
     nameOf<IProviderServices>().suggestionProvider,
     (container: IDotNetServices & IDomainServices) =>
       new DotNetSuggestionProvider(
-        container.dotnetClient,
+        container.dotnetSuggestionResolver,
         container.dotnetCli,
         container.nugetClient,
         container.dotnetConfig,

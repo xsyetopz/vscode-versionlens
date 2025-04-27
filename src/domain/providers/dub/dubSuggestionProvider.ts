@@ -1,10 +1,16 @@
 import type { ILogger } from '#domain/logging';
-import { PackageDependency, createPackageResource } from '#domain/packages';
 import {
+  type PackageClientRequest,
+  type PackageClientResponse,
+  PackageDependency,
+  VersionUtils,
+  createPackageResource
+} from '#domain/packages';
+import {
+  type JsonPackageTypeHandler,
+  type JsonParserOptions,
   type PackageNameDescriptor,
   type PackageVersionDescriptor,
-  type JsonParserOptions,
-  type JsonPackageTypeHandler,
   PackageDescriptorType,
   createPathDescFromJsonNode,
   createRepoDescFromJsonNode,
@@ -12,7 +18,7 @@ import {
   parsePackagesJson,
 } from '#domain/parsers';
 import type { ISuggestionProvider } from '#domain/providers';
-import type { DubClient, DubConfig } from '#domain/providers/dub';
+import type { DubConfig, DubSuggestionResolver } from '#domain/providers/dub';
 import type { KeyDictionary } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
@@ -27,13 +33,13 @@ export class DubSuggestionProvider implements ISuggestionProvider {
   readonly name: string = 'dub';
 
   constructor(
-    readonly client: DubClient,
+    readonly resolver: DubSuggestionResolver,
     readonly config: DubConfig,
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("client", client);
-    throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('resolver', resolver);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('logger', logger);
   }
 
   parseDependencies(packagePath: string, packageText: string): Array<PackageDependency> {
@@ -75,6 +81,12 @@ export class DubSuggestionProvider implements ISuggestionProvider {
     }
 
     return packageDependencies;
+  }
+
+  async fetchSuggestions(request: PackageClientRequest<null>): Promise<PackageClientResponse> {
+    const requestedPackage = request.parsedDependency.package;
+    const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
+    return await this.resolver.fromDubApi(request, semverSpec);
   }
 
 }

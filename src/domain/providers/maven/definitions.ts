@@ -1,6 +1,6 @@
 import type { CachingOptions } from '#domain/caching';
 import type { HttpOptions, JsonClientResponse } from '#domain/clients';
-import type { MavenClient, MavenConfig, MavenHttpClient, MvnCli } from '#domain/providers/maven';
+import type { MavenConfig, MavenHttpClient, MavenSuggestionResolver, MvnCli } from '#domain/providers/maven';
 import { type RegistryProtocols, nameOf } from '#domain/utils';
 
 export enum MavenFeatures {
@@ -19,7 +19,7 @@ export interface IMavenServices {
   mavenConfig: MavenConfig;
   mvnCli: MvnCli;
   mavenHttpClient: MavenHttpClient;
-  mavenClient: MavenClient;
+  mavenSuggestionResolver: MavenSuggestionResolver;
 }
 
 export const MavenService = nameOf<IMavenServices>()

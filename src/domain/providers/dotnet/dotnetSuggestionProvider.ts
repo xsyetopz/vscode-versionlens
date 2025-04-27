@@ -1,5 +1,7 @@
 import type { ILogger } from '#domain/logging';
 import {
+  type PackageClientRequest,
+  type PackageClientResponse,
   type SuggestionUpdate,
   PackageDependency,
   createPackageResource,
@@ -14,9 +16,9 @@ import type { ISuggestionProvider } from '#domain/providers';
 import {
   type DotNetCli,
   type DotNetConfig,
-  type DotnetClient,
+  type DotnetSuggestionResolver,
+  type NuGetClient,
   type NuGetClientData,
-  NuGetClient,
   parseDotNetPackagesXml
 } from '#domain/providers/dotnet';
 import { RegistryProtocols } from '#domain/utils';
@@ -27,17 +29,17 @@ export class DotNetSuggestionProvider implements ISuggestionProvider {
   readonly name: string = 'dotnet';
 
   constructor(
-    readonly client: DotnetClient,
+    readonly resolver: DotnetSuggestionResolver,
     readonly dotnetCli: DotNetCli,
     readonly nugetClient: NuGetClient,
     readonly config: DotNetConfig,
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("client", client);
-    throwUndefinedOrNull("dotnetCli", dotnetCli);
-    throwUndefinedOrNull("nugetClient", nugetClient);
-    throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('resolver', resolver);
+    throwUndefinedOrNull('dotnetCli', dotnetCli);
+    throwUndefinedOrNull('nugetClient', nugetClient);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('logger', logger);
   }
 
   suggestionReplaceFn(suggestionUpdate: SuggestionUpdate, newVersion: string): string {
@@ -111,6 +113,10 @@ export class DotNetSuggestionProvider implements ISuggestionProvider {
     }
 
     return { serviceUrls };
-  };
+  }
+
+  async fetchSuggestions(request: PackageClientRequest<NuGetClientData>): Promise<PackageClientResponse> {
+    return await this.resolver.fromNuGet(request);
+  }
 
 }

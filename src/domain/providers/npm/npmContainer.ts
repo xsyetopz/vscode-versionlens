@@ -4,7 +4,7 @@ import {
   addHttpOptions,
   addNpmConfig,
   addNpmGitHubClient,
-  addNpmPackageClient,
+  addNpmSuggestionResolver,
   addNpmRegistryClient,
   addSuggestionProvider
 } from '#domain/providers/npm';
@@ -24,7 +24,7 @@ export async function configureContainer(
 
   addNpmRegistryClient(services);
 
-  addNpmPackageClient(services);
+  addNpmSuggestionResolver(services);
 
   addSuggestionProvider(services);
 

@@ -1,5 +1,11 @@
 import type { ILogger } from '#domain/logging';
-import { PackageDependency, createPackageResource } from '#domain/packages';
+import {
+  PackageClientRequest,
+  PackageClientResponse,
+  PackageDependency,
+  VersionUtils,
+  createPackageResource
+} from '#domain/packages';
 import {
   type PackageGitDescriptor,
   type PackageNameDescriptor,
@@ -11,7 +17,7 @@ import {
   parsePackagesToml,
 } from '#domain/parsers';
 import type { ISuggestionProvider } from '#domain/providers';
-import type { CargoClient, CargoConfig } from '#domain/providers/cargo';
+import type { CargoConfig, CargoSuggestionResolver } from '#domain/providers/cargo';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export class CargoSuggestionProvider implements ISuggestionProvider {
@@ -19,13 +25,13 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
   readonly name: string = 'cargo';
 
   constructor(
-    readonly client: CargoClient,
+    readonly resolver: CargoSuggestionResolver,
     readonly config: CargoConfig,
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("client", client);
-    throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('resolver', resolver);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('logger', logger);
   }
 
   parseDependencies(packagePath: string, packageText: string): Array<PackageDependency> {
@@ -107,6 +113,24 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
     } // end map loop
 
     return packageDependencies;
+  }
+
+  async fetchSuggestions(request: PackageClientRequest<null>): Promise<PackageClientResponse> {
+    for (const type in request.parsedDependency.descriptors.types) {
+      switch (type) {
+        case 'path':
+          return this.resolver.fromPath(
+            request.parsedDependency,
+            request.parsedDependency.descriptors.getType(type)
+          )
+        case 'git':
+          return this.resolver.fromGit()
+      }
+    }
+
+    const requestedPackage = request.parsedDependency.package;
+    const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
+    return await this.resolver.fromCrates(request, semverSpec)
   }
 
 }

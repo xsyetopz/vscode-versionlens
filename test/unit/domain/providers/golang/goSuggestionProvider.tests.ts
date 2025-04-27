@@ -1,11 +1,11 @@
 import type { ILogger } from '#domain/logging';
-import { type GoClient, type GoConfig, GoSuggestionProvider } from '#domain/providers/golang';
+import { type GoConfig, type GoSuggestionResolver, GoSuggestionProvider } from '#domain/providers/golang';
 import { deepEqual, equal } from 'node:assert';
 import { instance, mock } from 'ts-mockito';
 import fixtures from './goSuggestionProvider.fixtures';
 
 type TestContext = {
-  goClientMock: GoClient
+  resolverMock: GoSuggestionResolver
   goConfigMock: GoConfig
   loggerMock: ILogger
   put: GoSuggestionProvider
@@ -16,11 +16,11 @@ export const goSuggestionProviderTests = {
   title: GoSuggestionProvider.name,
 
   beforeEach: function (this: TestContext) {
-    this.goClientMock = mock<GoClient>()
+    this.resolverMock = mock<GoSuggestionResolver>()
     this.goConfigMock = mock<GoConfig>()
     this.loggerMock = mock<ILogger>()
     this.put = new GoSuggestionProvider(
-      instance(this.goClientMock),
+      instance(this.resolverMock),
       instance(this.goConfigMock),
       instance(this.loggerMock)
     )

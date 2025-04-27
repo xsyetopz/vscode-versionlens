@@ -5,12 +5,12 @@ import type { IServiceCollection } from '#domain/di';
 import type { IProviderServices } from '#domain/providers';
 import {
   type IDubServices,
-  DubClient,
   DubConfig,
   DubFeatures,
   DubJsonClient,
   DubService,
-  DubSuggestionProvider
+  DubSuggestionProvider,
+  DubSuggestionResolver
 } from '#domain/providers/dub';
 import { nameOf } from '#domain/utils';
 
@@ -70,12 +70,12 @@ export function addDubJsonClient(services: IServiceCollection) {
   );
 }
 
-export function addDubClient(services: IServiceCollection) {
-  const serviceName = DubService.dubClient;
+export function addDubSuggestionResolver(services: IServiceCollection) {
+  const serviceName = DubService.dubSuggestionResolver;
   services.addSingleton(
     serviceName,
     (container: IDubServices & IDomainServices) =>
-      new DubClient(
+      new DubSuggestionResolver(
         container.dubConfig,
         container.dubJsonClient,
         container.loggerFactory.create(serviceName)
@@ -88,7 +88,7 @@ export function addSuggestionProvider(services: IServiceCollection) {
     nameOf<IProviderServices>().suggestionProvider,
     (container: IDubServices & IDomainServices) =>
       new DubSuggestionProvider(
-        container.dubClient,
+        container.dubSuggestionResolver,
         container.dubConfig,
         container.loggerFactory.create(DubSuggestionProvider.name)
       )

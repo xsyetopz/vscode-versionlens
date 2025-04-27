@@ -1,7 +1,7 @@
 import type { ILogger } from '#domain/logging';
 import {
-  type DenoClient,
   type DenoConfig,
+  type DenoSuggestionResolver,
   DenoSuggestionProvider
 } from '#domain/providers/deno';
 import type { NpmSuggestionProvider } from '#domain/providers/npm';
@@ -9,8 +9,8 @@ import { equal } from 'node:assert';
 import { instance, mock, when } from 'ts-mockito';
 
 type TestContext = {
-  DenoClientMock: DenoClient
-  DenoConfigMock: DenoConfig
+  resolverMock: DenoSuggestionResolver
+  configMock: DenoConfig
   loggerMock: ILogger
   npmSuggestionProviderMock: NpmSuggestionProvider
   put: DenoSuggestionProvider
@@ -21,13 +21,13 @@ export const denoSuggestionProviderTests = {
   title: DenoSuggestionProvider.name,
 
   beforeEach: function (this: TestContext) {
-    this.DenoClientMock = mock<DenoClient>()
-    this.DenoConfigMock = mock<DenoConfig>()
+    this.resolverMock = mock<DenoSuggestionResolver>()
+    this.configMock = mock<DenoConfig>()
     this.npmSuggestionProviderMock = mock<NpmSuggestionProvider>()
     this.loggerMock = mock<ILogger>()
     this.put = new DenoSuggestionProvider(
-      instance(this.DenoClientMock),
-      instance(this.DenoConfigMock),
+      instance(this.resolverMock),
+      instance(this.configMock),
       instance(this.npmSuggestionProviderMock),
       instance(this.loggerMock)
     )
@@ -38,7 +38,7 @@ export const denoSuggestionProviderTests = {
     const testProps = ['imports'];
     const testContent = '{}'
     const expected = {}
-    when(this.DenoConfigMock.dependencyProperties).thenReturn(testProps);
+    when(this.configMock.dependencyProperties).thenReturn(testProps);
     when(
       this.npmSuggestionProviderMock.parseDependencies(
         testPackagePath,

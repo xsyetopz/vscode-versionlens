@@ -1,5 +1,10 @@
 import type { IExpiryCache } from '#domain/caching';
-import { type HttpClientResponse, type IJsonHttpClient, ClientResponseSource } from '#domain/clients';
+import {
+  type HttpClientResponse,
+  type IJsonHttpClient,
+  ClientResponseSource,
+  HttpRequestError
+} from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import type {
   DotNetConfig,
@@ -39,23 +44,23 @@ export class NuGetClient {
       // cache and return
       return this.requestCache.set(url, result);
     } catch (error) {
-      const errorResponse = error as HttpClientResponse;
-
-      this.logger.debug(
-        "request failed for '{packageName}' from '{resourceUrl}': {error}",
-        packageName,
-        new URL(resourceUrl),
-        errorResponse
-      );
-
-      // retry if 404 and we have more urls to try
-      if (errorResponse.status === 404 && fallbacks.length > 0) {
+      if (error instanceof HttpRequestError) {
         this.logger.debug(
-          "attempting to fetch '{packageName}' from '{url}'",
+          "request failed for '{packageName}' from '{resourceUrl}': {error}",
           packageName,
-          new URL(fallbacks[0])
+          new URL(resourceUrl),
+          error
         );
-        return this.get(packageName, fallbacks);
+
+        // retry if 404 and we have more urls to try
+        if (error.status === 404 && fallbacks.length > 0) {
+          this.logger.debug(
+            "attempting to fetch '{packageName}' from '{url}'",
+            packageName,
+            new URL(fallbacks[0])
+          );
+          return this.get(packageName, fallbacks);
+        }
       }
 
       throw error;

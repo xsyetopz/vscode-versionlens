@@ -1,14 +1,11 @@
-import type { HttpClientResponse } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
-  type IPackageClient,
-  type PackageClientRequest,
   type PackageClientResponse,
+  type PackageDependency,
   type PackageResource,
   ClientResponseFactory,
   createSuggestions,
   PackageSourceType,
-  PackageStatusFactory,
   PackageVersionType,
   SuggestionCategory,
   UpdateableFactory,
@@ -23,72 +20,40 @@ import {
 } from '#domain/providers/docker';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
-export class DockerClient implements IPackageClient<null> {
+export class DockerSuggestionResolver {
 
   constructor(
     readonly config: DockerConfig,
     readonly dockerHubClient: DockerHubClient,
     readonly logger: ILogger
   ) {
-    throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("dockerHubClient", dockerHubClient);
-    throwUndefinedOrNull("logger", logger);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('dockerHubClient', dockerHubClient);
+    throwUndefinedOrNull('logger', logger);
   }
 
-  async fetchPackage(request: PackageClientRequest<null>): Promise<PackageClientResponse> {
-    const dependency = request.parsedDependency
+  async fromPath(dependency: PackageDependency) {
     const requestedPackage = dependency.package;
 
     // process build context path types
-    if (dependency.descriptors.hasType('path')) {
-      const pathDesc = dependency.descriptors.getType<PackagePathDescriptor>(
-        PackageDescriptorType.path
-      );
-      return await ClientResponseFactory.createDirectory(
-        requestedPackage.name,
-        requestedPackage.path,
-        pathDesc.path,
-        PackageSourceType.File
-      );
-    }
+    const pathDesc = dependency.descriptors.getType<PackagePathDescriptor>(
+      PackageDescriptorType.path
+    );
 
-    // ignore FROMs composed using arguments
-    if (requestedPackage.name.includes('$') || requestedPackage.version.includes('$')) {
-      return ClientResponseFactory.createNotSupported()
-    }
-
-    try {
-      // fetch from the api
-      let namespace = 'library'
-      let repo = requestedPackage.name
-      if (requestedPackage.name.includes('/')) {
-        [namespace, repo] = requestedPackage.name.split('/');
-      }
-
-      return await this.fetch(requestedPackage, repo, namespace);
-    } catch (error) {
-      const errorResponse = error as HttpClientResponse;
-
-      this.logger.debug(
-        "Caught exception from {packageSource}: {error}",
-        PackageSourceType.Registry,
-        errorResponse
-      );
-
-      const suggestion = PackageStatusFactory.createFromHttpStatus(errorResponse.status);
-      if (suggestion != null) {
-        return ClientResponseFactory.create(
-          PackageSourceType.Registry,
-          errorResponse,
-          [suggestion]
-        );
-      }
-
-      throw errorResponse;
-    }
+    return await ClientResponseFactory.createDirectory(
+      requestedPackage.name,
+      requestedPackage.path,
+      pathDesc.path,
+      PackageSourceType.File
+    );
   }
 
-  async fetch(pkg: PackageResource, repo: string, namespace: string): Promise<PackageClientResponse> {
+  async fromDockerHub(pkg: PackageResource): Promise<PackageClientResponse> {
+    let namespace = 'library'
+    let repo = pkg.name
+    if (pkg.name.includes('/')) {
+      [namespace, repo] = pkg.name.split('/');
+    }
     const jsonResponse = await this.dockerHubClient.get(repo, namespace);
 
     // map docker tags to semver

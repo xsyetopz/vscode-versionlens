@@ -5,11 +5,11 @@ import type { IServiceCollection, IServiceProvider } from '#domain/di';
 import type { IProviderServices } from '#domain/providers';
 import {
   type IDenoServices,
-  DenoClient,
   DenoConfig,
   DenoFeatures,
   DenoService,
   DenoSuggestionProvider,
+  DenoSuggestionResolver,
   JsrClient
 } from "#domain/providers/deno";
 import { INpmServices } from '#domain/providers/npm';
@@ -71,16 +71,16 @@ export function addJsrClient(services: IServiceCollection) {
   );
 }
 
-export function addDenoClient(services: IServiceCollection) {
+export function addDenoSuggestionResolver(services: IServiceCollection) {
   const serviceName = DenoService.denoClient;
   services.addSingleton(
     serviceName,
     (container: INpmServices & IDenoServices & IDomainServices) => {
       const npmServices = container.serviceProvider.getService('npm') as IServiceProvider
-      return new DenoClient(
+      return new DenoSuggestionResolver(
         container.denoConfig,
         container.jsrClient,
-        npmServices.getService('npmClient'),
+        npmServices.getService(nameOf<INpmServices>().npmSuggestionResolver),
         container.loggerFactory.create(serviceName)
       )
     }

@@ -5,12 +5,12 @@ import type { IServiceCollection } from '#domain/di';
 import type { IProviderServices } from '#domain/providers';
 import {
   type IDockerServices,
-  DockerClient,
   DockerConfig,
   DockerFeatures,
   DockerHubClient,
   DockerService,
-  DockerSuggestionProvider
+  DockerSuggestionProvider,
+  DockerSuggestionResolver
 } from '#domain/providers/docker';
 import { nameOf } from '#domain/utils';
 
@@ -71,11 +71,11 @@ export function addDockerHubClient(services: IServiceCollection) {
 }
 
 export function addDockerClient(services: IServiceCollection) {
-  const serviceName = DockerService.dockerClient;
+  const serviceName = DockerService.dockerSuggestionResolver;
   services.addSingleton(
     serviceName,
     (container: IDockerServices & IDomainServices) =>
-      new DockerClient(
+      new DockerSuggestionResolver(
         container.dockerConfig,
         container.dockerHubClient,
         container.loggerFactory.create(serviceName)
@@ -88,7 +88,7 @@ export function addSuggestionProvider(services: IServiceCollection) {
     nameOf<IProviderServices>().suggestionProvider,
     (container: IDockerServices & IDomainServices) =>
       new DockerSuggestionProvider(
-        container.dockerClient,
+        container.dockerSuggestionResolver,
         container.dockerConfig,
         container.loggerFactory.create(DockerSuggestionProvider.name)
       )

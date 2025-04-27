@@ -5,12 +5,12 @@ import type { IServiceCollection } from '#domain/di';
 import type { IProviderServices } from '#domain/providers';
 import {
   type IMavenServices,
-  MavenClient,
   MavenConfig,
   MavenFeatures,
   MavenHttpClient,
   MavenService,
   MavenSuggestionProvider,
+  MavenSuggestionResolver,
   MvnCli
 } from '#domain/providers/maven';
 import { nameOf } from '#domain/utils';
@@ -88,12 +88,12 @@ export function addMavenHttpClient(services: IServiceCollection) {
   );
 }
 
-export function addMavenClient(services: IServiceCollection) {
-  const serviceName = MavenService.mavenClient;
+export function addMavenSuggestionResolver(services: IServiceCollection) {
+  const serviceName = MavenService.mavenSuggestionResolver;
   services.addSingleton(
     serviceName,
     (container: IMavenServices & IDomainServices) =>
-      new MavenClient(
+      new MavenSuggestionResolver(
         container.mavenConfig,
         container.mavenHttpClient,
         container.loggerFactory.create(serviceName)
@@ -106,7 +106,7 @@ export function addSuggestionProvider(services: IServiceCollection) {
     nameOf<IProviderServices>().suggestionProvider,
     (container: IMavenServices & IDomainServices) =>
       new MavenSuggestionProvider(
-        container.mavenClient,
+        container.mavenSuggestionResolver,
         container.mvnCli,
         container.mavenConfig,
         container.loggerFactory.create(MavenSuggestionProvider.name)

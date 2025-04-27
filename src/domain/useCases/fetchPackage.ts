@@ -1,10 +1,13 @@
+import { HttpRequestError } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
-  type IPackageClient,
   type PackageClientRequest,
   type PackageClientResponse,
   type PackageResponse,
+  ClientResponseFactory,
   PackageCache,
+  PackageSourceType,
+  PackageStatusFactory,
   ResponseFactory,
   getProjectVersionSuggestions
 } from '#domain/packages';
@@ -50,7 +53,7 @@ export class FetchPackage {
       requestedPackage,
       async () => {
         source = "client";
-        return await this.fetchFromClient(provider.client, request);
+        return await this.fetch(provider, request);
       },
       provider.config.caching.duration
     );
@@ -72,8 +75,8 @@ export class FetchPackage {
     );
   }
 
-  async fetchFromClient(
-    client: IPackageClient<any>,
+  async fetch(
+    provider: ISuggestionProvider,
     request: PackageClientRequest<any>
   ): Promise<PackageClientResponse> {
 
@@ -81,35 +84,37 @@ export class FetchPackage {
 
     this.logger.trace("fetching {packageName}", requestedPackage.name);
 
-    let response: PackageClientResponse;
     try {
-
       // fetch the package
-      response = await client.fetchPackage(request);
-
+      return await provider.fetchSuggestions(request);
     } catch (error) {
+      if (error instanceof HttpRequestError) {
+        const suggestion = PackageStatusFactory.createFromHttpStatus(error.status);
+        if (suggestion != null) {
+          this.logger.error(
+            "{packageName}@{packageVersion} was rejected with the status code {responseStatus}",
+            requestedPackage.name,
+            requestedPackage.version,
+            error.status
+          );
+          return ClientResponseFactory.create(
+            PackageSourceType.Registry,
+            error,
+            [suggestion]
+          )
+        }
+      }
+
       // unexpected error
       this.logger.error(
         `{functionName} caught an exception.\n Package: {requestedPackage}\n Error: {error}`,
-        this.fetchFromClient.name,
+        this.fetch.name,
         requestedPackage,
         error
       );
-
       throw error;
     }
 
-    // client handled error responses
-    if (response.responseStatus?.rejected) {
-      this.logger.error(
-        "{packageName}@{packageVersion} was rejected with the status code {responseStatus}",
-        requestedPackage.name,
-        requestedPackage.version,
-        response.responseStatus.status
-      );
-    }
-
-    return response;
   }
 
 }

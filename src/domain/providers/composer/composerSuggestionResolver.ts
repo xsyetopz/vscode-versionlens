@@ -1,20 +1,16 @@
-import type { HttpClientResponse } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
-  type IPackageClient,
   type PackageClientRequest,
   type PackageClientResponse,
   type SemverSpec,
-  ClientResponseFactory,
   PackageSourceType,
-  PackageStatusFactory,
   VersionUtils,
   createSuggestions
 } from '#domain/packages';
-import { ComposerConfig, PackagistClient } from '#domain/providers/composer';
+import type { ComposerConfig, PackagistClient } from '#domain/providers/composer';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
-export class ComposerClient implements IPackageClient<null> {
+export class ComposerSuggestionResolver {
 
   constructor(
     readonly config: ComposerConfig,
@@ -26,38 +22,8 @@ export class ComposerClient implements IPackageClient<null> {
     throwUndefinedOrNull('logger', logger);
   }
 
-  async fetchPackage<TClientData>(
-    request: PackageClientRequest<TClientData>
-  ): Promise<PackageClientResponse> {
-    const requestedPackage = request.parsedDependency.package;
-    const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
-
-    try {
-      return await this.createRemotePackageDocument(request, semverSpec)
-    } catch (error) {
-      const errorResponse = error as HttpClientResponse;
-
-      this.logger.debug(
-        "Caught exception from {packageSource}: {error}",
-        PackageSourceType.Registry,
-        errorResponse
-      );
-
-      const suggestion = PackageStatusFactory.createFromHttpStatus(errorResponse.status);
-      if (suggestion != null) {
-        return ClientResponseFactory.create(
-          PackageSourceType.Registry,
-          errorResponse,
-          [suggestion]
-        )
-      }
-
-      throw errorResponse;
-    }
-  }
-
-  async createRemotePackageDocument<TClientData>(
-    request: PackageClientRequest<TClientData>,
+  async fromPackagist(
+    request: PackageClientRequest<null>,
     semverSpec: SemverSpec
   ): Promise<PackageClientResponse> {
     // fetch
