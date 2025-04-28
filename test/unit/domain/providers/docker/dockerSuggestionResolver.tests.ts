@@ -49,7 +49,7 @@ export const DockerSuggestionResolverTests = {
       const testRequest = {
         providerName: 'docker',
         attempt: 1,
-        clientData: {},
+        clientData: null,
         parsedDependency: new PackageDependency(
           createPackageResource(testRepo, '23', 'test/path'),
           new PackageDescriptor([
@@ -76,7 +76,7 @@ export const DockerSuggestionResolverTests = {
       const testRequest = {
         providerName: 'docker',
         attempt: 1,
-        clientData: {},
+        clientData: null,
         parsedDependency: new PackageDependency(
           createPackageResource(testRepo, '22-bookworm', 'test/path'),
           new PackageDescriptor([

@@ -132,8 +132,7 @@ export const NuGetClientTests = {
 
       // assert
       equal(actual, expected);
-
-      const [actualUrl] = capture(this.jsonClientMock.get).first();
+      const [actualUrl] = capture<string>(this.jsonClientMock.get).first();
       equal(actualUrl, testSource.url);
       equal(actual, expected);
     },

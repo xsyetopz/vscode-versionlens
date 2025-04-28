@@ -187,8 +187,8 @@ export const fetchPackageTests = <any>{
       when(this.providerMock.fetchSuggestions(this.testRequest))
         .thenReject(
           new HttpRequestError(
-            testRespDoc.responseStatus.source,
-            testRespDoc.responseStatus.status,
+            testRespDoc.responseStatus!.source,
+            testRespDoc.responseStatus!.status,
             ''
           ) as any
         );
