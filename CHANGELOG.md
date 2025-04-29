@@ -2,6 +2,14 @@
 
   ### All
 
+  - Added status bar text showing the count of updates, errors and no matches
+
+    ![image](https://gitlab.com/-/project/19418059/uploads/90aa1273e014b1bb87658d2760eede86/image.png)
+
+    Clicking the status info gives a file picker for each package\project file
+
+    ![image](https://gitlab.com/-/project/19418059/uploads/e6b0f3e7aab7510c615b8df88f90a770/image.png)
+
   - Caching improvements
 
   ### Npm
