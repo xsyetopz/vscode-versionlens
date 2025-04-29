@@ -10,6 +10,7 @@
 
     ![image](https://gitlab.com/-/project/19418059/uploads/e6b0f3e7aab7510c615b8df88f90a770/image.png)
 
+    Can be disabled by changing `versionlens.suggestions.showSuggestionsStats` setting to `false`
 
   - Changed version ranges that satisfy the latest version to be in the 'latest' category
 

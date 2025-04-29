@@ -183,6 +183,10 @@
           "when": "versionlens.show && versionlens.providerActive"
         },
         {
+          "command": "versionlens.suggestions.refreshStats",
+          "when": "versionlens.showSuggestionsStats"
+        },
+        {
           "command": "versionlens.icons.showError",
           "when": "false"
         }
