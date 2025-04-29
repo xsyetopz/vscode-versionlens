@@ -15,6 +15,7 @@ import type {
   OnRefreshSuggestionsStats,
   OnRemoveUrlAuthentication,
   OnSaveChanges,
+  OnShowSuggestionsStatsDetails,
   OnTextDocumentChange,
   OnTextDocumentClose,
   OnTextDocumentSave,
@@ -63,7 +64,8 @@ export enum SuggestionCommandFeatures {
   OnFileLinkClick = "versionlens.suggestions.fileLinkClick",
   OnChooseBuildClick = "versionlens.suggestions.chooseBuildClick",
   OnClearCache = "versionlens.suggestions.clearCache",
-  OnRefreshSuggestionsStats = "versionlens.suggestions.refreshStats"
+  OnRefreshSuggestionsStats = "versionlens.suggestions.refreshStats",
+  OnShowSuggestionsStatDetails = "versionlens.suggestions.showStatsDetails"
 }
 
 export enum SuggestionFeatures {
@@ -98,6 +100,7 @@ export interface IExtensionServices {
   // command events
   onClearCache: OnClearCache
   onRefreshSuggestionsStats: OnRefreshSuggestionsStats
+  onShowSuggestionsStatsDetails: OnShowSuggestionsStatsDetails
   onFileLinkClick: OnFileLinkClick
   onUpdateDependencyClick: OnUpdateDependencyClick
   onChooseBuildClick: OnChooseBuildClick

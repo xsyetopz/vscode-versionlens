@@ -80,6 +80,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     serviceNames.onUpdateDependencyClick,
     serviceNames.onChooseBuildClick,
     serviceNames.onRefreshSuggestionsStats,
+    serviceNames.onShowSuggestionsStatsDetails,
     // editorTitleBar events
     serviceNames.onErrorClick,
     serviceNames.onToggleReleases,

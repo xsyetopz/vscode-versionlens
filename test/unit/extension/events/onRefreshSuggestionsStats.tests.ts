@@ -1,8 +1,8 @@
 import type { ILogger } from '#domain/logging';
-import { GetSuggestionsStats } from '#domain/useCases';
-import { IContextState, IVersionLensState } from '#extension';
+import type { GetSuggestionsStats } from '#domain/useCases';
+import type { IContextState, IVersionLensState } from '#extension';
 import { OnRefreshSuggestionsStats } from '#extension/events';
-import { SuggestionsOptions } from '#extension/suggestions';
+import type { SuggestionsOptions } from '#extension/suggestions';
 import { equal } from 'assert';
 import { test } from 'mocha-ui-esm';
 import { instance, mock, verify, when } from 'ts-mockito';
@@ -52,7 +52,7 @@ export const OnRefreshSuggestionsStatsTests = {
   "hides status bar item when showSuggestionsStats is false": async function (this: TestContext) {
     when(this.mockShowSuggestionsStats.value).thenReturn(false);
     // test
-    await this.testEvent.execute();
+    await this.testEvent.execute(false);
     // verify
     verify(this.mockStatusBarItem.hide()).once();
   },
@@ -64,13 +64,15 @@ export const OnRefreshSuggestionsStatsTests = {
       updates: 10
     }
     when(this.mockShowSuggestionsStats.value).thenReturn(true);
-    when(this.mockGetSuggestionsStats.execute()).thenResolve({
+    when(this.mockGetSuggestionsStats.execute(false)).thenResolve([{
+      filePath: 'test/path/1',
+      providerName: 'dotnet',
       errors: 1,
       noMatches: 0,
       updates: 10
-    })
+    }])
     // test
-    await this.testEvent.execute();
+    await this.testEvent.execute(false);
     // verify
     verify(this.mockLogger.info("Fetching all suggestion stats")).once();
     verify(this.mockStatusBarItem.show()).once();

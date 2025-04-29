@@ -1,3 +1,4 @@
+import { MemoryCache } from '#domain/caching';
 import type { ILogger } from '#domain/logging';
 import { type DependencyCache, SuggestionCategory, SuggestionTypes } from '#domain/packages';
 import type { ISuggestionProvider } from '#domain/providers';
@@ -6,12 +7,15 @@ import { Disposable } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 export type SuggestionsStats = {
+  filePath: string
+  providerName: string
   noMatches: number
   updates: number
   errors: number
 }
 
 export class GetSuggestionsStats extends Disposable {
+  readonly cache = new MemoryCache<SuggestionsStats[]>('stats-cache')
 
   constructor(
     readonly providers: ISuggestionProvider[],
@@ -26,7 +30,12 @@ export class GetSuggestionsStats extends Disposable {
     throwUndefinedOrNull('logger', logger);
   }
 
-  async execute(): Promise<SuggestionsStats> {
+  async execute(useCache: boolean): Promise<SuggestionsStats[]> {
+    if (useCache) {
+      const cached = this.cache.get('stats');
+      if (cached) return cached;
+    }
+
     const map = this.providers.flatMap(
       provider => {
         const filePathCache = this.dependencyCache.providerMaps[provider.name];
@@ -35,9 +44,7 @@ export class GetSuggestionsStats extends Disposable {
       }
     );
 
-    let noMatches = 0
-    let updates = 0
-    let errors = 0
+    const stats: SuggestionsStats[] = []
     for (const { provider, filePath } of map) {
       this.logger.debug("Fetching suggestion stats for {PackageFilePath}", filePath)
       const suggestions = await this.getSuggestions.execute(
@@ -51,6 +58,9 @@ export class GetSuggestionsStats extends Disposable {
         .filter(x => x.suggestion.type === SuggestionTypes.status)
         .map(x => x.suggestion);
 
+      let noMatches = 0;
+      let updates = 0;
+      let errors = 0;
       for (const status of statuses) {
         const cat = status.category;
         if (cat === SuggestionCategory.NoMatch)
@@ -60,9 +70,19 @@ export class GetSuggestionsStats extends Disposable {
         else if (cat !== SuggestionCategory.Latest && cat !== SuggestionCategory.Directory)
           updates++;
       }
+
+      if (noMatches + updates + errors > 0) {
+        stats.push({
+          filePath,
+          providerName: provider.name,
+          noMatches,
+          errors,
+          updates
+        });
+      }
     }
 
-    return { errors, noMatches, updates }
+    return this.cache.set('stats', stats);
   }
 
 }

@@ -11,6 +11,7 @@ import type { Uri } from 'vscode';
 export const defaultExcludes = [
   '**/node_modules/**',
   '**/bower_components/**',
+  '**/bin/**',
   '**/.git/**',
   '**/.vscode/**'
 ];
@@ -123,6 +124,9 @@ export class PackageFileWatcher extends AsyncEmitter<OnPackageDependenciesChange
   }
 
   async onFileChange(provider: ISuggestionProvider, uri: Uri) {
+    const matched = isMatch(uri.fsPath, defaultExcludes, { dot: true })
+    if (matched) return;
+
     this.logger.trace("file changed '{uri}'", uri.toString());
 
     const packageFilePath = uri.fsPath;

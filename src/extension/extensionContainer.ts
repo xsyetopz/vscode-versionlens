@@ -28,6 +28,7 @@ import {
   addOnRefreshSuggestionsStats,
   addOnRemoveUrlAuthentication,
   addOnSaveChanges,
+  addOnShowSuggestionsStatsDetails,
   addOnTextDocumentChange,
   addOnTextDocumentClose,
   addOnTextDocumentSave,
@@ -116,6 +117,7 @@ function addExtensionServices(
   addOnUpdateDependencyClick(services);
   addOnChooseBuildClick(services);
   addOnRefreshSuggestionsStats(services);
+  addOnShowSuggestionsStatsDetails(services);
 
   // editorTitleBar events
   addOnErrorClick(services);

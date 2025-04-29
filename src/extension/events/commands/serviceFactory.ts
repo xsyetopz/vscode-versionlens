@@ -10,6 +10,7 @@ import {
   OnClearCache,
   OnFileLinkClick,
   OnRefreshSuggestionsStats,
+  OnShowSuggestionsStatsDetails,
   OnUpdateDependencyClick
 } from '#extension/events';
 import { SuggestionInteractions } from '#extension/suggestions';
@@ -126,7 +127,8 @@ export function addOnRefreshSuggestionsStats(services: IServiceCollection) {
   services.addSingleton(
     serviceName,
     (container: IDomainServices & IExtensionServices) => {
-      const statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 100)
+      const statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 100);
+      statusBarItem.command = SuggestionCommandFeatures.OnShowSuggestionsStatDetails;
 
       // create the event handler
       const event = new OnRefreshSuggestionsStats(
@@ -139,7 +141,7 @@ export function addOnRefreshSuggestionsStats(services: IServiceCollection) {
 
       // schedule every 180 seconds
       const intervalHandle = setInterval(
-        async () => event.execute(),
+        async () => event.execute(false),
         180 * 1000
       );
 
@@ -160,10 +162,37 @@ export function addOnRefreshSuggestionsStats(services: IServiceCollection) {
       );
 
       // register as a onTextDocumentSave event
-      container.onTextDocumentSave.registerListener(event.execute as any, event, 1);
+      container.onTextDocumentSave.registerListener(() => event.execute(false), event, 1);
 
       // run first time
-      setTimeout(() => event.execute(), 5000)
+      setTimeout(() => event.execute(false), 5000);
+
+      return event;
+    },
+    true
+  )
+}
+
+export function addOnShowSuggestionsStatsDetails(services: IServiceCollection) {
+  const serviceName = ExtensionServiceName.onShowSuggestionsStatsDetails;
+  services.addSingleton(
+    serviceName,
+    (container: IDomainServices & IExtensionServices) => {
+      // create the event handler
+      const event = new OnShowSuggestionsStatsDetails(
+        container.getSuggestionsStats,
+        container.extension,
+        window,
+        new VsCodeConstructionFactory(),
+        container.loggerFactory.create(serviceName)
+      );
+
+      // register the vscode command
+      event.disposable = commands.registerCommand(
+        SuggestionCommandFeatures.OnShowSuggestionsStatDetails,
+        event.execute,
+        event
+      );
 
       return event;
     },

@@ -23,18 +23,28 @@ export class OnRefreshSuggestionsStats extends Disposable {
     throwUndefinedOrNull('logger', logger);
   }
 
-  async execute() {
+  async execute(useCache: boolean) {
     if (this.state.showSuggestionsStats.value === false) {
       this.statusBarItem.hide();
       return;
     }
 
     this.logger.info("Fetching all suggestion stats");
-    const stats = await this.getSuggestionsStats.execute();
+    const stats = await this.getSuggestionsStats.execute(useCache);
+
+    let noMatches = 0;
+    let updates = 0;
+    let errors = 0;
+    for (const stat of stats) {
+      noMatches += stat.noMatches;
+      updates += stat.updates;
+      errors += stat.errors;
+    }
+
     const builder: string[] = [
-      `${this.options.indicators.Match}${stats.updates}`,
-      `${this.options.indicators.Error}${stats.errors}`,
-      `${this.options.indicators.NoMatch}${stats.noMatches}`
+      `${this.options.indicators.Match}${updates}`,
+      `${this.options.indicators.Error}${errors}`,
+      `${this.options.indicators.NoMatch}${noMatches}`
     ];
     this.statusBarItem.text = builder.join(' ');
     this.statusBarItem.show();
