@@ -61,7 +61,7 @@ export class Authorizer implements IAuthorizer {
     const accessToken = await this.providers[urlAuthInfo.scheme].get(urlAuthInfo.url);
     if (!accessToken) return undefined;
 
-    this.logger.info(AuthLog.authProviderInfo, urlAuthInfo.label, new URL(url));
+    this.logger.debug(AuthLog.authProviderInfo, urlAuthInfo.label, new URL(url));
 
     // return the authorization header value
     return urlAuthInfo.scheme === AuthenticationScheme.Custom

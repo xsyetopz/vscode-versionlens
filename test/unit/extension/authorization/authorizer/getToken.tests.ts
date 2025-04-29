@@ -86,7 +86,7 @@ export const getTokenTests = {
     verify(this.mockUrlAuthStore.get(testUrl)).once();
     verify(this.mockAuthProvider.get(testUrl)).once();
     verify(
-      this.mockLogger.info(
+      this.mockLogger.debug(
         AuthLog.authProviderInfo,
         testUrlAuthData.label,
         anyOfClass(URL)
