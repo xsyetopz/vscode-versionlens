@@ -18,7 +18,7 @@ export interface ICache<T = any> {
 
   clear(): void;
 
-  [Symbol.iterator](): MapIterator<[string, T]>
+  keys(): MapIterator<string>
 
 };
 

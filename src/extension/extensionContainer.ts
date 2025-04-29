@@ -25,6 +25,7 @@ import {
   addOnProviderEditorActivated,
   addOnProviderTextDocumentChange,
   addOnProviderTextDocumentClose,
+  addOnRefreshSuggestionsStats,
   addOnRemoveUrlAuthentication,
   addOnSaveChanges,
   addOnTextDocumentChange,
@@ -114,6 +115,7 @@ function addExtensionServices(
   addOnFileLinkClick(services);
   addOnUpdateDependencyClick(services);
   addOnChooseBuildClick(services);
+  addOnRefreshSuggestionsStats(services);
 
   // editorTitleBar events
   addOnErrorClick(services);

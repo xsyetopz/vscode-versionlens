@@ -1,15 +1,15 @@
 import type { IDomainServices } from '#domain';
 import type { IServiceProvider } from '#domain/di';
-import { LogLevel, type LoggerFactory } from '#domain/logging';
+import { type LoggerFactory, LogLevel } from '#domain/logging';
 import { nameOf } from '#domain/utils';
-import {
-  type IExtensionServices,
+import type {
+  IExtensionServices,
   OnActiveTextEditorChange,
   VersionLensExtension
 } from '#extension';
 import type { EditorConfig } from '#extension/vscode';
 import { dirname, join } from 'node:path';
-import { type ExtensionContext, LogOutputChannel, window } from 'vscode';
+import { type ExtensionContext, type LogOutputChannel, window } from 'vscode';
 import { configureContainer } from './extensionContainer';
 import type { PackageFileWatcher } from './watcher';
 
@@ -79,6 +79,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     serviceNames.onFileLinkClick,
     serviceNames.onUpdateDependencyClick,
     serviceNames.onChooseBuildClick,
+    serviceNames.onRefreshSuggestionsStats,
     // editorTitleBar events
     serviceNames.onErrorClick,
     serviceNames.onToggleReleases,

@@ -12,6 +12,7 @@ import type {
   OnProviderEditorActivated,
   OnProviderTextDocumentChange,
   OnProviderTextDocumentClose,
+  OnRefreshSuggestionsStats,
   OnRemoveUrlAuthentication,
   OnSaveChanges,
   OnTextDocumentChange,
@@ -27,7 +28,7 @@ import type {
   AuthenticationProvider,
   UrlAuthenticationStore
 } from '#extension/authorization';
-import type { ContextState, VersionLensState } from '#extension/state';
+import type { VersionLensState } from '#extension/state';
 import type { SuggestionCodeLensProvider, SuggestionsOptions } from '#extension/suggestions';
 import type { EditorConfig, IVsCodeConstructFactory } from '#extension/vscode';
 import type { PackageFileWatcher } from '#extension/watcher';
@@ -49,6 +50,7 @@ export enum IconCommandFeatures {
 export enum StateFeatures {
   Show = 'versionlens.show',
   ShowPrereleases = 'versionlens.showPrereleases',
+  ShowSuggestionsStats = 'versionlens.showSuggestionsStats',
   ShowOutdated = 'versionlens.showOutdated',
   ProviderActive = 'versionlens.providerActive',
   ProviderBusy = 'versionlens.providerBusy',
@@ -60,12 +62,14 @@ export enum SuggestionCommandFeatures {
   OnUpdateDependencyClick = 'versionlens.suggestions.updateDependencyClick',
   OnFileLinkClick = "versionlens.suggestions.fileLinkClick",
   OnChooseBuildClick = "versionlens.suggestions.chooseBuildClick",
-  OnClearCache = "versionlens.suggestions.clearCache"
+  OnClearCache = "versionlens.suggestions.clearCache",
+  OnRefreshSuggestionsStats = "versionlens.suggestions.refreshStats"
 }
 
 export enum SuggestionFeatures {
   ShowOnStartup = 'suggestions.showOnStartup',
   ShowPrereleasesOnStartup = 'suggestions.showPrereleasesOnStartup',
+  ShowSuggestionsStats = 'suggestions.showSuggestionsStats',
   Indicators = 'suggestions.indicators',
 }
 
@@ -93,6 +97,7 @@ export interface IExtensionServices {
 
   // command events
   onClearCache: OnClearCache
+  onRefreshSuggestionsStats: OnRefreshSuggestionsStats
   onFileLinkClick: OnFileLinkClick
   onUpdateDependencyClick: OnUpdateDependencyClick
   onChooseBuildClick: OnChooseBuildClick
@@ -124,8 +129,9 @@ export interface IExtensionServices {
 export const ExtensionServiceName = nameOf<IExtensionServices>()
 
 export interface IVersionLensState {
-  show: ContextState<boolean>
-  showPrereleases: ContextState<boolean>
+  show: IContextState<boolean>
+  showPrereleases: IContextState<boolean>
+  showSuggestionsStats: IContextState<boolean>
   showOutdated: IContextState<boolean>
   providerActive: IContextState<string | null>
   providerBusy: IContextState<number>

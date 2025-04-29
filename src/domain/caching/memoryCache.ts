@@ -42,8 +42,8 @@ export class MemoryCache<T> implements ICache<T> {
     this.cacheMap.clear();
   }
 
-  [Symbol.iterator]() {
-    return this.cacheMap.entries()
+  keys(): MapIterator<string> {
+    return this.cacheMap.keys()
   }
 
 }

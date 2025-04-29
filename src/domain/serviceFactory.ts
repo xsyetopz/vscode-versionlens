@@ -10,7 +10,8 @@ import {
   FetchPackage,
   FetchPackages,
   GetDependencyChanges,
-  GetSuggestionProvider
+  GetSuggestionProvider,
+  GetSuggestionsStats
 } from '#domain/useCases';
 
 export function addAppConfig(
@@ -120,6 +121,20 @@ export function addFetchPackageSuggestionsUseCase(services: IServiceCollection) 
     (container: IDomainServices) =>
       new FetchPackage(
         container.packageCache,
+        container.loggerFactory.create(serviceName)
+      )
+  );
+}
+
+export function addGetSuggestionsStatsUseCase(services: IServiceCollection) {
+  const serviceName = DomainServiceName.getSuggestionsStats;
+  services.addSingleton(
+    serviceName,
+    (container: IDomainServices) =>
+      new GetSuggestionsStats(
+        container.suggestionProviders,
+        container.fileWatcherDependencyCache,
+        container.getSuggestions,
         container.loggerFactory.create(serviceName)
       )
   );

@@ -9,6 +9,8 @@ export class VersionLensState implements IVersionLensState {
 
   showPrereleases: ContextState<boolean>;
 
+  showSuggestionsStats: ContextState<boolean>;
+
   showOutdated: ContextState<boolean>;
 
   providerActive: ContextState<string | null>;
@@ -24,6 +26,7 @@ export class VersionLensState implements IVersionLensState {
 
     this.show = new ContextState(StateFeatures.Show);
     this.showPrereleases = new ContextState(StateFeatures.ShowPrereleases);
+    this.showSuggestionsStats = new ContextState(StateFeatures.ShowSuggestionsStats);
     this.showOutdated = new ContextState(StateFeatures.ShowOutdated);
     this.providerActive = new ContextState(StateFeatures.ProviderActive);
     this.providerBusy = new ContextState(StateFeatures.ProviderBusy);
@@ -34,6 +37,7 @@ export class VersionLensState implements IVersionLensState {
   async applyDefaults(): Promise<void> {
     await this.show.change(this.suggestionOptions.showOnStartup);
     await this.showPrereleases.change(this.suggestionOptions.showPrereleasesOnStartup);
+    await this.showSuggestionsStats.change(this.suggestionOptions.showSuggestionsStats);
     await this.showOutdated.change(false);
     await this.providerActive.change(null);
     await this.providerBusy.change(0);

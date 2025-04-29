@@ -6,7 +6,7 @@ import {
   SuggestionTypes
 } from '#domain/packages';
 import type { ISuggestionProvider } from '#domain/providers';
-import { FetchPackages } from '#domain/useCases';
+import type { FetchPackages } from '#domain/useCases';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 import { dirname } from 'node:path';
 

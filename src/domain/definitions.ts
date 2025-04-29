@@ -12,7 +12,8 @@ import type {
   FetchPackages,
   GetDependencyChanges,
   GetSuggestionProvider,
-  GetSuggestions
+  GetSuggestions,
+  GetSuggestionsStats
 } from '#domain/useCases';
 import { nameOf } from '#domain/utils';
 
@@ -37,6 +38,7 @@ export interface IDomainServices {
   fetchPackage: FetchPackage;
   getSuggestions: GetSuggestions;
   getDependencyChanges: GetDependencyChanges;
+  getSuggestionsStats: GetSuggestionsStats;
 }
 
 export const DomainServiceName = nameOf<IDomainServices>()

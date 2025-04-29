@@ -157,6 +157,11 @@
         "command": "versionlens.authorization.removeUrlAuthentication",
         "title": "Remove url authentication",
         "category": "VersionLens"
+      },
+      {
+        "command": "versionlens.suggestions.refreshStats",
+        "title": "Refresh all suggestions stats",
+        "category": "VersionLens"
       }
     ],
     "menus": {
@@ -233,6 +238,11 @@
           "type": "boolean",
           "default": false,
           "description": "Show version prerelease suggestions by default on vscode start up."
+        },
+        "versionlens.suggestions.showSuggestionsStats": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the stats of all suggestions in the status bar."
         },
         "versionlens.suggestions.indicators": {
           "type": "object",

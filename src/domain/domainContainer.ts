@@ -7,6 +7,7 @@ import {
   addFileWatcherDependencyCache,
   addGetDependencyChangesUseCase,
   addGetSuggestionProviderUseCase,
+  addGetSuggestionsStatsUseCase,
   addHttpOptions,
   addShellCache,
   addSuggestionPackageCache,
@@ -46,4 +47,5 @@ export function addDomainServices(
   addFetchPackageSuggestionsUseCase(services);
   addGetSuggestionProviderUseCase(services);
   addGetDependencyChangesUseCase(services);
+  addGetSuggestionsStatsUseCase(services);
 }

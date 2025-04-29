@@ -7,6 +7,7 @@ export * from './onFileLinkClick.tests';
 export * from './onPreSaveChanges.tests';
 export * from './onProviderTextDocumentChange.tests';
 export * from './onProviderTextDocumentClose.tests';
+export * from './onRefreshSuggestionsStats.tests';
 export * from './onRemoveUrlAuthentication.tests';
 export * from './onSaveChanges.tests';
 export * from './onTextDocumentChange.tests';
