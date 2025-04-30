@@ -1,36 +1,30 @@
-import { DockerHubRepository } from '#domain/providers/docker';
+import type { DockerRepository } from '#domain/providers/docker';
 
 export default {
-  test: <DockerHubRepository[]>[
+  test: <DockerRepository[]>[
     {
       name: '1',
-      digest: 'sha256-123',
-      tag_status: 'active'
+      digest: 'sha256-123'
     },
     {
       name: '1.0',
-      digest: 'sha256-123',
-      tag_status: 'active'
+      digest: 'sha256-123'
     },
     {
       name: '1.0.0',
-      digest: 'sha256-123',
-      tag_status: 'active'
+      digest: 'sha256-123'
     },
     {
       name: '1.0.0-tag1',
-      digest: 'sha256-123',
-      tag_status: 'active'
+      digest: 'sha256-123'
     },
     {
       name: 'lts',
-      digest: 'sha256-123',
-      tag_status: 'active'
+      digest: 'sha256-123'
     },
     {
       name: '0.5.0',
-      digest: 'sha256-987',
-      tag_status: 'active'
+      digest: 'sha256-987'
     }
   ],
   expected: {

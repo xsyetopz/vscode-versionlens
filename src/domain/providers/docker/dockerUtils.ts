@@ -1,13 +1,13 @@
 import { VersionUtils } from '#domain/packages';
 import {
   DockerDigestMapper,
-  DockerHubRepository,
+  DockerRepository,
   DockerVersion,
   DockerVersionMapper
 } from '#domain/providers/docker';
 import { coerce, gt, maxSatisfying } from 'semver';
 
-export function createVersionMapper(dockerTags: DockerHubRepository[]): DockerVersionMapper {
+export function createVersionMapper(dockerTags: DockerRepository[]): DockerVersionMapper {
   const digestMapper = createDigestMapper(dockerTags)
   const versionMap = coerceDockerTagsToSemver(Object.keys(digestMapper.tagMap), digestMapper);
   const tagMap = createReverseLookup(versionMap, digestMapper);
@@ -39,7 +39,7 @@ export function createVersionMapper(dockerTags: DockerHubRepository[]): DockerVe
   };
 }
 
-export function createDigestMapper(dockerTags: DockerHubRepository[]): DockerDigestMapper {
+export function createDigestMapper(dockerTags: DockerRepository[]): DockerDigestMapper {
   const tagMap: Record<string, string> = {};
   const digestMap: Record<string, string[]> = {};
   for (const tagResult of dockerTags) {

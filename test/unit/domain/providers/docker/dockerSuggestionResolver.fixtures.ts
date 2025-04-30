@@ -1,8 +1,8 @@
 import { type PackageSuggestion, PackageStatusFactory, UpdateableFactory } from '#domain/packages';
-import type { DockerHubRepository } from '#domain/providers/docker';
+import type { DockerHubRepoResult } from '#domain/providers/docker';
 
 export default {
-  test: <DockerHubRepository[]>[
+  test: <DockerHubRepoResult[]>[
     {
       "name": "latest",
       "tag_status": "active",

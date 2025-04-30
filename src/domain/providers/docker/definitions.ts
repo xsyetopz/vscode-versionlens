@@ -27,22 +27,12 @@ export interface IDockerServices {
 
 export const DockerService = nameOf<IDockerServices>()
 
-export type DockerHubRepository = {
+export type DockerRepository = {
   name: string
-  tag_status: 'active' | 'inactive'
   digest: string
 }
 
-export type DockerHubListReposResult = {
-  count: number
-  next: string
-  name: string
-  results: DockerHubRepository[]
-}
-
-export type DockerHubListReposResponse = JsonClientResponse<DockerHubListReposResult>
-
-export type DockerHubListClientResponse = JsonClientResponse<DockerHubRepository[]>
+export type DockerClientResponse = JsonClientResponse<DockerRepository[]>
 
 export type DockerDigestMapper = {
   tagMap: Record<string, string>

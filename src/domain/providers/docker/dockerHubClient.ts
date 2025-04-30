@@ -1,21 +1,30 @@
 import type { IExpiryCache } from '#domain/caching';
-import { type IJsonHttpClient, ClientResponseSource } from '#domain/clients';
+import { type IJsonHttpClient, ClientResponseSource, JsonClientResponse } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
-import {
+import type {
+  DockerClientResponse,
   DockerConfig,
-  DockerHubListClientResponse,
-  DockerHubListReposResponse,
-  DockerHubListReposResult,
-  DockerHubRepository
+  DockerRepository
 } from '#domain/providers/docker';
 import { throwUndefinedOrNull } from '@esm-test/guards';
+
+export type DockerHubRepoResult = DockerRepository & {
+  tag_status: 'active' | 'inactive'
+}
+
+export type DockerHubListReposResult = {
+  count: number
+  next: string
+  name: string
+  results: DockerHubRepoResult[]
+}
 
 export class DockerHubClient {
 
   constructor(
     readonly config: DockerConfig,
     readonly jsonClient: IJsonHttpClient,
-    readonly requestCache: IExpiryCache<DockerHubListClientResponse>,
+    readonly requestCache: IExpiryCache<DockerClientResponse>,
     readonly logger: ILogger
   ) {
     throwUndefinedOrNull('config', config);
@@ -24,14 +33,14 @@ export class DockerHubClient {
     throwUndefinedOrNull('logger', logger);
   }
 
-  async get(repository: string, namespace: string = 'library'): Promise<DockerHubListClientResponse> {
+  async get(repository: string, namespace: string = 'library'): Promise<DockerClientResponse> {
     const url = `https://hub.docker.com/v2/namespaces/${namespace}/repositories/${repository}/tags`;
     // check cache
     const cached = this.requestCache.get(url, this.config.caching.duration);
     if (cached) return { ...cached, source: ClientResponseSource.cache };
     // fetch
-    const results: DockerHubRepository[] = [];
-    let jsonResponse: DockerHubListReposResponse;
+    const results: DockerHubRepoResult[] = [];
+    let jsonResponse: JsonClientResponse<DockerHubListReposResult>;
     let pagedData: DockerHubListReposResult;
     let page = 1;
     do {
@@ -53,7 +62,7 @@ export class DockerHubClient {
       data: results
         .filter(x => x.tag_status === 'active')
         .filter(x => !!x.digest)
-        .map<DockerHubRepository>(x => ({ name: x.name, digest: x.digest, tag_status: x.tag_status }))
+        .map<DockerRepository>(x => ({ name: x.name, digest: x.digest }))
     };
     // cache and return
     return this.requestCache.set(url, result);

@@ -1,4 +1,4 @@
-import { DockerHubListReposResult, DockerHubRepository } from '#domain/providers/docker';
+import type { DockerHubListReposResult, DockerRepository } from '#domain/providers/docker';
 
 export default {
   test: <DockerHubListReposResult>{
@@ -25,15 +25,13 @@ export default {
       },
     ]
   },
-  expected: <DockerHubRepository[]>[
+  expected: <DockerRepository[]>[
     {
       "name": "latest",
-      "tag_status": "active",
       "digest": "sha256:c5bfe90b30e795ec57bcc0040065ca6f284af84a1dafd22a207bd6b48c39ce01"
     },
     {
       "name": "23",
-      "tag_status": "active",
       "digest": "sha256:c5bfe90b30e795ec57bcc0040065ca6f284af84a1dafd22a207bd6b48c39ce01"
     }
   ]

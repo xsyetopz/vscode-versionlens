@@ -17,9 +17,9 @@ import {
   PackageRegistryDescriptor
 } from '#domain/parsers';
 import {
+  type DockerClientResponse,
   type DockerConfig,
   type DockerHubClient,
-  type DockerHubListClientResponse,
   type MicrosoftHubClient,
   createVersionMapper,
   findSimilarBuild
@@ -73,7 +73,7 @@ export class DockerSuggestionResolver {
     return this.parseResponse(requestedPackage, jsonResponse);
   }
 
-  private async parseResponse(pkg: PackageResource, jsonResponse: DockerHubListClientResponse): Promise<PackageClientResponse> {
+  private async parseResponse(pkg: PackageResource, jsonResponse: DockerClientResponse): Promise<PackageClientResponse> {
     // map docker tags to semver
     const { versionMap, tagMap, releases, latest } = createVersionMapper(jsonResponse.data);
 
