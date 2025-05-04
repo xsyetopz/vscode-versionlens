@@ -18,12 +18,12 @@ export enum NpmFeatures {
 }
 
 export interface INpmServices {
-  npmCachingOpts: CachingOptions;
-  npmHttpOpts: HttpOptions;
-  npmConfig: NpmConfig;
-  npmGithubClient: NpmGitHubClient;
-  npmRegistryClient: NpmRegistryClient;
-  npmSuggestionResolver: NpmSuggestionResolver;
+  npmCachingOpts: CachingOptions
+  npmHttpOpts: HttpOptions
+  npmConfig: NpmConfig
+  npmGithubClient: NpmGitHubClient
+  npmRegistryClient: NpmRegistryClient
+  npmSuggestionResolver: NpmSuggestionResolver
 }
 
 export const NpmService = nameOf<INpmServices>()

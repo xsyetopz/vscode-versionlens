@@ -4,6 +4,7 @@ import {
   createIgnoreChangesDesc,
   createNameDescFromJsonNode,
   createPackageParentDescType,
+  createPathDescFromJsonNode,
   createProjectVersionDesc,
   createVersionDescFromJsonNode,
 } from '#domain/parsers';
@@ -29,7 +30,7 @@ export function createPackageManagerDesc(path: string, node: JsonC.Node): Packag
   ]);
 }
 
-function createPackageManagerVersionFromJsonNode(valueNode: any): PackageVersionDescriptor {
+function createPackageManagerVersionFromJsonNode(valueNode: JsonC.Node): PackageVersionDescriptor {
   const versionDesc = createVersionDescFromJsonNode(valueNode);
 
   // Handle packageManager field
@@ -55,4 +56,16 @@ export function customDescriptorHandler(path: string, node: JsonC.Node) {
     case 'version':
       return createProjectVersionDesc(path, node);
   }
+}
+
+export function createNpmVersionDescFromJsonNode(valueNode: JsonC.Node) {
+  const { value: version } = valueNode;
+  if (version.startsWith('file:'))
+    return createPathDescFromJsonNode(valueNode)
+  else if (version.startsWith('link:')) {
+    (valueNode as any).value = valueNode.value.replace('link:', 'file:')
+      + '/package.json';
+    return createPathDescFromJsonNode(valueNode)
+  }
+  return createVersionDescFromJsonNode(valueNode);
 }

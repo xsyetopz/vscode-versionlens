@@ -1,4 +1,4 @@
-# 1.21.3-prerelease
+# 1.21.4-prerelease
 
   ### All
 
@@ -20,9 +20,17 @@
 
   - Caching improvements
 
-  ### Npm
+  ### Pnpm
 
-  - Stopped showing 'not supported' suggestions for `workspace:` aliases
+  - Added `pnpn-workspace` yaml file analysis
+
+    ![image](https://gitlab.com/-/project/19418059/uploads/968fb115f05fee97b54532ae7e36d1bd/image.png)
+
+  - Added navigation link for `link:` aliases
+
+  - Removed 'not supported' suggestions for `catalog:` and `workspace:` aliases
+
+  ### Npm
 
   - Removed the `versionlens.github.accessToken` setting which was deprecated in 1.16.0.<br>
     This was replaced by the built in [authorization](https://gitlab.com/versionlens/vscode-versionlens/-/blob/master/docs/authorization.md) feature of version lens.

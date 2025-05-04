@@ -4,8 +4,7 @@ import {
   type JsonParserOptions,
   PackageDescriptor,
   createNameDescFromJsonNode,
-  createPackageParentDescType,
-  createVersionDescFromJsonNode
+  createPackageParentDescType
 } from '#domain/parsers';
 import type { KeyDictionary } from '#domain/utils';
 import * as JsonC from 'jsonc-parser';
@@ -65,6 +64,7 @@ function descendChildNodes(
   complexTypeHandlers: KeyDictionary<JsonPackageTypeHandler>
 ): Array<PackageDescriptor> {
   const matchedDependencies: Array<PackageDescriptor> = [];
+  const createVersionDescFromJsonNode = complexTypeHandlers['version'];
 
   for (const node of nodes) {
     if (!node.children || node.children.length === 0) continue;

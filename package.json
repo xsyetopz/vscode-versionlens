@@ -291,7 +291,7 @@
         },
         "versionlens.npm.files": {
           "type": "string",
-          "default": "**/{package.json,pnpm-workspace.yaml}",
+          "default": "**/package.json",
           "description": "Specifies which files to register with version lenses. You can use [micromatch](https://github.com/micromatch/micromatch) expressions to match file names. You will need to restart vscode when changing this setting."
         },
         "versionlens.npm.caching.duration": {
@@ -322,9 +322,7 @@
             "jspm.peerDependencies",
             "jspm.optionalDependencies",
             "pnpm.overrides",
-            "pnpm.overrides.*",
-            "catalog",
-            "catalogs.*"
+            "pnpm.overrides.*"
           ],
           "description": "Defines which properties in package.json should be parsed by this extension"
         },
@@ -383,6 +381,29 @@
           "minItems": 0,
           "default": [],
           "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prereleases' icon is activated."
+        },
+        "versionlens.pnpm.files": {
+          "type": "string",
+          "default": "**/pnpm-workspace.yaml",
+          "description": "Specifies which files to register with version lenses. You can use [micromatch](https://github.com/micromatch/micromatch) expressions to match file names. You will need to restart vscode when changing this setting."
+        },
+        "versionlens.pnpm.dependencyProperties": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "default": [
+            "catalog",
+            "catalogs.*.*",
+            "overrides",
+            "packageExtensions.*.dependencies",
+            "packageExtensions.*.devDependencies",
+            "packageExtensions.*.peerDependencies",
+            "packageExtensions.*.optionalDependencies"
+          ],
+          "description": "Defines which properties in pnpm-workspace.yaml should be parsed by this extension"
         },
         "versionlens.pub.onSaveChanges": {
           "type": "string",

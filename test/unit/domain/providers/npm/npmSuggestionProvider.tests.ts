@@ -256,24 +256,5 @@ export const NpmSuggestionProviderTests = {
         assert.deepEqual(results, testFixture.expected);
       },
     ],
-    "case $i: matches pnpm-workspace.yaml": function (this: TestContext) {
-      const testDepProps = [
-        'catalog',
-        'catalogs.*.*'
-      ];
-      const put = new NpmSuggestionProvider(
-        instance(this.resolverMock),
-        instance(this.configMock),
-        instance(this.loggerMock)
-      );
-      // test
-      const results = put.parseDependencies(
-        'test/path/pnpm-workspace.yaml',
-        Fixtures.parseDependencies.yaml.test,
-        testDepProps
-      )
-      // assert
-      assert.deepEqual(results, Fixtures.parseDependencies.yaml.expected);
-    },
   }
 }

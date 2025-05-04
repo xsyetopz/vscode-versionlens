@@ -10,12 +10,12 @@ import type {
 } from '#domain/packages';
 
 export interface IProviderConfig {
-  readonly caching: CachingOptions
-  readonly http: HttpOptions
   readonly fileLanguage: string | string[]
   readonly filePatterns: string
+  readonly caching?: CachingOptions
+  readonly http?: HttpOptions
   readonly fileExcludePatterns?: string[]
-  onSaveChangesTask: string | null
+  readonly onSaveChangesTask?: string
 }
 
 export interface IProviderModule {

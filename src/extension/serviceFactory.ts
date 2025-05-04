@@ -103,6 +103,7 @@ export function addProviderNames(services: IServiceCollection) {
       'maven',
       'npm',
       'deno',
+      'pnpm',
       'pub',
       'pypi',
       'golang'
