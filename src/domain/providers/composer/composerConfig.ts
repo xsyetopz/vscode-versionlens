@@ -3,10 +3,8 @@ import type { HttpOptions } from '#domain/clients';
 import type { IFrozenOptions } from '#domain/configuration';
 import type { IProviderConfig } from '#domain/providers';
 import { ComposerFeatures } from '#domain/providers/composer';
-import { ensureEndSlash, nameOf } from '#domain/utils';
+import { ensureEndSlash } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-
-const def = nameOf<ComposerConfig>();
 
 export class ComposerConfig implements IProviderConfig {
 
@@ -15,31 +13,31 @@ export class ComposerConfig implements IProviderConfig {
     readonly caching: CachingOptions,
     readonly http: HttpOptions
   ) {
-    throwUndefinedOrNull(def.config, config);
-    throwUndefinedOrNull(def.caching, caching);
-    throwUndefinedOrNull(def.http, http);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('caching', caching);
+    throwUndefinedOrNull('http', http);
   }
 
   readonly fileLanguage = ['json', 'jsonc'];
 
   get filePatterns(): string {
-    return this.config.get(ComposerFeatures.FilePatterns);
+    return this.config.get(ComposerFeatures.FilePatterns, '');
   }
 
   get dependencyProperties(): Array<string> {
-    return this.config.get(ComposerFeatures.DependencyProperties);
+    return this.config.get(ComposerFeatures.DependencyProperties, []);
   }
 
   get prereleaseTagFilter(): Array<string> {
-    return this.config.get(ComposerFeatures.PrereleaseTagFilter);
+    return this.config.get(ComposerFeatures.PrereleaseTagFilter, []);
   }
 
   get apiUrl(): string {
-    return ensureEndSlash(this.config.get(ComposerFeatures.ApiUrl));
+    return ensureEndSlash(this.config.get(ComposerFeatures.ApiUrl, ''));
   }
 
   get onSaveChangesTask(): string | null {
-    return this.config.get(ComposerFeatures.OnSaveChangesTask) ?? null;
+    return this.config.get(ComposerFeatures.OnSaveChangesTask, null);
   }
 
 }

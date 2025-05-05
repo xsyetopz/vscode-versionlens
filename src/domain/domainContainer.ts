@@ -15,14 +15,14 @@ import {
   addSuggestionProviders,
   addUrlRequestCache,
 } from '#domain';
-import type { TConfigSectionResolver } from '#domain/configuration';
+import type { ConfigSectionResolver } from '#domain/configuration';
 import type { IServiceCollection } from '#domain/di';
 import { addLoggerFactory } from './logging/serviceFactory';
 
 export function addDomainServices(
   services: IServiceCollection,
   configSection: string,
-  configResolver: TConfigSectionResolver
+  configResolver: ConfigSectionResolver
 ) {
   addAppConfig(services, configSection, configResolver);
   addFileSystemStorage(services);

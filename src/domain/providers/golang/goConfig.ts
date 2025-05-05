@@ -3,10 +3,7 @@ import type { HttpOptions } from '#domain/clients';
 import type { IFrozenOptions } from '#domain/configuration';
 import type { IProviderConfig } from '#domain/providers';
 import { GoFeatures } from '#domain/providers/golang';
-import { nameOf } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-
-const def = nameOf<GoConfig>();
 
 export class GoConfig implements IProviderConfig {
 
@@ -15,27 +12,27 @@ export class GoConfig implements IProviderConfig {
     readonly caching: CachingOptions,
     readonly http: HttpOptions
   ) {
-    throwUndefinedOrNull(def.config, config);
-    throwUndefinedOrNull(def.caching, caching);
-    throwUndefinedOrNull(def.http, http);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('caching', caching);
+    throwUndefinedOrNull('http', http);
   }
 
   readonly fileLanguage = 'go.mod';
 
   get filePatterns(): string {
-    return this.config.get(GoFeatures.FilePatterns);
+    return this.config.get(GoFeatures.FilePatterns, '');
   }
 
   get prereleaseTagFilter(): Array<string> {
-    return this.config.get(GoFeatures.PrereleaseTagFilter);
+    return this.config.get(GoFeatures.PrereleaseTagFilter, []);
   }
 
   get apiUrl(): string {
-    return this.config.get(GoFeatures.ApiUrl);
+    return this.config.get(GoFeatures.ApiUrl, '');
   }
 
   get onSaveChangesTask(): string | null {
-    return this.config.get(GoFeatures.OnSaveChangesTask) ?? null;
+    return this.config.get(GoFeatures.OnSaveChangesTask, null);
   }
 
 }

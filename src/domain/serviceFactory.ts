@@ -1,7 +1,7 @@
-import { DomainServiceName, type IDomainServices } from '#domain';
+import { type IDomainServices, DomainServiceName } from '#domain';
 import { CachingOptions, MemoryExpiryCache } from '#domain/caching';
 import { HttpOptions } from '#domain/clients';
-import { Config, type TConfigSectionResolver } from '#domain/configuration';
+import { type ConfigSectionResolver, Config } from '#domain/configuration';
 import type { IServiceCollection } from '#domain/di';
 import { DependencyCache, PackageCache } from '#domain/packages';
 import { importSuggestionProviders } from '#domain/providers';
@@ -18,7 +18,7 @@ import { EventScheduler } from '#domain/utils';
 export function addAppConfig(
   services: IServiceCollection,
   configSection: string,
-  configSectionResolver: TConfigSectionResolver
+  configSectionResolver: ConfigSectionResolver
 ) {
   services.addSingleton(
     DomainServiceName.appConfig,

@@ -27,7 +27,7 @@ export class OnSaveChanges {
 
   async execute(provider: ISuggestionProvider, packageFilePath: string): Promise<void> {
     // check we have a task to run
-    if (provider.config.onSaveChangesTask === null) {
+    if (!provider.config.onSaveChangesTask) {
       this.logger.info(OnSaveChanges.log.skipSaveChangesTask, provider.name);
       return;
     }

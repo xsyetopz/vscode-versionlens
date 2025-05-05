@@ -3,10 +3,8 @@ import type { HttpOptions } from '#domain/clients';
 import type { IFrozenOptions } from '#domain/configuration';
 import type { IProviderConfig } from '#domain/providers';
 import { DubFeatures } from '#domain/providers/dub';
-import { ensureEndSlash, nameOf } from '#domain/utils';
+import { ensureEndSlash } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-
-const def = nameOf<DubConfig>();
 
 export class DubConfig implements IProviderConfig {
 
@@ -15,31 +13,31 @@ export class DubConfig implements IProviderConfig {
     readonly caching: CachingOptions,
     readonly http: HttpOptions
   ) {
-    throwUndefinedOrNull(def.config, config);
-    throwUndefinedOrNull(def.caching, caching);
-    throwUndefinedOrNull(def.http, http);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('caching', caching);
+    throwUndefinedOrNull('http', http);
   }
 
   readonly fileLanguage = ['json', 'jsonc'];
 
   get filePatterns(): string {
-    return this.config.get(DubFeatures.FilePatterns);
+    return this.config.get(DubFeatures.FilePatterns, '');
   }
 
   get dependencyProperties(): Array<string> {
-    return this.config.get(DubFeatures.DependencyProperties);
+    return this.config.get(DubFeatures.DependencyProperties, []);
   }
 
   get apiUrl(): string {
-    return ensureEndSlash(this.config.get(DubFeatures.ApiUrl));
+    return ensureEndSlash(this.config.get(DubFeatures.ApiUrl, ''));
   }
 
   get onSaveChangesTask(): string | null {
-    return this.config.get(DubFeatures.OnSaveChangesTask) ?? null;
+    return this.config.get(DubFeatures.OnSaveChangesTask, null);
   }
 
   get prereleaseTagFilter(): Array<string> {
-    return this.config.get(DubFeatures.prereleaseTagFilter);
+    return this.config.get(DubFeatures.prereleaseTagFilter, []);
   }
 
 }

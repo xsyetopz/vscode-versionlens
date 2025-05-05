@@ -15,7 +15,7 @@ export interface IProviderConfig {
   readonly caching?: CachingOptions
   readonly http?: HttpOptions
   readonly fileExcludePatterns?: string[]
-  readonly onSaveChangesTask?: string
+  readonly onSaveChangesTask?: string | null
 }
 
 export interface IProviderModule {

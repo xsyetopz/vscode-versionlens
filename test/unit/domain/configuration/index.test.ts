@@ -1,2 +1,2 @@
-export * from './optionsWithFallback.tests';
 export * from './appConfig.tests';
+export * from './optionsWithFallback.tests';

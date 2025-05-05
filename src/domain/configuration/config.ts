@@ -1,6 +1,5 @@
+import type { ConfigSectionResolver, IConfig, IFrozenOptions } from '#domain/configuration';
 import { throwNotStringOrEmpty, throwUndefinedOrNull } from '@esm-test/guards';
-import { IConfig, IFrozenOptions, TConfigSectionResolver } from '#domain/configuration';
-import { Nullable, Undefinable } from '#domain/utils';
 
 /**
  * Configuration container.
@@ -11,9 +10,9 @@ import { Nullable, Undefinable } from '#domain/utils';
  */
 export class Config implements IFrozenOptions {
 
-  constructor(resolver: TConfigSectionResolver, section: string) {
-    throwUndefinedOrNull("resolver", resolver);
-    throwNotStringOrEmpty("section", section);
+  constructor(resolver: ConfigSectionResolver, section: string) {
+    throwUndefinedOrNull('resolver', resolver);
+    throwNotStringOrEmpty('section', section);
 
     this.resolver = resolver;
     this.section = section;
@@ -23,7 +22,7 @@ export class Config implements IFrozenOptions {
   /**
    * Cached configuration
    */
-  protected frozen: Nullable<IConfig>;
+  protected frozen: IConfig | null;
 
   /**
    * The section key fetched from the configuration source data
@@ -35,18 +34,14 @@ export class Config implements IFrozenOptions {
   /**
    * The function that reads from the configuration source
    */
-  resolver: TConfigSectionResolver;
+  resolver: ConfigSectionResolver;
 
-  private get raw(): IConfig {
-    return this.resolver(this.section);
-  }
-
-  get<T>(key: string): Undefinable<T> {
+  get<T>(key: string, defaultValue?: T): T | undefined {
     if (this.frozen === null) {
-      this.frozen = this.raw;
+      this.frozen = this.resolver(this.section);
     }
 
-    return this.frozen.get(key);
+    return this.frozen.get(key, defaultValue);
   }
 
   defrost() {

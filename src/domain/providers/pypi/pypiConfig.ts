@@ -3,10 +3,7 @@ import type { HttpOptions } from '#domain/clients';
 import type { IFrozenOptions } from '#domain/configuration';
 import type { IProviderConfig } from '#domain/providers';
 import { PypiFeatures } from '#domain/providers/pypi';
-import { nameOf } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-
-const def = nameOf<PypiConfig>();
 
 export class PypiConfig implements IProviderConfig {
 
@@ -15,31 +12,31 @@ export class PypiConfig implements IProviderConfig {
     readonly caching: CachingOptions,
     readonly http: HttpOptions
   ) {
-    throwUndefinedOrNull(def.config, config);
-    throwUndefinedOrNull(def.caching, caching);
-    throwUndefinedOrNull(def.http, http);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('caching', caching);
+    throwUndefinedOrNull('http', http);
   }
 
   readonly fileLanguage = 'toml';
 
   get filePatterns(): string {
-    return this.config.get(PypiFeatures.FilePatterns);
+    return this.config.get(PypiFeatures.FilePatterns, '');
   }
 
   get dependencyProperties(): Array<string> {
-    return this.config.get(PypiFeatures.DependencyProperties);
+    return this.config.get(PypiFeatures.DependencyProperties, []);
   }
 
   get prereleaseTagFilter(): Array<string> {
-    return this.config.get(PypiFeatures.PrereleaseTagFilter);
+    return this.config.get(PypiFeatures.PrereleaseTagFilter, []);
   }
 
   get apiUrl(): string {
-    return this.config.get(PypiFeatures.ApiUrl);
+    return this.config.get(PypiFeatures.ApiUrl, '');
   }
 
   get onSaveChangesTask(): string | null {
-    return this.config.get(PypiFeatures.OnSaveChangesTask) ?? null;
+    return this.config.get(PypiFeatures.OnSaveChangesTask, null);
   }
 
 }

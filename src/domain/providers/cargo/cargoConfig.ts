@@ -3,10 +3,8 @@ import type { HttpOptions } from '#domain/clients';
 import type { IFrozenOptions } from '#domain/configuration';
 import type { IProviderConfig } from '#domain/providers';
 import { CargoFeatures } from '#domain/providers/cargo';
-import { ensureEndSlash, nameOf } from '#domain/utils';
+import { ensureEndSlash } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-
-const def = nameOf<CargoConfig>();
 
 export class CargoConfig implements IProviderConfig {
 
@@ -15,31 +13,31 @@ export class CargoConfig implements IProviderConfig {
     readonly caching: CachingOptions,
     readonly http: HttpOptions
   ) {
-    throwUndefinedOrNull(def.config, config);
-    throwUndefinedOrNull(def.caching, caching);
-    throwUndefinedOrNull(def.http, http);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('caching', caching);
+    throwUndefinedOrNull('http', http);
   }
 
   readonly fileLanguage = 'toml';
 
   get filePatterns(): string {
-    return this.config.get(CargoFeatures.FilePatterns);
+    return this.config.get(CargoFeatures.FilePatterns, '');
   }
 
   get dependencyProperties(): Array<string> {
-    return this.config.get(CargoFeatures.DependencyProperties);
+    return this.config.get(CargoFeatures.DependencyProperties, []);
   }
 
   get prereleaseTagFilter(): Array<string> {
-    return this.config.get(CargoFeatures.PrereleaseTagFilter);
+    return this.config.get(CargoFeatures.PrereleaseTagFilter, []);
   }
 
   get apiUrl(): string {
-    return ensureEndSlash(this.config.get(CargoFeatures.ApiUrl));
+    return ensureEndSlash(this.config.get(CargoFeatures.ApiUrl, ''));
   }
 
   get onSaveChangesTask(): string | null {
-    return this.config.get(CargoFeatures.OnSaveChangesTask) ?? null;
+    return this.config.get(CargoFeatures.OnSaveChangesTask, null);
   }
 
 }

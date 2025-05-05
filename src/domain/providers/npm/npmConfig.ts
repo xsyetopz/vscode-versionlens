@@ -17,22 +17,22 @@ export class NpmConfig implements IProviderConfig {
     throwUndefinedOrNull('http', http);
   }
 
-  readonly fileLanguage = ['yaml', 'json', 'jsonc'];
+  readonly fileLanguage = ['json', 'jsonc'];
 
   get filePatterns(): string {
-    return this.config.get(NpmFeatures.FilePatterns);
+    return this.config.get(NpmFeatures.FilePatterns, '');
   }
 
   get dependencyProperties(): Array<string> {
-    return this.config.get(NpmFeatures.DependencyProperties);
+    return this.config.get(NpmFeatures.DependencyProperties, []);
   }
 
   get onSaveChangesTask(): string | null {
-    return this.config.get(NpmFeatures.OnSaveChangesTask) ?? null;
+    return this.config.get(NpmFeatures.OnSaveChangesTask, null);
   }
 
   get prereleaseTagFilter(): Array<string> {
-    return this.config.get(NpmFeatures.PrereleaseTagFilter);
+    return this.config.get(NpmFeatures.PrereleaseTagFilter, []);
   }
 
 }

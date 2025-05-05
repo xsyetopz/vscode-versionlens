@@ -1,9 +1,9 @@
+import type { CachingOptions } from '#domain/caching';
+import type { HttpOptions } from '#domain/clients';
 import type { IFrozenOptions } from '#domain/configuration';
 import type { IProviderConfig } from '#domain/providers';
+import { PnpmFeatures } from '#domain/providers/pnpm';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { CachingOptions } from '#domain/caching';
-import { HttpOptions } from '#domain/clients';
-import { PnpmFeatures } from './index.js';
 
 export class PnpmConfig implements IProviderConfig {
 
@@ -19,14 +19,14 @@ export class PnpmConfig implements IProviderConfig {
 
   readonly fileLanguage = ['yaml'];
 
+  onSaveChangesTask = null;
+
   get filePatterns(): string {
-    return this.config.get(PnpmFeatures.FilePatterns);
+    return this.config.get(PnpmFeatures.FilePatterns, '');
   }
 
   get dependencyProperties(): Array<string> {
-    return this.config.get(PnpmFeatures.DependencyProperties);
+    return this.config.get(PnpmFeatures.DependencyProperties, []);
   }
-
-  onSaveChangesTask: string;
 
 }

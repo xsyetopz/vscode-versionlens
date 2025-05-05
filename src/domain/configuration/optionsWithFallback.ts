@@ -1,8 +1,7 @@
-import { IFrozenOptions, IOptionsWithDefaults, Options } from '#domain/configuration';
-import { Nullable, Undefinable } from '#domain/utils';
+import { type IFrozenOptions, Options } from '#domain/configuration';
+import type { Nullable, Undefinable } from '#domain/utils';
 
-export class OptionsWithFallback extends Options
-  implements IOptionsWithDefaults {
+export class OptionsWithFallback extends Options {
 
   protected fallbackSection: Nullable<string>;
 
@@ -26,17 +25,6 @@ export class OptionsWithFallback extends Options
 
     // return fallback key value
     return fallbackSectionValue;
-  }
-
-  getOrDefault<T>(key: string, defaultValue: T): T {
-    // attempt to get the section value
-    const value: Undefinable<T> = this.get(key);
-
-    // return key value
-    if (value !== null && value !== undefined) return value;
-
-    // return default value
-    return defaultValue;
   }
 
 }

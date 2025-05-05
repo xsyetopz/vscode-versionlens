@@ -1,83 +1,98 @@
-import assert from 'node:assert';
-import { Config, IConfig } from '#domain/configuration';
+import { type IConfig, Config } from '#domain/configuration';
 import { test } from 'mocha-ui-esm';
-import { instance, mock, when } from 'ts-mockito';
-import { ConfigResolverStub } from './stubs/configResolverStub';
+import assert from 'node:assert';
+import { instance, mock, verify, when } from 'ts-mockito';
 
-let configResolverMock: ConfigResolverStub;
+interface IVsCodeWorkspaceStub {
+  getConfiguration(section: string): IConfig
+}
+
+type TestContext = {
+  mockResolver: IVsCodeWorkspaceStub
+}
 
 export const AppConfigTests = {
 
   [test.title]: Config.name,
 
-  beforeAll: () => {
-    configResolverMock = mock(ConfigResolverStub);
+  beforeEach: function (this: TestContext) {
+    this.mockResolver = mock<IVsCodeWorkspaceStub>()
   },
 
-  get: {
+  "returns default values": function (this: TestContext) {
+    const testSection = 'test_section'
+    const testKey = 'test_property';
+    const cut = new Config(instance(this.mockResolver).getConfiguration, testSection);
 
-    "accesses frozen repo after first call": () => {
-      const testSection = 'testsection'
-      const testKey = 'some_property';
-      let expectedFrozenValue = 'test value';
+    when(this.mockResolver.getConfiguration(testSection))
+      .thenReturn({
+        get: (key: string, defaultValue?: string) => defaultValue
+      })
 
-      when(configResolverMock.getConfiguration(testSection))
-        .thenReturn(<IConfig>{
-          get: (section) => expectedFrozenValue
-        })
+    // test
+    const actual = cut.get(testKey, 'test default value');
 
-      // get original value
-      const cut = new Config(instance(configResolverMock).getConfiguration, testSection);
-      const first = cut.get(testKey);
-      assert.equal(first, expectedFrozenValue)
+    // assert
+    verify(this.mockResolver.getConfiguration(testSection)).once();
+    assert.equal(actual, 'test default value');
+  },
 
-      // change value without defrosting
-      when(configResolverMock.getConfiguration(testSection))
-        .thenReturn(
-          <IConfig>{
-            get: (section) => 'hot value'
-          }
-        )
+  "accesses frozen repo after first call": function (this: TestContext) {
+    const testSection = 'testsection'
+    const testKey = 'some_property';
+    const expectedFrozenValue = 'test value';
 
-      // should still return original value
-      const actualFrozen = cut.get(testKey);
+    when(this.mockResolver.getConfiguration(testSection))
+      .thenReturn({
+        get: section => expectedFrozenValue
+      })
 
-      assert.equal(actualFrozen, expectedFrozenValue)
-    },
+    // get original value
+    const cut = new Config(instance(this.mockResolver).getConfiguration, testSection);
+    const first = cut.get(testKey);
+    verify(this.mockResolver.getConfiguration(testSection)).once();
+    assert.equal(first, expectedFrozenValue)
 
-    "returns hot value after defrost is called": () => {
-      const testSection = 'testsection'
-      const testKey = 'some_property';
-      let initialValue = 'test value';
+    // change value without defrosting
+    when(this.mockResolver.getConfiguration(testSection))
+      .thenReturn({
+        get: key => 'hot value'
+      })
 
-      when(configResolverMock.getConfiguration(testSection))
-        .thenReturn(
-          <IConfig>{
-            get: (section) => initialValue
-          }
-        )
+    // should still return original value
+    const actualFrozen = cut.get(testKey);
+    verify(this.mockResolver.getConfiguration(testSection)).atMost(1);
+    assert.equal(actualFrozen, expectedFrozenValue)
+  },
 
-      // get original value
-      const cut = new Config(instance(configResolverMock).getConfiguration, testSection);
-      const first = cut.get(testKey);
-      assert.equal(first, initialValue)
+  "returns hot value after defrost is called": function (this: TestContext) {
+    const testSection = 'testsection'
+    const testKey = 'some_property';
+    let initialValue = 'test value';
 
-      // change the value
-      const expectedHotValue = 'hot value';
-      when(configResolverMock.getConfiguration(testSection))
-        .thenReturn(
-          <IConfig>{
-            get: (section) => expectedHotValue
-          }
-        )
+    when(this.mockResolver.getConfiguration(testSection))
+      .thenReturn({
+        get: key => initialValue
+      })
 
-      // should return the new value after defrost is called
-      cut.defrost();
-      const actualFrozen = cut.get(testKey);
+    // get original value
+    const cut = new Config(instance(this.mockResolver).getConfiguration, testSection);
+    const first = cut.get(testKey);
+    verify(this.mockResolver.getConfiguration(testSection)).once();
+    assert.equal(first, initialValue)
 
-      assert.equal(actualFrozen, expectedHotValue)
-    }
+    // change the value
+    const expectedHotValue = 'hot value';
+    when(this.mockResolver.getConfiguration(testSection))
+      .thenReturn({
+        get: key => expectedHotValue
+      })
 
+    // should return the new value after defrost is called
+    cut.defrost();
+    const actualFrozen = cut.get(testKey);
+    verify(this.mockResolver.getConfiguration(testSection)).twice();
+    assert.equal(actualFrozen, expectedHotValue)
   }
 
 }

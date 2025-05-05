@@ -5,7 +5,7 @@ export interface IConfig {
    * @returns T data retrieved from the specified key
    */
   get<T>(key: string): T | undefined;
-
+  get<T>(key: string, defaultValue: T): T;
 }
 
 export interface IFrozenOptions extends IConfig {
@@ -18,12 +18,10 @@ export interface IFrozenOptions extends IConfig {
 
 }
 
-export interface IOptions extends IFrozenOptions { }
-
-export interface IOptionsWithDefaults extends IOptions {
+export interface IOptions extends IFrozenOptions {
 
   getOrDefault<T>(key: string, defaultValue: T): T;
 
 }
 
-export type TConfigSectionResolver =  (section: string) => IConfig
+export type ConfigSectionResolver = (section: string) => IConfig

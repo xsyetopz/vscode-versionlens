@@ -3,10 +3,8 @@ import type { HttpOptions } from '#domain/clients';
 import type { IFrozenOptions } from '#domain/configuration';
 import type { IProviderConfig } from '#domain/providers';
 import { PubFeatures } from '#domain/providers/pub';
-import { ensureEndSlash, nameOf } from '#domain/utils';
+import { ensureEndSlash } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-
-const def = nameOf<PubConfig>();
 
 export class PubConfig implements IProviderConfig {
 
@@ -15,31 +13,31 @@ export class PubConfig implements IProviderConfig {
     readonly caching: CachingOptions,
     readonly http: HttpOptions
   ) {
-    throwUndefinedOrNull(def.config, config);
-    throwUndefinedOrNull(def.caching, caching);
-    throwUndefinedOrNull(def.http, http);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('caching', caching);
+    throwUndefinedOrNull('http', http);
   }
 
   readonly fileLanguage = 'yaml';
 
   get filePatterns(): string {
-    return this.config.get(PubFeatures.FilePatterns);
+    return this.config.get(PubFeatures.FilePatterns, '');
   }
 
   get dependencyProperties(): Array<string> {
-    return this.config.get(PubFeatures.DependencyProperties);
+    return this.config.get(PubFeatures.DependencyProperties, []);
   }
 
   get apiUrl(): string {
-    return ensureEndSlash(this.config.get(PubFeatures.ApiUrl));
+    return ensureEndSlash(this.config.get(PubFeatures.ApiUrl, ''));
   }
 
   get onSaveChangesTask(): string | null {
-    return this.config.get(PubFeatures.OnSaveChangesTask) ?? null;
+    return this.config.get(PubFeatures.OnSaveChangesTask, null);
   }
 
   get prereleaseTagFilter(): Array<string> {
-    return this.config.get(PubFeatures.PrereleaseTagFilter);
+    return this.config.get(PubFeatures.PrereleaseTagFilter, []);
   }
 
 }
