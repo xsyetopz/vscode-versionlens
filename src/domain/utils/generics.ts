@@ -8,6 +8,4 @@ export type KeyStringDictionary = KeyDictionary<string>
 
 export type PropertyNameDictionary<T> = { [Key in keyof T]: Key }
 
-export type Undefinable<T> = T | undefined;
-
 export type Nullable<T> = T | null;

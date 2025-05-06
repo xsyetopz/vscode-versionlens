@@ -1,5 +1,5 @@
 import { type IFrozenOptions, Options } from '#domain/configuration';
-import type { Nullable, Undefinable } from '#domain/utils';
+import type { Nullable } from '#domain/utils';
 
 export class OptionsWithFallback extends Options {
 
@@ -10,15 +10,15 @@ export class OptionsWithFallback extends Options {
     this.fallbackSection = fallbackSection;
   }
 
-  get<T>(key: string): Undefinable<T> {
+  get<T>(key: string): T | undefined {
     // attempt to get the section value
-    const sectionValue: Undefinable<T> = this.config.get(`${this.section}${key}`);
+    const sectionValue = this.config.get<T>(`${this.section}${key}`);
 
     // return section value
     if (sectionValue !== null && sectionValue !== undefined) return sectionValue;
 
     // attempt to get fallback section value
-    let fallbackSectionValue: Undefinable<T>;
+    let fallbackSectionValue: T | undefined;
     if (this.fallbackSection !== null) {
       fallbackSectionValue = this.config.get(`${this.fallbackSection}.${key}`);
     }
