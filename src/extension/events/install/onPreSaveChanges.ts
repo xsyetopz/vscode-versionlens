@@ -17,7 +17,7 @@ export class OnPreSaveChanges {
 
   async execute(provider: ISuggestionProvider, packageFilePath: string): Promise<void> {
     // update the file watcher dependencies
-    const deps = this.editorDependencyCache.get(provider.name, packageFilePath);
+    const deps = this.editorDependencyCache.get(provider.name, packageFilePath) ?? [];
     this.fileWatcherDependencyCache.set(provider.name, packageFilePath, deps)
 
     // remove the packageFilePath from editor dependency cache

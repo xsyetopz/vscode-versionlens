@@ -32,7 +32,7 @@ export class OnChooseBuildClick extends Disposable {
 
     const { packageResponse } = codeLens;
     const { package: pkg } = packageResponse.parsedDependency;
-    const buildVersions = packageResponse.suggestion.version.split(',');
+    const buildVersions = packageResponse.suggestion!.version.split(',');
 
     // show interactive choices
     const selectedBuild = await this.interactions.chooseBuild(

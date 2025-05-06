@@ -30,7 +30,7 @@ export class OnShowSuggestionsStatsDetails extends Disposable {
     for (const [providerName, stats] of Object.entries(grouped)) {
       items.push({ label: providerName, kind: -1 })
 
-      const groupPickItem = stats.map(
+      const groupPickItem = stats!.map(
         x => <QuickPickItem>{
           label: relative(this.extension.projectPath, x.filePath),
           detail: `🟡${x.updates} 🔴${x.errors} ⚪${x.noMatches}`,
