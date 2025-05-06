@@ -1,17 +1,14 @@
-import { type ILoggerSink, LogLevel } from '#domain/logging';
-import { nameOf } from '#domain/utils';
+import { type ILoggerSink, type LogLevelName, LogLevel } from '#domain/logging';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-
-const def = nameOf<ConsoleLoggerSink>();
 
 export class ConsoleLoggerSink implements ILoggerSink {
 
   constructor(readonly logLevel: LogLevel) {
-    throwUndefinedOrNull(def.logLevel, logLevel);
+    throwUndefinedOrNull('logLevel', logLevel);
   }
 
   log(level: LogLevel, namespace: string, message: string) {
-    const logLevelName = LogLevel[level];
+    const logLevelName = LogLevel[level] as LogLevelName;
     console[logLevelName](logLevelName.toUpperCase(), `[${namespace}]`, message)
   }
 
