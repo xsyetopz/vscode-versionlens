@@ -39,7 +39,7 @@ export class MemoryExpiryCache<T = any> implements IExpiryCache<T> {
     return entry.data;
   }
 
-  set(key: string, data: T): T | undefined {
+  set(key: string, data: T): T {
     const createdTime = Date.now();
     const newEntry = { createdTime, data };
     this.cache.set(key, newEntry);

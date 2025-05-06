@@ -33,7 +33,7 @@ export interface IExpiryCache<T = any> {
 
   get(key: string, duration: number): T | undefined;
 
-  set(key: string, data: T): T | undefined;
+  set(key: string, data: T): T;
 
   clear(): void;
 
