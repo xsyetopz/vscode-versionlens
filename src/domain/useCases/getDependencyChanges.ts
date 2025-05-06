@@ -1,8 +1,8 @@
+import type { ILogger } from '#domain/logging';
+import { type DependencyCache, type PackageDependency, hasPackageDepsChanged } from '#domain/packages';
+import type { ISuggestionProvider } from '#domain/providers';
+import type { IStorage } from '#domain/storage';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { ILogger } from '#domain/logging';
-import { DependencyCache, PackageDependency, hasPackageDepsChanged } from '#domain/packages';
-import { ISuggestionProvider } from '#domain/providers';
-import { IStorage } from '#domain/storage';
 
 export type DependencyChangesResult = {
   hasChanged: boolean,
@@ -23,7 +23,7 @@ export class GetDependencyChanges {
   async execute(
     suggestionProvider: ISuggestionProvider,
     packageFilePath: string,
-    fileContent: string = undefined
+    fileContent?: string
   ): Promise<DependencyChangesResult> {
     // get the cached parsed dependencies
     const currentDeps = this.fileWatcherDependencyCache.get(
@@ -32,9 +32,9 @@ export class GetDependencyChanges {
     ) || [];
 
     // parse dependencies from the file content 
-    const content = fileContent ?
-      fileContent :
-      await this.storage.readFile(packageFilePath);
+    const content = fileContent
+      ? fileContent
+      : await this.storage.readFile(packageFilePath);
 
     const parsedDependencies = suggestionProvider.parseDependencies(packageFilePath, content);
 

@@ -54,7 +54,7 @@ export class FetchPackages {
     }
 
     // parallel the fetch requests
-    const responses: Array<PackageResponse> = await Promise.all(promises);
+    const responses = await Promise.all(promises);
 
     // report completed duration
     const completedAt = performance.now();

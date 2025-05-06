@@ -1,5 +1,5 @@
+import type { ISuggestionProvider } from '#domain/providers';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import { ISuggestionProvider } from '#domain/providers';
 import { isMatch } from 'micromatch';
 import { basename } from 'node:path';
 
@@ -9,10 +9,10 @@ export class GetSuggestionProvider {
     throwUndefinedOrNull("suggestionProviders", suggestionProviders);
   }
 
-  execute(filePath: string): ISuggestionProvider {
+  execute(filePath: string): ISuggestionProvider | undefined {
     const filename = basename(filePath);
 
-    let filtered = this.suggestionProviders
+    const filtered = this.suggestionProviders
       .filter(
         provider => isMatch(filename, provider.config.filePatterns)
       )

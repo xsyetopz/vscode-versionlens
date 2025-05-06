@@ -62,8 +62,8 @@ export class GetSuggestionsStats extends Disposable {
     const stats: SuggestionsStats[] = []
     for (const suggestions of resolvedSuggestions) {
       const statuses = suggestions
-        .filter(x => x.suggestion.type === SuggestionTypes.status)
-        .map(x => x.suggestion);
+        .filter(x => x.suggestion?.type === SuggestionTypes.status)
+        .map(x => x.suggestion!);
 
       let noMatches = 0;
       let updates = 0;
