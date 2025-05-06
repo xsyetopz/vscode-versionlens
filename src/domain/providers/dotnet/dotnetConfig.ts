@@ -5,24 +5,19 @@ import type { IProviderConfig } from '#domain/providers';
 import { type NugetOptions, DotNetFeatures } from '#domain/providers/dotnet';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
-
 export class DotNetConfig implements IProviderConfig {
 
   constructor(
     readonly config: IFrozenOptions,
     readonly caching: CachingOptions,
     readonly http: HttpOptions,
-    nugetOptions: NugetOptions,
+    readonly nugetOptions: NugetOptions,
   ) {
     throwUndefinedOrNull('config', config);
     throwUndefinedOrNull('caching', caching);
     throwUndefinedOrNull('http', http);
     throwUndefinedOrNull('nuget', nugetOptions);
-
-    this.nuget = nugetOptions;
   }
-
-  nuget: NugetOptions;
 
   readonly fileLanguage = 'xml';
 

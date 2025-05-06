@@ -34,10 +34,10 @@ export type NugetVersionSpec = {
 };
 
 export type DotNetVersionSpec = {
-  type: PackageVersionType,
+  type: PackageVersionType | null,
   rawVersion: string,
   resolvedVersion: string,
-  spec: NugetVersionSpec,
+  spec: NugetVersionSpec | null,
 };
 
 export type DotNetSource = {

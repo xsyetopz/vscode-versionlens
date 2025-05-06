@@ -6,7 +6,7 @@ import {
   createPackageVersionDesc
 } from '#domain/parsers';
 
-export function createNameDescFromXmlAttr(node: XmlNode): PackageNameDescriptor {
+export function createNameDescFromXmlAttr(node: XmlNode): PackageNameDescriptor | undefined {
   const includeAttr = node.attributes.include || node.attributes.update;
   if (!includeAttr) return undefined;
 
@@ -18,7 +18,7 @@ export function createNameDescFromXmlAttr(node: XmlNode): PackageNameDescriptor 
   return createPackageNameDesc(includeAttr.value, nameRange);
 }
 
-export function createVersionDescFromXmlAttr(keyNode: XmlNode): PackageVersionDescriptor {
+export function createVersionDescFromXmlAttr(keyNode: XmlNode): PackageVersionDescriptor | undefined {
   const versionAttr = keyNode.attributes.version || keyNode.attributes.versionoverride;
   if (!versionAttr) return undefined;
 
@@ -30,7 +30,7 @@ export function createVersionDescFromXmlAttr(keyNode: XmlNode): PackageVersionDe
   return createPackageVersionDesc(versionAttr.value, versionRange);
 }
 
-export function createSdkNameDescFromXmlAttr(node: XmlNode): PackageNameDescriptor {
+export function createSdkNameDescFromXmlAttr(node: XmlNode): PackageNameDescriptor | undefined {
   const nameAttr = node.attributes.name;
   if (!nameAttr) return undefined;
 
@@ -43,7 +43,7 @@ export function createSdkNameDescFromXmlAttr(node: XmlNode): PackageNameDescript
 }
 
 export function createBlankVersionDescFromXmlAttr(node: XmlNode): PackageVersionDescriptor {
-  const end = node.isSelfClosing ? node.tagCloseStart : node.tagOpenEnd - 1;
+  const end = node.isSelfClosing ? node.tagCloseStart! : node.tagOpenEnd - 1;
   const versionRange = {
     start: end,
     end,

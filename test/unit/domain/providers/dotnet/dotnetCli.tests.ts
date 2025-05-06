@@ -30,7 +30,7 @@ export const DotNetCliTests = {
 
     when(this.configMock.caching).thenReturn(instance(this.cacheOptsMock))
     when(this.configMock.http).thenReturn(instance(this.httpOptsMock))
-    when(this.configMock.nuget).thenReturn(instance(this.nugetOptsMock))
+    when(this.configMock.nugetOptions).thenReturn(instance(this.nugetOptsMock))
   },
 
   fetchSources: {

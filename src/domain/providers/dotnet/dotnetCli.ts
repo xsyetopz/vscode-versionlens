@@ -1,6 +1,6 @@
-import { IShellClient } from '#domain/clients';
-import { ILogger } from '#domain/logging';
-import { DotNetConfig, DotNetSource } from '#domain/providers/dotnet';
+import type { IShellClient } from '#domain/clients';
+import type { ILogger } from '#domain/logging';
+import type { DotNetConfig, DotNetSource } from '#domain/providers/dotnet';
 import { CrLf, getProtocolFromUrl, Lf, RegistryProtocols } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
@@ -56,7 +56,7 @@ export class DotNetCli {
       const sources = parseSourcesArray(lines).filter(s => s.enabled);
 
       // combine the sources where user feed settings takes precedent
-      const feedSources = convertFeedsToSources(this.config.nuget.sources);
+      const feedSources = convertFeedsToSources(this.config.nugetOptions.sources);
       const combinedSources = [
         ...feedSources,
         ...sources

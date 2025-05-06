@@ -7,14 +7,16 @@ export abstract class Options implements IOptions {
     readonly config: IFrozenOptions,
     protected section: string
   ) {
-    throwUndefinedOrNull("config", config);
-    throwUndefinedOrNull("section", section);
+    throwUndefinedOrNull('config', config);
+    throwUndefinedOrNull('section', section);
 
-    this.section = (section.length > 0) ? section + '.' : '';
+    this.section = section.length > 0 ? section + '.' : '';
   }
 
-  get<T>(key: string): T | undefined {
-    return this.config.get(`${this.section}${key}`);
+  get<T>(key: string): T | undefined;
+  get<T>(key: string, defaultValue: T): T;
+  get<T>(key: string, defaultValue?: T): T | undefined {
+    return this.config.get(`${this.section}${key}`, defaultValue);
   }
 
   getOrDefault<T>(key: string, defaultValue: T): T {

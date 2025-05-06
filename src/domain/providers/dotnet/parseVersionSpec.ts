@@ -1,25 +1,24 @@
 import { PackageVersionType, VersionUtils } from '#domain/packages';
-import { DotNetVersionSpec, NugetVersionSpec } from '#domain/providers/dotnet';
-import semver from 'semver';
+import type { DotNetVersionSpec, NugetVersionSpec } from '#domain/providers/dotnet';
+import { parse, valid, validRange } from 'semver';
 
 export function parseVersionSpec(rawVersion: string): DotNetVersionSpec {
   const spec = buildVersionSpec(rawVersion);
 
-  let version: string;
+  let version: string | undefined;
   let isValidVersion = false;
   let isValidRange = false;
 
   if (spec && !spec.hasFourSegments) {
     // convert spec to semver
-    const { valid, validRange } = semver;
     version = convertVersionSpecToString(spec);
     isValidVersion = valid(version, VersionUtils.loosePrereleases);
     isValidRange = !isValidVersion && validRange(version, VersionUtils.loosePrereleases) !== null;
   }
 
-  const type: PackageVersionType = isValidVersion ?
-    PackageVersionType.Version :
-    isValidRange ? PackageVersionType.Range : null
+  const type = isValidVersion
+    ? PackageVersionType.Version
+    : isValidRange ? PackageVersionType.Range : null
 
   const resolvedVersion = spec ? version : '';
 
@@ -31,7 +30,7 @@ export function parseVersionSpec(rawVersion: string): DotNetVersionSpec {
   };
 }
 
-function expandShortVersion(value) {
+function expandShortVersion(value: string) {
   if (!value ||
     value.indexOf('[') !== -1 ||
     value.indexOf('(') !== -1 ||
@@ -61,12 +60,12 @@ function expandShortVersion(value) {
   return fmtValue;
 }
 
-function buildVersionSpec(value): NugetVersionSpec {
+function buildVersionSpec(value: string): NugetVersionSpec | null {
   let formattedValue = expandShortVersion(value.trim());
   if (!formattedValue) return null;
 
   // test if the version is in semver format
-  const parsedSemver = semver.parse(formattedValue, { includePrerelease: true });
+  const parsedSemver = parse(formattedValue, { includePrerelease: true });
   if (parsedSemver) {
     return {
       version: formattedValue,
@@ -78,7 +77,7 @@ function buildVersionSpec(value): NugetVersionSpec {
 
   try {
     // test if the version is a semver range format
-    const parsedNodeRange = semver.validRange(formattedValue, { includePrerelease: true });
+    const parsedNodeRange = validRange(formattedValue, { includePrerelease: true });
     if (parsedNodeRange) {
       return {
         version: parsedNodeRange,

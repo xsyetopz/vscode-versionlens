@@ -85,9 +85,9 @@ export class DotNetSuggestionProvider implements ISuggestionProvider {
     return packageDependencies;
   }
 
-  async preFetchSuggestions(projectPath: string, packagePath: string): Promise<NuGetClientData> {
+  async preFetchSuggestions(projectPath: string, packagePath: string): Promise<NuGetClientData | undefined> {
     // ensure latest nuget sources from settings
-    this.config.nuget.defrost();
+    this.config.nugetOptions.defrost();
 
     // get each service index source from the dotnet cli
     const sources = await this.dotnetCli.fetchSources(packagePath)
@@ -109,7 +109,7 @@ export class DotNetSuggestionProvider implements ISuggestionProvider {
 
     if (serviceUrls.length === 0) {
       this.logger.error("Could not resolve any nuget service urls")
-      return null;
+      return;
     }
 
     return { serviceUrls };

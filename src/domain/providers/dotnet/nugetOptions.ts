@@ -8,7 +8,7 @@ export class NugetOptions extends Options {
   }
 
   get sources(): Array<string> {
-    return this.get<Array<string>>(NugetFeatures.Sources);
+    return this.get<string[]>(NugetFeatures.Sources, []);
   }
 
 }

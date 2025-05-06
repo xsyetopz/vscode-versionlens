@@ -70,7 +70,7 @@ export class DotnetSuggestionResolver {
         PackageVersionType.Version,
         ClientResponseFactory.createResponseStatus(jsonResponse.source, 404),
         // suggest the latest release if available
-        releases.length > 0 ? releases[releases.length - 1] : null,
+        releases.length > 0 ? releases[releases.length - 1] : undefined,
       );
     }
 
