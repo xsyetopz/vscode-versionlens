@@ -1,5 +1,6 @@
 {
   "include": [
+    "./types",
     "./src",
     "./test",
   ],
@@ -34,6 +35,9 @@
       "#extension/*": [
         "./src/extension/*/index"
       ]
-    }
-  }
+    },
+    "typeRoots": [
+      "./types"
+    ]
+  },
 }
