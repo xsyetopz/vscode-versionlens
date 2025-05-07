@@ -29,7 +29,8 @@ export class OnRefreshSuggestionsStats extends Disposable {
       return;
     }
 
-    const handle = startStatusBarProgress(this.statusBarItem);
+    this.statusBarItem.text = 'V $(loading~spin)';
+    this.statusBarItem.show();
 
     this.logger.info("fetching all suggestion stats");
     // capture start time
@@ -44,9 +45,6 @@ export class OnRefreshSuggestionsStats extends Disposable {
       updates += stat.updates;
       errors += stat.errors;
     }
-
-    // stop progress
-    clearInterval(handle)
 
     // update status item text
     this.statusBarItem.text = `V ${updates + errors + noMatches}`;
@@ -64,18 +62,4 @@ export class OnRefreshSuggestionsStats extends Disposable {
       Math.floor(completedAt - startedAt)
     );
   }
-}
-
-const progressChars = ['◷', '◶', '◵', '◴'];
-function startStatusBarProgress(statusBarItem: StatusBarItem) {
-  let pos = 0;
-  statusBarItem.text = `V ${progressChars[pos]}`
-  statusBarItem.show();
-  return setInterval(
-    () => {
-      statusBarItem.text = `V ${progressChars[pos]}`
-      pos = (pos + 1) % progressChars.length
-    },
-    200
-  );
 }
