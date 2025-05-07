@@ -1,9 +1,12 @@
+import { ClientResponseSource } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
   type PackageClientRequest,
   type PackageClientResponse,
   type SuggestionUpdate,
+  ClientResponseFactory,
   PackageDependency,
+  PackageVersionType,
   VersionUtils,
   createPackageResource,
   defaultReplaceFn
@@ -147,15 +150,21 @@ export class PubSuggestionProvider implements ISuggestionProvider {
           return this.resolver.fromPath(
             request.parsedDependency,
             request.parsedDependency.descriptors.getType(type)
-          )
+          );
         case 'git':
-          return this.resolver.fromGit()
+          return this.resolver.fromGit();
       }
     }
 
     // parse the version
     const requestedPackage = request.parsedDependency.package;
     const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
+    if (semverSpec === null) {
+      return ClientResponseFactory.createInvalidVersion(
+        ClientResponseFactory.createResponseStatus(ClientResponseSource.local, 400),
+        PackageVersionType.Version
+      );
+    }
 
     // use the hosted entry if it exists
     const hosted = request.parsedDependency.descriptors.getType<PackageHostedDescriptor>(

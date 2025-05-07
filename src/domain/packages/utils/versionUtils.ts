@@ -100,14 +100,16 @@ export function isFourSegmentedVersion(versionToCheck: string): boolean {
   return isfourSegmentVersionRegex.test(versionToCheck);
 }
 
-export function parseSemver(packageVersion: string): SemverSpec {
+export function parseSemver(packageVersion: string): SemverSpec | null {
   const isVersion = valid(packageVersion, loosePrereleases);
   const isRange = validRange(packageVersion, loosePrereleases);
+  const type = isVersion !== null
+    ? PackageVersionType.Version
+    : isRange !== null ? PackageVersionType.Range : null;
+  if (type === null) return null;
   return {
     rawVersion: packageVersion,
-    type: isVersion !== null
-      ? PackageVersionType.Version
-      : isRange !== null ? PackageVersionType.Range : null
+    type
   };
 }
 

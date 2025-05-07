@@ -1,8 +1,11 @@
+import { ClientResponseSource } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
-  PackageClientRequest,
-  PackageClientResponse,
+  type PackageClientRequest,
+  type PackageClientResponse,
+  ClientResponseFactory,
   PackageDependency,
+  PackageVersionType,
   VersionUtils,
   createPackageResource
 } from '#domain/packages';
@@ -122,15 +125,21 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
           return this.resolver.fromPath(
             request.parsedDependency,
             request.parsedDependency.descriptors.getType(type)
-          )
+          );
         case 'git':
-          return this.resolver.fromGit()
+          return this.resolver.fromGit();
       }
     }
 
     const requestedPackage = request.parsedDependency.package;
     const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
-    return await this.resolver.fromCrates(request, semverSpec)
+    if (semverSpec === null) {
+      return ClientResponseFactory.createInvalidVersion(
+        ClientResponseFactory.createResponseStatus(ClientResponseSource.local, 400),
+        PackageVersionType.Version
+      );
+    }
+    return await this.resolver.fromCrates(request, semverSpec);
   }
 
 }

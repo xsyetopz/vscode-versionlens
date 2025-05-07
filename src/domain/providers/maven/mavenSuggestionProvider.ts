@@ -1,9 +1,12 @@
+import { ClientResponseSource } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
   type PackageClientRequest,
   type PackageClientResponse,
+  ClientResponseFactory,
   createPackageResource,
   PackageDependency,
+  PackageVersionType,
   VersionUtils
 } from '#domain/packages';
 import {
@@ -86,9 +89,16 @@ export class MavenSuggestionProvider implements ISuggestionProvider {
     return { repositories };
   }
 
-  async fetchSuggestions(request: PackageClientRequest<any>): Promise<PackageClientResponse> {
+  async fetchSuggestions(request: PackageClientRequest<MavenClientData>): Promise<PackageClientResponse> {
     const requestedPackage = request.parsedDependency.package;
     const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
+    if (semverSpec === null) {
+      return ClientResponseFactory.createInvalidVersion(
+        ClientResponseFactory.createResponseStatus(ClientResponseSource.local, 400),
+        PackageVersionType.Version
+      );
+    }
+
     const { repositories } = request.clientData;
     const repoUrls = repositories.map(x => x.url);
     return await this.resolver.fromMavenApi(repoUrls, request, semverSpec);

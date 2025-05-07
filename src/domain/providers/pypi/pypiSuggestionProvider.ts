@@ -1,9 +1,12 @@
+import { ClientResponseSource } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
   type PackageClientRequest,
   type PackageClientResponse,
+  ClientResponseFactory,
   createPackageResource,
   PackageDependency,
+  PackageVersionType,
   VersionUtils
 } from '#domain/packages';
 import {
@@ -130,6 +133,13 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
 
     const requestedPackage = request.parsedDependency.package;
     const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
+    if (semverSpec === null) {
+      return ClientResponseFactory.createInvalidVersion(
+        ClientResponseFactory.createResponseStatus(ClientResponseSource.local, 400),
+        PackageVersionType.Version
+      );
+    }
+
     return await this.resolver.fromPypiApi(request, semverSpec);
   }
 

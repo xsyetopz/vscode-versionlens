@@ -1,8 +1,11 @@
+import { ClientResponseSource } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
   type PackageClientRequest,
   type PackageClientResponse,
+  ClientResponseFactory,
   PackageDependency,
+  PackageVersionType,
   VersionUtils,
   createPackageResource
 } from '#domain/packages';
@@ -86,6 +89,12 @@ export class DubSuggestionProvider implements ISuggestionProvider {
   async fetchSuggestions(request: PackageClientRequest<null>): Promise<PackageClientResponse> {
     const requestedPackage = request.parsedDependency.package;
     const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
+    if (semverSpec === null) {
+      return ClientResponseFactory.createInvalidVersion(
+        ClientResponseFactory.createResponseStatus(ClientResponseSource.local, 400),
+        PackageVersionType.Version
+      );
+    }
     return await this.resolver.fromDubApi(request, semverSpec);
   }
 

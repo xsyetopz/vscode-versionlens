@@ -1,8 +1,11 @@
+import { ClientResponseSource } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
-  PackageClientRequest,
-  PackageClientResponse,
+  type PackageClientRequest,
+  type PackageClientResponse,
+  ClientResponseFactory,
   PackageDependency,
+  PackageVersionType,
   VersionUtils,
   createPackageResource
 } from '#domain/packages';
@@ -80,7 +83,13 @@ export class ComposerSuggestionProvider implements ISuggestionProvider {
   async fetchSuggestions(request: PackageClientRequest<any>): Promise<PackageClientResponse> {
     const requestedPackage = request.parsedDependency.package;
     const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
-    return await this.resolver.fromPackagist(request, semverSpec)
+    if (semverSpec === null) {
+      return ClientResponseFactory.createInvalidVersion(
+        ClientResponseFactory.createResponseStatus(ClientResponseSource.local, 400),
+        PackageVersionType.Version
+      );
+    }
+    return await this.resolver.fromPackagist(request, semverSpec);
   }
 
 }

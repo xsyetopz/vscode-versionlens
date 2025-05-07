@@ -42,7 +42,7 @@ export type PackageVersions = {
 
 export type SemverSpec = {
   rawVersion: string
-  type: PackageVersionType | null
+  type: PackageVersionType
 };
 
 export enum PackageSourceType {

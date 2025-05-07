@@ -1,9 +1,12 @@
+import { ClientResponseSource } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
   type PackageClientRequest,
   type PackageClientResponse,
   type SuggestionUpdate,
+  ClientResponseFactory,
   PackageDependency,
+  PackageVersionType,
   VersionUtils,
   createPackageResource,
   defaultReplaceFn
@@ -93,8 +96,15 @@ export class GoSuggestionProvider implements ISuggestionProvider {
 
     const requestedPackage = request.parsedDependency.package;
     const semverSpec = VersionUtils.parseSemver(requestedPackage.version);
-    semverSpec.rawVersion = semverSpec.rawVersion.replace('+incompatible', '')
-    return await this.resolver.fromGoApi(request, semverSpec)
+    if (semverSpec === null) {
+      return ClientResponseFactory.createInvalidVersion(
+        ClientResponseFactory.createResponseStatus(ClientResponseSource.local, 400),
+        PackageVersionType.Version
+      );
+    }
+
+    semverSpec.rawVersion = semverSpec.rawVersion.replace('+incompatible', '');
+    return await this.resolver.fromGoApi(request, semverSpec);
   }
 
 }
