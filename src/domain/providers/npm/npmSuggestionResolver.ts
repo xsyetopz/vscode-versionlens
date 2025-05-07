@@ -117,7 +117,7 @@ export class NpmSuggestionResolver {
         : prereleases.length > 0
           ? prereleases[prereleases.length - 1]
           // no suggestion
-          : null
+          : undefined
     );
 
     if (npaSpec.type === NpaTypes.Tag) {
