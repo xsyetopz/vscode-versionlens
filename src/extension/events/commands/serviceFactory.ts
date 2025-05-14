@@ -151,7 +151,11 @@ export function addOnRefreshSuggestionsStats(services: IServiceCollection) {
       );
 
       // register as a onTextDocumentSave event
-      container.onTextDocumentSave.registerListener(() => event.execute(false), event, 1);
+      container.onTextDocumentSave.registerListener(
+        () => event.execute(false),
+        event,
+        3
+      );
 
       // schedule refresh
       container.eventScheduler.scheduleEvent(
