@@ -1,9 +1,9 @@
 import type { ILogger } from '#domain/logging';
 import type { GetSuggestionsStats } from '#domain/useCases';
 import { Disposable } from '#domain/utils';
+import type { IVersionLensState } from '#extension';
 import type { SuggestionsOptions } from '#extension/suggestions';
 import { throwUndefinedOrNull } from '@esm-test/guards';
-import type { IVersionLensState } from 'src/extension/definitions.js';
 import type { StatusBarItem } from 'vscode';
 
 export class OnRefreshSuggestionsStats extends Disposable {

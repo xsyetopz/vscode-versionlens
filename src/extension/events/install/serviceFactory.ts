@@ -1,6 +1,6 @@
 import type { IDomainServices } from '#domain';
 import type { IServiceCollection } from '#domain/di';
-import { ExtensionServiceName, type IExtensionServices } from '#extension';
+import { type IExtensionServices, ExtensionServiceName } from '#extension';
 import { OnSaveChanges } from '#extension/events';
 import { tasks } from 'vscode';
 
@@ -19,7 +19,7 @@ export function addOnSaveChanges(services: IServiceCollection) {
       );
 
       // register listener
-      container.onTextDocumentSave.registerListener(event.execute, event, 2);
+      container.onTextDocumentSave.registerListener(event.execute, event);
 
       return event;
     }
