@@ -9,6 +9,7 @@ import {
 } from '#domain/packages';
 import type { ComposerConfig, PackagistClient } from '#domain/providers/composer';
 import { throwUndefinedOrNull } from '@esm-test/guards';
+import { coerce } from 'semver';
 
 export class ComposerSuggestionResolver {
 
@@ -45,8 +46,8 @@ export class ComposerSuggestionResolver {
 
     const responseVersions = jsonResponse.data.packages[requestPackage.name];
     const rawVersions: string[] = responseVersions
-      .map(x => x.version)
-      .toSorted(VersionUtils.compareVersionsAndBuilds)
+      .map(x => coerce(x.version, VersionUtils.loosePrereleases).toString())
+      .toSorted(VersionUtils.compareVersionsAndBuilds);
 
     // extract semver versions only
     const semverVersions = VersionUtils.filterSemverVersions(rawVersions);
