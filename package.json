@@ -245,7 +245,7 @@
         },
         "versionlens.suggestions.showSuggestionsStats": {
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Show the stats of all suggestions in the status bar."
         },
         "versionlens.suggestions.indicators": {
