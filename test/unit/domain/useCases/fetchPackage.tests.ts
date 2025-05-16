@@ -80,7 +80,6 @@ export const fetchPackageTests = <any>{
 
     this.testRequest = {
       providerName: testProviderName,
-      attempt: 1,
       clientData: {},
       parsedDependency: new PackageDependency(
         this.testPackageRes,
@@ -89,7 +88,7 @@ export const fetchPackageTests = <any>{
           createPackageVersionDesc(this.testPackageRes.version, createTextRange(25, 30)),
         ])
       )
-    } as PackageClientRequest<any>
+    }
   },
 
   "returns successful package suggestions": async function (this: TestContext) {

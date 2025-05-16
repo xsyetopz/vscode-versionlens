@@ -67,8 +67,7 @@ export const ComposerSuggestionResolverTests = {
               createPackageNameDesc(testPackageRes.name, createTextRange(0)),
               createPackageVersionDesc(testPackageRes.version, createTextRange(1)),
             ]),
-          ),
-          attempt: 1
+          )
         }
 
         when(this.packagistClientMock.get(testPackageName))

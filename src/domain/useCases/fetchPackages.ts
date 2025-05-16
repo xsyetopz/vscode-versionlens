@@ -42,8 +42,7 @@ export class FetchPackages {
       const clientRequest: PackageClientRequest<any> = {
         providerName: provider.name,
         clientData,
-        parsedDependency: parsedPackage,
-        attempt: 0
+        parsedDependency: parsedPackage
       };
 
       // get the fetch task

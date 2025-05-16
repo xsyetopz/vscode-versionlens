@@ -61,9 +61,8 @@ export const dockerSuggestionProviderTests = {
   fetchSuggestions: {
     "returns not supported suggestion": async function (this: TestContext) {
       const testRepo = '${ARG1}'
-      const testRequest = {
+      const testRequest: PackageClientRequest<null> = {
         providerName: 'docker',
-        attempt: 1,
         clientData: null,
         parsedDependency: new PackageDependency(
           createPackageResource(testRepo, '23', 'test/path'),
@@ -72,7 +71,7 @@ export const dockerSuggestionProviderTests = {
             createPackageVersionDesc('23', createTextRange(25, 30)),
           ])
         )
-      } as PackageClientRequest<null>
+      }
 
       const actual = await this.put.fetchSuggestions(testRequest)
       deepEqual(actual, ClientResponseFactory.createNotSupported())

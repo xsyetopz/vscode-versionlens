@@ -58,9 +58,8 @@ export const DockerSuggestionResolverTests = {
       async function (this: TestContext, testTag: string, testData: DockerRepository[], expected: PackageSuggestion[]) {
         const testNs = 'library'
         const testRepo = 'node'
-        const testRequest = {
+        const testRequest: PackageClientRequest<null> = {
           providerName: 'docker',
-          attempt: 1,
           clientData: null,
           parsedDependency: new PackageDependency(
             createPackageResource(testRepo, testTag, 'test/path'),
@@ -69,7 +68,7 @@ export const DockerSuggestionResolverTests = {
               createPackageVersionDesc(testTag, createTextRange(25, 30)),
             ])
           )
-        } as PackageClientRequest<null>
+        }
 
         when(this.dockerHubClientMock.get(testRepo, testNs))
           .thenResolve({

@@ -60,8 +60,6 @@ export type PackageClientRequest<TClientData> = {
   clientData: TClientData,
   // dependency to fetch
   parsedDependency: PackageDependency;
-  // number of fallback attempts
-  attempt: number;
 };
 
 export type PackageClientResponseStatus = {

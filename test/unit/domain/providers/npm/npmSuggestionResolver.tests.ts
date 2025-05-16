@@ -166,8 +166,7 @@ export const NpmSuggestionResolverTests = {
             createPackageNameDesc(testPackageRes.name, createTextRange(0, 0)),
             createPackageVersionDesc(testPackageRes.version, createTextRange(1, 1)),
           ]),
-        ),
-        attempt: 1
+        )
       }
       const testNpaSpec = npa.resolve(
         testPackageRes.name,
@@ -220,8 +219,7 @@ export const NpmSuggestionResolverTests = {
               createPackageNameDesc(testPackageRes.name, createTextRange(0, 0)),
               createPackageVersionDesc(testPackageRes.version, createTextRange(1, 1)),
             ]),
-          ),
-          attempt: 1
+          )
         }
         const testNpaSpec = npa.resolve(
           testPackageRes.name,
@@ -268,8 +266,7 @@ export const NpmSuggestionResolverTests = {
             createPackageNameDesc(testPackageRes.name, createTextRange(0, 0)),
             createPackageVersionDesc(testPackageRes.version, createTextRange(1, 1)),
           ]),
-        ),
-        attempt: 1
+        )
       }
 
       const testNpaSpec = npa.resolve(
@@ -319,8 +316,7 @@ export const NpmSuggestionResolverTests = {
             createPackageNameDesc(testPackageRes.name, createTextRange(0, 0)),
             createPackageVersionDesc(testPackageRes.version, createTextRange(1, 1)),
           ]),
-        ),
-        attempt: 1
+        )
       }
 
       const testNpaSpec = npa.resolve(
