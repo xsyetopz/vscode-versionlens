@@ -5,6 +5,7 @@ export enum SuggestionCategory {
   Directory = 'Directory',
   Error = 'Error',
   Latest = 'Latest',
+  SatisfiesLatest = 'SatisfiesLatest',
   NoMatch = 'NoMatch',
   Match = 'Match',
   Updateable = 'Updateable',

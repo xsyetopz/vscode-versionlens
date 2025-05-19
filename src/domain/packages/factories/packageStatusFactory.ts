@@ -155,7 +155,7 @@ export function createMatchesLatestStatus(latestVersion: string): PackageSuggest
 export function createSatisifiesLatestStatus(latestVersion: string): PackageSuggestion {
   return createSuggestion(
     SuggestionStatusText.SatisfiesLatest,
-    SuggestionCategory.Latest,
+    SuggestionCategory.SatisfiesLatest,
     latestVersion,
     SuggestionTypes.status
   )

@@ -1,3 +1,13 @@
+# 1.22.2
+
+  ### All
+
+  - Added a configurable `SatisfiesLatest` indicator to `versionlens.suggestions.indicators`
+
+    The default value is `"SatisfiesLatest": "🟢"`
+
+    Relates to [#392](https://gitlab.com/versionlens/vscode-versionlens/-/issues/392)
+
 # 1.22.1
 
   ### All

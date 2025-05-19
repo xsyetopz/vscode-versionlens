@@ -254,6 +254,7 @@
             "Directory": "📁 ",
             "Error": "🔴",
             "Latest": "🟢",
+            "SatisfiesLatest": "🟢",
             "NoMatch": "⚪",
             "Match": "🟡",
             "Updateable": "↑ ",

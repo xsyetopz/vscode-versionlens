@@ -18,8 +18,9 @@
 
   |Prefix|Indicator|Description|
   |-|-|-|
-  |🟢|Latest|Latest
-  |🟡|Match|A match was found that is not the latest version.
+  |🟢|Latest|When a version is the latest version
+  |🟢|Satisfies Latest|When a ranged version matches the latest version
+  |🟡|Match|A match was found that is not the latest version
   |⚪|No Match|No match found for the version specified
   |🔴|Error|An error occurred
   |↑|Updateable|An update action that will replace the specified version
