@@ -1,5 +1,5 @@
 # see ./docker.test.tasks.yml on how this container is created
-FROM node:20.19-alpine
+FROM node:22.19-alpine
 ARG TARGET_PATH=/versionlens
 
 # update os packages
