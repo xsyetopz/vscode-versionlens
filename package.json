@@ -819,7 +819,8 @@
             "packages",
             "dev-packages",
             "tool.poetry.dependencies",
-            "tool.poetry.group.*.dependencies"
+            "tool.poetry.group.*.dependencies",
+            "project.optional-dependencies"
           ],
           "description": "Defines which properties in pyproject.toml should be parsed by this extension"
         },

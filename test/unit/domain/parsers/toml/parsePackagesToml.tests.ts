@@ -31,6 +31,8 @@ export const extractPackageDependenciesFromTomlTests = {
     Fixtures.parsesDependencyEntries,
     Fixtures.parsesPackageVersionEntries,
     Fixtures.parsesProjectVersionEntries,
+    Fixtures.parsesPackageDependenciesEntries,
+    Fixtures.parsesPackageOptionalDependenciesEntries,
     (fixture: any) => {
       const testOptions: TomlParserOptions = {
         includePropNames: [
@@ -40,6 +42,7 @@ export const extractPackageDependenciesFromTomlTests = {
           'dependencies.*',
           'dev-dependencies',
           'tool.poetry.group.*.dependencies',
+          'project.optional-dependencies',
         ],
         complexTypeHandlers: getTomlComplexTypeHandlers()
       };

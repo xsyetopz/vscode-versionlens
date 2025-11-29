@@ -130,6 +130,69 @@ export default {
         createPackageVersionDesc("1.3.5", createTextRange(134, 139))
       ]),
     ]
+  },
+
+  parsesPackageDependenciesEntries: {
+    test: `
+      [project]
+      name = "should ignore this field"
+      dependencies = [
+        "httpx",
+        "gidgethub>4.0.0",
+        "django>2.1; os_name != 'nt'",
+        "django>2.0; os_name == 'nt'"
+      ]
+    `,
+    expected: [
+      new PackageDescriptor([
+        createPackageNameDesc("httpx", createTextRange(89, 94)),
+        createPackageVersionDesc("", createTextRange(94, 94))
+      ]),
+      new PackageDescriptor([
+        createPackageNameDesc("gidgethub", createTextRange(106, 115)),
+        createPackageVersionDesc(">4.0.0", createTextRange(115, 121))
+      ]),
+      new PackageDescriptor([
+        createPackageNameDesc("django", createTextRange(133, 139)),
+        createPackageVersionDesc(">2.1", createTextRange(139, 143))
+      ]),
+      new PackageDescriptor([
+        createPackageNameDesc("django", createTextRange(172, 178)),
+        createPackageVersionDesc(">2.0", createTextRange(178, 182))
+      ]),
+    ]
+  },
+
+  parsesPackageOptionalDependenciesEntries: {
+    test: `
+      [project.optional-dependencies]
+      test = [
+        "pytest < 5.0.0",
+        "httpx==0.28.1"
+      ]
+      coverage = [
+        "pytest-cov[all]",
+        "pytest-cov[all]>2.0.0"
+      ]
+    `,
+    expected: [
+      new PackageDescriptor([
+        createPackageNameDesc("pytest", createTextRange(63, 69)),
+        createPackageVersionDesc("< 5.0.0", createTextRange(70, 77))
+      ]),
+      new PackageDescriptor([
+        createPackageNameDesc("httpx", createTextRange(89, 94)),
+        createPackageVersionDesc("==0.28.1", createTextRange(94, 102))
+      ]),
+      new PackageDescriptor([
+        createPackageNameDesc("pytest-cov", createTextRange(140, 150)),
+        createPackageVersionDesc("", createTextRange(155, 155))
+      ]),
+      new PackageDescriptor([
+        createPackageNameDesc("pytest-cov", createTextRange(167, 177)),
+        createPackageVersionDesc(">2.0.0", createTextRange(182, 188))
+      ])
+    ]
   }
 
 }

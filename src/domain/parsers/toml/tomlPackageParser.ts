@@ -5,7 +5,9 @@ import {
   createNameDescFromTomlNode,
   createProjectVersionDescFromTomlNode,
   createVersionDescFromTomlNode,
-  matchesTableExpression
+  matchesTableExpression,
+  createPackageNameDesc,
+  createPackageVersionDesc
 } from '#domain/parsers';
 import { type AST, parseTOML } from "toml-eslint-parser";
 
@@ -66,11 +68,20 @@ function parsePackageNodes(
       // add version desc for [package] tables
       if (isPackageRow && rowKey.name === 'version') {
         matchedDependencies.push(createProjectVersionDescFromTomlNode(tableRow));
-        break;
+        continue;
+      }
+
+      const isArrayNode = tableRow.value.type === 'TOMLArray';
+      const isDependenciesKey = rowKey.name == 'dependencies' && isArrayNode;
+      const isOptionalDependenciesRow = matchedTable.match == 'project.optional-dependencies' && isArrayNode;
+
+      if (isDependenciesKey || isOptionalDependenciesRow) {
+        matchedDependencies.push(...parseArrayNode(tableRow.value as AST.TOMLArray));
+        continue;
       }
 
       // ignore other [package] table rows
-      if (isPackageRow) break;
+      if (isPackageRow) continue;
 
       // complex or simple
       const isComplexNode = tableRow.value.type === 'TOMLInlineTable';
@@ -147,4 +158,47 @@ function parseComplexNode(
   packageDesc.addType(nameDesc)
 
   return packageDesc;
+}
+
+function parseArrayNode(
+  arrayNode: AST.TOMLArray
+): Array<PackageDescriptor> {
+  const descriptors: Array<PackageDescriptor> = [];
+
+  for (const element of arrayNode.elements) {
+    if (element.type !== 'TOMLValue' || typeof element.value !== 'string') continue;
+
+    const rawText = element.value;
+    const startOffset = element.range[0] + 1;
+
+    const markerIndex = rawText.indexOf(';');
+    const packageSpec = markerIndex === -1 ? rawText : rawText.substring(0, markerIndex);
+
+    const match = /^([a-zA-Z0-9_\-\.]+)(?:\[[^\]]*\])?(.*)$/.exec(packageSpec);
+    if (!match) continue;
+
+    const name = match[1];
+    const version = match[2].trim();
+
+    const nameStart = startOffset + packageSpec.indexOf(name);
+    const nameEnd = nameStart + name.length;
+    const nameRange = { start: nameStart, end: nameEnd };
+
+    const nameDesc = createPackageNameDesc(name, nameRange);
+
+    let versionDesc;
+    if (version) {
+      const versionStart = startOffset + packageSpec.indexOf(version, name.length);
+      const versionEnd = versionStart + version.length;
+      const versionRange = { start: versionStart, end: versionEnd };
+      versionDesc = createPackageVersionDesc(version, versionRange);
+    } else {
+      const versionRange = { start: startOffset + packageSpec.length, end: startOffset + packageSpec.length };
+      versionDesc = createPackageVersionDesc("", versionRange);
+    }
+
+    descriptors.push(new PackageDescriptor([nameDesc, versionDesc]));
+  }
+
+  return descriptors;
 }

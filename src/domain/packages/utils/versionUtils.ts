@@ -170,7 +170,7 @@ export function filterSemverVersions(versions: Array<string>): Array<string> {
 }
 
 export const extractSymbolFromVersionRegex = /^([^0-9]*)?.*$/;
-export const semverLeadingChars = ['^', '~', '<', '<=', '>', '>=', '~>'];
+export const semverLeadingChars = ['^', '~', '<', '<=', '>', '>=', '~>', '=='];
 /**
  * Preserves the leading range symbol (e.g., ^, ~) when updating a version.
  * @param existingVersion The current version string in the file.
