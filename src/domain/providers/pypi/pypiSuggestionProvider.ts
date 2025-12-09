@@ -7,7 +7,8 @@ import {
   createPackageResource,
   PackageDependency,
   PackageVersionType,
-  VersionUtils
+  VersionUtils,
+  type SuggestionUpdate
 } from '#domain/packages';
 import {
   type PackageGitDescriptor,
@@ -47,6 +48,43 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
     throwUndefinedOrNull('resolver', resolver);
     throwUndefinedOrNull('config', config);
     throwUndefinedOrNull('logger', logger);
+  }
+
+  suggestionReplaceFn(suggestion: SuggestionUpdate, newVersion: string): string {
+    const { parsedVersion } = suggestion;
+
+    if (parsedVersion.includes(',')) {
+      const parts = parsedVersion.split(',').map(p => p.trim());
+      const hasUpperBound = parts.some(p => p.startsWith('<'));
+
+      return parts.map(part => {
+        if (hasUpperBound) {
+          if (part.startsWith('<')) {
+            return `<=${newVersion}`;
+          }
+          return part;
+        } else {
+          if (part.startsWith('>')) {
+            return `>=${newVersion}`;
+          }
+          return part;
+        }
+      }).join(', ');
+    }
+
+    const operatorRegex = /^(==|!=|<=|>=|<|>|~=|===)/;
+    const match = operatorRegex.exec(parsedVersion);
+
+    if (!match) {
+      return `==${newVersion}`;
+    }
+
+    const operator = match[0];
+    if (operator === '<' || operator === '<=') return `<=${newVersion}`;
+    if (operator === '>' || operator === '>=') return `>=${newVersion}`;
+    if (operator === '==') return `==${newVersion}`;
+
+    return `${operator}${newVersion}`;
   }
 
   /**
