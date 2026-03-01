@@ -17,6 +17,7 @@ Indicators appear next to the version information to provide a quick summary of 
 | Prefix | Indicator | Description |
 | :---: | :--- | :--- |
 | 🟢 | **Latest** | The version is the latest release available. |
+| 🟢 | **Latest Prerelease** | The version is the latest prerelease available. |
 | 🟢 | **Satisfies Latest** | The ranged version includes and satisfies the latest available version. |
 | 🟡 | **Match** | A matching version was found, but a newer version exists. |
 | ⚪ | **No Match** | No version was found that satisfies the specified version string. |
