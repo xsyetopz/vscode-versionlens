@@ -45,6 +45,7 @@ export class OnActiveTextEditorChange extends AsyncEmitter<ProviderEditorActivat
     if (!textEditor || textEditor.document.uri.scheme !== 'file') {
       // disable icons when no editor
       await this.state.providerActive.change(null);
+      await this.state.showCustomInstall.change(false);
       return;
     }
 
@@ -53,11 +54,20 @@ export class OnActiveTextEditorChange extends AsyncEmitter<ProviderEditorActivat
     if (!activeProvider) {
       // disable icons if no matches found
       await this.state.providerActive.change(null);
+      await this.state.showCustomInstall.change(false);
       return;
     }
 
     // update provider active state to show icons
     await this.state.providerActive.change(activeProvider.name);
+
+    // defrost configuration to ensure we have the latest values
+    this.state.suggestionOptions.defrost();
+
+    // update custom install state
+    const hasCustomInstall = this.state.suggestionOptions.showCustomInstallAction
+      && !!activeProvider.config.onSaveChangesTask;
+    await this.state.showCustomInstall.change(hasCustomInstall);
 
     // fire activated event
     await this.fire(activeProvider, textEditor.document);

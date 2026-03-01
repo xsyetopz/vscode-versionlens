@@ -5,6 +5,7 @@ import type {
   OnAddUrlAuthentication,
   OnChooseBuildClick,
   OnClearCache,
+  OnCustomInstallClick,
   OnErrorClick,
   OnFileLinkClick,
   OnPackageDependenciesChanged,
@@ -57,7 +58,9 @@ export enum IconCommandFeatures {
   /** Command to show version lenses. */
   ShowVersionLenses = 'versionlens.icons.showVersionLenses',
   /** Command to hide version lenses. */
-  HideVersionLenses = 'versionlens.icons.hideVersionLenses'
+  HideVersionLenses = 'versionlens.icons.hideVersionLenses',
+  /** Command to execute a custom install task. */
+  OnCustomInstall = 'versionlens.icons.onCustomInstall'
 }
 
 /**
@@ -79,7 +82,9 @@ export enum StateFeatures {
   /** Whether a provider error occurred. */
   ProviderError = 'versionlens.providerError',
   /** Whether code lens replacement is enabled. */
-  CodeLenReplace = 'versionlens.codeLensReplace'
+  CodeLenReplace = 'versionlens.codeLensReplace',
+  /** Whether to show the custom install icon. */
+  ShowCustomInstall = 'versionlens.showCustomInstall'
 }
 
 /**
@@ -105,13 +110,15 @@ export enum SuggestionCommandFeatures {
  */
 export enum SuggestionFeatures {
   /** Key for showing version lenses on startup. */
-  ShowOnStartup = 'suggestions.showOnStartup',
+  ShowOnStartup = 'showOnStartup',
   /** Key for showing prereleases on startup. */
-  ShowPrereleasesOnStartup = 'suggestions.showPrereleasesOnStartup',
+  ShowPrereleasesOnStartup = 'showPrereleasesOnStartup',
   /** Key for showing suggestion statistics in the status bar. */
-  ShowSuggestionsStats = 'suggestions.showSuggestionsStats',
+  ShowSuggestionsStats = 'showSuggestionsStats',
   /** Key for the suggestion category indicators. */
-  Indicators = 'suggestions.indicators',
+  Indicators = 'indicators',
+  /** Key for showing the custom install icon in the editor toolbar. */
+  ShowCustomInstallAction = 'showCustomInstallAction',
 }
 
 /**
@@ -173,6 +180,9 @@ export interface IExtensionServices {
   /** Handler for clicking the error icon. */
   onErrorClick: OnErrorClick
 
+  /** Handler for clicking the custom install icon. */
+  onCustomInstallClick: OnCustomInstallClick
+
   /** Handler for document save events. */
   onSaveChanges: OnSaveChanges
 
@@ -205,6 +215,8 @@ export const ExtensionServiceName = nameOf<IExtensionServices>()
  * Interface for the collective state of the extension.
  */
 export interface IVersionLensState {
+  /** Suggestion configuration options. */
+  suggestionOptions: SuggestionsOptions
   /** Whether version lenses are shown. */
   show: IContextState<boolean>
   /** Whether prereleases are shown. */
@@ -221,6 +233,8 @@ export interface IVersionLensState {
   providerError: IContextState<boolean>
   /** Whether code lens replacement is enabled. */
   codeLensReplace: IContextState<boolean>
+  /** Whether to show the custom install icon. */
+  showCustomInstall: IContextState<boolean>
   /** Applies default state values. */
   applyDefaults(): Promise<void>
   /** Increments the busy state. */

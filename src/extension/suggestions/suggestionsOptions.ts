@@ -1,39 +1,62 @@
-import type { IConfig } from '#domain/configuration';
+import { type IFrozenOptions, OptionsWithFallback } from '#domain/configuration';
 import type { SuggestionCategory } from '#domain/packages';
+import { type Nullable } from '#domain/utils';
 import { SuggestionFeatures } from '#extension';
-import { throwUndefinedOrNull } from '@esm-test/guards';
 
 /**
  * Accessor for suggestion-related configuration options.
  */
-export class SuggestionsOptions {
+export class SuggestionsOptions extends OptionsWithFallback {
 
   /**
    * Initializes a new instance of the SuggestionsOptions class.
-   * @param config The underlying configuration source.
+   * @param config The frozen options from the configuration.
+   * @param section The configuration section name.
+   * @param fallbackSection The fallback configuration section name.
    */
-  constructor(readonly config: IConfig) {
-    throwUndefinedOrNull('config', config);
+  constructor(
+    config: IFrozenOptions,
+    section: string,
+    fallbackSection: Nullable<string> = null
+  ) {
+    super(config, section, fallbackSection);
   }
 
   /** Gets whether to show version lenses on extension startup. */
   get showOnStartup(): boolean {
-    return this.config.get(SuggestionFeatures.ShowOnStartup) ?? false;
+    return this.getOrDefault<boolean>(
+      SuggestionFeatures.ShowOnStartup,
+      false
+    );
   }
 
   /** Gets whether to show prerelease versions on extension startup. */
   get showPrereleasesOnStartup(): boolean {
-    return this.config.get(SuggestionFeatures.ShowPrereleasesOnStartup) ?? false;
+    return this.getOrDefault<boolean>(
+      SuggestionFeatures.ShowPrereleasesOnStartup,
+      false
+    );
   }
 
   /** Gets whether to show suggestion statistics in the status bar. */
   get showSuggestionsStats(): boolean {
-    return this.config.get(SuggestionFeatures.ShowSuggestionsStats) ?? true;
+    return this.getOrDefault<boolean>(
+      SuggestionFeatures.ShowSuggestionsStats,
+      true
+    );
+  }
+
+  /** Gets whether to show the custom install icon in the editor toolbar. */
+  get showCustomInstallAction(): boolean {
+    return this.getOrDefault<boolean>(
+      SuggestionFeatures.ShowCustomInstallAction,
+      false
+    );
   }
 
   /** Gets the indicators used for different suggestion categories. */
   get indicators(): Record<SuggestionCategory, string> {
-    return this.config.get(SuggestionFeatures.Indicators)!;
+    return this.get(SuggestionFeatures.Indicators)!;
   }
 
 }

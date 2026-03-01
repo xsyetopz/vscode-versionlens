@@ -6,6 +6,7 @@ export * from './commands/onFileLinkClick';
 export * from './commands/onRefreshSuggestionsStats';
 export * from './commands/onUpdateDependencyClick';
 export * from './commands/onShowSuggestionsStatsDetails';
+export * from './editorTitleBar/onCustomInstallClick';
 export * from './editorTitleBar/onErrorClick';
 export * from './editorTitleBar/onTogglePrereleases';
 export * from './editorTitleBar/onToggleReleases';

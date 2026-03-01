@@ -3,6 +3,7 @@ import type { ISuggestionProvider } from '#domain/providers';
 import type { GetSuggestionProvider } from '#domain/useCases';
 import { OnActiveTextEditorChange } from '#extension/events';
 import type { ContextState, VersionLensState } from '#extension/state';
+import { SuggestionsOptions } from '#extension/suggestions';
 import { test } from 'mocha-ui-esm';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import type { TextDocument, TextEditor, Uri } from 'vscode';
@@ -12,6 +13,8 @@ type TestContext = {
   mockGetSuggestionProvider: GetSuggestionProvider
   mockLogger: ILogger
   mockActiveState: ContextState<string | null>
+  mockShowCustomInstallState: ContextState<boolean>
+  mockSuggestionOptions: SuggestionsOptions
   mockTextEditor: TextEditor
   mockDocument: TextDocument
   mockUri: Uri
@@ -30,8 +33,13 @@ export const onActiveTextEditorChangeTests = {
     this.mockDocument = mock<TextDocument>();
     this.mockUri = mock<Uri>();
     this.mockActiveState = mock<ContextState<string | null>>();
+    this.mockShowCustomInstallState = mock<ContextState<boolean>>();
+    this.mockSuggestionOptions = mock<SuggestionsOptions>();
 
-    when(this.mockState.providerActive).thenReturn(instance(this.mockActiveState))
+    when(this.mockState.providerActive).thenReturn(instance(this.mockActiveState) as any)
+    when(this.mockState.showCustomInstall).thenReturn(instance(this.mockShowCustomInstallState) as any)
+    when(this.mockState.suggestionOptions).thenReturn(instance(this.mockSuggestionOptions))
+
     when(this.mockUri.scheme).thenReturn('file');
     when(this.mockDocument.uri).thenReturn(instance(this.mockUri));
     when(this.mockTextEditor.document).thenReturn(instance(this.mockDocument));
@@ -53,6 +61,7 @@ export const onActiveTextEditorChangeTests = {
 
       // verify
       verify(this.mockActiveState.change(null)).once();
+      verify(this.mockShowCustomInstallState.change(false)).once();
       verify(this.mockGetSuggestionProvider.execute(anything())).never();
     }
   ],
@@ -66,6 +75,7 @@ export const onActiveTextEditorChangeTests = {
 
       // verify
       verify(this.mockActiveState.change(null)).once();
+      verify(this.mockShowCustomInstallState.change(false)).once();
       verify(this.mockGetSuggestionProvider.execute(anything())).never();
     },
 
@@ -78,6 +88,7 @@ export const onActiveTextEditorChangeTests = {
     // verify
     verify(this.mockGetSuggestionProvider.execute(testFilePath)).once();
     verify(this.mockActiveState.change(null)).once();
+    verify(this.mockShowCustomInstallState.change(false)).once();
   },
 
   "updates active provider and fires event":
@@ -86,8 +97,13 @@ export const onActiveTextEditorChangeTests = {
       const testProviderName = 'testProvider';
       const mockProvider = mock<ISuggestionProvider>();
       const testProvider = instance(mockProvider);
+      const mockConfig = mock<any>();
 
       when(mockProvider.name).thenReturn(testProviderName);
+      when(mockProvider.config).thenReturn(instance(mockConfig));
+      when(mockConfig.onSaveChangesTask).thenReturn('test-task');
+      when(this.mockSuggestionOptions.showCustomInstallAction).thenReturn(true);
+
       when(this.mockGetSuggestionProvider.execute(testFilePath))
         .thenReturn(instance(mockProvider));
 
@@ -100,6 +116,7 @@ export const onActiveTextEditorChangeTests = {
       // verify
       verify(this.mockGetSuggestionProvider.execute(testFilePath)).once();
       verify(this.mockActiveState.change(testProviderName)).once();
+      verify(this.mockShowCustomInstallState.change(true)).once();
       verify(mockFireEvent.fire(testProvider, instance(this.mockDocument))).once();
     }
 

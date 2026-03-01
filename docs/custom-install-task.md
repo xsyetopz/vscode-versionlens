@@ -50,6 +50,15 @@ Link the task label to the specific VersionLens provider in your VS Code `settin
 
 ---
 
+## Triggering the Task
+
+There are two ways to trigger the configured install task:
+
+1.  **On Save:** The task will automatically run when you save a manifest file, provided that VersionLens detects changes to the dependencies.
+2.  **Manual Trigger (Toolbar Icon):** A custom install icon will appear in the editor toolbar whenever a custom install task is configured for the active package manager. Clicking this icon will trigger the task immediately without needing to save or have pending changes. This icon can be disabled by setting `versionlens.suggestions.showCustomInstallAction` to `false`.
+
+---
+
 ## Tips & Troubleshooting
 
 *   **Global Tasks:** If you want the task to be available across all projects, add it to your **User Tasks** (`Ctrl+Shift+P` > `Tasks: Open User Tasks`).

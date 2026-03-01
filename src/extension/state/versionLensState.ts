@@ -32,11 +32,14 @@ export class VersionLensState implements IVersionLensState {
   /** Whether code lens replacement is currently enabled. */
   codeLensReplace: ContextState<boolean>;
 
+  /** Whether to show the custom install icon. */
+  showCustomInstall: ContextState<boolean>;
+
   /**
    * Initializes a new instance of the VersionLensState class.
    * @param suggestionOptions The user-configured suggestion options.
    */
-  constructor(private readonly suggestionOptions: SuggestionsOptions) {
+  constructor(readonly suggestionOptions: SuggestionsOptions) {
     throwUndefinedOrNull("suggestionOptions", this.suggestionOptions);
 
     this.show = new ContextState(StateFeatures.Show);
@@ -47,6 +50,7 @@ export class VersionLensState implements IVersionLensState {
     this.providerBusy = new ContextState(StateFeatures.ProviderBusy);
     this.providerError = new ContextState(StateFeatures.ProviderError);
     this.codeLensReplace = new ContextState(StateFeatures.CodeLenReplace);
+    this.showCustomInstall = new ContextState(StateFeatures.ShowCustomInstall);
   }
 
   /**
@@ -61,6 +65,7 @@ export class VersionLensState implements IVersionLensState {
     await this.providerBusy.change(0);
     await this.providerError.change(false);
     await this.codeLensReplace.change(true);
+    await this.showCustomInstall.change(false);
   }
 
   /**

@@ -18,7 +18,7 @@
   },
   "author": "Peter Flannery",
   "license": "ISC",
-  "version": "1.22.4",
+  "version": "1.23.0-beta.1",
   "publisher": "pflannery",
   "displayName": "Version Lens",
   "icon": "images/logo.png",
@@ -105,6 +105,15 @@
         "title": "An error has occurred. Click to see the log for details.",
         "category": "VersionLens",
         "icon": "images/icons/toggle-death.svg"
+      },
+      {
+        "command": "versionlens.icons.onCustomInstall",
+        "title": "Run custom install task",
+        "category": "VersionLens",
+        "icon": {
+          "dark": "images/icons/install.svg",
+          "light": "images/icons/install-light.svg"
+        }
       },
       {
         "command": "versionlens.icons.showVersionLenses",
@@ -221,6 +230,11 @@
           "command": "versionlens.icons.hidePrereleaseVersions",
           "when": "versionlens.showPrereleases && versionlens.show && versionlens.providerActive && textCompareEditorVisible == false",
           "group": "navigation@1"
+        },
+        {
+          "command": "versionlens.icons.onCustomInstall",
+          "when": "versionlens.showCustomInstall && versionlens.providerActive && textCompareEditorVisible == false",
+          "group": "navigation@1.1"
         }
       ]
     },
@@ -247,6 +261,11 @@
           "type": "boolean",
           "default": false,
           "description": "Show the stats of all suggestions in the status bar."
+        },
+        "versionlens.suggestions.showCustomInstallAction": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show the custom install action in the editor toolbar when a custom install task is configured for the active package manager."
         },
         "versionlens.suggestions.indicators": {
           "type": "object",

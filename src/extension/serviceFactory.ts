@@ -27,7 +27,10 @@ export function addEditorConfig(services: IServiceCollection) {
 export function addSuggestionOptions(services: IServiceCollection) {
   services.addSingleton(
     ExtensionServiceName.suggestionOptions,
-    (container: IDomainServices) => new SuggestionsOptions(container.appConfig)
+    (container: IDomainServices) => new SuggestionsOptions(
+      container.appConfig,
+      'suggestions'
+    )
   )
 }
 

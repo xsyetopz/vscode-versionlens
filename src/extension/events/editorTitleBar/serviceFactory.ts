@@ -1,8 +1,43 @@
 import type { IDomainServices } from '#domain';
 import type { IServiceCollection } from '#domain/di';
 import { ExtensionServiceName, IconCommandFeatures, type IExtensionServices } from '#extension';
-import { OnErrorClick, OnTogglePrereleases, OnToggleReleases } from '#extension/events';
+import {
+  OnCustomInstallClick,
+  OnErrorClick,
+  OnTogglePrereleases,
+  OnToggleReleases
+} from '#extension/events';
 import { commands, window } from 'vscode';
+
+/**
+ * Registers the onCustomInstallClick event handler as a singleton.
+ * @param services The service collection to add to.
+ */
+export function addOnCustomInstallClick(services: IServiceCollection) {
+  const serviceName = ExtensionServiceName.onCustomInstallClick;
+  services.addSingleton(
+    serviceName,
+    (container: IDomainServices & IExtensionServices) => {
+      // create the event handler
+      const event = new OnCustomInstallClick(
+        container.versionLensProviders,
+        container.extension.state,
+        container.onSaveChanges,
+        container.loggerFactory.create(serviceName)
+      );
+
+      // register the vscode commands
+      event.disposable = commands.registerCommand(
+        IconCommandFeatures.OnCustomInstall,
+        event.execute,
+        event
+      );
+
+      return event;
+    },
+    true
+  )
+}
 
 /**
  * Registers the onErrorClick event handler as a singleton.

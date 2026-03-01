@@ -2,6 +2,7 @@ export * from './onActiveTextEditorChange.tests';
 export * from './onAddUrlAuthentication.tests';
 export * from './onChooseBuildClick.tests';
 export * from './onClearCache.tests';
+export * from './onCustomInstallClick.tests';
 export * from './onErrorClick.tests';
 export * from './onFileLinkClick.tests';
 export * from './onProviderTextDocumentChange.tests';

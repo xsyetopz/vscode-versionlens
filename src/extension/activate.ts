@@ -90,6 +90,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     serviceNames.onRefreshSuggestionsStats,
     serviceNames.onShowSuggestionsStatsDetails,
     // editorTitleBar events
+    serviceNames.onCustomInstallClick,
     serviceNames.onErrorClick,
     serviceNames.onToggleReleases,
     serviceNames.onTogglePrereleases,

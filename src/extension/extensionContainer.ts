@@ -18,6 +18,7 @@ import {
   addOnAddUrlAuthentication,
   addOnChooseBuildClick,
   addOnClearCache,
+  addOnCustomInstallClick,
   addOnErrorClick,
   addOnFileLinkClick,
   addOnPackageDependenciesChanged,
@@ -133,6 +134,7 @@ function addExtensionServices(
   addOnShowSuggestionsStatsDetails(services);
 
   // editorTitleBar events
+  addOnCustomInstallClick(services);
   addOnErrorClick(services);
   addOnToggleReleases(services);
   addOnTogglePrereleases(services);
