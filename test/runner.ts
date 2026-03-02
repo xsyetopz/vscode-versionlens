@@ -3,7 +3,8 @@ import { registerMochaUiEsm, SortByEnum } from 'mocha-ui-esm';
 import SourceMaps from 'source-map-support';
 import * as UnitTests from './unit/index.tests';
 
-registerMochaUiEsm({
+registerMochaUiEsm(
+  Mocha.interfaces, {
   sort: SortByEnum.none
 });
 
