@@ -79,9 +79,12 @@ export class PypiSuggestionResolver {
     };
 
     // extract semver versions only
-    const semverVersions = VersionUtils.filterSemverVersions(httpResponse.data)
-      .map(x => coerce(x, VersionUtils.loosePrereleases).toString())
-      .toSorted(VersionUtils.compareVersionsAndBuilds);
+    const semverVersions = Array.from(
+      new Set(
+        VersionUtils.filterSemverVersions(httpResponse.data)
+          .map(x => coerce(x, VersionUtils.loosePrereleases)!.toString())
+      )
+    ).toSorted(VersionUtils.compareVersionsAndBuilds);
 
     // seperate versions to releases and prereleases
     const { releases, prereleases } = VersionUtils.splitReleasesFromArray(

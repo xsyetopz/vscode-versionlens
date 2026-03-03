@@ -21,11 +21,15 @@ import {
   parsePackagesToml
 } from '#domain/parsers';
 import type { ISuggestionProvider } from '#domain/providers';
-import type { PypiConfig, PypiSuggestionResolver } from '#domain/providers/pypi';
+import {
+  type PypiConfig,
+  type PypiSuggestionResolver,
+  parseRequirementsTxt
+} from '#domain/providers/pypi';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 /**
- * Provides suggestions for PyPi dependencies by parsing TOML files and resolving package versions.
+ * Provides suggestions for PyPi dependencies by parsing TOML or requirements.txt files and resolving package versions.
  */
 export class PypiSuggestionProvider implements ISuggestionProvider {
 
@@ -79,7 +83,7 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
       }).join(', ');
     }
 
-    const operatorRegex = /^(==|!=|<=|>=|<|>|~=|===)/;
+    const operatorRegex = /^(===|==|!=|<=|>=|<|>|~=)/;
     const match = operatorRegex.exec(parsedVersion);
 
     if (!match) {
@@ -101,6 +105,10 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
    * @returns An array of identified package dependencies.
    */
   parseDependencies(packagePath: string, packageText: string): Array<PackageDependency> {
+    if (packagePath.toLowerCase().endsWith('.txt')) {
+      return parseRequirementsTxt(packagePath, packageText);
+    }
+
     const options: TomlParserOptions = {
       includePropNames: this.config.dependencyProperties,
       complexTypeHandlers: getTomlComplexTypeHandlers()

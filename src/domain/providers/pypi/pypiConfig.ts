@@ -27,9 +27,9 @@ export class PypiConfig implements IProviderConfig {
   }
 
   /**
-   * The file language supported by this provider.
+   * The file languages supported by this provider.
    */
-  readonly fileLanguage = 'toml';
+  readonly fileLanguage = ['toml', 'pip-requirements', 'plaintext'];
 
   /**
    * Gets the file patterns used to identify PyPi files (e.g., pyproject.toml).

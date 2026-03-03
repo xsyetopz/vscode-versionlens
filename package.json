@@ -45,6 +45,8 @@
     "onLanguage:go.mod",
     "onLanguage:dockerfile",
     "onLanguage:dockercompose",
+    "onLanguage:pip-requirements",
+    "onLanguage:plaintext",
     "onFileSystem:versionlens"
   ],
   "scripts": {
@@ -785,7 +787,7 @@
         },
         "versionlens.pypi.files": {
           "type": "string",
-          "default": "**/{Pipfile,pyproject.toml}",
+          "default": "**/{Pipfile,pyproject.toml,requirements.txt}",
           "description": "Specifies which files to register with version lenses. You can use [micromatch](https://github.com/micromatch/micromatch) expressions to match file names. You will need to restart vscode when changing this setting."
         },
         "versionlens.pypi.caching.duration": {
