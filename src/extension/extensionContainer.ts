@@ -29,6 +29,7 @@ import {
   addOnRemoveUrlAuthentication,
   addOnSaveChanges,
   addOnShowSuggestionsStatsDetails,
+  addOnSortDependenciesClick,
   addOnTextDocumentChange,
   addOnTextDocumentClose,
   addOnTextDocumentSave,
@@ -130,6 +131,7 @@ function addExtensionServices(
   addOnFileLinkClick(services);
   addOnUpdateDependencyClick(services);
   addOnChooseBuildClick(services);
+  addOnSortDependenciesClick(services);
   addOnRefreshSuggestionsStats(services);
   addOnShowSuggestionsStatsDetails(services);
 

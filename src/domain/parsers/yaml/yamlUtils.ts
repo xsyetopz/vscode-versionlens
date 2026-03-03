@@ -3,15 +3,34 @@ import { Document, isCollection, Pair, YAMLMap, YAMLSeq } from 'yaml';
 type YamlCollection = YAMLMap<string, any> | YAMLSeq
 
 /**
+ * Represents a node found at a specific path.
+ */
+export type YamlFoundNode = {
+  /** The actual path to the node. */
+  path: string;
+  /** The YAML pairs found at the path. */
+  pairs: Array<Pair<string, any>>;
+};
+
+/**
  * Finds YAML pairs at a specific path within a document or collection.
  * Supports wildcard '*' in path segments.
  * @param root The root document or collection to search.
  * @param path The array of path segments.
- * @returns An array of matching YAML pairs.
+ * @param actualPath The actual path segments found so far.
+ * @returns An array of matching YAML nodes.
  */
-export function findByPath(root: YamlCollection | Document, path: Array<string>): Array<Pair<string, any>>;
-export function findByPath(root: any, [key, ...rest]: string[]): Array<Pair<string, any>> {
-  const results: Array<Pair<string, any>> = [];
+export function findByPath(
+  root: YamlCollection | Document,
+  path: Array<string>,
+  actualPath?: Array<string>
+): Array<YamlFoundNode>;
+export function findByPath(
+  root: any,
+  [key, ...rest]: string[],
+  actualPath: string[] = []
+): Array<YamlFoundNode> {
+  const results: Array<YamlFoundNode> = [];
   const hasKey = key.length > 0;
   const lastKey = rest.length === 0;
   if (hasKey === false && lastKey === true) return results;
@@ -20,20 +39,27 @@ export function findByPath(root: any, [key, ...rest]: string[]): Array<Pair<stri
   if (isStar && !root.items)
     return results
   else if (isStar && lastKey) {
-    for (const child of root.items) {
-      results.push(child);
-    }
+    results.push({
+      path: actualPath.join('.'),
+      pairs: root.items
+    });
     return results;
   } else if (isStar) {
     for (const child of root.items) {
-      results.push(...findByPath(child.value, rest));
+      results.push(...findByPath(child.value, rest, [...actualPath, child.key.value]));
     }
     return results;
   }
 
   const node = root.get(key, true);
   if (!node) return results;
-  if (lastKey) return node.items ? node.items : [node];
-  if (isCollection(node)) return findByPath(node, rest);
+  if (lastKey) {
+    results.push({
+      path: [...actualPath, key].join('.'),
+      pairs: node.items ? node.items : [node]
+    });
+    return results;
+  }
+  if (isCollection(node)) return findByPath(node, rest, [...actualPath, key]);
   return results
 }

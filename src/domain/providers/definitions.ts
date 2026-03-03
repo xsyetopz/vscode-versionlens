@@ -37,6 +37,10 @@ export interface IProviderConfig {
    * Optional task to run when a package file is saved.
    */
   readonly onSaveChangesTask?: string | null
+  /**
+   * The property names that contain dependencies in package files.
+   */
+  readonly dependencyProperties: Array<string>
 }
 
 /**

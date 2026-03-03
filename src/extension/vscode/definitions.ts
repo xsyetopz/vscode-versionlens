@@ -9,8 +9,10 @@ import type {
   GlobPattern,
   InputBoxOptions,
   MessageOptions,
+  Position,
   QuickPickItem,
   QuickPickOptions,
+  Range,
   Task,
   TaskExecution,
   TaskFilter,
@@ -196,6 +198,8 @@ export interface IVsCodeTasks {
 export interface IVsCodeConstructFactory {
   /** Creates a new WorkspaceEdit instance. */
   createWorkspaceEdit(): WorkspaceEdit;
+  /** Creates a new Range instance. */
+  createRange(start: Position, end: Position): Range;
   /** Creates a URI from a string. */
   createUri(uri: string): Uri;
   /** Creates a file URI from a path string. */

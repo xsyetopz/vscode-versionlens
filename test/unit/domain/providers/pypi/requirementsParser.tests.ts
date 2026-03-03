@@ -1,10 +1,11 @@
 import { parseRequirementsTxt } from '#domain/providers/pypi';
+import { test } from 'mocha-ui-esm';
 import { deepEqual, equal } from 'node:assert';
 import Fixtures from './requirementsParser.fixtures';
 
 export const RequirementsParserTests = {
 
-  title: 'RequirementsParser',
+  [test.title]: 'RequirementsParser',
 
   parseRequirementsTxt: {
 

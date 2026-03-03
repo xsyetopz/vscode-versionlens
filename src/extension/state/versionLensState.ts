@@ -35,6 +35,9 @@ export class VersionLensState implements IVersionLensState {
   /** Whether to show the custom install icon. */
   showCustomInstall: ContextState<boolean>;
 
+  /** Whether to show the alphabetical sort icon. */
+  showSortAlphabetically: ContextState<boolean>;
+
   /**
    * Initializes a new instance of the VersionLensState class.
    * @param suggestionOptions The user-configured suggestion options.
@@ -51,6 +54,7 @@ export class VersionLensState implements IVersionLensState {
     this.providerError = new ContextState(StateFeatures.ProviderError);
     this.codeLensReplace = new ContextState(StateFeatures.CodeLenReplace);
     this.showCustomInstall = new ContextState(StateFeatures.ShowCustomInstall);
+    this.showSortAlphabetically = new ContextState(StateFeatures.ShowSortAlphabetically);
   }
 
   /**
@@ -66,6 +70,7 @@ export class VersionLensState implements IVersionLensState {
     await this.providerError.change(false);
     await this.codeLensReplace.change(true);
     await this.showCustomInstall.change(false);
+    await this.showSortAlphabetically.change(false);
   }
 
   /**

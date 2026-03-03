@@ -1,4 +1,10 @@
-import { PackageDescriptor, XmlDoc, createProjectVersionDescFromXmlElem } from '#domain/parsers';
+import {
+  PackageDescriptor,
+  XmlDoc,
+  createProjectVersionDescFromXmlElem,
+  createPackageGroupDesc,
+  createTextRange
+} from '#domain/parsers';
 import {
   createBlankVersionDescFromXmlAttr,
   createNameDescFromXmlAttr,
@@ -62,8 +68,14 @@ export function parsePackageNodes(
 
     if (!versionDesc) continue;
 
+    // create the group descriptor
+    const groupDesc = createPackageGroupDesc(
+      node.path,
+      createTextRange(node.tagOpenStart, node.tagCloseEnd!)
+    );
+
     // create the package descriptor
-    const packageDesc = new PackageDescriptor([nameDesc, versionDesc]);
+    const packageDesc = new PackageDescriptor([nameDesc, versionDesc, groupDesc]);
 
     // add the package desc to the matched array
     matchedDependencies.push(packageDesc);

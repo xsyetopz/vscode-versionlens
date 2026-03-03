@@ -1,9 +1,9 @@
 import {
   type PackageGitDescriptor,
+  type PackageGroupDescriptor,
   type PackageHostedDescriptor,
   type PackageIgnoreChangesDescriptor,
   type PackageNameDescriptor,
-  type PackageParentDescriptor,
   type PackagePathDescriptor,
   type PackageProjectVersionDescriptor,
   type PackageRegistryDescriptor,
@@ -102,19 +102,6 @@ export function createPackageHostedDescType(
     hostUrl
   }
 }
-
-/**
- * Creates a parent path descriptor.
- * @param path The parent file path.
- * @returns A parent descriptor.
- */
-export function createPackageParentDescType(path: string): PackageParentDescriptor {
-  return {
-    type: PackageDescriptorType.parent,
-    path
-  }
-}
-
 /**
  * Creates an ignore changes descriptor.
  * @returns An ignore changes descriptor.
@@ -140,5 +127,22 @@ export function createPackageRegistryDescType(registry: string): PackageRegistry
   return {
     type: PackageDescriptorType.registry,
     registry
+  };
+}
+
+/**
+ * Creates a package group range descriptor.
+ * @param groupName The name of the group.
+ * @param range The full range of the entry.
+ * @returns A group range descriptor.
+ */
+export function createPackageGroupDesc(
+  groupName: string,
+  range: PackageTextRange
+): PackageGroupDescriptor {
+  return {
+    type: PackageDescriptorType.group,
+    groupName,
+    range
   };
 }

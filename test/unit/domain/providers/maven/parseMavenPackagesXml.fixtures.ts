@@ -2,6 +2,7 @@ import {
   createPackageNameDesc,
   createPackageVersionDesc,
   createProjectVersionTypeDesc,
+  createPackageGroupDesc,
   createTextRange,
   PackageDescriptor
 } from '#domain/parsers';
@@ -60,21 +61,24 @@ export default {
           "org.springframework.boot:spring-boot-starter-parent",
           createTextRange(481, 481)
         ),
-        createPackageVersionDesc("1.5.16.RELEASE", createTextRange(625, 639))
+        createPackageVersionDesc("1.5.16.RELEASE", createTextRange(625, 639)),
+        createPackageGroupDesc("project.parent", createTextRange(481, 667))
       ]),
       new PackageDescriptor([
         createPackageNameDesc(
           "org.springframework:spring-core",
           createTextRange(701, 701)
         ),
-        createPackageVersionDesc("5.0.7.RELEASE", createTextRange(835, 848))
+        createPackageVersionDesc("5.0.7.RELEASE", createTextRange(835, 848)),
+        createPackageGroupDesc("project.dependencies.dependency", createTextRange(701, 882))
       ]),
       new PackageDescriptor([
         createPackageNameDesc(
           "org.apache.tomcat:tomcat",
           createTextRange(893, 893)
         ),
-        createPackageVersionDesc("9.0.12", createTextRange(427, 433))
+        createPackageVersionDesc("9.0.12", createTextRange(427, 433)),
+        createPackageGroupDesc("project.dependencies.dependency", createTextRange(893, 1114))
       ]),
     ]
   },

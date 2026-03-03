@@ -1,4 +1,4 @@
-import { Uri, WorkspaceEdit } from 'vscode';
+import { Range, Uri, WorkspaceEdit, type Position } from 'vscode';
 import type { IVsCodeConstructFactory } from './definitions';
 
 /**
@@ -13,6 +13,16 @@ export class VsCodeConstructionFactory implements IVsCodeConstructFactory {
    */
   createWorkspaceEdit(): WorkspaceEdit {
     return new WorkspaceEdit();
+  }
+
+  /**
+   * Creates a new Range.
+   * @param start The starting position.
+   * @param end The ending position.
+   * @returns A new Range instance.
+   */
+  createRange(start: Position, end: Position): Range {
+    return new Range(start, end);
   }
 
   /**

@@ -16,6 +16,7 @@ import type {
   OnRemoveUrlAuthentication,
   OnSaveChanges,
   OnShowSuggestionsStatsDetails,
+  OnSortDependenciesClick,
   OnTextDocumentChange,
   OnTextDocumentClose,
   OnTextDocumentSave,
@@ -60,7 +61,9 @@ export enum IconCommandFeatures {
   /** Command to hide version lenses. */
   HideVersionLenses = 'versionlens.icons.hideVersionLenses',
   /** Command to execute a custom install task. */
-  OnCustomInstall = 'versionlens.icons.onCustomInstall'
+  OnCustomInstall = 'versionlens.icons.onCustomInstall',
+  /** Command to sort dependencies alphabetically. */
+  OnSortDependencies = 'versionlens.icons.sortDependencies'
 }
 
 /**
@@ -84,7 +87,9 @@ export enum StateFeatures {
   /** Whether code lens replacement is enabled. */
   CodeLenReplace = 'versionlens.codeLensReplace',
   /** Whether to show the custom install icon. */
-  ShowCustomInstall = 'versionlens.showCustomInstall'
+  ShowCustomInstall = 'versionlens.showCustomInstall',
+  /** Whether to show the alphabetical sort icon. */
+  ShowSortAlphabetically = 'versionlens.showSortAlphabetically'
 }
 
 /**
@@ -119,6 +124,8 @@ export enum SuggestionFeatures {
   Indicators = 'indicators',
   /** Key for showing the custom install icon in the editor toolbar. */
   ShowCustomInstallAction = 'showCustomInstallAction',
+  /** Key for showing the alphabetical sort icon in the editor toolbar. */
+  ShowSortAlphabeticallyAction = 'showSortAlphabeticallyAction',
 }
 
 /**
@@ -164,6 +171,8 @@ export interface IExtensionServices {
   onClearCache: OnClearCache
   /** Handler for refreshing suggestion stats. */
   onRefreshSuggestionsStats: OnRefreshSuggestionsStats
+  /** Handler for sorting dependencies alphabetically. */
+  onSortDependencies: OnSortDependenciesClick
   /** Handler for showing suggestion stat details. */
   onShowSuggestionsStatsDetails: OnShowSuggestionsStatsDetails
   /** Handler for file link clicks. */
@@ -235,6 +244,8 @@ export interface IVersionLensState {
   codeLensReplace: IContextState<boolean>
   /** Whether to show the custom install icon. */
   showCustomInstall: IContextState<boolean>
+  /** Whether to show the alphabetical sort icon. */
+  showSortAlphabetically: IContextState<boolean>
   /** Applies default state values. */
   applyDefaults(): Promise<void>
   /** Increments the busy state. */

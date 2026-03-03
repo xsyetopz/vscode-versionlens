@@ -4,10 +4,11 @@ import {
   PackageDescriptor,
   createIgnoreChangesDesc,
   createNameDescFromJsonNode,
-  createPackageParentDescType,
+  createPackageGroupDesc,
   createPathDescFromJsonNode,
   createProjectVersionDesc,
   createVersionDescFromJsonNode,
+  createTextRange
 } from '#domain/parsers';
 import * as JsonC from 'jsonc-parser';
 
@@ -27,12 +28,18 @@ export const packageManagerVersionRegex = /^([\w]+)@(.+)$/;
 export function createPackageManagerDesc(path: string, node: JsonC.Node): PackageDescriptor {
   const nameDesc = createNameDescFromJsonNode(node);
   const versionDesc = createPackageManagerVersionFromJsonNode(node);
-  const parentDesc = createPackageParentDescType(path);
+
+  const entryNode = node.parent ?? node;
+  const groupDesc = createPackageGroupDesc(
+    path,
+    createTextRange(entryNode.offset, entryNode.offset + entryNode.length)
+  );
+
   const ignoreChangesDesc = createIgnoreChangesDesc();
   return new PackageDescriptor([
     nameDesc,
     versionDesc,
-    parentDesc,
+    groupDesc,
     ignoreChangesDesc
   ]);
 }

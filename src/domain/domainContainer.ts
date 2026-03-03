@@ -9,6 +9,7 @@ import {
   addGetDependencyChangesUseCase,
   addGetSuggestionProviderUseCase,
   addGetSuggestionsStatsUseCase,
+  addSortDependenciesUseCase,
   addHttpOptions,
   addShellCache,
   addSuggestionPackageCache,
@@ -56,4 +57,5 @@ export function addDomainServices(
   addGetSuggestionProviderUseCase(services);
   addGetDependencyChangesUseCase(services);
   addGetSuggestionsStatsUseCase(services);
+  addSortDependenciesUseCase(services);
 }

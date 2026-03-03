@@ -12,8 +12,6 @@ export enum PackageDescriptorType {
   git = "git",
   /** A hosted registry URL for the package. */
   hosted = "hosted",
-  /** The parent file path of the package. */
-  parent = "parent",
   /** Indicates that changes should be ignored. */
   ignoreChanges = "ignoreChanges",
   /** The version of the project itself. */
@@ -23,7 +21,9 @@ export enum PackageDescriptorType {
   /** A Docker build descriptor. */
   build = 'build',
   /** A package registry descriptor. */
-  registry = 'registry'
+  registry = 'registry',
+  /** The group descriptor for the full package entry. */
+  group = 'group'
 }
 
 /**
@@ -109,11 +109,13 @@ export type PackageRegistryDescriptor = PackageType & {
 }
 
 /**
- * Descriptor for a parent path.
+ * Descriptor for a package group entry.
  */
-export type PackageParentDescriptor = PackageType & {
-  /** The parent file path. */
-  path: string
+export type PackageGroupDescriptor = PackageType & {
+  /** The name of the group the entry is in. */
+  groupName: string
+  /** The full range of the entry associated with the group in the file. */
+  range: PackageTextRange
 }
 
 /**
@@ -154,9 +156,9 @@ export type PackageTypeDescriptor = PackageNameDescriptor
   | PackagePathDescriptor
   | PackageHostedDescriptor
   | PackageGitDescriptor
-  | PackageParentDescriptor
   | PackageIgnoreChangesDescriptor
   | PackageProjectVersionDescriptor
   | PackageImageDescriptor
   | PackageBuildDescriptor
   | PackageRegistryDescriptor
+  | PackageGroupDescriptor

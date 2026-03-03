@@ -4,7 +4,8 @@ import {
   type JsonParserOptions,
   PackageDescriptor,
   createNameDescFromJsonNode,
-  createPackageParentDescType
+  createPackageGroupDesc,
+  createTextRange
 } from '#domain/parsers';
 import type { KeyDictionary } from '#domain/utils';
 import * as JsonC from 'jsonc-parser';
@@ -95,10 +96,13 @@ function descendChildNodes(
       const nameDesc = createNameDescFromJsonNode(keyNode);
       // create the version descriptor
       const versionDesc = createVersionDescFromJsonNode(valueNode);
-      // create the parent descriptor
-      const parentDesc = createPackageParentDescType(path);
+      // create the group descriptor
+      const groupDesc = createPackageGroupDesc(
+        path,
+        createTextRange(node.offset, node.offset + node.length)
+      );
       // create the package descriptor
-      const packageDesc = new PackageDescriptor([nameDesc, versionDesc, parentDesc]);
+      const packageDesc = new PackageDescriptor([nameDesc, versionDesc, groupDesc]);
 
       // add the package desc to the matched array
       matchedDependencies.push(packageDesc);
@@ -136,9 +140,12 @@ function descendChildNodes(
       const nameDesc = createNameDescFromJsonNode(keyNode);
       packageDesc.addType(nameDesc)
 
-      // add the parent path to the package desc
-      const parentDesc = createPackageParentDescType(path);
-      packageDesc.addType(parentDesc);
+      // add the group descriptor
+      const groupDesc = createPackageGroupDesc(
+        path,
+        createTextRange(node.offset, node.offset + node.length)
+      );
+      packageDesc.addType(groupDesc);
 
       // add the package desc to the matched array
       matchedDependencies.push(packageDesc);

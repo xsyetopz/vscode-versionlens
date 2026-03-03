@@ -16,7 +16,8 @@ export const PnpmSuggestionProviderTests = {
 
   [test.title]: PnpmSuggestionProvider.name,
 
-  beforeEach: async function (this: TestContext) {
+  beforeEach: function (this: TestContext) {
+
     this.configMock = mock<PnpmConfig>();
     this.npmProviderMock = mock<NpmSuggestionProvider>();
     this.loggerMock = mock<ILogger>();

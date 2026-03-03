@@ -1,9 +1,6 @@
 import type { ILogger } from '#domain/logging';
-import {
-  type CargoSuggestionResolver,
-  type CargoConfig,
-  CargoSuggestionProvider
-} from '#domain/providers/cargo';
+import { CargoSuggestionProvider, type CargoConfig, type CargoSuggestionResolver } from '#domain/providers/cargo';
+import { test } from 'mocha-ui-esm';
 import { deepEqual } from 'node:assert';
 import { instance, mock, when } from 'ts-mockito';
 import fixtures from './cargoSuggestionProvider.fixtures';
@@ -15,11 +12,12 @@ type TestContext = {
   put: CargoSuggestionProvider
 }
 
-export const cargoSuggestionProviderTests = {
+export const CargoSuggestionProviderTests = {
 
-  title: CargoSuggestionProvider.name,
+  [test.title]: CargoSuggestionProvider.name,
 
   beforeEach: function (this: TestContext) {
+
     this.cargoClientMock = mock<CargoSuggestionResolver>()
     this.cargoConfigMock = mock<CargoConfig>()
     this.loggerMock = mock<ILogger>()

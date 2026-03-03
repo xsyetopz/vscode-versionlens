@@ -13,7 +13,8 @@ import type {
   GetDependencyChanges,
   GetSuggestionProvider,
   GetSuggestions,
-  GetSuggestionsStats
+  GetSuggestionsStats,
+  SortDependencies
 } from '#domain/useCases';
 import { type EventScheduler, nameOf } from '#domain/utils';
 
@@ -65,6 +66,8 @@ export interface IDomainServices {
   getDependencyChanges: GetDependencyChanges
   /** Use case for generating suggestion statistics. */
   getSuggestionsStats: GetSuggestionsStats
+  /** Use case for sorting dependencies alphabetically. */
+  sortDependencies: SortDependencies
 }
 
 /**

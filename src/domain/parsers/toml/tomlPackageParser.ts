@@ -7,7 +7,9 @@ import {
   createVersionDescFromTomlNode,
   matchesTableExpression,
   createPackageNameDesc,
-  createPackageVersionDesc
+  createPackageVersionDesc,
+  createPackageGroupDesc,
+  createTextRange
 } from '#domain/parsers';
 import { type AST, parseTOML } from "toml-eslint-parser";
 
@@ -51,6 +53,7 @@ function parsePackageNodes(
     .map(
       (x: AST.TOMLTable) => ({
         match: matchesTableExpression(x.resolvedKey, includePropNames),
+        path: x.resolvedKey,
         name: (x.key.keys[0] as AST.TOMLBare).name,
         rows: x.body
       })
@@ -76,7 +79,7 @@ function parsePackageNodes(
       const isOptionalDependenciesRow = matchedTable.match == 'project.optional-dependencies' && isArrayNode;
 
       if (isDependenciesKey || isOptionalDependenciesRow) {
-        matchedDependencies.push(...parseArrayNode(tableRow.value as AST.TOMLArray));
+        matchedDependencies.push(...parseArrayNode(tableRow.value as AST.TOMLArray, matchedTable.path.join('.')));
         continue;
       }
 
@@ -86,8 +89,8 @@ function parsePackageNodes(
       // complex or simple
       const isComplexNode = tableRow.value.type === 'TOMLInlineTable';
       const packageDesc = isComplexNode
-        ? parseComplexNode(tableRow, tableRow.value as AST.TOMLInlineTable, options)
-        : parseSimpleNode(tableRow, isPkgNameInTableName);
+        ? parseComplexNode(tableRow, tableRow.value as AST.TOMLInlineTable, options, matchedTable.path.join('.'))
+        : parseSimpleNode(tableRow, isPkgNameInTableName, matchedTable.path.join('.'));
 
       // add the package desc to the matched array
       if (packageDesc) {
@@ -104,15 +107,25 @@ function parsePackageNodes(
  * Parses a simple key-value pair in TOML.
  * @param node The TOML key-value node.
  * @param isNameFromTable Whether the package name should be derived from the table name.
+ * @param path The parent path.
  * @returns A package descriptor.
  */
-function parseSimpleNode(node: AST.TOMLKeyValue, isNameFromTable: boolean): PackageDescriptor {
+function parseSimpleNode(
+  node: AST.TOMLKeyValue,
+  isNameFromTable: boolean,
+  path: string
+): PackageDescriptor {
   // add the name descriptor
   const nameDesc = createNameDescFromTomlNode(node.key, isNameFromTable);
   // add the version descriptor
   const versionDesc = createVersionDescFromTomlNode(node.value as AST.TOMLValue);
+  // add the group descriptor
+  const groupDesc = createPackageGroupDesc(
+    path,
+    createTextRange(node.range[0], node.range[1])
+  );
 
-  return new PackageDescriptor([nameDesc, versionDesc]);
+  return new PackageDescriptor([nameDesc, versionDesc, groupDesc]);
 }
 
 /**
@@ -120,12 +133,14 @@ function parseSimpleNode(node: AST.TOMLKeyValue, isNameFromTable: boolean): Pack
  * @param nameNode The TOML key-value node containing the name.
  * @param valueNode The TOML inline table node.
  * @param options Parser options.
+ * @param path The parent path.
  * @returns A package descriptor or undefined.
  */
 function parseComplexNode(
   nameNode: AST.TOMLKeyValue,
   valueNode: AST.TOMLInlineTable,
-  options: TomlParserOptions
+  options: TomlParserOptions,
+  path: string
 ): PackageDescriptor | undefined {
   const packageDesc = new PackageDescriptor([]);
   const complexTypeHandlers = options.complexTypeHandlers;
@@ -157,16 +172,26 @@ function parseComplexNode(
   const nameDesc = createNameDescFromTomlNode(nameNode.key, false);
   packageDesc.addType(nameDesc)
 
+  // add the group descriptor
+  packageDesc.addType(
+    createPackageGroupDesc(
+      path,
+      createTextRange(nameNode.range[0], nameNode.range[1])
+    )
+  );
+
   return packageDesc;
 }
 
 /**
  * Parses a TOML array containing PEP 508 dependency strings.
  * @param arrayNode The TOML array node.
+ * @param path The parent path.
  * @returns An array of package descriptors.
  */
 function parseArrayNode(
-  arrayNode: AST.TOMLArray
+  arrayNode: AST.TOMLArray,
+  path: string
 ): Array<PackageDescriptor> {
   const descriptors: Array<PackageDescriptor> = [];
 
@@ -202,7 +227,13 @@ function parseArrayNode(
       versionDesc = createPackageVersionDesc("", versionRange);
     }
 
-    descriptors.push(new PackageDescriptor([nameDesc, versionDesc]));
+    // add the group descriptor
+    const groupDesc = createPackageGroupDesc(
+      path,
+      createTextRange(element.range[0], element.range[1])
+    );
+
+    descriptors.push(new PackageDescriptor([nameDesc, versionDesc, groupDesc]));
   }
 
   return descriptors;

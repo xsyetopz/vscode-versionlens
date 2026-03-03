@@ -2,7 +2,6 @@ import { createPackageResource, PackageDependency } from '#domain/packages';
 import {
   type PackageBuildDescriptor,
   type PackageImageDescriptor,
-  type PackageParentDescriptor,
   type YamlParserOptions,
   createPackageNameDesc,
   createPackagePathDescType,
@@ -32,7 +31,6 @@ export function parseDockerCompose(
   const packageDependencies: Array<PackageDependency> = [];
   const parsedPackages = parsePackagesYaml(packageText, options);
   for (const descriptors of parsedPackages) {
-    const parentDesc = descriptors.getType<PackageParentDescriptor>('parent');
     const imageDesc = descriptors.getType<PackageImageDescriptor>('image');
     const buildDesc = descriptors.getType<PackageBuildDescriptor>('build');
 
@@ -50,8 +48,7 @@ export function parseDockerCompose(
 
     const descriptor = new PackageDescriptor([
       nameDesc,
-      versionDesc ?? buildDesc.pathDesc,
-      parentDesc,
+      versionDesc ?? buildDesc.pathDesc
     ]);
     if (registryDesc) descriptor.addType(registryDesc);
 

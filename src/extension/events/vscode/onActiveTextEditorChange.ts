@@ -46,6 +46,7 @@ export class OnActiveTextEditorChange extends AsyncEmitter<ProviderEditorActivat
       // disable icons when no editor
       await this.state.providerActive.change(null);
       await this.state.showCustomInstall.change(false);
+      await this.state.showSortAlphabetically.change(false);
       return;
     }
 
@@ -55,6 +56,7 @@ export class OnActiveTextEditorChange extends AsyncEmitter<ProviderEditorActivat
       // disable icons if no matches found
       await this.state.providerActive.change(null);
       await this.state.showCustomInstall.change(false);
+      await this.state.showSortAlphabetically.change(false);
       return;
     }
 
@@ -65,9 +67,12 @@ export class OnActiveTextEditorChange extends AsyncEmitter<ProviderEditorActivat
     this.state.suggestionOptions.defrost();
 
     // update custom install state
-    const hasCustomInstall = this.state.suggestionOptions.showCustomInstallAction
-      && !!activeProvider.config.onSaveChangesTask;
+    const hasCustomInstall = !!activeProvider.config.onSaveChangesTask;
     await this.state.showCustomInstall.change(hasCustomInstall);
+
+    // update sort alphabetically state
+    const showSortAlphabetically = activeProvider.config.dependencyProperties.length > 0;
+    await this.state.showSortAlphabetically.change(showSortAlphabetically);
 
     // fire activated event
     await this.fire(activeProvider, textEditor.document);

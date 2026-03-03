@@ -6,10 +6,11 @@ import {
   PackageDescriptor,
   createPackageGitDescType,
   createPackageNameDesc,
-  createPackageParentDescType,
+  createPackageGroupDesc,
   createPackagePathDescType,
   createPackageVersionDesc,
-  createProjectVersionTypeDesc
+  createProjectVersionTypeDesc,
+  createTextRange
 } from '#domain/parsers';
 import * as JsonC from 'jsonc-parser';
 
@@ -79,12 +80,18 @@ export function createRepoDescFromJsonNode(valueNode: JsonC.Node): PackageGitDes
 export function createProjectVersionDesc(path: string, node: JsonC.Node): PackageDescriptor {
   const nameDesc = createNameDescFromJsonNode(node);
   const versionDesc = createVersionDescFromJsonNode(node);
-  const parentDesc = createPackageParentDescType(path);
+
+  const entryNode = node.parent ?? node;
+  const groupDesc = createPackageGroupDesc(
+    path,
+    createTextRange(entryNode.offset, entryNode.offset + entryNode.length)
+  );
+
   const projectVersionDesc = createProjectVersionTypeDesc();
   return new PackageDescriptor([
     nameDesc,
     versionDesc,
-    parentDesc,
+    groupDesc,
     projectVersionDesc
   ]);
 }

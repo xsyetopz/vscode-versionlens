@@ -1,9 +1,11 @@
-# 1.23.1-prerelease
+# 1.23.2-prerelease
 
   ### All
 
-  - Added a custom install toolbar action that runs the configured `onSaveChanges` task for the active package manager.
-    Can be disabled by setting `versionlens.suggestions.showCustomInstallAction` to `false`.
+  - Added `Run custom Install task` action to the `secondary` toolbar group and command palette
+    this only appear if you have defined a `onSaveChanges` task for the active package manager.
+
+  - Added `Sort dependencies alphabetically` action to the `secondary` toolbar group and command palette. Dependencies will be sorted per group.
 
   - Fixed an issue where saving changes during a running custom installation prevented subsequent install attempts until additional modifications were made.
 

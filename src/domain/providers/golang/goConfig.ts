@@ -59,4 +59,11 @@ export class GoConfig implements IProviderConfig {
     return this.config.get(GoFeatures.OnSaveChangesTask, null);
   }
 
+  /**
+   * Gets the property names that contain dependencies in Go files.
+   */
+  get dependencyProperties(): Array<string> {
+    return [];
+  }
+
 }

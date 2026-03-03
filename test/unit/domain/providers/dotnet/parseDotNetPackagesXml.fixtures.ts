@@ -2,6 +2,7 @@ import {
   createPackageNameDesc,
   createPackageVersionDesc,
   createProjectVersionTypeDesc,
+  createPackageGroupDesc,
   createTextRange,
   PackageDescriptor
 } from '#domain/parsers';
@@ -36,70 +37,80 @@ export default {
           "Microsoft.Build.CentralPackageVersions",
           createTextRange(25, 25)
         ),
-        createPackageVersionDesc("2.1.3", createTextRange(85, 90))
+        createPackageVersionDesc("2.1.3", createTextRange(85, 90)),
+        createPackageGroupDesc("Project.Sdk", createTextRange(25, 94))
       ]),
       new PackageDescriptor([
         createPackageNameDesc(
           "Microsoft.Azure.ServiceBus",
           createTextRange(610, 610)
         ),
-        createPackageVersionDesc("(3.0,)", createTextRange(680, 686))
+        createPackageVersionDesc("(3.0,)", createTextRange(680, 686)),
+        createPackageGroupDesc("Project.ItemGroup.GlobalPackageReference", createTextRange(610, 690))
       ]),
       new PackageDescriptor([
         createPackageNameDesc(
           "Microsoft.Extensions.DependencyInjection.Abstractions",
           createTextRange(127, 127)
         ),
-        createPackageVersionDesc("2.0.0", createTextRange(218, 223))
+        createPackageVersionDesc("2.0.0", createTextRange(218, 223)),
+        createPackageGroupDesc("Project.ItemGroup.PackageReference", createTextRange(127, 227))
       ]),
       new PackageDescriptor([
         createPackageNameDesc(
           "Microsoft.Extensions.Logging.Abstractions",
           createTextRange(240, 240)
         ),
-        createPackageVersionDesc("2.0.1", createTextRange(319, 324))
+        createPackageVersionDesc("2.0.1", createTextRange(319, 324)),
+        createPackageGroupDesc("Project.ItemGroup.PackageReference", createTextRange(240, 328))
       ]),
       new PackageDescriptor([
         createPackageNameDesc(
           "NoVersionAttribute",
           createTextRange(774, 774)
         ),
-        createPackageVersionDesc("*", createTextRange(821, 821), 'Version="', '" ')
+        createPackageVersionDesc("*", createTextRange(821, 821), 'Version="', '" '),
+        createPackageGroupDesc("Project.ItemGroup.PackageReference", createTextRange(774, 823))
       ]),
       new PackageDescriptor([
         createPackageNameDesc(
           "ChildVersionNoAttribute",
           createTextRange(836, 836)
         ),
-        createPackageVersionDesc("*", createTextRange(887, 887), ' Version="', '"')
+        createPackageVersionDesc("*", createTextRange(887, 887), ' Version="', '"'),
+        createPackageGroupDesc("Project.ItemGroup.PackageReference", createTextRange(836, 991))
       ]),
       new PackageDescriptor([
         createPackageNameDesc(
           "System.Text.Json",
           createTextRange(341, 341)
         ),
-        createPackageVersionDesc("4.7.2", createTextRange(393, 398))
+        createPackageVersionDesc("4.7.2", createTextRange(393, 398)),
+        createPackageGroupDesc("Project.ItemGroup.PackageVersion", createTextRange(341, 402))
       ]),
       new PackageDescriptor([
         createPackageNameDesc(
           "Microsoft.Extensions.Options",
           createTextRange(415, 415)
         ),
-        createPackageVersionDesc("1.2.3", createTextRange(487, 492))
+        createPackageVersionDesc("1.2.3", createTextRange(487, 492)),
+        createPackageGroupDesc("Project.ItemGroup.PackageVersion", createTextRange(415, 496))
       ]),
       new PackageDescriptor([
         createPackageNameDesc(
           "AngularJS.Core",
           createTextRange(703, 703)
         ),
-        createPackageVersionDesc("1.0.*", createTextRange(752, 757))
+        createPackageVersionDesc("1.0.*", createTextRange(752, 757)),
+        createPackageGroupDesc("Project.ItemGroup.PackageVersion", createTextRange(703, 761))
       ]),
       new PackageDescriptor([
         createPackageNameDesc(
           "Microsoft.EntityFrameworkCore.Tools",
           createTextRange(509, 509)
         ),
-        createPackageVersionDesc("6.0.7", createTextRange(588, 593))
+        createPackageVersionDesc("6.0.7", createTextRange(588, 593)),
+        createPackageGroupDesc("Project.ItemGroup.DotNetCliToolReference", createTextRange(509, 597))
       ]),
     ]
   },

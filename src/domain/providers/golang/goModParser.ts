@@ -4,7 +4,9 @@ import {
   type PackageVersionDescriptor,
   PackageDescriptor,
   createPackageNameDesc,
-  createPackageVersionDesc
+  createPackageVersionDesc,
+  createPackageGroupDesc,
+  createTextRange
 } from '#domain/parsers';
 
 const INCOMPAT_BUILD = "+incompatible";
@@ -43,7 +45,13 @@ export function parsePackagesGoMod(text: string): Array<PackageDescriptor> {
       versionEnd
     );
 
-    const packageDesc = new PackageDescriptor([nameDesc, versionDesc]);
+    // create the group descriptor
+    const groupDesc = createPackageGroupDesc(
+      'dependencies',
+      createTextRange(packageStart, versionEnd)
+    );
+
+    const packageDesc = new PackageDescriptor([nameDesc, versionDesc, groupDesc]);
     matchedDependencies.push(packageDesc);
   }
 

@@ -2,6 +2,7 @@ import { createPackageResource, PackageDependency } from '#domain/packages';
 import {
   createPackageNameDesc,
   createPackageVersionDesc,
+  createPackageGroupDesc,
   createTextRange,
   PackageDescriptor
 } from '#domain/parsers';
@@ -35,6 +36,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('example.com/othermodule', createTextRange(63)),
         createPackageVersionDesc('v1.2.3', createTextRange(87, 93), 'v'),
+        createPackageGroupDesc('dependencies', createTextRange(63, 93))
       ])
     ),
     new PackageDependency(
@@ -42,6 +44,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('github.com/spf13/cobra', createTextRange(119)),
         createPackageVersionDesc('v1.8.0', createTextRange(142, 148), 'v'),
+        createPackageGroupDesc('dependencies', createTextRange(119, 148))
       ])
     ),
     new PackageDependency(
@@ -49,6 +52,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('gopkg.in/yaml.v3', createTextRange(157)),
         createPackageVersionDesc('v3.0.1', createTextRange(174, 180), 'v'),
+        createPackageGroupDesc('dependencies', createTextRange(157, 180))
       ])
     ),
     new PackageDependency(
@@ -56,6 +60,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('k8s.io/klog/v2', createTextRange(189)),
         createPackageVersionDesc('v2.110.1', createTextRange(204, 212), 'v'),
+        createPackageGroupDesc('dependencies', createTextRange(189, 212))
       ])
     ),
     new PackageDependency(
@@ -63,6 +68,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('github.com/docker/go-units', createTextRange(501)),
         createPackageVersionDesc('v0.5.0', createTextRange(528, 534), 'v'),
+        createPackageGroupDesc('dependencies', createTextRange(501, 534))
       ])
     ),
   ]

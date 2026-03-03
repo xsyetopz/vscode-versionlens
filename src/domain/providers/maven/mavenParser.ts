@@ -2,7 +2,9 @@ import {
   PackageDescriptor,
   XmlDoc,
   XmlNode,
-  createProjectVersionDescFromXmlElem
+  createProjectVersionDescFromXmlElem,
+  createPackageGroupDesc,
+  createTextRange
 } from '#domain/parsers';
 import {
   createNameDescFromXmlNodes,
@@ -89,7 +91,14 @@ export function mapChildrenToDescriptor(
   if (!versionDesc) return;
 
   // create the package descriptor
-  const packageDesc = new PackageDescriptor([nameDesc, versionDesc]);
+  const packageDesc = new PackageDescriptor([
+    nameDesc,
+    versionDesc,
+    createPackageGroupDesc(
+      parentNode.path,
+      createTextRange(parentNode.tagOpenStart, parentNode.tagCloseEnd!)
+    )
+  ]);
 
   // return the package descriptor
   return packageDesc;

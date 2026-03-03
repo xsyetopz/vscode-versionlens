@@ -11,7 +11,8 @@ import {
   FetchPackages,
   GetDependencyChanges,
   GetSuggestionProvider,
-  GetSuggestionsStats
+  GetSuggestionsStats,
+  SortDependencies
 } from '#domain/useCases';
 import { EventScheduler } from '#domain/utils';
 
@@ -196,6 +197,18 @@ export function addGetSuggestionsStatsUseCase(services: IServiceCollection) {
         container.getSuggestions,
         container.loggerFactory.create(serviceName)
       )
+  );
+}
+
+/**
+ * Registers the SortDependencies use case as a singleton.
+ * @param services The service collection to add to.
+ */
+export function addSortDependenciesUseCase(services: IServiceCollection) {
+  const serviceName = DomainServiceName.sortDependencies;
+  services.addSingleton(
+    serviceName,
+    () => new SortDependencies()
   );
 }
 

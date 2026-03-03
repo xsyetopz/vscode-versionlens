@@ -3,6 +3,7 @@ import {
   createPackageNameDesc,
   createPackageVersionDesc,
   createProjectVersionTypeDesc,
+  createPackageGroupDesc,
   createTextRange,
   PackageDescriptor
 } from '#domain/parsers';
@@ -40,6 +41,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('backtrace', createTextRange(107, 107)),
         createPackageVersionDesc('0.3.69', createTextRange(132, 138)),
+        createPackageGroupDesc('dependencies', createTextRange(107, 158))
       ])
     ),
     new PackageDependency(
@@ -47,6 +49,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('rustversion', createTextRange(187, 187)),
         createPackageVersionDesc('1.0.14', createTextRange(202, 208)),
+        createPackageGroupDesc('dev-dependencies', createTextRange(187, 209))
       ])
     ),
     new PackageDependency(
@@ -54,6 +57,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('trybuild', createTextRange(233, 233)),
         createPackageVersionDesc('1.0.85', createTextRange(258, 264)),
+        createPackageGroupDesc('dev-dependencies.trybuild', createTextRange(247, 265))
       ])
     ),
     new PackageDependency(
@@ -61,6 +65,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('libc', createTextRange(300, 300)),
         createPackageVersionDesc('1.0.96', createTextRange(308, 314)),
+        createPackageGroupDesc('workspace.dependencies', createTextRange(300, 315))
       ])
     ),
   ]

@@ -1,7 +1,6 @@
 import { createPackageResource, PackageDependency } from '#domain/packages';
 import {
   createPackageNameDesc,
-  createPackageParentDescType,
   createPackagePathDescType,
   createPackageRegistryDescType,
   createPackageVersionDesc,
@@ -113,56 +112,49 @@ export default {
         createPackageResource('node', 'alpine-22', 'test/path/compose.yaml'),
         new PackageDescriptor([
           createPackageNameDesc('node', createTextRange(47, 51)),
-          createPackageVersionDesc('alpine-22', createTextRange(52, 61)),
-          createPackageParentDescType('services.*')
+          createPackageVersionDesc('alpine-22', createTextRange(52, 61))
         ])
       ),
       new PackageDependency(
         createPackageResource('alpine', '3', 'test/path/compose.yaml'),
         new PackageDescriptor([
           createPackageNameDesc('alpine', createTextRange(93, 99)),
-          createPackageVersionDesc('3', createTextRange(100, 101)),
-          createPackageParentDescType('services.*')
+          createPackageVersionDesc('3', createTextRange(100, 101))
         ])
       ),
       new PackageDependency(
         createPackageResource('postrgres', '', 'test/path/compose.yaml'),
         new PackageDescriptor([
           createPackageNameDesc('postrgres', createTextRange(134, 143)),
-          createPackageVersionDesc('', createTextRange(143, 143), ':'),
-          createPackageParentDescType('services.*')
+          createPackageVersionDesc('', createTextRange(143, 143), ':')
         ])
       ),
       new PackageDependency(
         createPackageResource('./dockerfile', './dockerfile', 'test/path/compose.yaml'),
         new PackageDescriptor([
           createPackageNameDesc('./dockerfile', createTextRange(183, 184)),
-          createPackagePathDescType('./dockerfile', createTextRange(183, 184)),
-          createPackageParentDescType('services.*')
+          createPackagePathDescType('./dockerfile', createTextRange(183, 184))
         ])
       ),
       new PackageDependency(
         createPackageResource('./dockerfile', './dockerfile', 'test/path/compose.yaml'),
         new PackageDescriptor([
           createPackageNameDesc('./dockerfile', createTextRange(255, 256)),
-          createPackagePathDescType('./dockerfile', createTextRange(255, 256)),
-          createPackageParentDescType('services.*')
+          createPackagePathDescType('./dockerfile', createTextRange(255, 256))
         ])
       ),
       new PackageDependency(
         createPackageResource('./custom.dockerfile', './custom.dockerfile', 'test/path/compose.yaml'),
         new PackageDescriptor([
           createPackageNameDesc('./custom.dockerfile', createTextRange(330, 331)),
-          createPackagePathDescType('./custom.dockerfile', createTextRange(330, 331)),
-          createPackageParentDescType('services.*')
+          createPackagePathDescType('./custom.dockerfile', createTextRange(330, 331))
         ])
       ),
       new PackageDependency(
         createPackageResource('123456', '', 'test/path/compose.yaml'),
         new PackageDescriptor([
           createPackageNameDesc('123456', createTextRange(413, 419)),
-          createPackageVersionDesc('', createTextRange(419), ':'),
-          createPackageParentDescType('services.*')
+          createPackageVersionDesc('', createTextRange(419), ':')
         ])
       ),
       new PackageDependency(
@@ -170,7 +162,6 @@ export default {
         new PackageDescriptor([
           createPackageNameDesc('dotnet/sdk', createTextRange(479, 489)),
           createPackageVersionDesc('7.0', createTextRange(490, 493)),
-          createPackageParentDescType('services.*'),
           createPackageRegistryDescType('mcr.microsoft.com')
         ])
       ),

@@ -5,6 +5,7 @@ import {
 import {
   createPackageNameDesc,
   createPackageVersionDesc,
+  createPackageGroupDesc,
   createTextRange,
   PackageDescriptor
 } from '#domain/parsers';
@@ -15,7 +16,7 @@ import {
  * Group 2: Comparison operator (optional)
  * Group 3: Version (optional)
  */
-const requirementRegex = /^([a-zA-Z0-9._-]+)\s*(===|==|~=|>=|<=|!=|>|<)?\s*([a-zA-Z0-9._*+-]+)?/;
+const requirementRegex = /^\s*([a-zA-Z0-9._-]+)\s*(===|==|~=|>=|<=|!=|>|<)?\s*([a-zA-Z0-9._*+-]+)?/;
 
 /**
  * Parses a requirements.txt file to identify package dependencies.
@@ -44,18 +45,22 @@ export function parseRequirementsTxt(
         const operator = match[2] || '';
         const rawVersion = match[3] || '';
 
-        // Calculate name range
-        const nameStart = currentOffset + line.indexOf(packageName);
+        // Calculate name range using the match index
+        const nameStart = currentOffset + match.index + line.search(/\S/);
+        const nameEnd = nameStart + packageName.length;
 
         // the version range includes the operator if present
         let versionRange;
         let descriptorVersion = '';
 
         if (rawVersion) {
-          const operatorStart = operator ? line.indexOf(operator, line.indexOf(packageName) + packageName.length) : -1;
-          const versionStart = line.indexOf(rawVersion, operatorStart !== -1 ? operatorStart + operator.length : line.indexOf(packageName) + packageName.length);
-          const start = operatorStart !== -1 ? operatorStart : versionStart;
-          const end = versionStart + rawVersion.length;
+          // find the operator start relative to the name
+          const operatorStartInLine = operator ? line.indexOf(operator, match.index + packageName.length) : -1;
+          const versionStartInLine = line.indexOf(rawVersion, operatorStartInLine !== -1 ? operatorStartInLine + operator.length : match.index + packageName.length);
+          
+          const start = operatorStartInLine !== -1 ? operatorStartInLine : versionStartInLine;
+          const end = versionStartInLine + rawVersion.length;
+          
           versionRange = createTextRange(
             currentOffset + start,
             currentOffset + end
@@ -65,14 +70,22 @@ export function parseRequirementsTxt(
         } else {
           // Special case for blank versions: assume latest
           descriptorVersion = '*';
-          const endOfName = currentOffset + line.indexOf(packageName) + packageName.length;
-          versionRange = createTextRange(endOfName);
+          versionRange = createTextRange(nameEnd);
         }
+
+        // Exclude the trailing newline from the group range.
+        // This ensures that when lines are swapped, the newlines remain in their original positions,
+        // preventing the last line (which may not have a newline) from merging with other lines.
+        const lineWithoutNewline = line.replace(/(\r?\n)$/, '');
 
         // Order is critical: Name descriptor must be before Version descriptor
         const descriptor = new PackageDescriptor([
           createPackageNameDesc(packageName, createTextRange(nameStart)),
-          createPackageVersionDesc(descriptorVersion, versionRange)
+          createPackageVersionDesc(descriptorVersion, versionRange),
+          createPackageGroupDesc(
+            'dependencies',
+            createTextRange(currentOffset, currentOffset + lineWithoutNewline.length)
+          )
         ]);
 
         dependencies.push(

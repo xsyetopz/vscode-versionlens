@@ -54,6 +54,14 @@ export class SuggestionsOptions extends OptionsWithFallback {
     );
   }
 
+  /** Gets whether to show the alphabetical sort icon in the editor toolbar. */
+  get showSortAlphabeticallyAction(): boolean {
+    return this.getOrDefault<boolean>(
+      SuggestionFeatures.ShowSortAlphabeticallyAction,
+      false
+    );
+  }
+
   /** Gets the indicators used for different suggestion categories. */
   get indicators(): Record<SuggestionCategory, string> {
     return this.get(SuggestionFeatures.Indicators)!;

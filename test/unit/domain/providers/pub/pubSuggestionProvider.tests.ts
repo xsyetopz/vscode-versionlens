@@ -12,11 +12,12 @@ type TestContext = {
   loggerMock: ILogger
 }
 
-export const pubSuggestionProviderTests = {
+export const PubSuggestionProviderTests = {
 
   [test.title]: PubSuggestionProvider.name,
 
   beforeEach: function (this: TestContext) {
+
     this.resolverMock = mock<PubSuggestionResolver>()
     this.configMock = mock<PubConfig>()
     this.loggerMock = mock<ILogger>()

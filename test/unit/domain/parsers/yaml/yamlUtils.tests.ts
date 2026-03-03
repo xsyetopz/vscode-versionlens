@@ -40,8 +40,9 @@ export const yamlUtilTests = {
       function (testPath: string, testYaml: string, expected: any[]) {
         const rootNode = parseDocument(testYaml)
         const pathSegments = testPath.split(".");
-        const actual = findByPath(rootNode, pathSegments)
-        const mapped = actual.map(x => JSON.parse(JSON.stringify(x, null, '')))
+        const foundNodes = findByPath(rootNode, pathSegments)
+        const actualPairs = foundNodes.flatMap(x => x.pairs);
+        const mapped = actualPairs.map(x => JSON.parse(JSON.stringify(x, null, '')))
 
         equal(mapped.length, expected.length)
         deepEqual(mapped, expected)

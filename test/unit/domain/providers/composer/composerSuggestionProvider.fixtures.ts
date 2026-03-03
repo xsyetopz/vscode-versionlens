@@ -1,7 +1,7 @@
 import { createPackageResource, PackageDependency } from '#domain/packages';
 import {
   createPackageNameDesc,
-  createPackageParentDescType,
+  createPackageGroupDesc,
   createPackageVersionDesc,
   createProjectVersionTypeDesc,
   createTextRange,
@@ -31,7 +31,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('1.0.0', createTextRange(65, 65)),
         createPackageVersionDesc('1.0.0', createTextRange(66, 71)),
-        createPackageParentDescType('version'),
+        createPackageGroupDesc('version', createTextRange(54, 72)),
         createProjectVersionTypeDesc()
       ])
     ),
@@ -40,7 +40,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('php', createTextRange(97, 97)),
         createPackageVersionDesc('^7.1.3', createTextRange(105, 111)),
-        createPackageParentDescType('require')
+        createPackageGroupDesc('require', createTextRange(97, 112))
       ])
     ),
     new PackageDependency(
@@ -48,7 +48,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('allocine/twigcs', createTextRange(120, 120)),
         createPackageVersionDesc('^3.0.0', createTextRange(140, 146)),
-        createPackageParentDescType('require')
+        createPackageGroupDesc('require', createTextRange(120, 147))
       ])
     ),
     new PackageDependency(
@@ -56,7 +56,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('phpunit/phpunit', createTextRange(155, 155)),
         createPackageVersionDesc('8.2.1', createTextRange(175, 180)),
-        createPackageParentDescType('require')
+        createPackageGroupDesc('require', createTextRange(155, 181))
       ])
     ),
     new PackageDependency(
@@ -64,7 +64,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('symfony/console', createTextRange(189, 189)),
         createPackageVersionDesc('4.1.*', createTextRange(209, 214)),
-        createPackageParentDescType('require')
+        createPackageGroupDesc('require', createTextRange(189, 215))
       ])
     ),
     new PackageDependency(
@@ -72,7 +72,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('symfony/dotenv', createTextRange(250, 250)),
         createPackageVersionDesc('4.1.*', createTextRange(269, 274)),
-        createPackageParentDescType('require-dev')
+        createPackageGroupDesc('require-dev', createTextRange(250, 275))
       ])
     ),
     new PackageDependency(
@@ -80,7 +80,7 @@ export default {
       new PackageDescriptor([
         createPackageNameDesc('squizlabs/php_codesniffer', createTextRange(283, 283)),
         createPackageVersionDesc('^2.8', createTextRange(313, 317)),
-        createPackageParentDescType('require-dev')
+        createPackageGroupDesc('require-dev', createTextRange(283, 318))
       ])
     ),
 

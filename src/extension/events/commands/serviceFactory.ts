@@ -3,6 +3,7 @@ import type { IServiceCollection } from '#domain/di';
 import {
   type IExtensionServices,
   ExtensionServiceName,
+  IconCommandFeatures,
   SuggestionCommandFeatures
 } from '#extension';
 import {
@@ -11,6 +12,7 @@ import {
   OnFileLinkClick,
   OnRefreshSuggestionsStats,
   OnShowSuggestionsStatsDetails,
+  OnSortDependenciesClick,
   OnUpdateDependencyClick
 } from '#extension/events';
 import { SuggestionInteractions } from '#extension/suggestions';
@@ -129,6 +131,38 @@ export function addOnChooseBuildClick(services: IServiceCollection) {
       handler.disposable = commands.registerCommand(
         SuggestionCommandFeatures.OnChooseBuildClick,
         handler.execute,
+        handler
+      );
+
+      return handler;
+    },
+    true
+  )
+}
+
+/**
+ * Registers the onSortDependenciesClick command handler as a singleton.
+ * @param services The service collection to add to.
+ */
+export function addOnSortDependenciesClick(services: IServiceCollection) {
+  const serviceName = ExtensionServiceName.onSortDependencies;
+  services.addSingleton(
+    serviceName,
+    (container: IDomainServices & IExtensionServices) => {
+      // create the event handler
+      const handler = new OnSortDependenciesClick(
+        new VsCodeConstructionFactory(),
+        workspace,
+        container.versionLensState,
+        container.GetSuggestionProvider,
+        container.sortDependencies,
+        container.editorDependencyCache
+      );
+
+      // register the vscode command
+      handler.disposable = commands.registerCommand(
+        IconCommandFeatures.OnSortDependencies,
+        () => handler.execute(window.activeTextEditor),
         handler
       );
 

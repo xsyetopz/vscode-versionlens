@@ -4,6 +4,7 @@ export * from './commands/onChooseBuildClick';
 export * from './commands/onClearCache';
 export * from './commands/onFileLinkClick';
 export * from './commands/onRefreshSuggestionsStats';
+export * from './commands/onSortDependenciesClick';
 export * from './commands/onUpdateDependencyClick';
 export * from './commands/onShowSuggestionsStatsDetails';
 export * from './editorTitleBar/onCustomInstallClick';

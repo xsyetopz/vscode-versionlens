@@ -87,6 +87,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     serviceNames.onFileLinkClick,
     serviceNames.onUpdateDependencyClick,
     serviceNames.onChooseBuildClick,
+    serviceNames.onSortDependencies,
     serviceNames.onRefreshSuggestionsStats,
     serviceNames.onShowSuggestionsStatsDetails,
     // editorTitleBar events

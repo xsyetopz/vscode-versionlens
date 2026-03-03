@@ -2,7 +2,8 @@ import {
   type YamlParserOptions,
   type YamlTypeDescriptorHandler,
   createNameDescFromYamlNode,
-  createPackageParentDescType,
+  createPackageGroupDesc,
+  createTextRange,
   findByPath,
   getPackageProjectVersionDesc,
   isNodeQuoted,
@@ -16,7 +17,8 @@ import {
   type YAMLMap,
   isMap,
   isScalar,
-  parseDocument
+  parseDocument,
+  Node
 } from 'yaml';
 import { findPair } from 'yaml/util';
 
@@ -51,8 +53,8 @@ function parsePackageNodes(
 
   for (const incPropName of includePropNames) {
     const segments = incPropName.split(".");
-    const found = findByPath(rootNode, segments);
-    if (found.length === 0) continue;
+    const foundNodes = findByPath(rootNode, segments);
+    if (foundNodes.length === 0) continue;
 
     if (incPropName === 'version') {
       const versionDesc = getPackageProjectVersionDesc(rootNode.contents as YAMLMap)
@@ -60,8 +62,10 @@ function parsePackageNodes(
       continue;
     }
 
-    const children = descendChildNodes(incPropName, found, complexTypeHandlers);
-    matchedDependencies.push.apply(matchedDependencies, children);
+    for (const foundNode of foundNodes) {
+      const children = descendChildNodes(foundNode.path, foundNode.pairs, complexTypeHandlers);
+      matchedDependencies.push.apply(matchedDependencies, children);
+    }
   }
 
   return matchedDependencies;
@@ -76,7 +80,7 @@ function parsePackageNodes(
  */
 function descendChildNodes(
   path: string,
-  pairs: Array<Pair<string, any>>,
+  pairs: Array<Pair<any, any>>,
   complexTypeHandlers: KeyDictionary<YamlTypeDescriptorHandler>
 ): Array<PackageDescriptor> {
   const matchedDependencies: Array<PackageDescriptor> = [];
@@ -87,6 +91,9 @@ function descendChildNodes(
     const isScalarValue = isScalar(valueNode);
     const isQuotedType = isScalarValue && isNodeQuoted(valueNode);
 
+    const key = keyNode as Node;
+    const value = valueNode as Node;
+
     // parse string properties
     if (isScalarValue) {
       // create the name descriptor
@@ -95,10 +102,14 @@ function descendChildNodes(
       const versionDesc = createVersionDescFromYamlNode(valueNode, isQuotedType);
       if (!versionDesc) continue;
 
-      // create the parent path desc
-      const parentDesc = createPackageParentDescType(path);
+      // create the group descriptor
+      const groupDesc = createPackageGroupDesc(
+        path,
+        createTextRange(key.range![0], value.range![1])
+      );
+
       // create the package descriptor
-      const packageDesc = new PackageDescriptor([nameDesc, versionDesc, parentDesc]);
+      const packageDesc = new PackageDescriptor([nameDesc, versionDesc, groupDesc]);
       // add the package desc to the matched array
       matchedDependencies.push(packageDesc);
       continue;
@@ -136,8 +147,13 @@ function descendChildNodes(
       const nameDesc = createNameDescFromYamlNode(keyNode);
       packageDesc.addType(nameDesc);
 
-      // add the parent path desc
-      packageDesc.addType(createPackageParentDescType(path));
+      // add the group descriptor
+      packageDesc.addType(
+        createPackageGroupDesc(
+          path,
+          createTextRange(key.range![0], value.range![1])
+        )
+      );
 
       // add the package desc to the matched array
       matchedDependencies.push(packageDesc);

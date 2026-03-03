@@ -50,12 +50,15 @@ Link the task label to the specific VersionLens provider in your VS Code `settin
 
 ---
 
-## Triggering the Task
+## Triggering Actions
 
-There are two ways to trigger the configured install task:
+There are three ways to trigger actions from the toolbar:
 
-1.  **On Save:** The task will automatically run when you save a manifest file, provided that VersionLens detects changes to the dependencies.
-2.  **Manual Trigger (Toolbar Icon):** A custom install icon will appear in the editor toolbar whenever a custom install task is configured for the active package manager. Clicking this icon will trigger the task immediately without needing to save or have pending changes. This icon can be disabled by setting `versionlens.suggestions.showCustomInstallAction` to `false`.
+1.  **On Save:** A custom install task will automatically run when you save a manifest file, provided that VersionLens detects changes to the dependencies.
+2.  **Custom Install (Toolbar Icon):** A custom install icon will appear in the editor toolbar whenever a custom install task is configured for the active package manager. Clicking this icon will trigger the task immediately without needing to save or have pending changes.
+3.  **Sort Dependencies (Toolbar Icon):** A sort icon will appear in the editor toolbar whenever a provider supports alphabetical sorting of dependencies. This action reorders dependencies within their defined groups (e.g., `dependencies`, `devDependencies`).
+
+> **Note:** Both the **Custom Install** and **Sort Dependencies** actions can also be triggered via the **Command Palette** (`Ctrl+Shift+P`). They are located in the **Secondary** toolbar group.
 
 ---
 
