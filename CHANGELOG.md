@@ -2,10 +2,14 @@
 
   ### All
 
-  - Added `Run custom Install task` action to the `secondary` toolbar group and command palette
-    this only appear if you have defined a `onSaveChanges` task for the active package manager.
+  - New Menu Actions
 
-  - Added `Sort dependencies alphabetically` action to the `secondary` toolbar group and command palette. Dependencies will be sorted per group.
+    - Added `Run custom Install task` action to the `secondary` toolbar group and command palette
+      this only appear if you have defined a `onSaveChanges` task for the active package manager.
+
+    - Added `Sort dependencies alphabetically` action to the `secondary` toolbar group and command palette. Dependencies will be sorted per group.
+
+      ![image](https://gitlab.com/-/project/19418059/uploads/df88fa0ade9f78be946fb278f4602ee6/image.png)
 
   - Fixed an issue where saving changes during a running custom installation prevented subsequent install attempts until additional modifications were made.
 
