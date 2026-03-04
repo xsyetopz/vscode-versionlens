@@ -1,4 +1,4 @@
-import { createPackageResource, PackageDependency } from '#domain/packages';
+import { createPackageManifest, PackageDependency } from '#domain/packages';
 import {
   createPackageNameDesc,
   createPackageVersionDesc,
@@ -34,7 +34,7 @@ export default {
   `,
     expected: [
       new PackageDependency(
-        createPackageResource('example.com/othermodule', 'v1.2.3', 'test/path/go.mod'),
+        createPackageManifest('example.com/othermodule', 'v1.2.3', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('example.com/othermodule', createTextRange(63, 86)),
           createPackageVersionDesc('v1.2.3', createTextRange(87, 93), 'v'),
@@ -42,7 +42,7 @@ export default {
         ])
       ),
       new PackageDependency(
-        createPackageResource('github.com/spf13/cobra', 'v1.8.0', 'test/path/go.mod'),
+        createPackageManifest('github.com/spf13/cobra', 'v1.8.0', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('github.com/spf13/cobra', createTextRange(119, 141)),
           createPackageVersionDesc('v1.8.0', createTextRange(142, 148), 'v'),
@@ -50,7 +50,7 @@ export default {
         ])
       ),
       new PackageDependency(
-        createPackageResource('gopkg.in/yaml.v3', 'v3.0.1', 'test/path/go.mod'),
+        createPackageManifest('gopkg.in/yaml.v3', 'v3.0.1', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('gopkg.in/yaml.v3', createTextRange(157, 173)),
           createPackageVersionDesc('v3.0.1', createTextRange(174, 180), 'v'),
@@ -58,7 +58,7 @@ export default {
         ])
       ),
       new PackageDependency(
-        createPackageResource('k8s.io/klog/v2', 'v2.110.1', 'test/path/go.mod'),
+        createPackageManifest('k8s.io/klog/v2', 'v2.110.1', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('k8s.io/klog/v2', createTextRange(189, 203)),
           createPackageVersionDesc('v2.110.1', createTextRange(204, 212), 'v'),
@@ -66,7 +66,7 @@ export default {
         ])
       ),
       new PackageDependency(
-        createPackageResource('github.com/docker/go-units', 'v0.5.0', 'test/path/go.mod'),
+        createPackageManifest('github.com/docker/go-units', 'v0.5.0', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('github.com/docker/go-units', createTextRange(501, 527)),
           createPackageVersionDesc('v0.5.0', createTextRange(528, 534), 'v'),
@@ -108,7 +108,7 @@ require (
 exclude github.com/docker/go-units v0.5.0`,
     expected: [
       new PackageDependency(
-        createPackageResource('github.com/docker/buildx', 'v0.14.1', 'test/path/go.mod'),
+        createPackageManifest('github.com/docker/buildx', 'v0.14.1', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('github.com/docker/buildx', createTextRange(146, 170)),
           createPackageVersionDesc('v0.14.1', createTextRange(171, 178), 'v'),
@@ -116,7 +116,7 @@ exclude github.com/docker/go-units v0.5.0`,
         ])
       ),
       new PackageDependency(
-        createPackageResource('github.com/docker/cli', 'v26.1.3+incompatible', 'test/path/go.mod'),
+        createPackageManifest('github.com/docker/cli', 'v26.1.3+incompatible', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('github.com/docker/cli', createTextRange(180, 200)),
           createPackageVersionDesc('v26.1.3+incompatible', createTextRange(201, 223), 'v', '+incompatible'),
@@ -124,7 +124,7 @@ exclude github.com/docker/go-units v0.5.0`,
         ])
       ),
       new PackageDependency(
-        createPackageResource('github.com/docker/cli-docs-tool', 'v0.7.0', 'test/path/go.mod'),
+        createPackageManifest('github.com/docker/cli-docs-tool', 'v0.7.0', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('github.com/docker/cli-docs-tool', createTextRange(224, 253)),
           createPackageVersionDesc('v0.7.0', createTextRange(254, 261), 'v'),
@@ -132,7 +132,7 @@ exclude github.com/docker/go-units v0.5.0`,
         ])
       ),
       new PackageDependency(
-        createPackageResource('github.com/docker/docker', 'v26.1.3+incompatible', 'test/path/go.mod'),
+        createPackageManifest('github.com/docker/docker', 'v26.1.3+incompatible', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('github.com/docker/docker', createTextRange(263, 286)),
           createPackageVersionDesc('v26.1.3+incompatible', createTextRange(287, 309), 'v', '+incompatible'),
@@ -140,7 +140,7 @@ exclude github.com/docker/go-units v0.5.0`,
         ])
       ),
       new PackageDependency(
-        createPackageResource('github.com/docker/go-connections', 'v0.5.0', 'test/path/go.mod'),
+        createPackageManifest('github.com/docker/go-connections', 'v0.5.0', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('github.com/docker/go-connections', createTextRange(310, 340)),
           createPackageVersionDesc('v0.5.0', createTextRange(341, 348), 'v'),
@@ -148,7 +148,7 @@ exclude github.com/docker/go-units v0.5.0`,
         ])
       ),
       new PackageDependency(
-        createPackageResource('github.com/docker/go-units', 'v0.5.0', 'test/path/go.mod'),
+        createPackageManifest('github.com/docker/go-units', 'v0.5.0', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('github.com/docker/go-units', createTextRange(350, 374)),
           createPackageVersionDesc('v0.5.0', createTextRange(375, 382), 'v'),
@@ -156,7 +156,7 @@ exclude github.com/docker/go-units v0.5.0`,
         ])
       ),
       new PackageDependency(
-        createPackageResource('golang.org/x/term', 'v0.20.0', 'test/path/go.mod'),
+        createPackageManifest('golang.org/x/term', 'v0.20.0', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('golang.org/x/term', createTextRange(394, 412)),
           createPackageVersionDesc('v0.20.0', createTextRange(413, 420), 'v'),
@@ -164,7 +164,7 @@ exclude github.com/docker/go-units v0.5.0`,
         ])
       ),
       new PackageDependency(
-        createPackageResource('k8s.io/api', 'v0.29.2', 'test/path/go.mod'),
+        createPackageManifest('k8s.io/api', 'v0.29.2', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('k8s.io/api', createTextRange(433, 443)),
           createPackageVersionDesc('v0.29.2', createTextRange(444, 451), 'v'),
@@ -172,7 +172,7 @@ exclude github.com/docker/go-units v0.5.0`,
         ])
       ),
       new PackageDependency(
-        createPackageResource('k8s.io/apimachinery', 'v0.29.2', 'test/path/go.mod'),
+        createPackageManifest('k8s.io/apimachinery', 'v0.29.2', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('k8s.io/apimachinery', createTextRange(465, 484)),
           createPackageVersionDesc('v0.29.2', createTextRange(485, 492), 'v'),
@@ -180,7 +180,7 @@ exclude github.com/docker/go-units v0.5.0`,
         ])
       ),
       new PackageDependency(
-        createPackageResource('k8s.io/apiserver', 'v0.29.2', 'test/path/go.mod'),
+        createPackageManifest('k8s.io/apiserver', 'v0.29.2', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('k8s.io/apiserver', createTextRange(507, 523)),
           createPackageVersionDesc('v0.29.2', createTextRange(524, 531), 'v'),
@@ -188,7 +188,7 @@ exclude github.com/docker/go-units v0.5.0`,
         ])
       ),
       new PackageDependency(
-        createPackageResource('k8s.io/client-go', 'v0.29.2', 'test/path/go.mod'),
+        createPackageManifest('k8s.io/client-go', 'v0.29.2', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('k8s.io/client-go', createTextRange(546, 562)),
           createPackageVersionDesc('v0.29.2', createTextRange(563, 570), 'v'),
@@ -196,7 +196,7 @@ exclude github.com/docker/go-units v0.5.0`,
         ])
       ),
       new PackageDependency(
-        createPackageResource('k8s.io/klog/v2', 'v2.110.1', 'test/path/go.mod'),
+        createPackageManifest('k8s.io/klog/v2', 'v2.110.1', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('k8s.io/klog/v2', createTextRange(585, 599)),
           createPackageVersionDesc('v2.110.1', createTextRange(600, 608), 'v'),
@@ -204,7 +204,7 @@ exclude github.com/docker/go-units v0.5.0`,
         ])
       ),
       new PackageDependency(
-        createPackageResource('github.com/docker/go-units', 'v0.5.0', 'test/path/go.mod'),
+        createPackageManifest('github.com/docker/go-units', 'v0.5.0', 'test/path/go.mod'),
         new PackageDescriptor([
           createPackageNameDesc('github.com/docker/go-units', createTextRange(753, 777)),
           createPackageVersionDesc('v0.5.0', createTextRange(778, 785), 'v'),

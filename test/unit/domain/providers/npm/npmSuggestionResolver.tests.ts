@@ -4,7 +4,7 @@ import {
   type PackageClientRequest,
   type PackageClientResponse,
   type PackageSuggestion,
-  createPackageResource,
+  createPackageManifest,
   PackageDependency,
   PackageSourceType,
   SuggestionCategory,
@@ -60,7 +60,7 @@ export const NpmSuggestionResolverTests = {
 
   'returns a file:// directory package': async function (this: TestContext) {
     const expectedSource = 'directory';
-    const testPackageRes = createPackageResource(
+    const testPackageMan = createPackageManifest(
       // package name
       'filepackage',
       // package version
@@ -70,16 +70,16 @@ export const NpmSuggestionResolverTests = {
     );
 
     // test
-    const actual = await this.cut.fromFileProtocol(testPackageRes)
+    const actual = await this.cut.fromFileProtocol(testPackageMan)
 
     // assert
     assert.equal(actual.source, PackageSourceType.Directory, `expected to see ${expectedSource}`)
-    assert.deepEqual(actual.resolved?.name, testPackageRes.name)
+    assert.deepEqual(actual.resolved?.name, testPackageMan.name)
   },
 
   fromGit: {
     'returns fixed package for git:// requests': async function (this: TestContext) {
-      const testPackageRes = createPackageResource(
+      const testPackageMan = createPackageManifest(
         // package name
         'core.js',
         // package version
@@ -88,9 +88,9 @@ export const NpmSuggestionResolverTests = {
         'packagepath',
       );
       const testNpaSpec = npa.resolve(
-        testPackageRes.name,
-        testPackageRes.version,
-        testPackageRes.path
+        testPackageMan.name,
+        testPackageMan.version,
+        testPackageMan.path
       ) as NpaSpec;
 
       // test
@@ -112,7 +112,7 @@ export const NpmSuggestionResolverTests = {
       )
     },
     'returns unsupported suggestion when not github': async function (this: TestContext) {
-      const testPackageRes = createPackageResource(
+      const testPackageMan = createPackageManifest(
         // package name
         'core.js',
         // package version
@@ -121,9 +121,9 @@ export const NpmSuggestionResolverTests = {
         'packagepath',
       );
       const testNpaSpec = npa.resolve(
-        testPackageRes.name,
-        testPackageRes.version,
-        testPackageRes.path
+        testPackageMan.name,
+        testPackageMan.version,
+        testPackageMan.path
       ) as NpaSpec;
       // test
       try {
@@ -145,7 +145,7 @@ export const NpmSuggestionResolverTests = {
 
   fromRegistry: {
     'returns a registry alias package': async function (this: TestContext) {
-      const testPackageRes = createPackageResource(
+      const testPackageMan = createPackageManifest(
         // package name
         'aliased',
         // package version
@@ -161,17 +161,17 @@ export const NpmSuggestionResolverTests = {
         providerName: 'testnpmprovider',
         clientData: testClientData,
         parsedDependency: new PackageDependency(
-          testPackageRes,
+          testPackageMan,
           new PackageDescriptor([
-            createPackageNameDesc(testPackageRes.name, createTextRange(0, 0)),
-            createPackageVersionDesc(testPackageRes.version, createTextRange(1, 1)),
+            createPackageNameDesc(testPackageMan.name, createTextRange(0, 0)),
+            createPackageVersionDesc(testPackageMan.version, createTextRange(1, 1)),
           ]),
         )
       }
       const testNpaSpec = npa.resolve(
-        testPackageRes.name,
-        testPackageRes.version,
-        testPackageRes.path
+        testPackageMan.name,
+        testPackageMan.version,
+        testPackageMan.path
       ) as NpaSpec;
 
       when(this.npmRegistryClientMock.get(testNpaSpec.subSpec, testClientData))
@@ -196,7 +196,7 @@ export const NpmSuggestionResolverTests = {
       ['7.0.0', Fixtures.cappedToLatestTaggedRelease],
       ['*', Fixtures.cappedToLatestTaggedRelease],
       async function (this: TestContext, testVersion: string, fixture: any) {
-        const testPackageRes = createPackageResource(
+        const testPackageMan = createPackageManifest(
           // package name
           'npm-package-arg',
           // package version
@@ -212,17 +212,17 @@ export const NpmSuggestionResolverTests = {
           providerName: 'testnpmprovider',
           clientData: testClientData,
           parsedDependency: new PackageDependency(
-            testPackageRes,
+            testPackageMan,
             new PackageDescriptor([
-              createPackageNameDesc(testPackageRes.name, createTextRange(0, 0)),
-              createPackageVersionDesc(testPackageRes.version, createTextRange(1, 1)),
+              createPackageNameDesc(testPackageMan.name, createTextRange(0, 0)),
+              createPackageVersionDesc(testPackageMan.version, createTextRange(1, 1)),
             ]),
           )
         }
         const testNpaSpec = npa.resolve(
-          testPackageRes.name,
-          testPackageRes.version,
-          testPackageRes.path
+          testPackageMan.name,
+          testPackageMan.version,
+          testPackageMan.path
         ) as NpaSpec;
 
         when(this.npmRegistryClientMock.get(testNpaSpec, testClientData))
@@ -241,7 +241,7 @@ export const NpmSuggestionResolverTests = {
       }
     ],
     'returns a registry version package': async function (this: TestContext) {
-      const testPackageRes = createPackageResource(
+      const testPackageMan = createPackageManifest(
         // package name
         'npm-package-arg',
         // package version
@@ -259,18 +259,18 @@ export const NpmSuggestionResolverTests = {
         providerName: 'testnpmprovider',
         clientData: testClientData,
         parsedDependency: new PackageDependency(
-          testPackageRes,
+          testPackageMan,
           new PackageDescriptor([
-            createPackageNameDesc(testPackageRes.name, createTextRange(0, 0)),
-            createPackageVersionDesc(testPackageRes.version, createTextRange(1, 1)),
+            createPackageNameDesc(testPackageMan.name, createTextRange(0, 0)),
+            createPackageVersionDesc(testPackageMan.version, createTextRange(1, 1)),
           ]),
         )
       }
 
       const testNpaSpec = npa.resolve(
-        testPackageRes.name,
-        testPackageRes.version,
-        testPackageRes.path
+        testPackageMan.name,
+        testPackageMan.version,
+        testPackageMan.path
       ) as NpaSpec;
 
       when(this.npmRegistryClientMock.get(testNpaSpec, testClientData))
@@ -288,10 +288,10 @@ export const NpmSuggestionResolverTests = {
       // assert
       assert.equal(actual.source, 'registry')
       assert.equal(actual.type, 'version')
-      assert.equal(actual.resolved?.name, testPackageRes.name)
+      assert.equal(actual.resolved?.name, testPackageMan.name)
     },
     'returns a registry range package': async function (this: TestContext) {
-      const testPackageRes = createPackageResource(
+      const testPackageMan = createPackageManifest(
         // package name
         'pacote',
         // package version
@@ -309,18 +309,18 @@ export const NpmSuggestionResolverTests = {
         providerName: 'testnpmprovider',
         clientData: testClientData,
         parsedDependency: new PackageDependency(
-          testPackageRes,
+          testPackageMan,
           new PackageDescriptor([
-            createPackageNameDesc(testPackageRes.name, createTextRange(0, 0)),
-            createPackageVersionDesc(testPackageRes.version, createTextRange(1, 1)),
+            createPackageNameDesc(testPackageMan.name, createTextRange(0, 0)),
+            createPackageVersionDesc(testPackageMan.version, createTextRange(1, 1)),
           ]),
         )
       }
 
       const testNpaSpec = npa.resolve(
-        testPackageRes.name,
-        testPackageRes.version,
-        testPackageRes.path
+        testPackageMan.name,
+        testPackageMan.version,
+        testPackageMan.path
       ) as NpaSpec;
 
       when(this.npmRegistryClientMock.get(testNpaSpec, testClientData))
@@ -338,8 +338,8 @@ export const NpmSuggestionResolverTests = {
       // assert
       assert.equal(actual.source, 'registry')
       assert.equal(actual.type, 'range')
-      assert.equal(actual.resolved?.name, testPackageRes.name)
-      assert.deepEqual(actual.resolved?.version, testPackageRes.version)
+      assert.equal(actual.resolved?.name, testPackageMan.name)
+      assert.deepEqual(actual.resolved?.version, testPackageMan.version)
     },
   }
 }

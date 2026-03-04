@@ -2,7 +2,7 @@ import type { ILogger } from '#domain/logging';
 import {
   type PackageClientRequest,
   type PackageResponse,
-  createPackageResource,
+  createPackageManifest,
   PackageCache,
   PackageDependency,
   PackageVersionType
@@ -54,7 +54,7 @@ export const fetchPackagesTests = {
 
       const testDependencies = [
         new PackageDependency(
-          createPackageResource("testPackage1", "1.0.0", "test/path"),
+          createPackageManifest("testPackage1", "1.0.0", "test/path"),
           new PackageDescriptor([
             createPackageNameDesc('testPackage1', createTextRange(0, 1)),
             createPackageVersionDesc('1.0.0', createTextRange(2, 3)),

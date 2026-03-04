@@ -8,7 +8,7 @@ import {
   PackageDependency,
   PackageVersionType,
   VersionUtils,
-  createPackageResource,
+  createPackageManifest,
   defaultReplaceFn
 } from '#domain/packages';
 import {
@@ -112,7 +112,7 @@ export class PubSuggestionProvider implements ISuggestionProvider {
 
         packageDependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               versionType.version,
               packagePath
@@ -132,7 +132,7 @@ export class PubSuggestionProvider implements ISuggestionProvider {
 
         packageDependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               pathType.path,
               packagePath
@@ -150,7 +150,7 @@ export class PubSuggestionProvider implements ISuggestionProvider {
 
         packageDependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               gitType.gitUrl,
               packagePath

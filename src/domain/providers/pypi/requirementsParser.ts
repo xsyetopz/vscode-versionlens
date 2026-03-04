@@ -1,5 +1,5 @@
 import {
-  createPackageResource,
+  createPackageManifest,
   PackageDependency
 } from '#domain/packages';
 import {
@@ -90,7 +90,7 @@ export function parseRequirementsTxt(
 
         dependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               packageName,
               descriptorVersion === '*' ? '' : descriptorVersion,
               packagePath

@@ -1,4 +1,4 @@
-import { createPackageResource, PackageDependency } from '#domain/packages';
+import { createPackageManifest, PackageDependency } from '#domain/packages';
 import {
   createPackageGitDescType,
   createPackageHostedDescType,
@@ -38,7 +38,7 @@ dependencies:
 
     expected: [
       new PackageDependency(
-        createPackageResource('version', '1.2.3', 'test/path'),
+        createPackageManifest('version', '1.2.3', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('version', createTextRange(15)),
           createPackageVersionDesc('1.2.3', createTextRange(24, 29)),
@@ -46,7 +46,7 @@ dependencies:
         ])
       ),
       new PackageDependency(
-        createPackageResource('efts', '^2.0.4', 'test/path'),
+        createPackageManifest('efts', '^2.0.4', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('efts', createTextRange(376)),
           createPackageVersionDesc('^2.0.4', createTextRange(382, 388)),
@@ -54,7 +54,7 @@ dependencies:
         ])
       ),
       new PackageDependency(
-        createPackageResource('http', '*', 'test/path'),
+        createPackageManifest('http', '*', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('http', createTextRange(391)),
           createPackageVersionDesc('*', createTextRange(397, 397), '', ' '),
@@ -62,7 +62,7 @@ dependencies:
         ])
       ),
       new PackageDependency(
-        createPackageResource('transmogrify', '^0.4.0', 'test/path'),
+        createPackageManifest('transmogrify', '^0.4.0', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('transmogrify', createTextRange(421)),
           createPackageVersionDesc('^0.4.0', createTextRange(448, 454), '', ''),
@@ -70,7 +70,7 @@ dependencies:
         ])
       ),
       new PackageDependency(
-        createPackageResource('test', '>=0.5.0 <0.12.0', 'test/path'),
+        createPackageManifest('test', '>=0.5.0 <0.12.0', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('test', createTextRange(489)),
           createPackageVersionDesc('>=0.5.0 <0.12.0', createTextRange(496, 511)),
@@ -78,7 +78,7 @@ dependencies:
         ])
       ),
       new PackageDependency(
-        createPackageResource('collection', '^1.1.0', 'test/path'),
+        createPackageManifest('collection', '^1.1.0', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('collection', createTextRange(515)),
           createPackageVersionDesc('^1.1.0', createTextRange(528, 534)),
@@ -99,7 +99,7 @@ dependencies:
     `,
     expected: [
       new PackageDependency(
-        createPackageResource('pathify1', './some/test/path1', 'test/path'),
+        createPackageManifest('pathify1', './some/test/path1', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('pathify1', createTextRange(17)),
           createPackagePathDescType('./some/test/path1', createTextRange(37, 54)),
@@ -107,7 +107,7 @@ dependencies:
         ])
       ),
       new PackageDependency(
-        createPackageResource('pathify2', './some/test/path2', 'test/path'),
+        createPackageManifest('pathify2', './some/test/path2', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('pathify2', createTextRange(57)),
           createPackagePathDescType('./some/test/path2', createTextRange(77, 94)),
@@ -135,7 +135,7 @@ dependencies:
     `  ,
     expected: [
       new PackageDependency(
-        createPackageResource('gitify1', 'git@github.com:munificent/kittens.git', 'test/path'),
+        createPackageManifest('gitify1', 'git@github.com:munificent/kittens.git', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('gitify1', createTextRange(17)),
           createPackageGitDescType('git@github.com:munificent/kittens.git'),
@@ -143,7 +143,7 @@ dependencies:
         ])
       ),
       new PackageDependency(
-        createPackageResource('gitify2', 'git@github.com:munificent/dogs.git', 'test/path'),
+        createPackageManifest('gitify2', 'git@github.com:munificent/dogs.git', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('gitify2', createTextRange(76)),
           createPackageGitDescType('git@github.com:munificent/dogs.git', '', 'some-branch'),
@@ -151,7 +151,7 @@ dependencies:
         ])
       ),
       new PackageDependency(
-        createPackageResource('gitify3', 'git@github.com:munificent/birds.git', 'test/path'),
+        createPackageManifest('gitify3', 'git@github.com:munificent/birds.git', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('gitify3', createTextRange(167)),
           createPackageGitDescType('git@github.com:munificent/birds.git', 'path/to/birds'),
@@ -159,7 +159,7 @@ dependencies:
         ])
       ),
       new PackageDependency(
-        createPackageResource('gitify4', 'git@github.com:munificent/foxes.git', 'test/path'),
+        createPackageManifest('gitify4', 'git@github.com:munificent/foxes.git', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('gitify4', createTextRange(262)),
           createPackageGitDescType('git@github.com:munificent/foxes.git'),
@@ -187,7 +187,7 @@ dependencies:
 `,
     expected: [
       new PackageDependency(
-        createPackageResource('hostify1', '1.0.0', 'test/path'),
+        createPackageManifest('hostify1', '1.0.0', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('hostify1', createTextRange(17)),
           createPackageVersionDesc('1.0.0', createTextRange(40, 45)),
@@ -196,7 +196,7 @@ dependencies:
         ])
       ),
       new PackageDependency(
-        createPackageResource('hostify2', '2.0.0', 'test/path'),
+        createPackageManifest('hostify2', '2.0.0', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('hostify2', createTextRange(93)),
           createPackageVersionDesc('2.0.0', createTextRange(116, 121), '', ''),
@@ -205,7 +205,7 @@ dependencies:
         ])
       ),
       new PackageDependency(
-        createPackageResource('hostify3', '3.0.0', 'test/path'),
+        createPackageManifest('hostify3', '3.0.0', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('hostify3', createTextRange(180)),
           createPackageVersionDesc('3.0.0', createTextRange(203, 208)),
@@ -220,7 +220,7 @@ dependencies:
     test: `version: 1.0.0`,
     expected: [
       new PackageDependency(
-        createPackageResource('version', '1.0.0', 'test/path'),
+        createPackageManifest('version', '1.0.0', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('version', createTextRange(0)),
           createPackageVersionDesc('1.0.0', createTextRange(9, 14)),
@@ -234,7 +234,7 @@ dependencies:
     test: `version: '1.0.0'`,
     expected: [
       new PackageDependency(
-        createPackageResource('version', '1.0.0', 'test/path'),
+        createPackageManifest('version', '1.0.0', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('version', createTextRange(0)),
           createPackageVersionDesc('1.0.0', createTextRange(10, 15)),
@@ -248,7 +248,7 @@ dependencies:
     test: `version: '1.0.0' # hello`,
     expected: [
       new PackageDependency(
-        createPackageResource('version', '1.0.0', 'test/path'),
+        createPackageManifest('version', '1.0.0', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('version', createTextRange(0)),
           createPackageVersionDesc('1.0.0', createTextRange(10, 15), '', ''),
@@ -262,7 +262,7 @@ dependencies:
     test: `version: # hello`,
     expected: [
       new PackageDependency(
-        createPackageResource('version', '*', 'test/path'),
+        createPackageManifest('version', '*', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('version', createTextRange(0)),
           createPackageVersionDesc('*', createTextRange(9), '', ' '),
@@ -279,7 +279,7 @@ dependencies:
     `,
     expected: [
       new PackageDependency(
-        createPackageResource('dep1', '*', 'test/path'),
+        createPackageManifest('dep1', '*', 'test/path'),
         new PackageDescriptor([
           createPackageNameDesc('dep1', createTextRange(25)),
           createPackageVersionDesc('*', createTextRange(31, 34)),

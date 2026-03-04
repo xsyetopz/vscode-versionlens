@@ -1,7 +1,7 @@
 import type {
   PackageDependency,
   PackageNameVersion,
-  PackageResource,
+  PackageManifest,
   PackageSuggestion,
   SuggestionCategory,
   SuggestionTypes
@@ -22,17 +22,17 @@ export function createPackageNameVersion(name: string, version: string): Package
 }
 
 /**
- * Creates a PackageResource object.
+ * Creates a PackageManifest object.
  * @param name The package name.
  * @param version The package version.
  * @param path The path to the package file.
- * @returns A package resource object.
+ * @returns A package manifest object.
  */
-export function createPackageResource(
+export function createPackageManifest(
   name: string,
   version: string,
   path: string
-): PackageResource {
+): PackageManifest {
   return {
     name,
     version,

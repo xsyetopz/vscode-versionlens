@@ -1,7 +1,7 @@
 import { type CachingOptions, MemoryExpiryCache } from '#domain/caching';
 import { ClientResponseSource } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
-import { createPackageResource } from '#domain/packages';
+import { createPackageManifest } from '#domain/packages';
 import {
   type INpmRegistry,
   type NpaSpec,
@@ -56,7 +56,7 @@ export const RequestsTests = {
       data: testResponse
     };
 
-    const testPackageRes = createPackageResource(
+    const testPackageMan = createPackageManifest(
       // package name
       'pacote',
       // package version
@@ -66,9 +66,9 @@ export const RequestsTests = {
     );
 
     const testNpaSpec = npa.resolve(
-      testPackageRes.name,
-      testPackageRes.version,
-      testPackageRes.path
+      testPackageMan.name,
+      testPackageMan.version,
+      testPackageMan.path
     ) as NpaSpec;
 
     const testClientData: NpmClientData = {
@@ -116,7 +116,7 @@ export const RequestsTests = {
       rejected: true,
     };
 
-    const testPackageRes = createPackageResource(
+    const testPackageMan = createPackageManifest(
       // package name
       'pacote',
       // package version
@@ -126,9 +126,9 @@ export const RequestsTests = {
     );
 
     const testNpaSpec = npa.resolve(
-      testPackageRes.name,
-      testPackageRes.version,
-      testPackageRes.path
+      testPackageMan.name,
+      testPackageMan.version,
+      testPackageMan.path
     ) as NpaSpec;
 
     when(this.npmRegistryMock.json(anything(), anything()))

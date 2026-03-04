@@ -40,7 +40,7 @@ export type PackageNameVersion = {
 /**
  * Represents a package name, version, and its physical path.
  */
-export type PackageResource = PackageNameVersion & {
+export type PackageManifest = PackageNameVersion & {
   /** The path to the package file or directory. */
   path: string;
 };

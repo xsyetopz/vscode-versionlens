@@ -2,7 +2,7 @@ import type { ILogger } from '#domain/logging';
 import {
   type PackageClientResponse,
   type PackageDependency,
-  type PackageResource,
+  type PackageManifest,
   ClientResponseFactory,
   createSuggestions,
   PackageSourceType,
@@ -99,7 +99,7 @@ export class DockerSuggestionResolver {
    * @param jsonResponse The Docker client response.
    * @returns A promise resolving to the package client response.
    */
-  private async parseResponse(pkg: PackageResource, jsonResponse: DockerClientResponse): Promise<PackageClientResponse> {
+  private async parseResponse(pkg: PackageManifest, jsonResponse: DockerClientResponse): Promise<PackageClientResponse> {
     // map docker tags to semver
     const { versionMap, tagMap, releases, latest } = createVersionMapper(jsonResponse.data);
 

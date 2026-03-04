@@ -7,7 +7,7 @@ import {
   PackageDependency,
   PackageVersionType,
   VersionUtils,
-  createPackageResource
+  createPackageManifest
 } from '#domain/packages';
 import {
   type JsonPackageTypeHandler,
@@ -85,7 +85,7 @@ export class ComposerSuggestionProvider implements ISuggestionProvider {
           );
 
           return new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               versionDesc.version,
               packagePath

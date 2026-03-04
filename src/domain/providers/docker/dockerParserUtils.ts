@@ -1,4 +1,4 @@
-import { createPackageResource, PackageDependency } from '#domain/packages';
+import { createPackageManifest, PackageDependency } from '#domain/packages';
 import {
   type PackageBuildDescriptor,
   type PackageImageDescriptor,
@@ -54,7 +54,7 @@ export function parseDockerCompose(
 
     packageDependencies.push(
       new PackageDependency(
-        createPackageResource(
+        createPackageManifest(
           nameDesc.name,
           versionDesc ? versionDesc.version : buildDesc.pathDesc.path,
           packagePath
@@ -118,7 +118,7 @@ export function parseDockerfile(packagePath: string, packageText: string): Array
 
     packageDependencies.push(
       new PackageDependency(
-        createPackageResource(
+        createPackageManifest(
           imageName,
           imageTag,
           packagePath

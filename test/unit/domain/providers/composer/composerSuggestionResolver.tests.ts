@@ -2,7 +2,7 @@ import { ClientResponseSource } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
   type PackageClientRequest,
-  createPackageResource,
+  createPackageManifest,
   PackageDependency,
   VersionUtils
 } from '#domain/packages';
@@ -49,7 +49,7 @@ export const ComposerSuggestionResolverTests = {
       ['v3.0', Fixtures.registryVersion.expected2],
       async function (this: TestContext, testVersion: string, expected: any) {
         const testPackageName = 'php-parallel-lint/php-parallel-lint'
-        const testPackageRes = createPackageResource(
+        const testPackageMan = createPackageManifest(
           // package name
           testPackageName,
           // package version
@@ -57,15 +57,15 @@ export const ComposerSuggestionResolverTests = {
           // package path
           'packagepath',
         );
-        const testSpec = VersionUtils.parseSemver(testPackageRes.version)!;
+        const testSpec = VersionUtils.parseSemver(testPackageMan.version)!;
         const testRequest: PackageClientRequest<null> = {
           providerName: 'test-composer-provider',
           clientData: null,
           parsedDependency: new PackageDependency(
-            testPackageRes,
+            testPackageMan,
             new PackageDescriptor([
-              createPackageNameDesc(testPackageRes.name, createTextRange(0)),
-              createPackageVersionDesc(testPackageRes.version, createTextRange(1)),
+              createPackageNameDesc(testPackageMan.name, createTextRange(0)),
+              createPackageVersionDesc(testPackageMan.version, createTextRange(1)),
             ]),
           )
         }

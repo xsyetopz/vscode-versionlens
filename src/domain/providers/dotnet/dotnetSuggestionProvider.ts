@@ -1,10 +1,10 @@
 import type { ILogger } from '#domain/logging';
 import {
-  type PackageClientRequest,
   type PackageClientResponse,
+  type PackageClientRequest,
   type SuggestionUpdate,
   PackageDependency,
-  createPackageResource,
+  createPackageManifest,
   defaultReplaceFn
 } from '#domain/packages';
 import {
@@ -98,7 +98,7 @@ export class DotNetSuggestionProvider implements ISuggestionProvider {
           );
 
           return new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               versionDesc.version,
               packagePath

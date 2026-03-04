@@ -1,10 +1,10 @@
 import { ClientResponseSource } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
-  type PackageClientRequest,
   type PackageClientResponse,
+  type PackageClientRequest,
   ClientResponseFactory,
-  createPackageResource,
+  createPackageManifest,
   PackageDependency,
   PackageVersionType,
   VersionUtils
@@ -82,7 +82,7 @@ export class MavenSuggestionProvider implements ISuggestionProvider {
           );
 
           return new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               versionDesc.version,
               packagePath

@@ -1,4 +1,4 @@
-import { createPackageResource, PackageDependency } from '#domain/packages';
+import { createPackageManifest, PackageDependency } from '#domain/packages';
 import {
   createPackageNameDesc,
   createPackageGroupDesc,
@@ -20,7 +20,7 @@ export default {
       `,
       expected: [
         new PackageDependency(
-          createPackageResource('react', '^16.14.0', 'test/path/pnpm-workspace.yaml'),
+          createPackageManifest('react', '^16.14.0', 'test/path/pnpm-workspace.yaml'),
           new PackageDescriptor([
             createPackageNameDesc('react', createTextRange(28)),
             createPackageVersionDesc('^16.14.0', createTextRange(35, 43)),
@@ -28,7 +28,7 @@ export default {
           ])
         ),
         new PackageDependency(
-          createPackageResource('react', '^17.0.2', 'test/path/pnpm-workspace.yaml'),
+          createPackageManifest('react', '^17.0.2', 'test/path/pnpm-workspace.yaml'),
           new PackageDescriptor([
             createPackageNameDesc('react', createTextRange(93)),
             createPackageVersionDesc('^17.0.2', createTextRange(100, 107)),
@@ -36,7 +36,7 @@ export default {
           ])
         ),
         new PackageDependency(
-          createPackageResource('react-dom', '^17.0.2', 'test/path/pnpm-workspace.yaml'),
+          createPackageManifest('react-dom', '^17.0.2', 'test/path/pnpm-workspace.yaml'),
           new PackageDescriptor([
             createPackageNameDesc('react-dom', createTextRange(120)),
             createPackageVersionDesc('^17.0.2', createTextRange(131, 138)),

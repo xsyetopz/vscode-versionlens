@@ -2,7 +2,7 @@ import type { ILogger } from '#domain/logging';
 import {
   type PackageClientRequest,
   type PackageClientResponse,
-  createPackageResource,
+  createPackageManifest,
   PackageDependency
 } from '#domain/packages';
 import {
@@ -86,7 +86,7 @@ export class PnpmSuggestionProvider implements ISuggestionProvider {
 
         packageDependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               versionType.version,
               packagePath

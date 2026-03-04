@@ -1,13 +1,13 @@
 import { ClientResponseSource } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
 import {
-  type PackageClientRequest,
   type PackageClientResponse,
+  type PackageClientRequest,
   ClientResponseFactory,
   PackageDependency,
   PackageVersionType,
   VersionUtils,
-  createPackageResource
+  createPackageManifest
 } from '#domain/packages';
 import {
   type JsonPackageTypeHandler,
@@ -87,7 +87,7 @@ export class DubSuggestionProvider implements ISuggestionProvider {
 
         packageDependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               versionDesc.version,
               packagePath

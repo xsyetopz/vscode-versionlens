@@ -8,7 +8,7 @@ import {
   PackageDependency,
   PackageVersionType,
   VersionUtils,
-  createPackageResource,
+  createPackageManifest,
   defaultReplaceFn
 } from '#domain/packages';
 import {
@@ -87,7 +87,7 @@ export class GoSuggestionProvider implements ISuggestionProvider {
 
         packageDependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc ? nameDesc.name : '',
               versionDesc.version,
               packagePath

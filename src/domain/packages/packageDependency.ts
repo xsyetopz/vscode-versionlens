@@ -1,4 +1,4 @@
-import type { PackageResource } from '#domain/packages';
+import type { PackageManifest } from '#domain/packages';
 import type {
   PackageDescriptor,
   PackageNameDescriptor,
@@ -18,7 +18,7 @@ export class PackageDependency {
    * @param descriptors The set of descriptors associated with this dependency.
    */
   constructor(
-    packageRes: PackageResource,
+    packageRes: PackageManifest,
     readonly descriptors: PackageDescriptor
   ) {
     this.package = packageRes;
@@ -44,7 +44,7 @@ export class PackageDependency {
   /**
    * The package resource information.
    */
-  package: PackageResource;
+  package: PackageManifest;
 
   /**
    * Compares this dependency with another based on name and version.

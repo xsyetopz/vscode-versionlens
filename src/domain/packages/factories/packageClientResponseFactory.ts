@@ -6,7 +6,7 @@ import {
 import {
   type PackageClientResponse,
   type PackageClientResponseStatus,
-  type PackageResource,
+  type PackageManifest,
   type PackageSuggestion,
   PackageSourceType,
   PackageStatusFactory,
@@ -183,7 +183,7 @@ const fileDependencyRegex = /^file:(.*)$/;
  * @returns A promise resolving to a package client response.
  */
 export async function createDirectoryFromFileProtocol(
-  requested: PackageResource
+  requested: PackageManifest
 ): Promise<PackageClientResponse> {
 
   const fileRegExpResult = fileDependencyRegex.exec(requested.version);

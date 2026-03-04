@@ -4,13 +4,13 @@ import {
   type PackageClientRequest,
   type PackageClientResponse,
   type PackageNameVersion,
-  type PackageResource,
   type PackageResponse,
   type PackageSuggestion,
+  createPackageManifest,
   createPackageNameVersion,
-  createPackageResource,
   PackageCache,
   PackageDependency,
+  PackageManifest,
   PackageSourceType,
   PackageVersionType,
   SuggestionTypes
@@ -35,7 +35,7 @@ type TestContext = {
   testConfig: IProviderConfig
   testProvider: ISuggestionProvider;
   testPackageCache: PackageCache,
-  testPackageRes: PackageResource;
+  testPackageMan: PackageManifest;
   testPackageNameVersion: PackageNameVersion;
   testRequest: PackageClientRequest<any>;
 }
@@ -67,25 +67,25 @@ export const fetchPackageTests = <any>{
 
 
     this.testPackageCache = new PackageCache([testProviderName]);
-    this.testPackageRes = createPackageResource(
+    this.testPackageMan = createPackageManifest(
       "testPackageName",
       "1.0.0",
       "test/path"
     );
 
     this.testPackageNameVersion = createPackageNameVersion(
-      this.testPackageRes.name,
-      this.testPackageRes.version
+      this.testPackageMan.name,
+      this.testPackageMan.version
     );
 
     this.testRequest = {
       providerName: testProviderName,
       clientData: {},
       parsedDependency: new PackageDependency(
-        this.testPackageRes,
+        this.testPackageMan,
         new PackageDescriptor([
-          createPackageNameDesc(this.testPackageRes.name, createTextRange(1, 20)),
-          createPackageVersionDesc(this.testPackageRes.version, createTextRange(25, 30)),
+          createPackageNameDesc(this.testPackageMan.name, createTextRange(1, 20)),
+          createPackageVersionDesc(this.testPackageMan.version, createTextRange(25, 30)),
         ])
       )
     }
@@ -103,7 +103,7 @@ export const fetchPackageTests = <any>{
       resolved: this.testPackageNameVersion,
       suggestions: [
         <PackageSuggestion>{
-          name: this.testPackageRes.name,
+          name: this.testPackageMan.name,
           version: "1.0.0",
           type: SuggestionTypes.release
         }
@@ -118,10 +118,10 @@ export const fetchPackageTests = <any>{
         packageSource: testRespDoc.source,
         fetchedPackage: testRespDoc.resolved,
         parsedDependency: new PackageDependency(
-          this.testPackageRes,
+          this.testPackageMan,
           new PackageDescriptor([
-            createPackageNameDesc(this.testPackageRes.name, createTextRange(1, 20)),
-            createPackageVersionDesc(this.testPackageRes.version, createTextRange(25, 30)),
+            createPackageNameDesc(this.testPackageMan.name, createTextRange(1, 20)),
+            createPackageVersionDesc(this.testPackageMan.version, createTextRange(25, 30)),
           ])
         ),
         suggestion: testRespDoc.suggestions[0],
@@ -175,7 +175,7 @@ export const fetchPackageTests = <any>{
         resolved: this.testPackageNameVersion,
         suggestions: [
           <PackageSuggestion>{
-            name: this.testPackageRes.name,
+            name: this.testPackageMan.name,
             version: "1.0.0",
             type: SuggestionTypes.release
           }

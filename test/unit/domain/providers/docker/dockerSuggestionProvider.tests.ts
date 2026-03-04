@@ -2,7 +2,7 @@ import type { ILogger } from '#domain/logging';
 import {
   type PackageClientRequest,
   ClientResponseFactory,
-  createPackageResource,
+  createPackageManifest,
   PackageDependency
 } from '#domain/packages';
 import {
@@ -65,7 +65,7 @@ export const dockerSuggestionProviderTests = {
         providerName: 'docker',
         clientData: null,
         parsedDependency: new PackageDependency(
-          createPackageResource(testRepo, '23', 'test/path'),
+          createPackageManifest(testRepo, '23', 'test/path'),
           new PackageDescriptor([
             createPackageNameDesc(testRepo, createTextRange(1, 20)),
             createPackageVersionDesc('23', createTextRange(25, 30)),

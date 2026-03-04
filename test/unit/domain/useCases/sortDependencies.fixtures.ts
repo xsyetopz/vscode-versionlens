@@ -1,4 +1,4 @@
-import { createPackageResource, PackageDependency } from '#domain/packages';
+import { createPackageManifest, PackageDependency } from '#domain/packages';
 import {
   createPackageGroupDesc,
   createPackageNameDesc,
@@ -173,7 +173,7 @@ not_found_package==1.17.0
         const end = currentOffset + lineWithoutNewline.length;
 
         const dep = new PackageDependency(
-          createPackageResource(name, '', 'requirements.txt'),
+          createPackageManifest(name, '', 'requirements.txt'),
           new PackageDescriptor([
             createPackageNameDesc(name, createTextRange(start)),
             createPackageGroupDesc('dependencies', createTextRange(start, end))

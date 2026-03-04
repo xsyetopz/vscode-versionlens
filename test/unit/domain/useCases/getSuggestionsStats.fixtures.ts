@@ -1,6 +1,6 @@
 import {
   type PackageResponse,
-  createPackageResource,
+  createPackageManifest,
   PackageDependency,
   SuggestionCategory,
   SuggestionTypes
@@ -13,7 +13,7 @@ export default {
     {
       providerName: 'test-provider',
       parsedDependency: new PackageDependency(
-        createPackageResource('test1', '1.0.0', 'test/path1'),
+        createPackageManifest('test1', '1.0.0', 'test/path1'),
         new PackageDescriptor([])
       ),
       suggestion: {
@@ -24,7 +24,7 @@ export default {
     {
       providerName: 'test-provider',
       parsedDependency: new PackageDependency(
-        createPackageResource('test2', '2.0.0', 'test/path1'),
+        createPackageManifest('test2', '2.0.0', 'test/path1'),
         new PackageDescriptor([])
       ),
       suggestion: {
@@ -35,7 +35,7 @@ export default {
     {
       providerName: 'test-provider',
       parsedDependency: new PackageDependency(
-        createPackageResource('test3', '3.0.0', 'test/path1'),
+        createPackageManifest('test3', '3.0.0', 'test/path1'),
         new PackageDescriptor([])
       ),
       suggestion: {
@@ -46,7 +46,7 @@ export default {
     {
       providerName: 'test-provider',
       parsedDependency: new PackageDependency(
-        createPackageResource('test4', '4.0.0', 'test/path1'),
+        createPackageManifest('test4', '4.0.0', 'test/path1'),
         new PackageDescriptor([])
       ),
       suggestion: {
@@ -57,7 +57,7 @@ export default {
     {
       providerName: 'test-provider',
       parsedDependency: new PackageDependency(
-        createPackageResource('test5', '5.0.0', 'test/path1'),
+        createPackageManifest('test5', '5.0.0', 'test/path1'),
         new PackageDescriptor([])
       ),
       suggestion: {
@@ -68,7 +68,7 @@ export default {
     {
       providerName: 'test-provider',
       parsedDependency: new PackageDependency(
-        createPackageResource('test6', '6.0.0', 'test/path1'),
+        createPackageManifest('test6', '6.0.0', 'test/path1'),
         new PackageDescriptor([])
       ),
       suggestion: {
@@ -79,7 +79,7 @@ export default {
     {
       providerName: 'test-provider',
       parsedDependency: new PackageDependency(
-        createPackageResource('test7', '7.0.0', 'test/path1'),
+        createPackageManifest('test7', '7.0.0', 'test/path1'),
         new PackageDescriptor([])
       ),
       suggestion: {

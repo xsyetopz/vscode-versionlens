@@ -10,7 +10,7 @@ import {
   PackageStatusFactory,
   SuggestionCategory,
   SuggestionTypes,
-  createPackageResource
+  createPackageManifest
 } from '#domain/packages';
 import {
   type JsonPackageTypeHandler,
@@ -122,7 +122,7 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
 
         packageDependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               name,
               versionDesc.version,
               packagePath
@@ -140,7 +140,7 @@ export class NpmSuggestionProvider implements ISuggestionProvider {
         );
         packageDependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               pathType.path,
               packagePath

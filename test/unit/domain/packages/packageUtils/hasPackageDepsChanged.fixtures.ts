@@ -1,4 +1,4 @@
-import { createPackageResource, PackageDependency } from '#domain/packages';
+import { createPackageManifest, PackageDependency } from '#domain/packages';
 import {
   createIgnoreChangesDesc,
   createPackageNameDesc,
@@ -10,7 +10,7 @@ import {
 export default {
   single: [
     new PackageDependency(
-      createPackageResource("testPackage1", "1.0.0", "test/path"),
+      createPackageManifest("testPackage1", "1.0.0", "test/path"),
       new PackageDescriptor([
         createPackageNameDesc('testPackage1', createTextRange(0, 1)),
         createPackageVersionDesc('1.0.0', createTextRange(2, 3)),
@@ -19,7 +19,7 @@ export default {
   ],
   singleWithDiffVersion: [
     new PackageDependency(
-      createPackageResource("testPackage1", "1.1.0", "test/path"),
+      createPackageManifest("testPackage1", "1.1.0", "test/path"),
       new PackageDescriptor([
         createPackageNameDesc('testPackage1', createTextRange(0, 1)),
         createPackageVersionDesc('1.1.0', createTextRange(2, 3)),
@@ -28,7 +28,7 @@ export default {
   ],
   singleWithDiffNameRange: [
     new PackageDependency(
-      createPackageResource("testPackage1", "1.0.0", "test/path"),
+      createPackageManifest("testPackage1", "1.0.0", "test/path"),
       new PackageDescriptor([
         createPackageNameDesc('testPackage1', createTextRange(4, 5)),
         createPackageVersionDesc('1.0.0', createTextRange(2, 3)),
@@ -37,7 +37,7 @@ export default {
   ],
   singleWithDiffVersionRange: [
     new PackageDependency(
-      createPackageResource("testPackage1", "1.0.0", "test/path"),
+      createPackageManifest("testPackage1", "1.0.0", "test/path"),
       new PackageDescriptor([
         createPackageNameDesc('testPackage1', createTextRange(0, 1)),
         createPackageVersionDesc('1.0.0', createTextRange(4, 5)),
@@ -46,14 +46,14 @@ export default {
   ],
   multiple: [
     new PackageDependency(
-      createPackageResource("testPackage1", "1.0.0", "test/path"),
+      createPackageManifest("testPackage1", "1.0.0", "test/path"),
       new PackageDescriptor([
         createPackageNameDesc('testPackage1', createTextRange(4, 5)),
         createPackageVersionDesc('1.0.0', createTextRange(6, 7)),
       ])
     ),
     new PackageDependency(
-      createPackageResource("testPackage2", "2.0.0", "test/path"),
+      createPackageManifest("testPackage2", "2.0.0", "test/path"),
       new PackageDescriptor([
         createPackageNameDesc('testPackage2', createTextRange(8, 9)),
         createPackageVersionDesc('2.0.0', createTextRange(10, 11)),
@@ -62,14 +62,14 @@ export default {
   ],
   multipleWithDiffVersion: [
     new PackageDependency(
-      createPackageResource("testPackage1", "1.0.0", "test/path"),
+      createPackageManifest("testPackage1", "1.0.0", "test/path"),
       new PackageDescriptor([
         createPackageNameDesc('testPackage1', createTextRange(4, 5)),
         createPackageVersionDesc('1.0.0', createTextRange(6, 7)),
       ])
     ),
     new PackageDependency(
-      createPackageResource("testPackage2", "2.1.0", "test/path"),
+      createPackageManifest("testPackage2", "2.1.0", "test/path"),
       new PackageDescriptor([
         createPackageNameDesc('testPackage2', createTextRange(8, 9)),
         createPackageVersionDesc('2.1.0', createTextRange(10, 11)),
@@ -78,14 +78,14 @@ export default {
   ],
   multipleWithDiffNameRange: [
     new PackageDependency(
-      createPackageResource("testPackage1", "1.0.0", "test/path"),
+      createPackageManifest("testPackage1", "1.0.0", "test/path"),
       new PackageDescriptor([
         createPackageNameDesc('testPackage1', createTextRange(4, 5)),
         createPackageVersionDesc('1.0.0', createTextRange(6, 7)),
       ])
     ),
     new PackageDependency(
-      createPackageResource("testPackage2", "2.0.0", "test/path"),
+      createPackageManifest("testPackage2", "2.0.0", "test/path"),
       new PackageDescriptor([
         createPackageNameDesc('testPackage2', createTextRange(12, 13)),
         createPackageVersionDesc('2.0.0', createTextRange(10, 11)),
@@ -94,14 +94,14 @@ export default {
   ],
   multipleWithDiffVersionRange: [
     new PackageDependency(
-      createPackageResource("testPackage1", "1.0.0", "test/path"),
+      createPackageManifest("testPackage1", "1.0.0", "test/path"),
       new PackageDescriptor([
         createPackageNameDesc('testPackage1', createTextRange(4, 5)),
         createPackageVersionDesc('1.0.0', createTextRange(12, 13)),
       ])
     ),
     new PackageDependency(
-      createPackageResource("testPackage2", "2.0.0", "test/path"),
+      createPackageManifest("testPackage2", "2.0.0", "test/path"),
       new PackageDescriptor([
         createPackageNameDesc('testPackage2', createTextRange(8, 9)),
         createPackageVersionDesc('2.0.0', createTextRange(10, 11)),
@@ -110,7 +110,7 @@ export default {
   ],
   ignoresChanges: [
     new PackageDependency(
-      createPackageResource("testPackage1", "10.0.0", "test/path"),
+      createPackageManifest("testPackage1", "10.0.0", "test/path"),
       new PackageDescriptor([
         createPackageNameDesc('testPackage1', createTextRange(4, 5)),
         createPackageVersionDesc('10.0.0', createTextRange(12, 13)),
@@ -118,7 +118,7 @@ export default {
       ])
     ),
     new PackageDependency(
-      createPackageResource("testPackage2", "20.0.0", "test/path"),
+      createPackageManifest("testPackage2", "20.0.0", "test/path"),
       new PackageDescriptor([
         createPackageNameDesc('testPackage2', createTextRange(8, 9)),
         createPackageVersionDesc('20.0.0', createTextRange(10, 11)),

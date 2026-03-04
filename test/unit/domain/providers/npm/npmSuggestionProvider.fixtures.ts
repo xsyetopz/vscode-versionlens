@@ -1,4 +1,4 @@
-import { createPackageResource, PackageDependency } from '#domain/packages';
+import { createPackageManifest, PackageDependency } from '#domain/packages';
 import {
   createIgnoreChangesDesc,
   createPackageNameDesc,
@@ -47,7 +47,7 @@ q/I2+0j6dAkOGcK/68z7qQXByeGri3n28a1Kn6o=
         `,
         expected: [
           new PackageDependency(
-            createPackageResource('pnpm', '9.1.2', 'test/path/package.json'),
+            createPackageManifest('pnpm', '9.1.2', 'test/path/package.json'),
             new PackageDescriptor([
               createIgnoreChangesDesc(),
               createPackageNameDesc('pnpm@9.1.2', createTextRange(43)),
@@ -65,7 +65,7 @@ q/I2+0j6dAkOGcK/68z7qQXByeGri3n28a1Kn6o=
         `,
         expected: [
           new PackageDependency(
-            createPackageResource('pnpm', '9.1.2+sha512.14e915759c11f77eac07faba4d019c193ec8637229e62ec99eefb7cf3c3b75c64447882b7c485142451ee3a6b408059cdfb7b7fa0341b975f12d0f7629c71195', 'test/path/package.json'),
+            createPackageManifest('pnpm', '9.1.2+sha512.14e915759c11f77eac07faba4d019c193ec8637229e62ec99eefb7cf3c3b75c64447882b7c485142451ee3a6b408059cdfb7b7fa0341b975f12d0f7629c71195', 'test/path/package.json'),
             new PackageDescriptor([
               createIgnoreChangesDesc(),
               createPackageNameDesc('pnpm@9.1.2+sha512.14e915759c11f77eac07faba4d019c193ec8637229e62ec99eefb7cf3c3b75c64447882b7c485142451ee3a6b408059cdfb7b7fa0341b975f12d0f7629c71195', createTextRange(43)),
@@ -83,7 +83,7 @@ q/I2+0j6dAkOGcK/68z7qQXByeGri3n28a1Kn6o=
         `,
         expected: [
           new PackageDependency(
-            createPackageResource('pnpm', '9.0.0-rc.2+sha.6d21a1f908b66fe37f42f3170d4ba8fd5e2dcde886ec85863a5e7cac', 'test/path/package.json'),
+            createPackageManifest('pnpm', '9.0.0-rc.2+sha.6d21a1f908b66fe37f42f3170d4ba8fd5e2dcde886ec85863a5e7cac', 'test/path/package.json'),
             new PackageDescriptor([
               createIgnoreChangesDesc(),
               createPackageNameDesc('pnpm@9.0.0-rc.2+sha.6d21a1f908b66fe37f42f3170d4ba8fd5e2dcde886ec85863a5e7cac', createTextRange(43)),

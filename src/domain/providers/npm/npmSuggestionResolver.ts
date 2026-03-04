@@ -3,7 +3,7 @@ import type { ILogger } from '#domain/logging';
 import {
   type PackageClientRequest,
   type PackageClientResponse,
-  type PackageResource,
+  type PackageManifest,
   ClientResponseFactory,
   createSuggestions,
   PackageClientResponseStatus,
@@ -51,7 +51,7 @@ export class NpmSuggestionResolver {
    * @param pkg The package resource.
    * @returns A promise resolving to the package client response.
    */
-  async fromFileProtocol(pkg: PackageResource): Promise<PackageClientResponse> {
+  async fromFileProtocol(pkg: PackageManifest): Promise<PackageClientResponse> {
     return await ClientResponseFactory.createDirectoryFromFileProtocol(pkg);
   }
 

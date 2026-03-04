@@ -4,7 +4,7 @@ import {
   type PackageClientRequest,
   type PackageClientResponse,
   ClientResponseFactory,
-  createPackageResource,
+  createPackageManifest,
   PackageDependency,
   PackageVersionType,
   VersionUtils,
@@ -132,7 +132,7 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
 
         packageDependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               versionDesc.version,
               packagePath
@@ -152,7 +152,7 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
 
         packageDependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               pathType.path,
               packagePath
@@ -172,7 +172,7 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
 
         packageDependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               gitType.gitUrl,
               packagePath

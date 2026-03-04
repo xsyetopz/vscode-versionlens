@@ -7,7 +7,7 @@ import {
   PackageDependency,
   PackageVersionType,
   VersionUtils,
-  createPackageResource
+  createPackageManifest
 } from '#domain/packages';
 import {
   type PackageGitDescriptor,
@@ -79,7 +79,7 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
 
         packageDependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               versionDesc.version,
               packagePath
@@ -99,7 +99,7 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
 
         packageDependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               pathType.path,
               packagePath
@@ -119,7 +119,7 @@ export class CargoSuggestionProvider implements ISuggestionProvider {
 
         packageDependencies.push(
           new PackageDependency(
-            createPackageResource(
+            createPackageManifest(
               nameDesc.name,
               gitType.gitUrl,
               packagePath

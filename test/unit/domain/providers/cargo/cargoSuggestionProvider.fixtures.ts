@@ -1,4 +1,4 @@
-import { createPackageResource, PackageDependency } from '#domain/packages';
+import { createPackageManifest, PackageDependency } from '#domain/packages';
 import {
   createPackageNameDesc,
   createPackageVersionDesc,
@@ -29,7 +29,7 @@ export default {
   `,
   expected: <PackageDependency[]>[
     new PackageDependency(
-      createPackageResource('version', '1.2.3', 'test/path/Cargo.yaml'),
+      createPackageManifest('version', '1.2.3', 'test/path/Cargo.yaml'),
       new PackageDescriptor([
         createPackageNameDesc('version', createTextRange(19, 19)),
         createPackageVersionDesc('1.2.3', createTextRange(30, 35)),
@@ -37,7 +37,7 @@ export default {
       ])
     ),
     new PackageDependency(
-      createPackageResource('backtrace', '0.3.69', 'test/path/Cargo.yaml'),
+      createPackageManifest('backtrace', '0.3.69', 'test/path/Cargo.yaml'),
       new PackageDescriptor([
         createPackageNameDesc('backtrace', createTextRange(107, 107)),
         createPackageVersionDesc('0.3.69', createTextRange(132, 138)),
@@ -45,7 +45,7 @@ export default {
       ])
     ),
     new PackageDependency(
-      createPackageResource('rustversion', '1.0.14', 'test/path/Cargo.yaml'),
+      createPackageManifest('rustversion', '1.0.14', 'test/path/Cargo.yaml'),
       new PackageDescriptor([
         createPackageNameDesc('rustversion', createTextRange(187, 187)),
         createPackageVersionDesc('1.0.14', createTextRange(202, 208)),
@@ -53,7 +53,7 @@ export default {
       ])
     ),
     new PackageDependency(
-      createPackageResource('trybuild', '1.0.85', 'test/path/Cargo.yaml'),
+      createPackageManifest('trybuild', '1.0.85', 'test/path/Cargo.yaml'),
       new PackageDescriptor([
         createPackageNameDesc('trybuild', createTextRange(233, 233)),
         createPackageVersionDesc('1.0.85', createTextRange(258, 264)),
@@ -61,7 +61,7 @@ export default {
       ])
     ),
     new PackageDependency(
-      createPackageResource('libc', '1.0.96', 'test/path/Cargo.yaml'),
+      createPackageManifest('libc', '1.0.96', 'test/path/Cargo.yaml'),
       new PackageDescriptor([
         createPackageNameDesc('libc', createTextRange(300, 300)),
         createPackageVersionDesc('1.0.96', createTextRange(308, 314)),

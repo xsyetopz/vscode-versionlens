@@ -1,6 +1,6 @@
 import {
   type PackageClientResponse,
-  type PackageResource,
+  type PackageManifest,
   PackageCache,
   PackageSourceType,
   PackageVersionType
@@ -11,7 +11,7 @@ import { deepEqual, fail } from 'node:assert';
 type TestContext = {
   testProviderName: string;
   testPackageFilePath: string;
-  testPackage: PackageResource;
+  testPackage: PackageManifest;
   testCacheItem: PackageClientResponse;
   testCache: PackageCache;
 }

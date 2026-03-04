@@ -1,6 +1,6 @@
 import type { ILogger } from '#domain/logging';
 import {
-  createPackageResource,
+  createPackageManifest,
   PackageDependency,
   PackageSourceType,
   PackageVersionType,
@@ -87,7 +87,7 @@ export const onUpdateDependencyClickTests = {
         packageSource: PackageSourceType.Registry,
         type: PackageVersionType.Version,
         parsedDependency: new PackageDependency(
-          createPackageResource('test-name', testVersion, 'test/path'),
+          createPackageManifest('test-name', testVersion, 'test/path'),
           new PackageDescriptor([
             createPackageNameDesc('testPackage1', createTextRange(0, 0)),
             createPackageVersionDesc('1.0.0', createTextRange(1, 1)),
