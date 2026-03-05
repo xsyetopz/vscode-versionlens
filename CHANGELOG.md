@@ -1,4 +1,8 @@
-# 1.23.3-prerelease
+# 1.23.4-prerelease
+
+  ### Ruby (gem)
+
+  - Added `Gemfile` support to the ruby provider
 
   ### All
 
