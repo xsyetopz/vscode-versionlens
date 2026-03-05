@@ -29,6 +29,11 @@ import {
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 /**
+ * Regex to extract the operator from a version string.
+ */
+const operatorRegex = /^(===|==|!=|<=|>=|<|>|~=)/;
+
+/**
  * Provides suggestions for PyPi dependencies by parsing TOML or requirements.txt files and resolving package versions.
  */
 export class PypiSuggestionProvider implements ISuggestionProvider {
@@ -83,11 +88,10 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
       }).join(', ');
     }
 
-    const operatorRegex = /^(===|==|!=|<=|>=|<|>|~=)/;
     const match = operatorRegex.exec(parsedVersion);
 
     if (!match) {
-      return `==${newVersion}`;
+      return newVersion;
     }
 
     const operator = match[0];

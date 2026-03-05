@@ -1,11 +1,11 @@
 export default {
 
   suggestionReplaceFn: [
-    // no operator -> ==
+    // no operator -> no operator
     {
       suggestion: { parsedVersion: '1.2.3' },
       newVersion: '2.0.0',
-      expected: '==2.0.0'
+      expected: '2.0.0'
     },
     // == -> ==
     {
