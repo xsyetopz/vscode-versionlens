@@ -1,5 +1,5 @@
 import type { ILogger } from '#domain/logging';
-import type { ISuggestionProvider } from '#domain/providers';
+import type { IProviderConfig, ISuggestionProvider } from '#domain/providers';
 import type { GetSuggestionProvider } from '#domain/useCases';
 import { OnActiveTextEditorChange } from '#extension/events';
 import type { ContextState, VersionLensState } from '#extension/state';
@@ -103,12 +103,13 @@ export const onActiveTextEditorChangeTests = {
       const testProviderName = 'testProvider';
       const mockProvider = mock<ISuggestionProvider>();
       const testProvider = instance(mockProvider);
-      const mockConfig = mock<any>();
+      const mockConfig = mock<IProviderConfig>();
 
       when(mockProvider.name).thenReturn(testProviderName);
       when(mockProvider.config).thenReturn(instance(mockConfig));
       when(mockConfig.onSaveChangesTask).thenReturn('test-task');
       when(mockConfig.dependencyProperties).thenReturn(['dependencies']);
+      when(mockConfig.canSortAlphabetically).thenReturn(true);
       when(this.mockSuggestionOptions.showCustomInstallAction).thenReturn(true);
       when(this.mockSuggestionOptions.showSortAlphabeticallyAction).thenReturn(true);
 
@@ -127,6 +128,27 @@ export const onActiveTextEditorChangeTests = {
       verify(this.mockShowCustomInstallState.change(true)).once();
       verify(this.mockShowSortAlphabeticallyState.change(true)).once();
       verify(mockFireEvent.fire(testProvider, instance(this.mockDocument))).once();
+    },
+
+  "hides sort alphabetical action when canSortAlphabetically is false":
+    async function (this: TestContext) {
+      const testFilePath = '/some/file/path';
+      const mockProvider = mock<ISuggestionProvider>();
+      const mockConfig = mock<IProviderConfig>();
+
+      when(mockProvider.config).thenReturn(instance(mockConfig));
+      when(mockConfig.canSortAlphabetically).thenReturn(false);
+      when(this.mockGetSuggestionProvider.execute(testFilePath))
+        .thenReturn(instance(mockProvider));
+
+      const mockFireEvent = mock<OnActiveTextEditorChange>();
+      this.testEvent.fire = instance(mockFireEvent).fire;
+
+      // test
+      await this.testEvent.execute(instance(this.mockTextEditor));
+
+      // verify
+      verify(this.mockShowSortAlphabeticallyState.change(false)).once();
     }
 
 };

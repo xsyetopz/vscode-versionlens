@@ -48,4 +48,9 @@ export class DockerConfig implements IProviderConfig {
     return this.config.get(DockerFeatures.OnSaveChangesTask) ?? null;
   }
 
+  /**
+   * Docker files don't support alphabetical sorting.
+   */
+  readonly canSortAlphabetically = false;
+
 }

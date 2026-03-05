@@ -22,20 +22,19 @@ export class SortDependencies {
   ): Array<TextEdit> {
     const edits: Array<TextEdit> = [];
 
-    // 1. Group dependencies by group name
+    // Group dependencies by group name
     const groups = new Map<string, Array<PackageDependency>>();
     for (const dep of dependencies) {
       const groupDesc = dep.descriptors.getType<PackageGroupDescriptor>(PackageDescriptorType.group);
       if (!groupDesc) continue;
 
       const groupName = groupDesc.groupName;
-      if (!groups.has(groupName)) {
-        groups.set(groupName, []);
-      }
+      if (!groups.has(groupName)) groups.set(groupName, []);
+
       groups.get(groupName)!.push(dep);
     }
 
-    // 2. Sort within each group and generate edits
+    // Sort within each group and generate edits
     for (const groupDeps of groups.values()) {
       if (groupDeps.length <= 1) continue;
 

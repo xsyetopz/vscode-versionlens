@@ -41,6 +41,10 @@ export interface IProviderConfig {
    * Optional property names that contain dependencies in package files.
    */
   readonly dependencyProperties?: Array<string>
+  /**
+   * Optional flag to show the sort alphabetically action.
+   */
+  readonly canSortAlphabetically?: boolean
 }
 
 /**
