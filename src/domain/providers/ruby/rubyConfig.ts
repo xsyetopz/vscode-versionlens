@@ -42,7 +42,7 @@ export class RubyConfig implements IProviderConfig {
    * Gets the property names that contain dependencies in Ruby files.
    */
   get dependencyProperties(): Array<string> {
-    return this.config.get(RubyFeatures.DependencyProperties, []);
+    return [];
   }
 
   /**

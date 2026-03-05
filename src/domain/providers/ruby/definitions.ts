@@ -9,7 +9,6 @@ import { nameOf } from '#domain/utils';
 export enum RubyFeatures {
   Caching = 'ruby.caching',
   Http = 'ruby.http',
-  DependencyProperties = 'ruby.dependencyProperties',
   ApiUrl = 'ruby.apiUrl',
   FilePatterns = 'ruby.files',
   OnSaveChangesTask = 'ruby.onSaveChanges',

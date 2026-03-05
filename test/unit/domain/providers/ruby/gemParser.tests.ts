@@ -30,6 +30,7 @@ export const GemParserTests = {
       Fixtures.github,
       Fixtures.gitRefs,
       Fixtures.withComments,
+      Fixtures.withGroups,
       (fixture: any) => {
         // setup
         const { test, expected } = fixture;

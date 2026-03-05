@@ -187,6 +187,34 @@ gem 'library1', '>= 2.2.0' # test '1.2.3'
         ])
       )
     ]
+  },
+
+  // parses dependencies with groups from Gemfile
+  withGroups: {
+    test: `
+group :production do
+  gem 'pg', '0.17.1'
+  gem 'rails_12factor', '0.0.2'
+end
+`,
+    expected: [
+      new PackageDependency(
+        createPackageManifest('pg', '0.17.1', 'Gemfile'),
+        new PackageDescriptor([
+          createPackageNameDesc('pg', createTextRange(24)),
+          createPackageVersionDesc('0.17.1', createTextRange(35, 41)),
+          createPackageGroupDesc('group :production', createTextRange(22, 42))
+        ])
+      ),
+      new PackageDependency(
+        createPackageManifest('rails_12factor', '0.0.2', 'Gemfile'),
+        new PackageDescriptor([
+          createPackageNameDesc('rails_12factor', createTextRange(45)),
+          createPackageVersionDesc('0.0.2', createTextRange(68, 73)),
+          createPackageGroupDesc('group :production', createTextRange(43, 74))
+        ])
+      )
+    ]
   }
 
 }

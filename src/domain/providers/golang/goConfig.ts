@@ -39,6 +39,13 @@ export class GoConfig implements IProviderConfig {
   }
 
   /**
+   * Gets the property names that contain dependencies in Go files.
+   */
+  get dependencyProperties(): Array<string> {
+    return [];
+  }
+
+  /**
    * Gets the filters used for prerelease tags.
    */
   get prereleaseTagFilter(): Array<string> {

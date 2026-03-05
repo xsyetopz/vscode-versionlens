@@ -14,7 +14,7 @@ import {
 } from '#domain/parsers';
 
 /**
- * A regex to match gem name in Gemfile.
+ * Regex to match gem name in Gemfile.
  * Group 1: Quote char for name
  * Group 2: Package name
  */
@@ -32,6 +32,16 @@ const branchRegex = /,\s*branch:\s*(['"])(?<branch>[^'"]+)\1/;
 const tagRegex = /,\s*tag:\s*(['"])(?<tag>[^'"]+)\1/;
 
 /**
+ * Regex for group start
+ */
+const groupStartRegex = /^\s*group\s+(?:(?::\w+)|(?:['"]\w+['"])|(?:\[(?::\w+,\s*)*(?::\w+)\]))(?:\s*,\s*(?:(?::\w+)|(?:['"]\w+['"])|(?:\[(?::\w+,\s*)*(?::\w+)\])))*\s+do/;
+
+/**
+ * Regex for group end
+ */
+const groupEndRegex = /^\s*end\s*$/;
+
+/**
  * Parses a Gemfile to identify package dependencies.
  * @param packagePath The path to the Gemfile.
  * @param packageText The content of the file.
@@ -43,6 +53,7 @@ export function parseGemfile(
 ): Array<PackageDependency> {
   const dependencies: Array<PackageDependency> = [];
   let currentOffset = 0;
+  const groupStack: string[] = ['dependencies'];
 
   const lines = packageText.match(/[^\r\n]*(\r?\n|$)/g) || [];
 
@@ -50,6 +61,22 @@ export function parseGemfile(
     const trimmedLine = line.trim();
 
     if (trimmedLine.length > 0 && !trimmedLine.startsWith('#')) {
+      
+      // Check for group end
+      if (groupEndRegex.test(line)) {
+        if (groupStack.length > 1) {
+          groupStack.pop();
+        }
+      }
+
+      // Check for group start
+      const groupMatch = groupStartRegex.exec(line);
+      if (groupMatch) {
+        // extract group names from the match (simple version for now)
+        const groupName = groupMatch[0].trim().replace(/\s+do$/, '');
+        groupStack.push(groupName);
+      }
+
       const nameMatch = gemNameRegex.exec(line);
       if (nameMatch) {
         const groups = nameMatch.groups!;
@@ -110,7 +137,7 @@ export function parseGemfile(
         const lineWithoutNewline = line.replace(/(\r?\n)$/, '');
         descriptors.push(
           createPackageGroupDesc(
-            'dependencies',
+            groupStack[groupStack.length - 1],
             createTextRange(currentOffset, currentOffset + lineWithoutNewline.length)
           )
         );

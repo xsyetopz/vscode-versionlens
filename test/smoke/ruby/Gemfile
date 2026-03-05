@@ -11,3 +11,8 @@ gem 'ffaker', '2.21.0'
 gem 'rspec-rails', '~> 6.0.1'
 gem 'not_found_gem', '9.9.9'
 gem 'rails', git: "https://github.com/rails/rails.git"
+
+group :production do
+  gem 'pg', '0.17.1'
+  gem 'rails_12factor', '0.0.2'
+end
