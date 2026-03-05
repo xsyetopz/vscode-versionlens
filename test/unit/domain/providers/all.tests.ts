@@ -10,3 +10,4 @@ export * as NpmProvider from './npm/index.tests';
 export * as PnpmProvider from './pnpm/index.tests';
 export * as PubProvider from './pub/index.tests';
 export * as PypiProvider from './pypi/index.tests';
+export * as RubyProvider from './ruby/index.tests';

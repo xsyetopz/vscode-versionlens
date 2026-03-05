@@ -134,7 +134,8 @@ export function addProviderNames(services: IServiceCollection) {
       'pnpm',
       'pub',
       'pypi',
-      'golang'
+      'golang',
+      'ruby'
     ]
   )
 }

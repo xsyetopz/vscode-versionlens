@@ -41,6 +41,7 @@ VersionLens supports a wide range of ecosystems:
 - **NPM (Node):** [npmjs.com](https://www.npmjs.com/), JSPM, PNPM
 - **Pub (Dart/Flutter):** [pub.dev](https://pub.dev/)
 - **Python:** [PyPI](https://pypi.org/)
+- **Ruby:** [rubygems.org](https://rubygems.org/)
 
 > **Note:** TOML files require an extension that registers the TOML language with VS Code (e.g., [Even Better TOML](https://marketplace.visualstudio.com/items?itemName=tamasfe.even-better-toml)).
 
