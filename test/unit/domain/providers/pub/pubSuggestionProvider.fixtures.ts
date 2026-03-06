@@ -50,7 +50,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('efts', createTextRange(376)),
           createPackageVersionDesc('^2.0.4', createTextRange(382, 388)),
-          createPackageGroupDesc('dependencies', createTextRange(376, 388))
+          createPackageGroupDesc('dependencies', createTextRange(374, 388))
         ])
       ),
       new PackageDependency(
@@ -58,7 +58,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('http', createTextRange(391)),
           createPackageVersionDesc('*', createTextRange(397, 397), '', ' '),
-          createPackageGroupDesc('dependencies', createTextRange(391, 397))
+          createPackageGroupDesc('dependencies', createTextRange(389, 396))
         ])
       ),
       new PackageDependency(
@@ -66,7 +66,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('transmogrify', createTextRange(421)),
           createPackageVersionDesc('^0.4.0', createTextRange(448, 454), '', ''),
-          createPackageGroupDesc('dependencies', createTextRange(421, 487))
+          createPackageGroupDesc('dependencies', createTextRange(419, 486))
         ])
       ),
       new PackageDependency(
@@ -74,7 +74,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('test', createTextRange(489)),
           createPackageVersionDesc('>=0.5.0 <0.12.0', createTextRange(496, 511)),
-          createPackageGroupDesc('dependencies', createTextRange(489, 512))
+          createPackageGroupDesc('dependencies', createTextRange(487, 512))
         ])
       ),
       new PackageDependency(
@@ -82,7 +82,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('collection', createTextRange(515)),
           createPackageVersionDesc('^1.1.0', createTextRange(528, 534)),
-          createPackageGroupDesc('dependencies', createTextRange(515, 535))
+          createPackageGroupDesc('dependencies', createTextRange(513, 535))
         ])
       ),
     ]
@@ -103,7 +103,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('pathify1', createTextRange(17)),
           createPackagePathDescType('./some/test/path1', createTextRange(37, 54)),
-          createPackageGroupDesc('dependencies', createTextRange(17, 55))
+          createPackageGroupDesc('dependencies', createTextRange(15, 54))
         ])
       ),
       new PackageDependency(
@@ -111,7 +111,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('pathify2', createTextRange(57)),
           createPackagePathDescType('./some/test/path2', createTextRange(77, 94)),
-          createPackageGroupDesc('dependencies', createTextRange(57, 110))
+          createPackageGroupDesc('dependencies', createTextRange(55, 109))
         ])
       ),
     ]
@@ -139,7 +139,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('gitify1', createTextRange(17)),
           createPackageGitDescType('git@github.com:munificent/kittens.git'),
-          createPackageGroupDesc('dependencies', createTextRange(17, 74))
+          createPackageGroupDesc('dependencies', createTextRange(15, 73))
         ])
       ),
       new PackageDependency(
@@ -147,7 +147,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('gitify2', createTextRange(76)),
           createPackageGitDescType('git@github.com:munificent/dogs.git', '', 'some-branch'),
-          createPackageGroupDesc('dependencies', createTextRange(76, 165))
+          createPackageGroupDesc('dependencies', createTextRange(74, 164))
         ])
       ),
       new PackageDependency(
@@ -155,7 +155,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('gitify3', createTextRange(167)),
           createPackageGitDescType('git@github.com:munificent/birds.git', 'path/to/birds'),
-          createPackageGroupDesc('dependencies', createTextRange(167, 260))
+          createPackageGroupDesc('dependencies', createTextRange(165, 259))
         ])
       ),
       new PackageDependency(
@@ -163,7 +163,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('gitify4', createTextRange(262)),
           createPackageGitDescType('git@github.com:munificent/foxes.git'),
-          createPackageGroupDesc('dependencies', createTextRange(262, 332))
+          createPackageGroupDesc('dependencies', createTextRange(260, 331))
         ])
       ),
     ]
@@ -192,7 +192,7 @@ dependencies:
           createPackageNameDesc('hostify1', createTextRange(17)),
           createPackageVersionDesc('1.0.0', createTextRange(40, 45)),
           createPackageHostedDescType('https://some-package-server.com'),
-          createPackageGroupDesc('dependencies', createTextRange(17, 91))
+          createPackageGroupDesc('dependencies', createTextRange(15, 90))
         ])
       ),
       new PackageDependency(
@@ -201,7 +201,7 @@ dependencies:
           createPackageNameDesc('hostify2', createTextRange(93)),
           createPackageVersionDesc('2.0.0', createTextRange(116, 121), '', ''),
           createPackageHostedDescType('https://some-package-server.com'),
-          createPackageGroupDesc('dependencies', createTextRange(93, 178))
+          createPackageGroupDesc('dependencies', createTextRange(91, 177))
         ])
       ),
       new PackageDependency(
@@ -210,7 +210,7 @@ dependencies:
           createPackageNameDesc('hostify3', createTextRange(180)),
           createPackageVersionDesc('3.0.0', createTextRange(203, 208)),
           createPackageHostedDescType('https://some-package-server.com', 'testHostPackageAlias'),
-          createPackageGroupDesc('dependencies', createTextRange(180, 297))
+          createPackageGroupDesc('dependencies', createTextRange(178, 296))
         ])
       ),
     ]
@@ -283,7 +283,41 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('dep1', createTextRange(25)),
           createPackageVersionDesc('*', createTextRange(31, 34)),
-          createPackageGroupDesc('dependencies', createTextRange(25, 34))
+          createPackageGroupDesc('dependencies', createTextRange(19, 34))
+        ])
+      )
+    ]
+  },
+
+  parsesDevDependencyEntries: {
+    test: `
+dev_dependencies:
+  test_api: ^0.2.1
+`,
+    expected: [
+      new PackageDependency(
+        createPackageManifest('test_api', '^0.2.1', 'test/path'),
+        new PackageDescriptor([
+          createPackageNameDesc('test_api', createTextRange(21)),
+          createPackageVersionDesc('^0.2.1', createTextRange(31, 37)),
+          createPackageGroupDesc('dev_dependencies', createTextRange(19, 37))
+        ])
+      )
+    ]
+  },
+
+  parsesDependencyOverrides: {
+    test: `
+dependency_overrides:
+  transmogrify: ^0.4.0
+`,
+    expected: [
+      new PackageDependency(
+        createPackageManifest('transmogrify', '^0.4.0', 'test/path'),
+        new PackageDescriptor([
+          createPackageNameDesc('transmogrify', createTextRange(25)),
+          createPackageVersionDesc('^0.4.0', createTextRange(39, 45)),
+          createPackageGroupDesc('dependency_overrides', createTextRange(23, 45))
         ])
       )
     ]

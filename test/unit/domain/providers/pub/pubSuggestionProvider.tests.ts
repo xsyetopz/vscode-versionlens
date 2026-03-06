@@ -69,8 +69,10 @@ export const PubSuggestionProviderTests = {
     Fixtures.parsesProjectVersionWithComment,
     Fixtures.parsesEmptyProjectVersionWithComment,
     Fixtures.parsesAnyVersionKeyword,
+    Fixtures.parsesDevDependencyEntries,
+    Fixtures.parsesDependencyOverrides,
     function (this: TestContext, fixture: any) {
-      const includePropNames = ['version', 'dependencies'];
+      const includePropNames = ['version', 'dependencies', 'dev_dependencies', 'dependency_overrides'];
       when(this.configMock.dependencyProperties).thenReturn(includePropNames);
       // test
       const results = this.put.parseDependencies('test/path', fixture.test);

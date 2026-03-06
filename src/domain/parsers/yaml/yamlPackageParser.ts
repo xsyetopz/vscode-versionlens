@@ -35,16 +35,18 @@ export function parsePackagesYaml(
   const yamlDoc = parseDocument(yaml);
   if (!yamlDoc || !yamlDoc.contents || yamlDoc.errors.length > 0) return [];
 
-  return parsePackageNodes(yamlDoc, options);
+  return parsePackageNodes(yaml, yamlDoc, options);
 }
 
 /**
  * Parses package nodes from a root YAML document.
+ * @param yaml The full YAML string.
  * @param rootNode The root YAML document.
  * @param options Parser options.
  * @returns An array of Identified package descriptors.
  */
 function parsePackageNodes(
+  yaml: string,
   rootNode: Document.Parsed<ParsedNode>,
   options: YamlParserOptions
 ): PackageDescriptor[] {
@@ -63,7 +65,7 @@ function parsePackageNodes(
     }
 
     for (const foundNode of foundNodes) {
-      const children = descendChildNodes(foundNode.path, foundNode.pairs, complexTypeHandlers);
+      const children = descendChildNodes(yaml, foundNode.path, foundNode.pairs, complexTypeHandlers);
       matchedDependencies.push.apply(matchedDependencies, children);
     }
   }
@@ -73,12 +75,14 @@ function parsePackageNodes(
 
 /**
  * Descends into child nodes to extract package descriptors.
+ * @param yaml The full YAML string.
  * @param path The current path in the YAML tree.
  * @param pairs The pairs to process.
  * @param complexTypeHandlers Map of complex type handlers.
  * @returns An array of Identified package descriptors.
  */
 function descendChildNodes(
+  yaml: string,
   path: string,
   pairs: Array<Pair<any, any>>,
   complexTypeHandlers: KeyDictionary<YamlTypeDescriptorHandler>
@@ -103,9 +107,11 @@ function descendChildNodes(
       if (!versionDesc) continue;
 
       // create the group descriptor
-      const groupDesc = createPackageGroupDesc(
+      const groupDesc = createYamlGroupDesc(
+        yaml,
         path,
-        createTextRange(key.range![0], value.range![1])
+        key.range![0],
+        value.range![1]
       );
 
       // create the package descriptor
@@ -149,9 +155,11 @@ function descendChildNodes(
 
       // add the group descriptor
       packageDesc.addType(
-        createPackageGroupDesc(
+        createYamlGroupDesc(
+          yaml,
           path,
-          createTextRange(key.range![0], value.range![1])
+          key.range![0],
+          value.range![1]
         )
       );
 
@@ -161,4 +169,78 @@ function descendChildNodes(
   }
 
   return matchedDependencies;
+}
+
+/**
+ * Creates a YAML group descriptor and adjusts the range.
+ * @param yaml The full YAML string.
+ * @param path The group path.
+ * @param start The start offset.
+ * @param end The end offset.
+ * @returns A group descriptor.
+ */
+function createYamlGroupDesc(
+  yaml: string,
+  path: string,
+  start: number,
+  end: number
+) {
+  // trim trailing whitespace and newlines
+  while (end > start && (yaml[end - 1] === ' ' || yaml[end - 1] === '\t' || yaml[end - 1] === '\n' || yaml[end - 1] === '\r')) {
+    end--;
+  }
+
+  // expand start to include leading indentation and comments
+  start = expandStartToIncludeComments(yaml, start);
+
+  return createPackageGroupDesc(
+    path,
+    createTextRange(start, end)
+  );
+}
+
+/**
+ * Expands the start offset to include leading indentation and preceding comments.
+ * @param yaml The full YAML string.
+ * @param start The initial start offset.
+ * @returns The expanded start offset.
+ */
+function expandStartToIncludeComments(yaml: string, start: number): number {
+  let current = start;
+
+  // Move back to start of line (skip spaces/tabs)
+  while (current > 0 && (yaml[current - 1] === ' ' || yaml[current - 1] === '\t')) {
+    current--;
+  }
+
+  // Check preceding lines for comments
+  let lastGoodStart = current;
+  while (current > 0) {
+    let cursor = current;
+
+    // skip newline(s)
+    if (yaml[cursor - 1] === '\n') cursor--;
+    if (cursor > 0 && yaml[cursor - 1] === '\r') cursor--;
+
+    // find start of previous line
+    let lineEnd = cursor;
+    let lineStart = cursor;
+    while (lineStart > 0 && yaml[lineStart - 1] !== '\n' && yaml[lineStart - 1] !== '\r') {
+      lineStart--;
+    }
+
+    const lineText = yaml.substring(lineStart, lineEnd);
+    const trimmedLine = lineText.trim();
+
+    if (trimmedLine.startsWith('#')) {
+      // it's a comment line, so include it and keep looking back
+      current = lineStart;
+      lastGoodStart = current;
+    } else {
+      // not a comment line, stop here
+      break;
+    }
+  }
+
+  return lastGoodStart;
 }

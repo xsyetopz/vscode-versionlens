@@ -1,6 +1,10 @@
 import { SortDependencies } from '#domain/useCases';
+import { PubSuggestionProvider } from '#domain/providers/pub';
 import { test } from 'mocha-ui-esm';
 import { deepEqual, equal, ok } from 'node:assert';
+import { mock, instance, when } from 'ts-mockito';
+import type { PubConfig, PubSuggestionResolver } from '#domain/providers/pub';
+import type { ILogger } from '#domain/logging';
 import fixtures from './sortDependencies.fixtures';
 
 export const sortDependenciesTests = {
@@ -93,6 +97,68 @@ export const sortDependenciesTests = {
     for (let i = 0; i < expectedSorted.length; i++) {
       equal(resultLines[i], expectedSorted[i], `Line ${i} should be ${expectedSorted[i]}`);
     }
+  },
+
+  "sorts complex yaml dependencies correctly": () => {
+    // setup
+    const cut = new SortDependencies();
+    const { test: packageText, expectedSorted } = fixtures.sortsComplexYamlDependenciesCorrectly;
+
+    const resolverMock = mock<PubSuggestionResolver>();
+    const configMock = mock<PubConfig>();
+    const loggerMock = mock<ILogger>();
+    when(configMock.dependencyProperties).thenReturn(['dependencies']);
+
+    const provider = new PubSuggestionProvider(
+      instance(resolverMock),
+      instance(configMock),
+      instance(loggerMock)
+    );
+
+    const dependencies = provider.parseDependencies('pubspec.yaml', packageText);
+
+    // test
+    const edits = cut.execute(packageText, dependencies);
+
+    // apply edits
+    let result = packageText;
+    const sortedEdits = [...edits].sort((a, b) => b.range.start - a.range.start);
+    for (const edit of sortedEdits) {
+      result = result.slice(0, edit.range.start) + edit.newText + result.slice(edit.range.end);
+    }
+
+    equal(result, expectedSorted);
+  },
+
+  "sorts yaml dependencies with comments correctly": () => {
+    // setup
+    const cut = new SortDependencies();
+    const { test: packageText, expectedSorted } = fixtures.sortsYamlDependenciesWithCommentsCorrectly;
+
+    const resolverMock = mock<PubSuggestionResolver>();
+    const configMock = mock<PubConfig>();
+    const loggerMock = mock<ILogger>();
+    when(configMock.dependencyProperties).thenReturn(['dependencies']);
+
+    const provider = new PubSuggestionProvider(
+      instance(resolverMock),
+      instance(configMock),
+      instance(loggerMock)
+    );
+
+    const dependencies = provider.parseDependencies('pubspec.yaml', packageText);
+
+    // test
+    const edits = cut.execute(packageText, dependencies);
+
+    // apply edits
+    let result = packageText;
+    const sortedEdits = [...edits].sort((a, b) => b.range.start - a.range.start);
+    for (const edit of sortedEdits) {
+      result = result.slice(0, edit.range.start) + edit.newText + result.slice(edit.range.end);
+    }
+
+    equal(result, expectedSorted);
   }
 
 };

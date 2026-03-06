@@ -196,6 +196,42 @@ not_found_package==1.17.0
       "six==1.17.0",
       "urllib3===1.26.5"
     ]
+  },
+
+  sortsComplexYamlDependenciesCorrectly: {
+    test: `
+dependencies:
+  sqflite:
+    git: 
+      url: https://github.com/tekartik/sqflite
+      path: sqflite
+  equatable: ^0.2.0
+`,
+    expectedSorted: `
+dependencies:
+  equatable: ^0.2.0
+  sqflite:
+    git: 
+      url: https://github.com/tekartik/sqflite
+      path: sqflite
+`
+  },
+
+  sortsYamlDependenciesWithCommentsCorrectly: {
+    test: `
+dependencies:
+  # sqflite comment
+  sqflite: ^1.0.0
+  # equatable comment
+  equatable: ^0.2.0
+`,
+    expectedSorted: `
+dependencies:
+  # equatable comment
+  equatable: ^0.2.0
+  # sqflite comment
+  sqflite: ^1.0.0
+`
   }
 
 }

@@ -24,7 +24,7 @@ export default {
           new PackageDescriptor([
             createPackageNameDesc('react', createTextRange(28)),
             createPackageVersionDesc('^16.14.0', createTextRange(35, 43)),
-            createPackageGroupDesc('catalog', createTextRange(28, 43))
+            createPackageGroupDesc('catalog', createTextRange(18, 43))
           ])
         ),
         new PackageDependency(
@@ -32,7 +32,7 @@ export default {
           new PackageDescriptor([
             createPackageNameDesc('react', createTextRange(93)),
             createPackageVersionDesc('^17.0.2', createTextRange(100, 107)),
-            createPackageGroupDesc('catalogs.react17', createTextRange(93, 107))
+            createPackageGroupDesc('catalogs.react17', createTextRange(81, 107))
           ])
         ),
         new PackageDependency(
@@ -40,7 +40,7 @@ export default {
           new PackageDescriptor([
             createPackageNameDesc('react-dom', createTextRange(120)),
             createPackageVersionDesc('^17.0.2', createTextRange(131, 138)),
-            createPackageGroupDesc('catalogs.react17', createTextRange(120, 138))
+            createPackageGroupDesc('catalogs.react17', createTextRange(108, 138))
           ])
         ),
       ]
