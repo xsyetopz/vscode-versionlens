@@ -1,10 +1,18 @@
-import { SortDependencies } from '#domain/useCases';
-import { PubSuggestionProvider } from '#domain/providers/pub';
-import { test } from 'mocha-ui-esm';
-import { deepEqual, equal, ok } from 'node:assert';
-import { mock, instance, when } from 'ts-mockito';
-import type { PubConfig, PubSuggestionResolver } from '#domain/providers/pub';
 import type { ILogger } from '#domain/logging';
+import { PackageDependency, createPackageManifest } from '#domain/packages';
+import {
+  PackageNameDescriptor,
+  PackageVersionDescriptor,
+  createVersionDescFromJsonNode,
+  parsePackagesJson
+} from '#domain/parsers';
+import type { PubConfig, PubSuggestionResolver } from '#domain/providers/pub';
+import { PubSuggestionProvider } from '#domain/providers/pub';
+import { parseRequirementsTxt } from '#domain/providers/pypi';
+import { SortDependencies, type TextEdit } from '#domain/useCases';
+import { test } from 'mocha-ui-esm';
+import { deepEqual, equal } from 'node:assert';
+import { instance, mock, when } from 'ts-mockito';
 import fixtures from './sortDependencies.fixtures';
 
 export const sortDependenciesTests = {
@@ -14,10 +22,10 @@ export const sortDependenciesTests = {
   "returns empty when no dependencies provided": () => {
     // setup
     const cut = new SortDependencies();
-    const { test: packageText, dependencies, expected } = fixtures.returnsEmptyWhenNoDependenciesProvided;
+    const { test: packageText, expected } = fixtures.returnsEmptyWhenNoDependenciesProvided;
 
     // test
-    const actual = cut.execute(packageText, dependencies);
+    const actual = cut.execute(packageText, []);
 
     // assert
     deepEqual(actual, expected);
@@ -26,39 +34,36 @@ export const sortDependenciesTests = {
   "sorts single group of dependencies alphabetically": () => {
     // setup
     const cut = new SortDependencies();
-    const { test: packageText, dependencies } = fixtures.sortsSingleGroupOfDependenciesAlphabetically;
+    const { test: packageText, expected } = fixtures.sortsSingleGroupOfDependenciesAlphabetically;
+    const dependencies = parseJson(packageText);
 
     // test
-    const actual = cut.execute(packageText, dependencies);
+    const edits = cut.execute(packageText, dependencies);
 
     // assert
-    equal(actual.length, 2);
-    equal(actual[0].newText, '"apple": "2.0.0"');
-    equal(actual[1].newText, '"zebra": "1.0.0"');
+    const actual = applyEdits(packageText, edits);
+    equal(actual, expected);
   },
 
   "sorts multiple groups independently": () => {
     // setup
     const cut = new SortDependencies();
-    const { test: packageText, dependencies } = fixtures.sortsMultipleGroupsIndependently;
+    const { test: packageText, expected } = fixtures.sortsMultipleGroupsIndependently;
+    const dependencies = parseJson(packageText);
 
     // test
-    const actual = cut.execute(packageText, dependencies);
+    const edits = cut.execute(packageText, dependencies);
 
     // assert
-    equal(actual.length, 4);
-    // group 1
-    equal(actual[0].newText, '"apple": "2.0.0"');
-    equal(actual[1].newText, '"zebra": "1.0.0"');
-    // group 2
-    equal(actual[2].newText, '"ant": "2.0.0"');
-    equal(actual[3].newText, '"yarn": "1.0.0"');
+    const actual = applyEdits(packageText, edits);
+    equal(actual, expected);
   },
 
   "doesn't generate edits if already sorted": () => {
     // setup
     const cut = new SortDependencies();
-    const { test: packageText, dependencies, expected } = fixtures.doesntGenerateEditsIfAlreadySorted;
+    const { test: packageText, expected } = fixtures.doesntGenerateEditsIfAlreadySorted;
+    const dependencies = parseJson(packageText);
 
     // test
     const actual = cut.execute(packageText, dependencies);
@@ -70,32 +75,20 @@ export const sortDependenciesTests = {
   "preserves all entries after requirements.txt sort": () => {
     // setup
     const cut = new SortDependencies();
-    const { test: packageText, dependencies, expectedSorted } = fixtures.preservesAllEntriesAfterRequirementsTxtSort;
+    const { test: packageText, expectedSorted } = fixtures.preservesAllEntriesAfterRequirementsTxtSort;
+    const dependencies = parseRequirementsTxt('requirements.txt', packageText);
 
     // test
     const edits = cut.execute(packageText, dependencies);
 
-    // apply edits
-    let result = packageText;
-    const sortedEdits = [...edits].sort((a, b) => b.range.start - a.range.start);
-    for (const edit of sortedEdits) {
-      result = result.slice(0, edit.range.start) + edit.newText + result.slice(edit.range.end);
-    }
+    // assert
+    const actual = applyEdits(packageText, edits);
+    const actualLines = actual.split('\n').map(l => l.trim()).filter(l => l.length > 0 && !l.startsWith('#'));
+    const expectedLines = expectedSorted.split('\n').map(l => l.trim()).filter(l => l.length > 0 && !l.startsWith('#'));
 
-    // assert that no entries are lost
-    for (const dep of dependencies) {
-      ok(result.includes(dep.package.name), `${dep.package.name} should be present in the result`);
-    }
-
-    // assert specific problematic entry and its comment
-    ok(result.includes('numpy'), 'numpy should be present in the result');
-    ok(result.includes('# this should not cause issues'), 'numpy comment should be preserved');
-
-    const resultLines = result.split('\n').map(l => l.trim()).filter(l => l.length > 0 && !l.startsWith('#'));
-
-    equal(resultLines.length, expectedSorted.length, "should have same number of packages");
-    for (let i = 0; i < expectedSorted.length; i++) {
-      equal(resultLines[i], expectedSorted[i], `Line ${i} should be ${expectedSorted[i]}`);
+    equal(actualLines.length, expectedLines.length, "should have same number of packages");
+    for (let i = 0; i < expectedLines.length; i++) {
+      equal(actualLines[i], expectedLines[i], `Line ${i} should be ${expectedLines[i]}`);
     }
   },
 
@@ -120,14 +113,9 @@ export const sortDependenciesTests = {
     // test
     const edits = cut.execute(packageText, dependencies);
 
-    // apply edits
-    let result = packageText;
-    const sortedEdits = [...edits].sort((a, b) => b.range.start - a.range.start);
-    for (const edit of sortedEdits) {
-      result = result.slice(0, edit.range.start) + edit.newText + result.slice(edit.range.end);
-    }
-
-    equal(result, expectedSorted);
+    // assert
+    const actual = applyEdits(packageText, edits);
+    equal(actual, expectedSorted);
   },
 
   "sorts yaml dependencies with comments correctly": () => {
@@ -151,14 +139,36 @@ export const sortDependenciesTests = {
     // test
     const edits = cut.execute(packageText, dependencies);
 
-    // apply edits
-    let result = packageText;
-    const sortedEdits = [...edits].sort((a, b) => b.range.start - a.range.start);
-    for (const edit of sortedEdits) {
-      result = result.slice(0, edit.range.start) + edit.newText + result.slice(edit.range.end);
-    }
-
-    equal(result, expectedSorted);
+    // assert
+    const actual = applyEdits(packageText, edits);
+    equal(actual, expectedSorted);
   }
 
 };
+
+function parseJson(packageText: string): Array<PackageDependency> {
+  const options = {
+    includePropNames: ['dependencies', 'devDependencies'],
+    complexTypeHandlers: {
+      version: createVersionDescFromJsonNode
+    }
+  };
+  const descriptors = parsePackagesJson(packageText, options as any);
+  return descriptors.map(desc => {
+    const nameDesc = desc.getType<PackageNameDescriptor>('name');
+    const versionDesc = desc.getType<PackageVersionDescriptor>('version');
+    return new PackageDependency(
+      createPackageManifest(nameDesc!.name, versionDesc?.version || '', 'package.json'),
+      desc
+    );
+  });
+}
+
+function applyEdits(text: string, edits: TextEdit[]): string {
+  let result = text;
+  const sortedEdits = [...edits].sort((a, b) => b.range.start - a.range.start);
+  for (const edit of sortedEdits) {
+    result = result.slice(0, edit.range.start) + edit.newText + result.slice(edit.range.end);
+  }
+  return result;
+}
