@@ -303,7 +303,7 @@
             ]
           },
           "default": [],
-          "description": "Defines a list of providers to enable. If empty, all providers are enabled."
+          "description": "Defines a list of providers to enable. If empty, all providers are enabled. You will need to restart vscode when changing this setting."
         },
         "versionlens.suggestions.showOnStartup": {
           "type": "boolean",
