@@ -38,11 +38,13 @@ export function createNameDescFromYamlNode(keyNode: any): PackageNameDescriptor 
  * Creates a package version descriptor from a YAML node.
  * @param valueNode The YAML node representing the version.
  * @param isQuoteType Whether the node value is quoted.
+ * @param yaml The full YAML string.
  * @returns A package version descriptor.
  */
 export function createVersionDescFromYamlNode(
   valueNode: any,
-  isQuoteType: boolean
+  isQuoteType: boolean,
+  yaml?: string
 ): PackageVersionDescriptor {
 
   const versionRange = {
@@ -62,10 +64,19 @@ export function createVersionDescFromYamlNode(
   const version = hasVersion ? valueNode.value : fallbackValue;
   const append = hasVersion === false && hasComment;
 
+  let prepend = "";
+  if (yaml && hasVersion === false && hasComment === false) {
+    // check if there is a space before the version
+    const index = valueNode.range[0];
+    if (index > 0 && yaml[index - 1] === ':') {
+      prepend = " ";
+    }
+  }
+
   return createPackageVersionDesc(
     version,
     versionRange,
-    "",
+    prepend,
     append ? " " : ""
   );
 }
@@ -81,7 +92,7 @@ export function getPackageProjectVersionDesc(map: YAMLMap<any, any>): PackageDes
       const isQuoted = isNodeQuoted(node.value);
       return new PackageDescriptor([
         createNameDescFromYamlNode(node.key),
-        createVersionDescFromYamlNode(node.value, isQuoted),
+        createVersionDescFromYamlNode(node.value, isQuoted, undefined),
         createProjectVersionTypeDesc()
       ]);
     }

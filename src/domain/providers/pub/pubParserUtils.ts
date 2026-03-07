@@ -15,25 +15,29 @@ import { findPair } from 'yaml/util';
  * Creates a version descriptor for a Pub dependency, handling the 'any' keyword.
  * @param valueNode The YAML node representing the version.
  * @param isQuoteType Whether the node value is quoted.
+ * @param yaml The full YAML string.
  * @returns A package version descriptor.
  */
 export function createPubVersionDescFromYamlNode(
   valueNode: any,
-  isQuoteType: boolean
+  isQuoteType: boolean,
+  yaml?: string
 ): PackageVersionDescriptor {
   valueNode.value === 'any' && (valueNode.value = '*')
-  return createVersionDescFromYamlNode(valueNode, isQuoteType)
+  return createVersionDescFromYamlNode(valueNode, isQuoteType, yaml)
 }
 
 /**
  * Creates a path descriptor from a YAML node.
  * @param valueNode The YAML node representing the path.
  * @param isQuoteType Whether the node value is quoted.
+ * @param yaml The full YAML string.
  * @returns A package path descriptor.
  */
 export function createPathDescFromYamlNode(
   valueNode: any,
-  isQuoteType: boolean
+  isQuoteType: boolean,
+  yaml?: string
 ): PackagePathDescriptor {
 
   const pathRange = {
@@ -53,11 +57,13 @@ export function createPathDescFromYamlNode(
  * Creates a hosted descriptor from a YAML node.
  * @param valueNode The YAML node representing the hosted configuration.
  * @param isQuoteType Whether the node value is quoted.
+ * @param yaml The full YAML string.
  * @returns A package hosted descriptor or undefined.
  */
 export function createHostedDescFromYamlNode(
   valueNode: any,
-  isQuoteType: boolean
+  isQuoteType: boolean,
+  yaml?: string
 ): PackageHostedDescriptor | undefined {
 
   const map = valueNode as YAMLMap;
@@ -92,11 +98,13 @@ export function createHostedDescFromYamlNode(
  * Creates a Git descriptor from a YAML node.
  * @param valueNode The YAML node representing the Git configuration.
  * @param isQuoteType Whether the node value is quoted.
+ * @param yaml The full YAML string.
  * @returns A package Git descriptor or undefined.
  */
 export function createGitDescFromYamlNode(
   valueNode: any,
-  isQuoteType: boolean
+  isQuoteType: boolean,
+  yaml?: string
 ): PackageGitDescriptor | undefined {
 
   let gitUrl = "";

@@ -194,6 +194,32 @@ export const sortDependenciesTests = {
     // assert
     const actual = applyEdits(packageText, edits);
     equal(actual, expectedSorted);
+  },
+
+  "sorts yaml dependencies with no version and no space correctly": () => {
+    // setup
+    const cut = new SortDependencies();
+    const { test: packageText, expectedSorted } = fixtures.sortsYamlDependenciesWithNoVersionAndNoSpaceCorrectly;
+
+    const resolverMock = mock<PubSuggestionResolver>();
+    const configMock = mock<PubConfig>();
+    const loggerMock = mock<ILogger>();
+    when(configMock.dependencyProperties).thenReturn(['dependencies']);
+
+    const provider = new PubSuggestionProvider(
+      instance(resolverMock),
+      instance(configMock),
+      instance(loggerMock)
+    );
+
+    const dependencies = provider.parseDependencies('pubspec.yaml', packageText);
+
+    // test
+    const edits = cut.execute(packageText, dependencies);
+
+    // assert
+    const actual = applyEdits(packageText, edits);
+    equal(actual, expectedSorted);
   }
 
 };

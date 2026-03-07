@@ -321,6 +321,23 @@ dependency_overrides:
         ])
       )
     ]
+  },
+
+  parsesPackageWithNoVersionAndNoSpace: {
+    test: `
+dependencies:
+  equatable:
+`,
+    expected: [
+      new PackageDependency(
+        createPackageManifest('equatable', '', 'test/path'),
+        new PackageDescriptor([
+          createPackageNameDesc('equatable', createTextRange(17)),
+          createPackageVersionDesc('', createTextRange(27, 27), ' '),
+          createPackageGroupDesc('dependencies', createTextRange(15, 27))
+        ])
+      )
+    ]
   }
 
 }

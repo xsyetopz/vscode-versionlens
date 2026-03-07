@@ -16,5 +16,6 @@ export type YamlParserOptions = {
  */
 export type YamlTypeDescriptorHandler = (
   valueNode: any,
-  isQuoteType: boolean
+  isQuoteType: boolean,
+  yaml?: string
 ) => PackageTypeDescriptor | undefined;

@@ -103,7 +103,7 @@ function descendChildNodes(
       // create the name descriptor
       const nameDesc = createNameDescFromYamlNode(keyNode);
       // create the version descriptor
-      const versionDesc = createVersionDescFromYamlNode(valueNode, isQuotedType);
+      const versionDesc = createVersionDescFromYamlNode(valueNode, isQuotedType, yaml);
       if (!versionDesc) continue;
 
       // create the group descriptor
@@ -140,7 +140,7 @@ function descendChildNodes(
         // add the handled type to the package desc
         const isScalarValue = isScalar(pair.value)
         const isQuotedType = isScalarValue && isNodeQuoted(pair.value);
-        const typeDesc = handler(pair.value, isQuotedType);
+        const typeDesc = handler(pair.value, isQuotedType, yaml);
         if (!typeDesc) continue;
 
         packageDesc.addType(typeDesc);

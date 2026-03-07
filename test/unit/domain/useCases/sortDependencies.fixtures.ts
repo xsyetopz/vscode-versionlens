@@ -142,6 +142,19 @@ dependencies:
     version: '1.2.*'
   http: # blank entry with comment
 `
+  },
+
+  sortsYamlDependenciesWithNoVersionAndNoSpaceCorrectly: {
+    test: `
+dependencies:
+  flutter_bloc: 0.10.1
+  equatable:
+`,
+    expectedSorted: `
+dependencies:
+  equatable:
+  flutter_bloc: 0.10.1
+`
   }
 
 }
