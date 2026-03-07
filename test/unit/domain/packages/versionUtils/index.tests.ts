@@ -5,5 +5,6 @@ export * from './findNextMajor.tests';
 export * from './isFixedVersion.tests';
 export * from './isFourSegmentedVersion.tests';
 export * from './lteFromArray.tests';
+export * from './preserveLeadingRange.tests';
 export * from './removeFourSegmentVersionsFromArray.tests';
 export * from './splitReleasesFromArray.tests';

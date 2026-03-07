@@ -1,2 +1,2 @@
-export * from './replaceGitVersion.tests';
+export * from './npmReplaceVersion.tests';
 export * from './resolveDotFilePath.tests';
