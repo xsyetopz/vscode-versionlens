@@ -114,6 +114,34 @@ dependencies:
   # sqflite comment
   sqflite: ^1.0.0
 `
+  },
+
+  sortsYamlDependenciesWithInlineCommentsCorrectly: {
+    test: `
+dependencies:
+  zebra: ^1.0.0 # zebra inline comment
+  apple: ^2.0.0 # apple inline comment
+`,
+    expectedSorted: `
+dependencies:
+  apple: ^2.0.0 # apple inline comment
+  zebra: ^1.0.0 # zebra inline comment
+`
+  },
+
+  sortsYamlDependenciesWithMixedCommentsCorrectly: {
+    test: `
+dependencies:
+  http: # blank entry with comment
+  glob: # version child property
+    version: '1.2.*'
+`,
+    expectedSorted: `
+dependencies:
+  glob: # version child property
+    version: '1.2.*'
+  http: # blank entry with comment
+`
   }
 
 }

@@ -190,6 +190,9 @@ function createYamlGroupDesc(
     end--;
   }
 
+  // expand end to include trailing inline comments
+  end = expandEndToIncludeInlineComments(yaml, end);
+
   // expand start to include leading indentation and comments
   start = expandStartToIncludeComments(yaml, start);
 
@@ -197,6 +200,31 @@ function createYamlGroupDesc(
     path,
     createTextRange(start, end)
   );
+}
+
+/**
+ * Expands the end offset to include trailing inline comments on the same line.
+ * @param yaml The full YAML string.
+ * @param end The initial end offset.
+ * @returns The expanded end offset.
+ */
+function expandEndToIncludeInlineComments(yaml: string, end: number): number {
+  let current = end;
+  const length = yaml.length;
+
+  // Move forward to find a '#' or end of line
+  while (current < length && yaml[current] !== '\n' && yaml[current] !== '\r') {
+    if (yaml[current] === '#') {
+      // found a comment, include until end of line
+      while (current < length && yaml[current] !== '\n' && yaml[current] !== '\r') {
+        current++;
+      }
+      return current;
+    }
+    current++;
+  }
+
+  return end;
 }
 
 /**

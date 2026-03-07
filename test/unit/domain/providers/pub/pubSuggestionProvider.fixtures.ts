@@ -58,7 +58,7 @@ dependencies:
         new PackageDescriptor([
           createPackageNameDesc('http', createTextRange(391)),
           createPackageVersionDesc('*', createTextRange(397, 397), '', ' '),
-          createPackageGroupDesc('dependencies', createTextRange(389, 396))
+          createPackageGroupDesc('dependencies', createTextRange(389, 418))
         ])
       ),
       new PackageDependency(
