@@ -49,9 +49,9 @@ export function parseRequirementsTxt(
         const nameStart = currentOffset + match.index + line.search(/\S/);
         const nameEnd = nameStart + packageName.length;
 
-        // the version range includes the operator if present
         let versionRange;
         let descriptorVersion = '';
+        let versionPrepend = '';
 
         if (rawVersion) {
           // find the operator start relative to the name
@@ -69,7 +69,8 @@ export function parseRequirementsTxt(
           descriptorVersion = operator + rawVersion;
         } else {
           // Special case for blank versions: assume latest
-          descriptorVersion = '*';
+          descriptorVersion = '';
+          versionPrepend = '==';
           versionRange = createTextRange(nameEnd);
         }
 
@@ -81,7 +82,7 @@ export function parseRequirementsTxt(
         // Order is critical: Name descriptor must be before Version descriptor
         const descriptor = new PackageDescriptor([
           createPackageNameDesc(packageName, createTextRange(nameStart)),
-          createPackageVersionDesc(descriptorVersion, versionRange),
+          createPackageVersionDesc(descriptorVersion, versionRange, versionPrepend),
           createPackageGroupDesc(
             'dependencies',
             createTextRange(currentOffset, currentOffset + lineWithoutNewline.length)
@@ -92,7 +93,7 @@ export function parseRequirementsTxt(
           new PackageDependency(
             createPackageManifest(
               packageName,
-              descriptorVersion === '*' ? '' : descriptorVersion,
+              descriptorVersion,
               packagePath
             ),
             descriptor

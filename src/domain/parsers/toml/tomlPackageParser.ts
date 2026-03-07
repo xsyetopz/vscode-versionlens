@@ -224,7 +224,7 @@ function parseArrayNode(
       versionDesc = createPackageVersionDesc(version, versionRange);
     } else {
       const versionRange = { start: startOffset + packageSpec.length, end: startOffset + packageSpec.length };
-      versionDesc = createPackageVersionDesc("", versionRange);
+      versionDesc = createPackageVersionDesc("", versionRange, "==");
     }
 
     // add the group descriptor

@@ -157,7 +157,7 @@ export default {
     expected: [
       new PackageDescriptor([
         createPackageNameDesc("httpx", createTextRange(89, 94)),
-        createPackageVersionDesc("", createTextRange(94, 94)),
+        createPackageVersionDesc("", createTextRange(94, 94), "=="),
         createPackageGroupDesc("project", createTextRange(88, 95))
       ]),
       new PackageDescriptor([
@@ -203,7 +203,7 @@ export default {
       ]),
       new PackageDescriptor([
         createPackageNameDesc("pytest-cov", createTextRange(140, 150)),
-        createPackageVersionDesc("", createTextRange(155, 155)),
+        createPackageVersionDesc("", createTextRange(155, 155), "=="),
         createPackageGroupDesc("project.optional-dependencies", createTextRange(139, 156))
       ]),
       new PackageDescriptor([

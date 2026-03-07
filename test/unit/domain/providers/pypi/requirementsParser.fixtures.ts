@@ -95,7 +95,7 @@ pkg6==1.2.3 # this is a comment
         createPackageManifest('pkg5', '', 'test.txt'),
         new PackageDescriptor([
           createPackageNameDesc('pkg5', createTextRange(112)),
-          createPackageVersionDesc('*', createTextRange(116)),
+          createPackageVersionDesc('', createTextRange(116), '=='),
           createPackageGroupDesc('dependencies', createTextRange(112, 116))
         ])
       ),

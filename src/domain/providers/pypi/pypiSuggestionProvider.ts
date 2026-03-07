@@ -67,7 +67,11 @@ export class PypiSuggestionProvider implements ISuggestionProvider {
    * @returns The updated version string with operators.
    */
   suggestionReplaceFn(suggestion: SuggestionUpdate, newVersion: string): string {
-    const { parsedVersion } = suggestion;
+    const { parsedVersion, parsedVersionPrepend, parsedVersionAppend } = suggestion;
+
+    if (parsedVersionPrepend.length > 0 || parsedVersionAppend.length > 0) {
+      return `${parsedVersionPrepend}${newVersion}${parsedVersionAppend}`;
+    }
 
     if (parsedVersion.includes(',')) {
       const parts = parsedVersion.split(',').map(p => p.trim());
