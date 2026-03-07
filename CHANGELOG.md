@@ -1,3 +1,11 @@
+# 1.24.1
+
+  ### Python (pypi)
+
+  - Fixed replacement bug in pyproject.toml packages without versions
+
+    Relates to [#407](https://gitlab.com/versionlens/vscode-versionlens/-/issues/407)
+
 # 1.24.0
 
   ### Ruby (gem)
