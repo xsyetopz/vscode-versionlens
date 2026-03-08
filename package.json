@@ -470,7 +470,7 @@
         },
         "versionlens.pnpm.files": {
           "type": "string",
-          "default": "**/pnpm-workspace.yaml",
+          "default": "**/{pnpm-workspace.yaml,.yarnrc.yml}",
           "description": "Specifies which files to register with version lenses. You can use [micromatch](https://github.com/micromatch/micromatch) expressions to match file names. You will need to restart vscode when changing this setting."
         },
         "versionlens.pnpm.dependencyProperties": {

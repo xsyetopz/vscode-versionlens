@@ -1,8 +1,12 @@
 # next
 
-  ### Npm
+  ### Bun
 
-  - [bun] Included `workspaces.catalog` and `workspaces.catalogs.*` in the default `versionlens.npm.dependencyProperties` list.
+  - Included `workspaces.catalog` and `workspaces.catalogs.*` in the default `versionlens.npm.dependencyProperties` list.
+
+  ### Yarn
+
+  - Added .yarnrc.yml catalog support
 
   ### All
 
