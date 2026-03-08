@@ -1,5 +1,6 @@
 # Commands & Settings
 
+- [Show & Hide Versions](#show--hide-versions)
 - [Clear Cache](#clear-cache)
 - [Bulk Updates](#bulk-updates)
 - [Sorting Dependencies](#sorting-dependencies)
@@ -8,6 +9,18 @@
 - [Key Settings](#key-settings)
 
 ---
+
+### Show & Hide Versions
+
+**Commands:** 
+- `VersionLens: Show release versions` / `VersionLens: Hide release versions`
+- `VersionLens: Show prerelease versions` / `VersionLens: Hide prerelease versions`
+
+Toggles the visibility of version suggestions in the editor.
+
+These commands are available in the:
+- **Editor Toolbar:** As the **V** and **tag** icons, and in the `...` (secondary) menu.
+- **Command Palette:** `Ctrl+Shift+P` / `Cmd+Shift+P` then type `VersionLens: Show...`.
 
 ### Clear Cache
 
@@ -19,15 +32,24 @@ By default, VersionLens caches suggestions for 3 minutes (configurable via `vers
 
 ### Bulk Updates
 
-**Command:** `VersionLens: Update dependencies to latest`
+**Commands:** 
+- `VersionLens: Update dependencies to latest`
+- `VersionLens: Update dependencies (major-only)`
+- `VersionLens: Update dependencies (minor-only)`
+- `VersionLens: Update dependencies (patch-only)`
 
-Bulk updates all dependencies in the active file to their latest available versions.
+Bulk updates dependencies in the active file based on their available suggestions.
 
-This command is available in the:
+These commands are available in the:
 - **Editor Toolbar:** In the `...` (secondary) menu.
-- **Command Palette:** `Ctrl+Shift+P` / `Cmd+Shift+P` then type `VersionLens: Update dependencies to latest`.
+- **Command Palette:** `Ctrl+Shift+P` / `Cmd+Shift+P` then type `VersionLens: Update dependencies...`.
 
-When executed, it will identify all dependencies with an **Updateable** status that are currently behind the **Latest** version and update their version strings in the document.
+#### Update Behaviors
+
+- **Update dependencies to latest:** Identifies all dependencies with an **Updateable** status that are currently behind the **Latest** version and updates them.
+- **Update dependencies (major-only):** Updates dependencies to their next available **Major** version suggestion.
+- **Update dependencies (minor-only):** Updates dependencies to their next available **Minor** version suggestion.
+- **Update dependencies (patch-only):** Updates dependencies to their next available **Patch** version suggestion.
 
 ### Sorting Dependencies
 

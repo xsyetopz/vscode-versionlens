@@ -12,13 +12,17 @@
 
   - New Menu Actions
 
+    - Added show\hide release\prerelease version menu items to secondary menu group (still keeping the typical **V** and **tag** icons)
+
+      Relates to [#406](https://gitlab.com/versionlens/vscode-versionlens/-/issues/406)
+
     - Added `Update dependencies (major-only)` action to the `secondary` toolbar group. This will update all dependencies that have a newer major version available.
 
     - Added `Update dependencies (minor-only)` action to the `secondary` toolbar group. This will update all dependencies that have a newer minor version available.
 
     - Added `Update dependencies (patch-only)` action to the `secondary` toolbar group. This will update all dependencies that have a newer patch version available.
 
-    ![image](https://gitlab.com/-/project/19418059/uploads/dae7abdd645a447c0b6d245c196ef219/image.png)
+    ![image](https://gitlab.com/-/project/19418059/uploads/831cd7682f75c47a70cc3e6b30aeba2f/image.png)
 
 # 1.24.1
 

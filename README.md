@@ -47,13 +47,17 @@ VersionLens supports a wide range of ecosystems:
 
 ## How do I see version information for a package?
 
-Select the **V** icon in the package/project file toolbar.
+Select the **V** icon in the package/project file toolbar. 
+
+> You can also find this in the editor `...` (secondary) menu as **Show release versions**.
 
 You can also set the default startup state using `versionlens.suggestions.showOnStartup` in your settings.
 
 ## Can I see pre-release versions?
 
 Yes, select the **tag** icon in the package/project file toolbar.
+
+> You can also find this in the editor `...` (secondary) menu as **Show prerelease versions**.
 
 You can also set the default startup state using `versionlens.suggestions.showPrereleasesOnStartup`.
 

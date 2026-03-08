@@ -105,7 +105,7 @@
     "commands": [
       {
         "command": "versionlens.editor.onShowVersionLenses",
-        "title": "Show releases versions",
+        "title": "Show release versions",
         "category": "VersionLens",
         "icon": {
           "dark": "images/icons/toggle-inactive.svg",
@@ -114,7 +114,7 @@
       },
       {
         "command": "versionlens.editor.onHideVersionLenses",
-        "title": "Hide releases versions",
+        "title": "Hide release versions",
         "category": "VersionLens",
         "icon": "images/icons/toggle-active.svg"
       },
@@ -133,7 +133,7 @@
       },
       {
         "command": "versionlens.editor.onShowPrereleaseVersions",
-        "title": "Show prereleases versions",
+        "title": "Show prerelease versions",
         "category": "VersionLens",
         "icon": {
           "dark": "images/icons/tag-inactive.svg",
@@ -142,7 +142,7 @@
       },
       {
         "command": "versionlens.editor.onHidePrereleaseVersions",
-        "title": "Hide prereleases versions",
+        "title": "Hide prerelease versions",
         "category": "VersionLens",
         "icon": "images/icons/tag-active.svg"
       },
@@ -253,6 +253,26 @@
           "command": "versionlens.editor.onHidePrereleaseVersions",
           "when": "versionlens.showPrereleases && versionlens.show && versionlens.providerActive && textCompareEditorVisible == false",
           "group": "navigation@1.1"
+        },
+        {
+          "command": "versionlens.editor.onShowVersionLenses",
+          "when": "versionlens.show == false && versionlens.providerActive && versionlens.providerBusy == false && versionlens.providerError == false && textCompareEditorVisible == false",
+          "group": "secondary_versionlens@1"
+        },
+        {
+          "command": "versionlens.editor.onHideVersionLenses",
+          "when": "versionlens.show && versionlens.providerActive && versionlens.providerBusy == false && versionlens.providerError == false  && textCompareEditorVisible == false",
+          "group": "secondary_versionlens@1"
+        },
+        {
+          "command": "versionlens.editor.onShowPrereleaseVersions",
+          "when": "versionlens.showPrereleases == false && versionlens.show && versionlens.providerActive && textCompareEditorVisible == false",
+          "group": "secondary_versionlens@2"
+        },
+        {
+          "command": "versionlens.editor.onHidePrereleaseVersions",
+          "when": "versionlens.showPrereleases && versionlens.show && versionlens.providerActive && textCompareEditorVisible == false",
+          "group": "secondary_versionlens@2"
         },
         {
           "command": "versionlens.editor.onCustomInstall",
@@ -420,7 +440,7 @@
           "uniqueItems": true,
           "minItems": 0,
           "default": [],
-          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prereleases' icon is activated."
+          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prerelease' icon is activated."
         },
         "versionlens.deno.onSaveChanges": {
           "type": "string",
@@ -466,7 +486,7 @@
           "uniqueItems": true,
           "minItems": 0,
           "default": [],
-          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prereleases' icon is activated."
+          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prerelease' icon is activated."
         },
         "versionlens.pnpm.files": {
           "type": "string",
@@ -543,7 +563,7 @@
           "uniqueItems": true,
           "minItems": 0,
           "default": [],
-          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prereleases' icon is activated."
+          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prerelease' icon is activated."
         },
         "versionlens.dotnet.onSaveChanges": {
           "type": "string",
@@ -606,7 +626,7 @@
           "uniqueItems": true,
           "minItems": 0,
           "default": [],
-          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prereleases' icon is activated."
+          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prerelease' icon is activated."
         },
         "versionlens.dub.onSaveChanges": {
           "type": "string",
@@ -658,7 +678,7 @@
           "uniqueItems": true,
           "minItems": 0,
           "default": [],
-          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prereleases' icon is activated."
+          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prerelease' icon is activated."
         },
         "versionlens.cargo.onSaveChanges": {
           "type": "string",
@@ -717,7 +737,7 @@
           "uniqueItems": true,
           "minItems": 0,
           "default": [],
-          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prereleases' icon is activated."
+          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prerelease' icon is activated."
         },
         "versionlens.composer.onSaveChanges": {
           "type": "string",
@@ -770,7 +790,7 @@
           "uniqueItems": true,
           "minItems": 0,
           "default": [],
-          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prereleases' icon is activated."
+          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prerelease' icon is activated."
         },
         "versionlens.docker.files": {
           "type": "string",
@@ -842,7 +862,7 @@
           "uniqueItems": true,
           "minItems": 0,
           "default": [],
-          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prereleases' icon is activated."
+          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prerelease' icon is activated."
         },
         "versionlens.pypi.onSaveChanges": {
           "type": "string",
@@ -898,7 +918,7 @@
           "uniqueItems": true,
           "minItems": 0,
           "default": [],
-          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prereleases' icon is activated."
+          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prerelease' icon is activated."
         },
         "versionlens.golang.onSaveChanges": {
           "type": "string",
@@ -937,7 +957,7 @@
           "uniqueItems": true,
           "minItems": 0,
           "default": [],
-          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prereleases' icon is activated."
+          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prerelease' icon is activated."
         },
         "versionlens.ruby.onSaveChanges": {
           "type": "string",
@@ -976,7 +996,7 @@
           "uniqueItems": true,
           "minItems": 0,
           "default": [],
-          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prereleases' icon is activated."
+          "description": "Defines a list of prerelease tags you only want to see. i.e. ['alpha', 'beta']. If you don't specify any prerelease tags then all the prerelease tags newer the the latest version are shown when the 'show prerelease' icon is activated."
         }
       }
     }
