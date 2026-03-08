@@ -1,28 +1,27 @@
-# next
+# 1.25.0-prerelease
 
   ### Bun
 
   - Included `workspaces.catalog` and `workspaces.catalogs.*` in the default `versionlens.npm.dependencyProperties` list.
 
+    Relates to [#396](https://gitlab.com/versionlens/vscode-versionlens/-/issues/396)
+
   ### Yarn
 
-  - Added .yarnrc.yml catalog support
+  - Added .yarnrc.yml `catalog` codelens suggestions
 
   ### All
 
-  - New Menu Actions
-
-    - Added show\hide release\prerelease version menu items to secondary menu group (still keeping the typical **V** and **tag** icons)
+  - **New Secondary Menu Actions**
+    - Added `Show release version` and `Show prerelease version` toggle actions.
 
       Relates to [#406](https://gitlab.com/versionlens/vscode-versionlens/-/issues/406)
 
-    - Added `Update dependencies (major-only)` action to the `secondary` toolbar group. This will update all dependencies that have a newer major version available.
+    - Added `Update dependencies (major-only)`.
+    - Added `Update dependencies (minor-only)`.
+    - Added `Update dependencies (patch-only)`.
 
-    - Added `Update dependencies (minor-only)` action to the `secondary` toolbar group. This will update all dependencies that have a newer minor version available.
-
-    - Added `Update dependencies (patch-only)` action to the `secondary` toolbar group. This will update all dependencies that have a newer patch version available.
-
-    ![image](https://gitlab.com/-/project/19418059/uploads/831cd7682f75c47a70cc3e6b30aeba2f/image.png)
+    ![image](https://gitlab.com/-/project/19418059/uploads/9e92e0f00d98aa319a633c134b3e194a/image.png)
 
 # 1.24.1
 
