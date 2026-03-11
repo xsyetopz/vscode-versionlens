@@ -44,4 +44,38 @@ export class JsonHttpClient implements IJsonHttpClient {
     }
   }
 
+  /**
+   * Performs a POST request and parses the response data as JSON.
+   * @template TData The expected type of the JSON data.
+   * @param url The URL to request.
+   * @param data The JSON data to send.
+   * @param query Optional query parameters.
+   * @param headers Optional HTTP headers.
+   * @returns A promise resolving to the JSON client response.
+   */
+  async post<TData>(
+    url: string,
+    data: any,
+    query: QueryDictionary = {},
+    headers: KeyStringDictionary = {}
+  ): Promise<JsonClientResponse<TData>> {
+    const body = JSON.stringify(data);
+    const response = await this.httpClient.post(
+      url,
+      body,
+      query,
+      {
+        ...defaultHeaders,
+        'Content-Type': 'application/json',
+        ...headers
+      }
+    )
+
+    return {
+      source: response.source,
+      status: response.status,
+      data: response.data ? JSON.parse(response.data) : null,
+    }
+  }
+
 }

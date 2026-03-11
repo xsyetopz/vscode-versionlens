@@ -353,6 +353,11 @@
           "default": false,
           "description": "Show the stats of all suggestions in the status bar."
         },
+        "versionlens.suggestions.showVulnerabilities": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show package vulnerabilities as red squiggles in the editor."
+        },
         "versionlens.suggestions.indicators": {
           "type": "object",
           "default": {

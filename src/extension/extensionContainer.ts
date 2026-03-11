@@ -50,7 +50,8 @@ import {
   addSuggestionOptions,
   addVersionLensExtension,
   addVersionLensProviders,
-  addVersionLensState
+  addVersionLensState,
+  addVulnerabilityProvider
 } from './serviceFactory';
 import { VersionLensExtension } from './versionLensExtension';
 import { addPackageFileWatcher } from './watcher/serviceFactory';
@@ -108,6 +109,7 @@ function addExtensionServices(
   addProviderNames(services);
   addSuggestionOptions(services);
   addVersionLensState(services);
+  addVulnerabilityProvider(services);
   addVersionLensExtension(services);
   addVersionLensProviders(services);
   addEditorDependencyCache(services);

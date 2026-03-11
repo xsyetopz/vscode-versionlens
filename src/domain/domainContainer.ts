@@ -9,8 +9,11 @@ import {
   addGetDependencyChangesUseCase,
   addGetSuggestionProviderUseCase,
   addGetSuggestionsStatsUseCase,
+  addGetVulnerabilitiesUseCase,
   addSortDependenciesUseCase,
   addHttpOptions,
+  addOsvClient,
+  addOsvRequestCache,
   addShellCache,
   addSuggestionPackageCache,
   addSuggestionProviders,
@@ -44,9 +47,13 @@ export function addDomainServices(
   addSuggestionPackageCache(services);
   addShellCache(services);
   addUrlRequestCache(services);
+  addOsvRequestCache(services);
 
   // logging
   addLoggerFactory(services);
+
+  // clients
+  addOsvClient(services);
 
   // providers
   addSuggestionProviders(services);
@@ -57,5 +64,6 @@ export function addDomainServices(
   addGetSuggestionProviderUseCase(services);
   addGetDependencyChangesUseCase(services);
   addGetSuggestionsStatsUseCase(services);
+  addGetVulnerabilitiesUseCase(services);
   addSortDependenciesUseCase(services);
 }

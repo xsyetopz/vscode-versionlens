@@ -1,6 +1,6 @@
 import type { IFrozenOptions } from '#domain/configuration';
 import { VersionLensState } from '#extension/state';
-import { SuggestionsOptions } from '#extension/suggestions';
+import { SuggestionsOptions, VulnerabilityProvider } from '#extension/suggestions';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 /**
@@ -16,17 +16,20 @@ export class VersionLensExtension {
    * @param config The application configuration.
    * @param state The extension state.
    * @param suggestionOptions The suggestion options.
+   * @param vulnerabilityProvider The vulnerability diagnostic provider.
    * @param projectPath The root path of the project.
    */
   constructor(
     readonly config: IFrozenOptions,
     readonly state: VersionLensState,
     readonly suggestionOptions: SuggestionsOptions,
+    readonly vulnerabilityProvider: VulnerabilityProvider,
     readonly projectPath: string
   ) {
     throwUndefinedOrNull("config", config);
     throwUndefinedOrNull("state", state);
     throwUndefinedOrNull("suggestionOptions", suggestionOptions);
+    throwUndefinedOrNull("vulnerabilityProvider", vulnerabilityProvider);
     throwUndefinedOrNull("projectPath", projectPath);
   }
 

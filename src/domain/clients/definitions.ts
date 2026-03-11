@@ -62,7 +62,9 @@ export enum HttpClientRequestMethods {
   /** GET method. */
   get = 'GET',
   /** HEAD method. */
-  head = 'HEAD'
+  head = 'HEAD',
+  /** POST method. */
+  post = 'POST'
 }
 
 /**
@@ -71,13 +73,25 @@ export enum HttpClientRequestMethods {
 export type QueryDictionary = KeyDictionary<string | number | boolean>
 
 /**
- * Function signature for making an HTTP client request.
+ * Function signature for making an HTTP GET request.
  */
-export interface THttpClientRequestFn {
+export interface THttpGetRequestFn {
   (
     url: string,
     query?: QueryDictionary,
-    headers?: KeyStringDictionary,
+    headers?: KeyStringDictionary
+  ): Promise<HttpClientResponse>;
+}
+
+/**
+ * Function signature for making an HTTP POST request.
+ */
+export interface THttpPostRequestFn {
+  (
+    url: string,
+    data?: string,
+    query?: QueryDictionary,
+    headers?: KeyStringDictionary
   ): Promise<HttpClientResponse>;
 }
 
@@ -86,7 +100,9 @@ export interface THttpClientRequestFn {
  */
 export interface IHttpClient {
   /** Performs a GET request. */
-  get: THttpClientRequestFn;
+  get: THttpGetRequestFn;
+  /** Performs a POST request. */
+  post: THttpPostRequestFn;
 }
 
 /**
@@ -102,11 +118,30 @@ export interface IJsonHttpClient {
   /** The underlying HTTP client. */
   httpClient: IHttpClient;
   /**
-   * Performs a GET request and parses the response as JSON.
+   * Performs a GET request and parses the response data as JSON.
    * @template TData The expected type of the JSON data.
+   * @param url The URL to request.
+   * @param query Optional query parameters.
+   * @param headers Optional HTTP headers.
+   * @returns A promise resolving to the JSON client response.
    */
   get<TData = KeyDictionary<any>>(
     url: string,
+    query?: QueryDictionary,
+    headers?: KeyStringDictionary,
+  ): Promise<JsonClientResponse<TData>>;
+  /**
+   * Performs a POST request and parses the response data as JSON.
+   * @template TData The expected type of the JSON data.
+   * @param url The URL to request.
+   * @param data The JSON data to send.
+   * @param query Optional query parameters.
+   * @param headers Optional HTTP headers.
+   * @returns A promise resolving to the JSON client response.
+   */
+  post<TData = KeyDictionary<any>>(
+    url: string,
+    data: any,
     query?: QueryDictionary,
     headers?: KeyStringDictionary,
   ): Promise<JsonClientResponse<TData>>;
@@ -150,3 +185,30 @@ export type GithubCommitsApiResult = [{ sha: string }]
  * Represents the processed GitHub JSON client response.
  */
 export type GithubJsonClientResponse = JsonClientResponse<string[]>
+
+/**
+ * Represents an OSV vulnerability entry.
+ */
+export type OsvVulnerability = {
+  /** The unique identifier for the vulnerability. */
+  id: string;
+  /** The date the vulnerability was last modified. */
+  modified: string;
+  /** A short summary of the vulnerability. */
+  summary?: string;
+  /** A detailed description of the vulnerability. */
+  details?: string;
+}
+
+/**
+ * Represents the structure of an OSV query response.
+ */
+export type OsvQueryApiResult = {
+  /** The list of vulnerabilities found. */
+  vulns?: Array<OsvVulnerability>;
+}
+
+/**
+ * Represents the processed OSV client response.
+ */
+export type OsvClientResponse = JsonClientResponse<Array<OsvVulnerability>>;

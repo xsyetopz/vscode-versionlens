@@ -67,4 +67,12 @@ export class SuggestionsOptions extends OptionsWithFallback {
     return this.get(SuggestionFeatures.Indicators)!;
   }
 
+  /** Gets whether to show vulnerabilities. */
+  get showVulnerabilities(): boolean {
+    return this.getOrDefault<boolean>(
+      SuggestionFeatures.ShowVulnerabilities,
+      true
+    );
+  }
+
 }

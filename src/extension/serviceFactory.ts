@@ -5,7 +5,7 @@ import { GetSuggestions } from '#domain/useCases';
 import { DisposableArray } from '#domain/utils';
 import { ExtensionServiceName, VersionLensExtension, type IExtensionServices } from '#extension';
 import { VersionLensState } from '#extension/state';
-import { SuggestionCodeLensProvider, SuggestionsOptions } from '#extension/suggestions';
+import { SuggestionCodeLensProvider, SuggestionsOptions, VulnerabilityProvider } from '#extension/suggestions';
 import { EditorConfig } from '#extension/vscode';
 import { EventEmitter, languages, workspace, type DocumentFilter } from 'vscode';
 
@@ -65,9 +65,35 @@ export function addVersionLensExtension(services: IServiceCollection) {
         container.appConfig,
         container.versionLensState,
         container.suggestionOptions,
+        container.vulnerabilityProvider,
         projectPath
       )
   )
+}
+
+/**
+ * Registers the vulnerability diagnostic provider as a singleton.
+ * @param services The service collection to add to.
+ */
+export function addVulnerabilityProvider(services: IServiceCollection) {
+  const serviceName = ExtensionServiceName.vulnerabilityProvider;
+  services.addSingleton(
+    serviceName,
+    (container: IDomainServices & IExtensionServices) => {
+      const diagnostics = languages.createDiagnosticCollection('versionlens-vulnerabilities');
+      const provider = new VulnerabilityProvider(
+        container.versionLensState,
+        container.getVulnerabilities,
+        diagnostics,
+        container.suggestionOptions,
+        container.loggerFactory.create(serviceName)
+      );
+
+      provider.disposables.push(diagnostics as any);
+
+      return provider;
+    }
+  );
 }
 
 /**

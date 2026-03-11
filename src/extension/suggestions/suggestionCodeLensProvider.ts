@@ -102,6 +102,14 @@ export class SuggestionCodeLensProvider extends Disposable implements CodeLensPr
         packageFilePath,
         this.state.showPrereleases.value
       );
+
+      // check vulnerabilities
+      await this.extension.vulnerabilityProvider.update(
+        this.suggestionProvider,
+        document,
+        suggestions
+      );
+
     } catch (error) {
       await this.state.setErrorState();
       await this.state.clearBusyState();

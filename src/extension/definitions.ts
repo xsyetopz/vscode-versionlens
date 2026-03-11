@@ -36,7 +36,11 @@ import type {
   UrlAuthenticationStore
 } from '#extension/authorization';
 import type { VersionLensState } from '#extension/state';
-import type { SuggestionCodeLensProvider, SuggestionsOptions } from '#extension/suggestions';
+import type {
+  SuggestionCodeLensProvider,
+  SuggestionsOptions,
+  VulnerabilityProvider
+} from '#extension/suggestions';
 import type { EditorConfig, IVsCodeConstructFactory } from '#extension/vscode';
 import type { PackageFileWatcher } from '#extension/watcher';
 import type { LogOutputChannel, Range, Uri } from 'vscode';
@@ -135,6 +139,8 @@ export enum SuggestionFeatures {
   ShowCustomInstallAction = 'showCustomInstallAction',
   /** Key for showing the alphabetical sort icon in the editor toolbar. */
   ShowSortAlphabeticallyAction = 'showSortAlphabeticallyAction',
+  /** Key for showing vulnerabilities. */
+  ShowVulnerabilities = 'showVulnerabilities',
 }
 
 /**
@@ -157,6 +163,8 @@ export interface IExtensionServices {
   editorDependencyCache: DependencyCache
   /** The package file watcher. */
   packageFileWatcher: PackageFileWatcher
+  /** The provider for package vulnerabilities. */
+  vulnerabilityProvider: VulnerabilityProvider
 
   // vscode adapters
   /** VS Code editor configuration. */

@@ -1,6 +1,6 @@
 import { type IDomainServices, DomainServiceName } from '#domain';
 import { CachingOptions, MemoryExpiryCache } from '#domain/caching';
-import { HttpOptions } from '#domain/clients';
+import { createJsonClient, HttpOptions, OsvClient } from '#domain/clients';
 import { type ConfigSectionResolver, Config } from '#domain/configuration';
 import type { IServiceCollection } from '#domain/di';
 import { DependencyCache, PackageCache } from '#domain/packages';
@@ -12,6 +12,7 @@ import {
   GetDependencyChanges,
   GetSuggestionProvider,
   GetSuggestionsStats,
+  GetVulnerabilities,
   SortDependencies
 } from '#domain/useCases';
 import { EventScheduler } from '#domain/utils';
@@ -122,6 +123,37 @@ export function addUrlRequestCache(services: IServiceCollection) {
 }
 
 /**
+ * Registers the OSV request cache as a singleton.
+ * @param services The service collection to add to.
+ */
+export function addOsvRequestCache(services: IServiceCollection) {
+  const serviceName = DomainServiceName.osvRequestCache;
+  services.addSingleton(serviceName, new MemoryExpiryCache(serviceName)
+  );
+}
+
+/**
+ * Registers the OsvClient as a singleton.
+ * @param services The service collection to add to.
+ */
+export function addOsvClient(services: IServiceCollection) {
+  services.addSingleton(
+    DomainServiceName.osvClient,
+    (container: IDomainServices) => new OsvClient(
+      container.cachingOptions,
+      createJsonClient(
+        container.authorizer,
+        {
+          caching: container.cachingOptions,
+          http: container.httpOptions
+        }
+      ),
+      container.osvRequestCache
+    )
+  );
+}
+
+/**
  * Registers the GetSuggestionProvider use case as a singleton.
  * @param services The service collection to add to.
  */
@@ -177,6 +209,22 @@ export function addFetchPackageSuggestionsUseCase(services: IServiceCollection) 
     (container: IDomainServices) =>
       new FetchPackage(
         container.packageCache,
+        container.loggerFactory.create(serviceName)
+      )
+  );
+}
+
+/**
+ * Registers the GetVulnerabilities use case as a singleton.
+ * @param services The service collection to add to.
+ */
+export function addGetVulnerabilitiesUseCase(services: IServiceCollection) {
+  const serviceName = DomainServiceName.getVulnerabilities;
+  services.addSingleton(
+    serviceName,
+    (container: IDomainServices) =>
+      new GetVulnerabilities(
+        container.osvClient,
         container.loggerFactory.create(serviceName)
       )
   );

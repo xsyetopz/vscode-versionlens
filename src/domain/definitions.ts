@@ -1,6 +1,6 @@
 import type { IAuthorizer } from '#domain/authorization';
 import type { CachingOptions, IExpiryCache } from '#domain/caching';
-import type { HttpOptions } from '#domain/clients';
+import type { HttpOptions, OsvClient } from '#domain/clients';
 import type { Config } from '#domain/configuration';
 import type { IServiceCollectionFactory, IServiceProvider } from '#domain/di';
 import type { ILoggerSink, LoggerFactory } from '#domain/logging';
@@ -14,6 +14,7 @@ import type {
   GetSuggestionProvider,
   GetSuggestions,
   GetSuggestionsStats,
+  GetVulnerabilities,
   SortDependencies
 } from '#domain/useCases';
 import { type EventScheduler, nameOf } from '#domain/utils';
@@ -54,6 +55,10 @@ export interface IDomainServices {
   shellCache: IExpiryCache
   /** Cache for URL-based requests. */
   urlRequestCache: IExpiryCache
+  /** Cache for OSV-based requests. */
+  osvRequestCache: IExpiryCache
+  /** Client for OSV API. */
+  osvClient: OsvClient
   /** Use case for matching files to providers. */
   GetSuggestionProvider: GetSuggestionProvider
   /** Use case for batch fetching package data. */
@@ -66,6 +71,8 @@ export interface IDomainServices {
   getDependencyChanges: GetDependencyChanges
   /** Use case for generating suggestion statistics. */
   getSuggestionsStats: GetSuggestionsStats
+  /** Use case for getting vulnerabilities for a package. */
+  getVulnerabilities: GetVulnerabilities
   /** Use case for sorting dependencies alphabetically. */
   sortDependencies: SortDependencies
 }
