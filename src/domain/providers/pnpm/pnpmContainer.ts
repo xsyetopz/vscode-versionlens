@@ -1,20 +1,39 @@
-import type { IServiceCollection, IServiceProvider } from '#domain/di';
-import { addPnpmConfig, addSuggestionProvider } from './serviceFactory.js';
+import { CachingOptions } from '#domain/caching';
+import { HttpOptions } from '#domain/clients';
+import { ServiceCollection } from '#domain';
+import { IDomainServices } from 'src/domain/definitions';
+import { IPnpmServices, PnpmConfig, PnpmFeatures, PnpmServiceName, PnpmSuggestionProvider } from '.';
 
 /**
- * Configures the PNPM service container by registering all necessary services.
- * @param serviceProvider The root service provider.
+ * Registers all PNPM-specific services into the provided service collection.
  * @param services The service collection to configure.
- * @returns A promise that resolves to the newly built child service provider.
  */
-export async function configureContainer(
-  serviceProvider: IServiceProvider,
-  services: IServiceCollection
-): Promise<IServiceProvider> {
+export function registerServices(services: ServiceCollection<IDomainServices & IPnpmServices>) {
 
-  addPnpmConfig(services);
+  services.addSingletonFactory(
+    PnpmServiceName.pnpmCachingOpts,
+    c => new CachingOptions(c.appConfig, PnpmFeatures.Caching, 'caching')
+  );
 
-  addSuggestionProvider(services);
+  services.addSingletonFactory(
+    PnpmServiceName.pnpmHttpOpts,
+    c => new HttpOptions(c.appConfig, PnpmFeatures.Http, 'http')
+  );
 
-  return await services.buildChild('pnpm', serviceProvider);
+  services.addSingletonFactory(
+    PnpmServiceName.pnpmConfig,
+    c => new PnpmConfig(c.appConfig, c.pnpmCachingOpts, c.pnpmHttpOpts)
+  );
+
+  services.addSingletonFactory(
+    "pnpm.suggestionProvider" as any,
+    c => {
+      return new PnpmSuggestionProvider(
+        c.pnpmConfig,
+        (c as any)['npm.suggestionProvider'],
+        c.loggerFactory(PnpmSuggestionProvider)
+      );
+    }
+  );
+
 }

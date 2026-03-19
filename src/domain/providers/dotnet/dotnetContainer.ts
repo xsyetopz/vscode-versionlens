@@ -1,41 +1,91 @@
-import type { IServiceCollection, IServiceProvider } from '#domain/di';
+import { CachingOptions } from '#domain/caching';
+import { createJsonClient, createShellClient, HttpOptions } from '#domain/clients';
+import { ServiceCollection } from '#domain';
 import {
-  addCachingOptions,
-  addCliClient,
-  addDotNetConfig,
-  addDotnetSuggestionResolver,
-  addHttpOptions,
-  addNuGetClient,
-  addNugetOptions,
-  addSuggestionProvider
+  DotNetCli,
+  DotNetConfig,
+  DotNetFeatures,
+  DotNetServiceName,
+  DotNetSuggestionProvider,
+  DotnetSuggestionResolver,
+  IDotNetServices,
+  NuGetClient,
+  NugetOptions
 } from '#domain/providers/dotnet';
+import { IDomainServices } from 'src/domain/definitions';
 
 /**
- * Configures the DotNet service container by registering all necessary services.
- * @param serviceProvider The root service provider.
+ * Registers all DotNet-specific services into the provided service collection.
  * @param services The service collection to configure.
- * @returns A promise that resolves to the newly built child service provider.
  */
-export async function configureContainer(
-  serviceProvider: IServiceProvider,
-  services: IServiceCollection
-): Promise<IServiceProvider> {
+export function registerServices(services: ServiceCollection<IDomainServices & IDotNetServices>) {
 
-  addCachingOptions(services);
+  services.addSingletonFactory(
+    DotNetServiceName.dotnetCachingOpts,
+    c => new CachingOptions(c.appConfig, DotNetFeatures.Caching, 'caching')
+  );
 
-  addNugetOptions(services);
+  services.addSingletonFactory(
+    DotNetServiceName.dotnetHttpOpts,
+    c => new HttpOptions(c.appConfig, DotNetFeatures.Http, 'http')
+  );
 
-  addHttpOptions(services);
+  services.addSingletonFactory(
+    DotNetServiceName.nugetOpts,
+    c => new NugetOptions(c.appConfig, DotNetFeatures.Nuget)
+  );
 
-  addDotNetConfig(services);
+  services.addSingletonFactory(
+    DotNetServiceName.dotnetConfig,
+    c => new DotNetConfig(
+      c.appConfig,
+      c.dotnetCachingOpts,
+      c.dotnetHttpOpts,
+      c.nugetOpts
+    )
+  );
 
-  addCliClient(services);
+  services.addSingletonFactory(
+    DotNetServiceName.dotnetCli,
+    c => new DotNetCli(
+      c.dotnetConfig,
+      createShellClient(
+        c.shellCache,
+        c.dotnetCachingOpts,
+        c.loggerFactory(DotNetCli)
+      ),
+      c.loggerFactory(DotNetCli)
+    )
+  );
 
-  addDotnetSuggestionResolver(services);
+  services.addSingletonFactory(
+    DotNetServiceName.nugetClient,
+    c => new NuGetClient(
+      c.dotnetConfig,
+      createJsonClient(c.authorizer, c.dotnetHttpOpts),
+      c.urlRequestCache,
+      c.loggerFactory(NuGetClient)
+    )
+  );
 
-  addNuGetClient(services);
+  services.addSingletonFactory(
+    DotNetServiceName.dotnetSuggestionResolver,
+    c => new DotnetSuggestionResolver(
+      c.dotnetConfig,
+      c.nugetClient,
+      c.loggerFactory(DotnetSuggestionResolver)
+    )
+  );
 
-  addSuggestionProvider(services);
+  services.addSingletonFactory(
+    "dotnet.suggestionProvider" as any,
+    c => new DotNetSuggestionProvider(
+      c.dotnetSuggestionResolver,
+      c.dotnetCli,
+      c.nugetClient,
+      c.dotnetConfig,
+      c.loggerFactory(DotNetSuggestionProvider)
+    )
+  );
 
-  return await services.buildChild("dotnet", serviceProvider);
 }

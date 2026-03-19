@@ -1,22 +1,15 @@
-import type { IDomainServices } from '#domain';
-import type { IServiceProvider } from '#domain/di';
-import { type LoggerFactory, LogLevel } from '#domain/logging';
+import type { IDomainServices, ServiceProvider } from '#domain';
+import { LogLevel } from '#domain/logging';
 import { nameOf } from '#domain/utils';
-import type {
-  IExtensionServices,
-  OnActiveTextEditorChange,
-  VersionLensExtension
-} from '#extension';
-import type { EditorConfig } from '#extension/vscode';
+import type { IExtensionServices } from '#extension';
 import { dirname, join } from 'node:path';
-import { type ExtensionContext, type LogOutputChannel, window } from 'vscode';
+import { type ExtensionContext, window } from 'vscode';
 import { configureContainer } from './extensionContainer';
-import type { PackageFileWatcher } from './watcher';
 
 /**
  * The root service provider for the extension.
  */
-let serviceProvider: IServiceProvider;
+let serviceProvider: ServiceProvider<IDomainServices & IExtensionServices>;
 
 /**
  * Activates the VersionLens extension.
@@ -28,21 +21,17 @@ export async function activate(context: ExtensionContext): Promise<void> {
   const resourceFolderPath = await getResourceFolderPath(context);
 
   // create the ioc service provider
-  serviceProvider = await configureContainer(context, resourceFolderPath);
+  serviceProvider = configureContainer(context, resourceFolderPath);
 
   const serviceNames = nameOf<IDomainServices & IExtensionServices>();
 
   // get the logger
-  const loggerFactory = serviceProvider.getService<LoggerFactory>(serviceNames.loggerFactory);
-  const logger = loggerFactory.create('activate');
-  const logOutputChannel = serviceProvider.getService<LogOutputChannel>(
-    serviceNames.logOutputChannel
-  );
+  const loggerFactory = serviceProvider.getService(serviceNames.loggerFactory);
+  const logger = loggerFactory('activate');
+  const logOutputChannel = serviceProvider.getService(serviceNames.logOutputChannel);
 
   // get the editorConfig
-  const editorConfig = serviceProvider.getService<EditorConfig>(
-    serviceNames.editorConfig
-  );
+  const editorConfig = serviceProvider.getService(serviceNames.editorConfig);
 
   // check editor.codeLens is enabled
   if (editorConfig.codeLens === false) {
@@ -52,9 +41,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   }
 
   // get the extension info
-  const extension = serviceProvider.getService<VersionLensExtension>(
-    serviceNames.extension
-  );
+  const extension = serviceProvider.getService(serviceNames.extension);
   const extensionPath = context.asAbsolutePath("");
 
   // log general start up info
@@ -65,10 +52,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
   logger.info("log level: {logLevel}", LogLevel[logOutputChannel.logLevel]);
   logger.info("log folder: {logPath}", join(context.logUri.fsPath, ".."));
 
+  await serviceProvider.getService(serviceNames.versionLensState).applyDefaults();
+
   // setup package dependency watcher
-  const watcher = serviceProvider.getService<PackageFileWatcher>(
-    serviceNames.packageFileWatcher
-  );
+  const watcher = serviceProvider.getService(serviceNames.packageFileWatcher);
 
   if (extension.isWorkspaceMode)
     // watch workspace project files
@@ -92,8 +79,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
     serviceNames.onUpdateDependenciesPatch,
     serviceNames.onChooseBuildClick,
     serviceNames.onSortDependencies,
-    serviceNames.onRefreshSuggestionsStats,
-    serviceNames.onShowSuggestionsStatsDetails,
     // editorTitleBar events
     serviceNames.onCustomInstallClick,
     serviceNames.onErrorClick,
@@ -109,11 +94,13 @@ export async function activate(context: ExtensionContext): Promise<void> {
     serviceNames.onPackageDependenciesChanged
   ];
 
-  instantiateDeps.forEach(x => serviceProvider.getService(x));
+  for (const name of instantiateDeps) {
+    serviceProvider.getService(name);
+  }
 
   // ensure this is run when the extension is first loaded
-  serviceProvider.getService<OnActiveTextEditorChange>(serviceNames.onActiveTextEditorChange)
-    .execute(window.activeTextEditor)
+  const onActiveTextEditorChange = serviceProvider.getService(serviceNames.onActiveTextEditorChange);
+  onActiveTextEditorChange.execute(window.activeTextEditor)
 }
 
 /**
@@ -121,7 +108,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
  * Called by VS Code when the extension is being shut down.
  */
 export async function deactivate() {
-  await serviceProvider.dispose();
+  if (serviceProvider) await serviceProvider.disposeAsync();
 }
 
 /**

@@ -18,7 +18,7 @@ export enum GoFeatures {
 /**
  * Defines the services provided by the Go provider.
  */
-export interface IGoService {
+export interface IGoServices {
   /**
    * Caching options for Go.
    */
@@ -44,7 +44,7 @@ export interface IGoService {
 /**
  * Service name constant for Go services.
  */
-export const GoService = nameOf<IGoService>()
+export const GoServiceName = nameOf<IGoServices>()
 
 /**
  * Represents the raw version list from the Go proxy API.

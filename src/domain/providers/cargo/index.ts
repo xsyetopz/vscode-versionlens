@@ -4,4 +4,3 @@ export * from './cargoSuggestionProvider';
 export * from './cargoSuggestionResolver';
 export * from './cratesClient';
 export * from './definitions';
-export * from './serviceFactory';

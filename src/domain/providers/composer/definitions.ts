@@ -55,7 +55,7 @@ export interface IComposerService {
 /**
  * Service name constant for Composer services.
  */
-export const ComposerService = nameOf<IComposerService>()
+export const ComposerServiceName = nameOf<IComposerService>()
 
 /**
  * Represents a single version entry for a Packagist package.

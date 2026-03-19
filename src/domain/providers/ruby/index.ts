@@ -7,4 +7,3 @@ export * from './rubyHttpClient';
 export * from './rubySuggestionProvider';
 export * from './rubySuggestionResolver';
 export * from './rubyUtils';
-export * from './serviceFactory';

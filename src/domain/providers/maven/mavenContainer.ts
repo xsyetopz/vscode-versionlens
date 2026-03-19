@@ -1,38 +1,79 @@
-import { IServiceCollection, IServiceProvider } from '#domain/di';
+import { CachingOptions } from '#domain/caching';
+import { createHttpClient, createShellClient, HttpOptions } from '#domain/clients';
+import { ServiceCollection } from '#domain';
 import {
-  addCachingOptions,
-  addHttpOptions,
-  addMavenSuggestionResolver,
-  addMavenConfig,
-  addMavenHttpClient,
-  addMvnCliClient,
-  addSuggestionProvider
+  IMavenServices,
+  MavenConfig,
+  MavenFeatures,
+  MavenHttpClient,
+  MavenServiceName,
+  MavenSuggestionProvider,
+  MavenSuggestionResolver,
+  MvnCli
 } from '#domain/providers/maven';
+import { IDomainServices } from 'src/domain/definitions';
 
 /**
- * Configures the Maven service container by registering all necessary services.
- * @param serviceProvider The root service provider.
+ * Registers all Maven-specific services into the provided service collection.
  * @param services The service collection to configure.
- * @returns A promise that resolves to the newly built child service provider.
  */
-export async function configureContainer(
-  serviceProvider: IServiceProvider,
-  services: IServiceCollection
-): Promise<IServiceProvider> {
+export function registerServices(services: ServiceCollection<IDomainServices & IMavenServices>) {
 
-  addCachingOptions(services);
+  services.addSingletonFactory(
+    MavenServiceName.mavenCachingOpts,
+    c => new CachingOptions(c.appConfig, MavenFeatures.Caching, 'caching')
+  );
 
-  addHttpOptions(services);
+  services.addSingletonFactory(
+    MavenServiceName.mavenHttpOpts,
+    c => new HttpOptions(c.appConfig, MavenFeatures.Http, 'http')
+  );
 
-  addMavenConfig(services);
+  services.addSingletonFactory(
+    MavenServiceName.mavenConfig,
+    c => new MavenConfig(c.appConfig, c.mavenCachingOpts, c.mavenHttpOpts)
+  );
 
-  addMvnCliClient(services);
+  services.addSingletonFactory(
+    MavenServiceName.mvnCli,
+    c => new MvnCli(
+      c.mavenConfig,
+      createShellClient(
+        c.shellCache,
+        c.mavenCachingOpts,
+        c.loggerFactory(MvnCli)
+      ),
+      c.loggerFactory(MvnCli)
+    )
+  );
 
-  addMavenHttpClient(services);
+  services.addSingletonFactory(
+    MavenServiceName.mavenHttpClient,
+    c => new MavenHttpClient(
+      c.mavenConfig,
+      createHttpClient(c.authorizer, c.mavenHttpOpts),
+      c.urlRequestCache,
+      c.loggerFactory(MavenHttpClient)
+    )
+  );
 
-  addMavenSuggestionResolver(services);
+  services.addSingletonFactory(
+    MavenServiceName.mavenSuggestionResolver,
+    c => new MavenSuggestionResolver(
+      c.mavenConfig,
+      c.mavenHttpClient,
+      c.loggerFactory(MavenSuggestionResolver)
+    )
+  );
 
-  addSuggestionProvider(services);
+  services.addSingletonFactory(
+    "maven.suggestionProvider" as any,
+    c => new MavenSuggestionProvider(
+      c.mavenSuggestionResolver,
+      c.mvnCli,
+      c.mavenConfig,
+      c.loggerFactory(MavenSuggestionProvider)
+    )
+  );
 
-  return await services.buildChild("maven", serviceProvider);
 }

@@ -52,7 +52,7 @@ export interface IDockerServices {
 /**
  * Service name constant for Docker services.
  */
-export const DockerService = nameOf<IDockerServices>()
+export const DockerServiceName = nameOf<IDockerServices>()
 
 /**
  * Represents a Docker repository tag and its digest.

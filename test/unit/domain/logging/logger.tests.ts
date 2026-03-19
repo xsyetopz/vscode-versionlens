@@ -1,7 +1,7 @@
 import {
+  createLoggerFactory,
   type ILogger,
   type ILoggerSink,
-  LoggerFactory,
   LogLevel,
   LogLevelName
 } from '#domain/logging';
@@ -10,7 +10,6 @@ import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 type TestContext = {
   mockSink: ILoggerSink
-  testFactory: LoggerFactory
   testLogger: ILogger
 }
 
@@ -20,8 +19,8 @@ export const loggerTests = {
 
   beforeEach: function (this: TestContext) {
     this.mockSink = mock<ILoggerSink>();
-    this.testFactory = new LoggerFactory([instance(this.mockSink)]);
-    this.testLogger = this.testFactory.create('test-namespace');
+    var testFactory = createLoggerFactory([instance(this.mockSink)]);
+    this.testLogger = testFactory('test-namespace');
 
     when(this.mockSink.logLevel).thenReturn(LogLevel.trace);
   },

@@ -172,7 +172,7 @@ export interface IDotNetServices {
 /**
  * Service name constant for DotNet services.
  */
-export const DotNetService = nameOf<IDotNetServices>()
+export const DotNetServiceName = nameOf<IDotNetServices>()
 
 /**
  * Represents the package versions returned by the NuGet API.

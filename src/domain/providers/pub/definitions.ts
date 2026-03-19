@@ -45,7 +45,7 @@ export interface IPubServices {
 /**
  * Service name constant for Pub services.
  */
-export const PubService = nameOf<IPubServices>()
+export const PubServiceName = nameOf<IPubServices>()
 
 /**
  * Represents a single version entry from the Pub API.

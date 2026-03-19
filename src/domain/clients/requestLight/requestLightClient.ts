@@ -1,12 +1,12 @@
 import type { IAuthorizer } from '#domain/authorization';
 import {
-  type HttpClientOptions,
   type HttpClientResponse,
   type IHttpClient,
   type QueryDictionary,
   ClientResponseSource,
   HttpClientRequestMethods,
-  HttpRequestError,
+  HttpOptions,
+  HttpRequestError
 } from '#domain/clients';
 import type { IXhrRequest, IXhrResponse } from '#domain/clients/requestLight';
 import { type KeyStringDictionary, createUrl } from '#domain/utils';
@@ -31,11 +31,11 @@ export class RequestLightClient implements IHttpClient {
   constructor(
     readonly requestLight: IXhrRequest,
     readonly authorizer: IAuthorizer,
-    readonly options: HttpClientOptions
+    readonly http: HttpOptions,
   ) {
     throwUndefinedOrNull('requestLight', requestLight);
     throwUndefinedOrNull('authorizer', authorizer);
-    throwUndefinedOrNull('options', options);
+    throwUndefinedOrNull('options', http);
   }
 
   /**
@@ -70,7 +70,7 @@ export class RequestLightClient implements IHttpClient {
           ...autoAuthHeaders,
           ...headers,
         },
-        strictSSL: this.options.http.strictSSL
+        strictSSL: this.http.strictSSL
       };
 
       const response = await this.requestLight.xhr(request);
@@ -141,7 +141,7 @@ export class RequestLightClient implements IHttpClient {
           ...autoAuthHeaders,
           ...headers,
         },
-        strictSSL: this.options.http.strictSSL
+        strictSSL: this.http.strictSSL
       };
 
       if (data !== undefined) request.data = data;

@@ -48,7 +48,7 @@ export interface IRubyServices {
 /**
  * Service name constant for Ruby services.
  */
-export const RubyService = nameOf<IRubyServices>()
+export const RubyServiceName = nameOf<IRubyServices>()
 
 /**
  * Represents the JSON response for Ruby package versions.

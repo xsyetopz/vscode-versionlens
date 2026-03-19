@@ -1,35 +1,64 @@
-import type { IServiceCollection, IServiceProvider } from '#domain/di';
+import { CachingOptions } from '#domain/caching';
+import { createHttpClient, HttpOptions } from '#domain/clients';
+import { ServiceCollection } from '#domain';
 import {
-  addCachingOptions,
-  addHttpOptions,
-  addPypiConfig,
-  addPypiHttpClient,
-  addPypiSuggestionResolver,
-  addSuggestionProvider
+  IPypiServices,
+  PypiConfig,
+  PypiFeatures,
+  PypiHttpClient,
+  PypiService,
+  PypiSuggestionProvider,
+  PypiSuggestionResolver
 } from '#domain/providers/pypi';
+import { IDomainServices } from 'src/domain/definitions';
 
 /**
- * Configures the PyPi service container by registering all necessary services.
- * @param serviceProvider The root service provider.
+ * Registers all PyPi-specific services into the provided service collection.
  * @param services The service collection to configure.
- * @returns A promise that resolves to the newly built child service provider.
  */
-export async function configureContainer(
-  serviceProvider: IServiceProvider,
-  services: IServiceCollection
-): Promise<IServiceProvider> {
+export function registerServices(services: ServiceCollection<IDomainServices & IPypiServices>) {
 
-  addCachingOptions(services);
+  services.addSingletonFactory(
+    PypiService.pypiCachingOpts,
+    c => new CachingOptions(c.appConfig, PypiFeatures.Caching, 'caching')
+  );
 
-  addHttpOptions(services);
+  services.addSingletonFactory(
+    PypiService.pypiHttpOpts,
+    c => new HttpOptions(c.appConfig, PypiFeatures.Http, 'http')
+  );
 
-  addPypiConfig(services);
+  services.addSingletonFactory(
+    PypiService.pypiConfig,
+    c => new PypiConfig(c.appConfig, c.pypiCachingOpts, c.pypiHttpOpts)
+  );
 
-  addPypiHttpClient(services);
+  services.addSingletonFactory(
+    PypiService.pypiHttpClient,
+    c => new PypiHttpClient(
+      c.pypiConfig,
+      createHttpClient(c.authorizer, c.pypiHttpOpts),
+      c.urlRequestCache,
+      c.loggerFactory(PypiHttpClient)
+    )
+  );
 
-  addPypiSuggestionResolver(services);
+  services.addSingletonFactory(
+    PypiService.pypiSuggestionResolver,
+    c => new PypiSuggestionResolver(
+      c.pypiConfig,
+      c.pypiHttpClient,
+      c.loggerFactory(PypiSuggestionResolver)
+    )
+  );
 
-  addSuggestionProvider(services);
+  services.addSingletonFactory(
+    "pypi.suggestionProvider" as any,
+    c => new PypiSuggestionProvider(
+      c.pypiSuggestionResolver,
+      c.pypiConfig,
+      c.loggerFactory(PypiSuggestionProvider)
+    )
+  );
 
-  return await services.buildChild("pypi", serviceProvider);
 }

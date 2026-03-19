@@ -49,7 +49,7 @@ export interface IMavenServices {
 /**
  * Service name constant for Maven services.
  */
-export const MavenService = nameOf<IMavenServices>()
+export const MavenServiceName = nameOf<IMavenServices>()
 
 /**
  * Represents a Maven repository source.

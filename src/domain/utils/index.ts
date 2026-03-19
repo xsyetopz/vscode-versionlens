@@ -1,5 +1,4 @@
 export * from './dispose';
-export * from './eventScheduler';
 export * from './file';
 export * from './generics';
 export * from './git';

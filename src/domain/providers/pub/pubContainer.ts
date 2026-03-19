@@ -1,35 +1,64 @@
-import { IServiceCollection, IServiceProvider } from '#domain/di';
+import { CachingOptions } from '#domain/caching';
+import { createJsonClient, HttpOptions } from '#domain/clients';
+import { ServiceCollection } from '#domain';
 import {
-  addCachingOptions,
-  addHttpOptions,
-  addPubConfig,
-  addPubJsonClient,
-  addPubSuggestionResolver,
-  addSuggestionProvider
+  IPubServices,
+  PubConfig,
+  PubFeatures,
+  PubJsonClient,
+  PubServiceName,
+  PubSuggestionProvider,
+  PubSuggestionResolver
 } from '#domain/providers/pub';
+import { IDomainServices } from 'src/domain/definitions';
 
 /**
- * Configures the Pub service container by registering all necessary services.
- * @param serviceProvider The root service provider.
+ * Registers all Pub-specific services into the provided service collection.
  * @param services The service collection to configure.
- * @returns A promise that resolves to the newly built child service provider.
  */
-export async function configureContainer(
-  serviceProvider: IServiceProvider,
-  services: IServiceCollection
-): Promise<IServiceProvider> {
+export function registerServices(services: ServiceCollection<IDomainServices & IPubServices>) {
 
-  addCachingOptions(services);
+  services.addSingletonFactory(
+    PubServiceName.pubCachingOpts,
+    c => new CachingOptions(c.appConfig, PubFeatures.Caching, 'caching')
+  );
 
-  addHttpOptions(services);
+  services.addSingletonFactory(
+    PubServiceName.pubHttpOpts,
+    c => new HttpOptions(c.appConfig, PubFeatures.Http, 'http')
+  );
 
-  addPubConfig(services);
+  services.addSingletonFactory(
+    PubServiceName.pubConfig,
+    c => new PubConfig(c.appConfig, c.pubCachingOpts, c.pubHttpOpts)
+  );
 
-  addPubJsonClient(services);
+  services.addSingletonFactory(
+    PubServiceName.pubJsonClient,
+    c => new PubJsonClient(
+      c.pubConfig,
+      createJsonClient(c.authorizer, c.pubHttpOpts),
+      c.urlRequestCache,
+      c.loggerFactory(PubJsonClient)
+    )
+  );
 
-  addPubSuggestionResolver(services);
+  services.addSingletonFactory(
+    PubServiceName.pubSuggestionResolver,
+    c => new PubSuggestionResolver(
+      c.pubConfig,
+      c.pubJsonClient,
+      c.loggerFactory(PubSuggestionResolver)
+    )
+  );
 
-  addSuggestionProvider(services);
+  services.addSingletonFactory(
+    "pub.suggestionProvider" as any,
+    c => new PubSuggestionProvider(
+      c.pubSuggestionResolver,
+      c.pubConfig,
+      c.loggerFactory(PubSuggestionProvider)
+    )
+  );
 
-  return await services.buildChild("pub", serviceProvider);
 }

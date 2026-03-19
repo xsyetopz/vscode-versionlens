@@ -1,35 +1,57 @@
-import type { IServiceCollection, IServiceProvider } from '#domain/di';
-import {
-  addCachingOptions,
-  addCargoConfig,
-  addCargoSuggestionResolver,
-  addCratesClient,
-  addHttpOptions,
-  addSuggestionProvider
-} from '#domain/providers/cargo';
+import { CachingOptions } from '#domain/caching';
+import { createJsonClient, HttpOptions } from '#domain/clients';
+import { ServiceCollection } from '#domain';
+import { IDomainServices } from 'src/domain/definitions';
+import { CargoConfig, CargoSuggestionProvider, CargoSuggestionResolver, CratesClient } from '.';
+import { CargoFeatures, CargoServiceName, ICargoServices } from './definitions';
 
 /**
- * Configures the Cargo service container by registering all necessary services.
- * @param serviceProvider The root service provider.
+ * Registers all Cargo-specific services into the provided service collection.
  * @param services The service collection to configure.
- * @returns A promise that resolves to the newly built child service provider.
  */
-export async function configureContainer(
-  serviceProvider: IServiceProvider,
-  services: IServiceCollection
-): Promise<IServiceProvider> {
+export function registerServices(services: ServiceCollection<IDomainServices & ICargoServices>) {
 
-  addCachingOptions(services);
+  services.addSingletonFactory(
+    CargoServiceName.cargoCachingOpts,
+    c => new CachingOptions(c.appConfig, CargoFeatures.Caching, 'caching')
+  );
 
-  addHttpOptions(services);
+  services.addSingletonFactory(
+    CargoServiceName.cargoHttpOpts,
+    c => new HttpOptions(c.appConfig, CargoFeatures.Http, 'http')
+  );
 
-  addCargoConfig(services);
+  services.addSingletonFactory(
+    CargoServiceName.cargoConfig,
+    c => new CargoConfig(c.appConfig, c.cargoCachingOpts, c.cargoHttpOpts)
+  );
 
-  addCratesClient(services);
+  services.addSingletonFactory(
+    CargoServiceName.cratesClient,
+    c => new CratesClient(
+      c.cargoConfig,
+      createJsonClient(c.authorizer, c.cargoHttpOpts),
+      c.urlRequestCache,
+      c.loggerFactory(CratesClient)
+    )
+  );
 
-  addCargoSuggestionResolver(services);
+  services.addSingletonFactory(
+    CargoServiceName.cargoSuggestionResolver,
+    c => new CargoSuggestionResolver(
+      c.cargoConfig,
+      c.cratesClient,
+      c.loggerFactory(CargoSuggestionResolver)
+    )
+  );
 
-  addSuggestionProvider(services);
+  services.addSingletonFactory(
+    "cargo.suggestionProvider" as any,
+    c => new CargoSuggestionProvider(
+      c.cargoSuggestionResolver,
+      c.cargoConfig,
+      c.loggerFactory(CargoSuggestionProvider)
+    )
+  );
 
-  return await services.buildChild("cargo", serviceProvider);
 }

@@ -1,6 +1,5 @@
-import { DomainServiceName, type IDomainServices } from '#domain';
-import type { IServiceCollection } from '#domain/di';
-import { ExtensionServiceName, type IExtensionServices } from '#extension';
+import { DomainServiceName, IDomainServices, ServiceCollection } from '#domain';
+import { ExtensionServiceName, IExtensionServices } from '#extension';
 import {
   AuthenticationInteractions,
   AuthenticationScheme,
@@ -17,15 +16,16 @@ import { type Memento, type SecretStorage, window } from 'vscode';
  * @param resourceFolderPath The path to the resources folder.
  * @param secrets The VS Code secret storage.
  */
-export function addAuthenticationProviders(
-  services: IServiceCollection,
+export function addAuthenticationServices(
+  services: ServiceCollection<IDomainServices & IExtensionServices>,
   resourceFolderPath: string,
-  secrets: SecretStorage
+  secrets: SecretStorage,
+  workspaceState: Memento
 ) {
   const serviceName = ExtensionServiceName.authenticationProviders;
-  services.addSingleton(
+  services.addSingletonFactory(
     serviceName,
-    (container: IExtensionServices) => ({
+    container => ({
       [AuthenticationScheme.Basic]: new BasicAuthProvider(
         resourceFolderPath,
         secrets,
@@ -38,50 +38,25 @@ export function addAuthenticationProviders(
       )
     })
   );
-}
 
-/**
- * Registers the authentication interactions as a singleton in the service collection.
- * @param services The service collection to add to.
- */
-export function addAuthenticationInteractions(services: IServiceCollection) {
-  const serviceName = ExtensionServiceName.authenticationInteractions;
-  services.addSingleton(
-    serviceName,
+  services.addSingletonFactory(
+    ExtensionServiceName.authenticationInteractions,
     () => new AuthenticationInteractions(window)
   );
-}
 
-/**
- * Registers the URL authentication store as a singleton in the service collection.
- * @param services The service collection to add to.
- * @param workspaceState The VS Code workspace memento.
- */
-export function addUrlAuthenticationStore(
-  services: IServiceCollection,
-  workspaceState: Memento
-) {
-  const serviceName = ExtensionServiceName.urlAuthenticationStore;
-  services.addSingleton(
-    serviceName,
+  services.addSingletonFactory(
+    ExtensionServiceName.urlAuthenticationStore,
     () => new UrlAuthenticationStore('UrlAuthenticationStore', workspaceState)
   );
-}
 
-/**
- * Registers the authorizer as a singleton in the service collection.
- * @param services The service collection to add to.
- */
-export function addAuthorizer(services: IServiceCollection) {
-  const serviceName = DomainServiceName.authorizer;
-  services.addSingleton(
-    serviceName,
-    (container: IDomainServices & IExtensionServices) =>
+  services.addSingletonFactory(
+    DomainServiceName.authorizer,
+    container =>
       new Authorizer(
         container.urlAuthenticationStore,
         container.authenticationProviders,
         container.authenticationInteractions,
-        container.loggerFactory.create(serviceName)
+        container.loggerFactory(Authorizer)
       )
   );
 }

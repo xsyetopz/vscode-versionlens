@@ -1,4 +1,10 @@
 /**
+ * Represents a class constructor for a type T.
+ * @template T The type to be constructed.
+ */
+export type Constructor<T> = { new(...args: any[]): T };
+
+/**
  * Represents an asynchronous function that returns a promise of type T.
  * @template T The return type of the promise.
  */

@@ -1,38 +1,77 @@
-import type { IServiceCollection, IServiceProvider } from '#domain/di';
+import { ServiceCollection } from '#domain';
+import { CachingOptions } from '#domain/caching';
+import { createJsonClient, GitHubJsonClient, HttpOptions } from '#domain/clients';
 import {
-  addCachingOptions,
-  addHttpOptions,
-  addRubyConfig,
-  addRubyHttpClient,
-  addRubyGitHubClient,
-  addRubySuggestionResolver,
-  addSuggestionProvider
+  IRubyServices,
+  RubyConfig,
+  RubyFeatures,
+  RubyGitHubClient,
+  RubyHttpClient,
+  RubyServiceName,
+  RubySuggestionProvider,
+  RubySuggestionResolver
 } from '#domain/providers/ruby';
+import { IDomainServices } from 'src/domain/definitions';
 
 /**
- * Configures the Ruby service container by registering all necessary services.
- * @param serviceProvider The root service provider.
+ * Registers all Ruby-specific services into the provided service collection.
  * @param services The service collection to configure.
- * @returns A promise that resolves to the newly built child service provider.
  */
-export async function configureContainer(
-  serviceProvider: IServiceProvider,
-  services: IServiceCollection
-): Promise<IServiceProvider> {
+export function registerServices(services: ServiceCollection<IDomainServices & IRubyServices>) {
 
-  addCachingOptions(services);
+  services.addSingletonFactory(
+    RubyServiceName.rubyCachingOpts,
+    c => new CachingOptions(c.appConfig, RubyFeatures.Caching, 'caching')
+  );
 
-  addHttpOptions(services);
+  services.addSingletonFactory(
+    RubyServiceName.rubyHttpOpts,
+    c => new HttpOptions(c.appConfig, RubyFeatures.Http, 'http')
+  );
 
-  addRubyConfig(services);
+  services.addSingletonFactory(
+    RubyServiceName.rubyConfig,
+    c => new RubyConfig(c.appConfig, c.rubyCachingOpts, c.rubyHttpOpts)
+  );
 
-  addRubyHttpClient(services);
+  services.addSingletonFactory(
+    RubyServiceName.rubyHttpClient,
+    c => new RubyHttpClient(
+      c.rubyConfig,
+      createJsonClient(c.authorizer, c.rubyHttpOpts),
+      c.urlRequestCache,
+      c.loggerFactory(RubyHttpClient)
+    )
+  );
 
-  addRubyGitHubClient(services);
+  services.addSingletonFactory(
+    RubyServiceName.rubyGithubClient,
+    c => new RubyGitHubClient(
+      new GitHubJsonClient(
+        c.cachingOptions,
+        createJsonClient(c.authorizer, c.rubyHttpOpts),
+        c.urlRequestCache
+      )
+    )
+  );
 
-  addRubySuggestionResolver(services);
+  services.addSingletonFactory(
+    RubyServiceName.rubySuggestionResolver,
+    c => new RubySuggestionResolver(
+      c.rubyConfig,
+      c.rubyHttpClient,
+      c.rubyGithubClient,
+      c.loggerFactory(RubySuggestionResolver)
+    )
+  );
 
-  addSuggestionProvider(services);
+  services.addSingletonFactory(
+    "ruby.suggestionProvider" as any,
+    c => new RubySuggestionProvider(
+      c.rubySuggestionResolver,
+      c.rubyConfig,
+      c.loggerFactory(RubySuggestionProvider)
+    )
+  );
 
-  return await services.buildChild("ruby", serviceProvider);
 }

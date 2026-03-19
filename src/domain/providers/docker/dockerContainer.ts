@@ -1,38 +1,76 @@
-import { IServiceCollection, IServiceProvider } from '#domain/di';
+import { CachingOptions } from '#domain/caching';
+import { createJsonClient, HttpOptions } from '#domain/clients';
+import { ServiceCollection } from '#domain';
 import {
-  addCachingOptions,
-  addDockerClient,
-  addDockerConfig,
-  addDockerHubClient,
-  addHttpOptions,
-  addMicrosoftDockerClient,
-  addSuggestionProvider
+  DockerConfig,
+  DockerFeatures,
+  DockerHubClient,
+  DockerServiceName,
+  DockerSuggestionProvider,
+  DockerSuggestionResolver,
+  IDockerServices,
+  MicrosoftDockerClient
 } from '#domain/providers/docker';
+import { IDomainServices } from 'src/domain/definitions';
 
 /**
- * Configures the Docker service container by registering all necessary services.
- * @param serviceProvider The root service provider.
+ * Registers all Docker-specific services into the provided service collection.
  * @param services The service collection to configure.
- * @returns A promise that resolves to the newly built child service provider.
  */
-export async function configureContainer(
-  serviceProvider: IServiceProvider,
-  services: IServiceCollection
-): Promise<IServiceProvider> {
+export function registerServices(services: ServiceCollection<IDomainServices & IDockerServices>) {
 
-  addCachingOptions(services);
+  services.addSingletonFactory(
+    DockerServiceName.dockerCachingOpts,
+    c => new CachingOptions(c.appConfig, DockerFeatures.Caching, 'caching')
+  );
 
-  addHttpOptions(services);
+  services.addSingletonFactory(
+    DockerServiceName.dockerHttpOpts,
+    c => new HttpOptions(c.appConfig, DockerFeatures.Http, 'http')
+  );
 
-  addDockerConfig(services);
+  services.addSingletonFactory(
+    DockerServiceName.dockerConfig,
+    c => new DockerConfig(c.appConfig, c.dockerCachingOpts, c.dockerHttpOpts)
+  );
 
-  addDockerHubClient(services);
+  services.addSingletonFactory(
+    DockerServiceName.dockerHubClient,
+    c => new DockerHubClient(
+      c.dockerConfig,
+      createJsonClient(c.authorizer, c.dockerHttpOpts),
+      c.urlRequestCache,
+      c.loggerFactory(DockerHubClient)
+    )
+  );
 
-  addMicrosoftDockerClient(services);
+  services.addSingletonFactory(
+    DockerServiceName.microsoftDockerClient,
+    c => new MicrosoftDockerClient(
+      c.dockerConfig,
+      createJsonClient(c.authorizer, c.dockerHttpOpts),
+      c.urlRequestCache,
+      c.loggerFactory(MicrosoftDockerClient)
+    )
+  );
 
-  addDockerClient(services);
+  services.addSingletonFactory(
+    DockerServiceName.dockerSuggestionResolver,
+    c => new DockerSuggestionResolver(
+      c.dockerConfig,
+      c.dockerHubClient,
+      c.microsoftDockerClient,
+      c.loggerFactory(DockerSuggestionResolver)
+    )
+  );
 
-  addSuggestionProvider(services);
+  services.addSingletonFactory(
+    "docker.suggestionProvider" as any,
+    c => new DockerSuggestionProvider(
+      c.dockerSuggestionResolver,
+      c.dockerConfig,
+      c.loggerFactory(DockerSuggestionProvider)
+    )
+  );
 
-  return await services.buildChild("docker", serviceProvider);
 }

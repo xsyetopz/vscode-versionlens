@@ -1,38 +1,80 @@
-import type { IServiceCollection, IServiceProvider } from '#domain/di';
+import { CachingOptions } from '#domain/caching';
+import { createJsonClient, GitHubJsonClient, HttpOptions } from '#domain/clients';
+import { ServiceCollection } from '#domain';
 import {
-  addCachingOptions,
-  addHttpOptions,
-  addNpmConfig,
-  addNpmGitHubClient,
-  addNpmSuggestionResolver,
-  addNpmRegistryClient,
-  addSuggestionProvider
+  INpmServices,
+  NpmConfig,
+  NpmFeatures,
+  NpmGitHubClient,
+  NpmRegistryClient,
+  NpmServiceName,
+  NpmSuggestionProvider,
+  NpmSuggestionResolver
 } from '#domain/providers/npm';
+import NpmRegistryFetch from 'npm-registry-fetch';
+import { IDomainServices } from 'src/domain/definitions';
 
 /**
- * Configures the NPM service container by registering all necessary services.
- * @param serviceProvider The root service provider.
+ * Registers all NPM-specific services into the provided service collection.
  * @param services The service collection to configure.
- * @returns A promise that resolves to the newly built child service provider.
  */
-export async function configureContainer(
-  serviceProvider: IServiceProvider,
-  services: IServiceCollection
-): Promise<IServiceProvider> {
+export function registerServices(services: ServiceCollection<IDomainServices & INpmServices>) {
 
-  addCachingOptions(services);
+  services.addSingletonFactory(
+    NpmServiceName.npmCachingOpts,
+    c => new CachingOptions(c.appConfig, NpmFeatures.Caching, 'caching')
+  );
 
-  addHttpOptions(services);
+  services.addSingletonFactory(
+    NpmServiceName.npmHttpOpts,
+    c => new HttpOptions(c.appConfig, NpmFeatures.Http, 'http')
+  );
 
-  addNpmConfig(services);
+  services.addSingletonFactory(
+    NpmServiceName.npmConfig,
+    c => new NpmConfig(c.appConfig, c.npmCachingOpts, c.npmHttpOpts)
+  );
 
-  addNpmGitHubClient(services);
+  services.addSingletonFactory(
+    NpmServiceName.npmGithubClient,
+    c => new NpmGitHubClient(
+      c.npmConfig,
+      new GitHubJsonClient(
+        c.cachingOptions,
+        createJsonClient(c.authorizer, c.npmHttpOpts),
+        c.urlRequestCache
+      ),
+      c.loggerFactory(NpmGitHubClient)
+    )
+  );
 
-  addNpmRegistryClient(services);
+  services.addSingletonFactory(
+    NpmServiceName.npmRegistryClient,
+    c => new NpmRegistryClient(
+      NpmRegistryFetch,
+      c.npmConfig,
+      c.urlRequestCache,
+      c.loggerFactory(NpmRegistryClient)
+    )
+  );
 
-  addNpmSuggestionResolver(services);
+  services.addSingletonFactory(
+    NpmServiceName.npmSuggestionResolver,
+    c => new NpmSuggestionResolver(
+      c.npmConfig,
+      c.npmRegistryClient,
+      c.npmGithubClient,
+      c.loggerFactory(NpmSuggestionResolver)
+    )
+  );
 
-  addSuggestionProvider(services);
+  services.addSingletonFactory(
+    "npm.suggestionProvider" as any,
+    c => new NpmSuggestionProvider(
+      c.npmSuggestionResolver,
+      c.npmConfig,
+      c.loggerFactory(NpmSuggestionProvider)
+    )
+  );
 
-  return await services.buildChild("npm", serviceProvider);
 }

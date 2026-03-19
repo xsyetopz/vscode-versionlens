@@ -1,35 +1,64 @@
-import type { IServiceCollection, IServiceProvider } from '#domain/di';
+import { CachingOptions } from '#domain/caching';
+import { createHttpClient, HttpOptions } from '#domain/clients';
+import { ServiceCollection } from '#domain';
 import {
-  addCachingOptions,
-  addGoSuggestionResolver,
-  addGoConfig,
-  addGoHttpClient,
-  addHttpOptions,
-  addSuggestionProvider
+  GoConfig,
+  GoFeatures,
+  GoHttpClient,
+  GoServiceName,
+  GoSuggestionProvider,
+  GoSuggestionResolver,
+  IGoServices
 } from '#domain/providers/golang';
+import { IDomainServices } from 'src/domain/definitions';
 
 /**
- * Configures the Go service container by registering all necessary services.
- * @param serviceProvider The root service provider.
+ * Registers all Go-specific services into the provided service collection.
  * @param services The service collection to configure.
- * @returns A promise that resolves to the newly built child service provider.
  */
-export async function configureContainer(
-  serviceProvider: IServiceProvider,
-  services: IServiceCollection
-): Promise<IServiceProvider> {
+export function registerServices(services: ServiceCollection<IDomainServices & IGoServices>) {
 
-  addCachingOptions(services);
+  services.addSingletonFactory(
+    GoServiceName.goCachingOpts,
+    c => new CachingOptions(c.appConfig, GoFeatures.Caching, 'caching')
+  );
 
-  addHttpOptions(services);
+  services.addSingletonFactory(
+    GoServiceName.goHttpOpts,
+    c => new HttpOptions(c.appConfig, GoFeatures.Http, 'http')
+  );
 
-  addGoConfig(services);
+  services.addSingletonFactory(
+    GoServiceName.goConfig,
+    c => new GoConfig(c.appConfig, c.goCachingOpts, c.goHttpOpts)
+  );
 
-  addGoHttpClient(services);
+  services.addSingletonFactory(
+    GoServiceName.goHttpClient,
+    c => new GoHttpClient(
+      c.goConfig,
+      createHttpClient(c.authorizer, c.goHttpOpts),
+      c.urlRequestCache,
+      c.loggerFactory(GoHttpClient)
+    )
+  );
 
-  addGoSuggestionResolver(services);
+  services.addSingletonFactory(
+    GoServiceName.goSuggestionResolver,
+    c => new GoSuggestionResolver(
+      c.goConfig,
+      c.goHttpClient,
+      c.loggerFactory(GoSuggestionResolver)
+    )
+  );
 
-  addSuggestionProvider(services);
+  services.addSingletonFactory(
+    "golang.suggestionProvider" as any,
+    c => new GoSuggestionProvider(
+      c.goSuggestionResolver,
+      c.goConfig,
+      c.loggerFactory(GoSuggestionProvider)
+    )
+  );
 
-  return await services.buildChild("golang", serviceProvider);
 }

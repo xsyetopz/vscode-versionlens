@@ -1,5 +1,4 @@
 import type { DependencyCache, PackageResponse, SuggestionReplaceFunction } from '#domain/packages';
-import type { GetSuggestions } from '#domain/useCases';
 import { nameOf, type KeyDictionary } from '#domain/utils';
 import type {
   OnActiveTextEditorChange,
@@ -13,10 +12,8 @@ import type {
   OnProviderEditorActivated,
   OnProviderTextDocumentChange,
   OnProviderTextDocumentClose,
-  OnRefreshSuggestionsStats,
   OnRemoveUrlAuthentication,
   OnSaveChanges,
-  OnShowSuggestionsStatsDetails,
   OnSortDependenciesClick,
   OnTextDocumentChange,
   OnTextDocumentClose,
@@ -149,8 +146,6 @@ export enum SuggestionFeatures {
 export interface IExtensionServices {
   /** Suggestion configuration options. */
   suggestionOptions: SuggestionsOptions
-  /** The use case for retrieving version suggestions. */
-  getSuggestions: GetSuggestions
   /** The extension instance. */
   extension: VersionLensExtension
   /** The collective extension state. */
@@ -188,8 +183,6 @@ export interface IExtensionServices {
 
   /** Handler for clearing caches. */
   onClearCache: OnClearCache
-  /** Handler for refreshing suggestion stats. */
-  onRefreshSuggestionsStats: OnRefreshSuggestionsStats
   /** Handler for sorting dependencies alphabetically. */
   onSortDependencies: OnSortDependenciesClick
   /** Handler for updating all dependencies to their latest versions. */
@@ -200,8 +193,6 @@ export interface IExtensionServices {
   onUpdateDependenciesMinor: OnUpdateDependenciesMinorClick
   /** Handler for updating all dependencies to their latest patch versions. */
   onUpdateDependenciesPatch: OnUpdateDependenciesPatchClick
-  /** Handler for showing suggestion stat details. */
-  onShowSuggestionsStatsDetails: OnShowSuggestionsStatsDetails
   /** Handler for file link clicks. */
   onFileLinkClick: OnFileLinkClick
   /** Handler for dependency update clicks. */

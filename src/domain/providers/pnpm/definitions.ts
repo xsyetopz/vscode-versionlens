@@ -34,4 +34,4 @@ export interface IPnpmServices {
 /**
  * Service name constant for PNPM services.
  */
-export const PnpmService = nameOf<IPnpmServices>()
+export const PnpmServiceName = nameOf<IPnpmServices>()

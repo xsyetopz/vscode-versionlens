@@ -4,6 +4,5 @@ export * from './fetchPackages';
 export * from './getDependencyChanges';
 export * from './getSuggestionProvider';
 export * from './getSuggestions';
-export * from './getSuggestionsStats';
 export * from './getVulnerabilities';
 export * from './sortDependencies';

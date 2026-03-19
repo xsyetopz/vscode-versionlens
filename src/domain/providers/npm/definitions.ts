@@ -53,7 +53,7 @@ export interface INpmServices {
 /**
  * Service name constant for NPM services.
  */
-export const NpmService = nameOf<INpmServices>()
+export const NpmServiceName = nameOf<INpmServices>()
 
 /**
  * Supported NPM package argument types.

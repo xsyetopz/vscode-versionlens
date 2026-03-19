@@ -1,7 +1,6 @@
 import type { IAuthorizer } from '#domain/authorization';
 import type { CachingOptions } from '#domain/caching';
 import {
-  type HttpClientOptions,
   type HttpClientResponse,
   type HttpOptions,
   ClientResponseSource,
@@ -37,10 +36,6 @@ export const RequestLightClientTests = {
     this.mockCachingOpts = mock<CachingOptions>();
     this.mockHttpOpts = mock<HttpOptions>();
     this.mockRequestLight = mock<IXhrRequest>();
-    const testOptions: HttpClientOptions = {
-      caching: instance(this.mockCachingOpts),
-      http: instance(this.mockHttpOpts)
-    };
 
     when(this.mockRequestLight.xhr(anything())).thenResolve({
       status: 0,
@@ -56,7 +51,7 @@ export const RequestLightClientTests = {
     this.rut = new RequestLightClient(
       instance(this.mockRequestLight),
       instance(this.mockAuthorizer),
-      testOptions
+      instance(this.mockHttpOpts)
     );
   },
 
@@ -64,10 +59,6 @@ export const RequestLightClientTests = {
     [true, 3000],
     [false, 0],
     async function (this: TestContext, testStrictSSL: boolean, testDuration: number) {
-      const testOptions: HttpClientOptions = {
-        caching: instance(this.mockCachingOpts),
-        http: instance(this.mockHttpOpts)
-      };
 
       when(this.mockRequestLight.xhr(anything()))
         .thenResolve({
@@ -83,7 +74,7 @@ export const RequestLightClientTests = {
       const rut = new RequestLightClient(
         instance(this.mockRequestLight),
         instance(this.mockAuthorizer),
-        testOptions
+        instance(this.mockHttpOpts)
       );
 
       // test

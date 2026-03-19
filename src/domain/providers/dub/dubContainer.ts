@@ -1,35 +1,64 @@
-import { IServiceCollection, IServiceProvider } from '#domain/di';
+import { CachingOptions } from '#domain/caching';
+import { createJsonClient, HttpOptions } from '#domain/clients';
+import { ServiceCollection } from '#domain';
 import {
-  addCachingOptions,
-  addDubConfig,
-  addDubJsonClient,
-  addDubSuggestionResolver,
-  addHttpOptions,
-  addSuggestionProvider
+  DubConfig,
+  DubFeatures,
+  DubJsonClient,
+  DubServiceName,
+  DubSuggestionProvider,
+  DubSuggestionResolver,
+  IDubServices
 } from '#domain/providers/dub';
+import { IDomainServices } from 'src/domain/definitions';
 
 /**
- * Configures the Dub service container by registering all necessary services.
- * @param serviceProvider The root service provider.
+ * Registers all Dub-specific services into the provided service collection.
  * @param services The service collection to configure.
- * @returns A promise that resolves to the newly built child service provider.
  */
-export async function configureContainer(
-  serviceProvider: IServiceProvider,
-  services: IServiceCollection
-): Promise<IServiceProvider> {
+export function registerServices(services: ServiceCollection<IDomainServices & IDubServices>) {
 
-  addCachingOptions(services);
+  services.addSingletonFactory(
+    DubServiceName.dubCachingOpts,
+    c => new CachingOptions(c.appConfig, DubFeatures.Caching, 'caching')
+  );
 
-  addHttpOptions(services);
+  services.addSingletonFactory(
+    DubServiceName.dubHttpOpts,
+    c => new HttpOptions(c.appConfig, DubFeatures.Http, 'http')
+  );
 
-  addDubConfig(services);
+  services.addSingletonFactory(
+    DubServiceName.dubConfig,
+    c => new DubConfig(c.appConfig, c.dubCachingOpts, c.dubHttpOpts)
+  );
 
-  addDubJsonClient(services);
+  services.addSingletonFactory(
+    DubServiceName.dubJsonClient,
+    c => new DubJsonClient(
+      c.dubConfig,
+      createJsonClient(c.authorizer, c.dubHttpOpts),
+      c.urlRequestCache,
+      c.loggerFactory(DubJsonClient)
+    )
+  );
 
-  addDubSuggestionResolver(services);
+  services.addSingletonFactory(
+    DubServiceName.dubSuggestionResolver,
+    c => new DubSuggestionResolver(
+      c.dubConfig,
+      c.dubJsonClient,
+      c.loggerFactory(DubSuggestionResolver)
+    )
+  );
 
-  addSuggestionProvider(services);
+  services.addSingletonFactory(
+    "dub.suggestionProvider" as any,
+    c => new DubSuggestionProvider(
+      c.dubSuggestionResolver,
+      c.dubConfig,
+      c.loggerFactory(DubSuggestionProvider)
+    )
+  );
 
-  return await services.buildChild("dub", serviceProvider);
 }

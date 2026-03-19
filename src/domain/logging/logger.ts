@@ -3,38 +3,33 @@ import {
   type ILoggerSink,
   LogLevel
 } from '#domain/logging';
+import type { Constructor } from '#domain/utils';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 const loggerRe = /{([a-zA-Z0-9_]+)}/g;
 
+export type LoggerFactory = <T = any>(nameOrClass: string | Constructor<T>) => ILogger;
+
 /**
  * Factory for creating logger instances with a set of shared sinks.
+ * @param sinks The collection of sinks to receive log messages.
  */
-export class LoggerFactory {
+export function createLoggerFactory(sinks: ILoggerSink[]): LoggerFactory {
+  throwUndefinedOrNull('sinks', sinks);
 
-  /**
-   * Initializes a new instance of the LoggerFactory class.
-   * @param sinks The collection of sinks to receive log messages.
-   */
-  constructor(readonly sinks: ILoggerSink[]) {
-    throwUndefinedOrNull('sinks', sinks);
+  return nameOrClass => {
+    const namespace = typeof nameOrClass === 'string'
+      ? nameOrClass
+      : nameOrClass.name;
+
+    return new Logger(namespace, sinks);
   }
-
-  /**
-   * Creates a new logger for a specific namespace.
-   * @param namespace The unique name for the logger.
-   * @returns An ILogger instance.
-   */
-  create(namespace: string): ILogger {
-    return new Logger(namespace, this.sinks);
-  }
-
 }
 
 /**
  * Implementation of the ILogger interface that formats messages and sends them to sinks.
  */
-class Logger implements ILogger {
+export class Logger implements ILogger {
 
   /**
    * Initializes a new instance of the Logger class.

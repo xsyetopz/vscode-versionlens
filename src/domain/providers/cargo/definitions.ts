@@ -45,7 +45,7 @@ export interface ICargoServices {
 /**
  * Service name constant for Cargo services.
  */
-export const CargoService = nameOf<ICargoServices>()
+export const CargoServiceName = nameOf<ICargoServices>()
 
 /**
  * Represents a single version entry for a Crates package.

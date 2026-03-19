@@ -1,7 +1,7 @@
 import type { IAuthorizer } from '#domain/authorization';
 import type { CachingOptions, IExpiryCache } from '#domain/caching';
 import {
-  type HttpClientOptions,
+  HttpOptions,
   type IHttpClient,
   type IJsonHttpClient,
   type IShellClient,
@@ -34,11 +34,8 @@ export function createShellClient(
  * @param options HTTP client options.
  * @returns An implementation of IHttpClient.
  */
-export function createHttpClient(
-  authorizer: IAuthorizer,
-  options: HttpClientOptions
-): IHttpClient {
-  return new RequestLightClient(RequireLight, authorizer, options);
+export function createHttpClient(authorizer: IAuthorizer, http: HttpOptions): IHttpClient {
+  return new RequestLightClient(RequireLight, authorizer, http);
 }
 
 /**
@@ -47,11 +44,6 @@ export function createHttpClient(
  * @param options HTTP client options.
  * @returns An implementation of IJsonHttpClient.
  */
-export function createJsonClient(
-  authorizer: IAuthorizer,
-  options: HttpClientOptions
-): IJsonHttpClient {
-  return new JsonHttpClient(
-    createHttpClient(authorizer, options)
-  );
+export function createJsonClient(authorizer: IAuthorizer, http: HttpOptions): IJsonHttpClient {
+  return new JsonHttpClient(createHttpClient(authorizer, http));
 }

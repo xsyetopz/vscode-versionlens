@@ -44,7 +44,7 @@ export interface IDenoServices {
 /**
  * Service name constant for Deno services.
  */
-export const DenoService = nameOf<IDenoServices>()
+export const DenoServiceName = nameOf<IDenoServices>()
 
 /**
  * Represents the raw package data returned by the JSR API.

@@ -1,35 +1,64 @@
-import type { IServiceCollection, IServiceProvider } from '#domain/di';
+import { CachingOptions } from '#domain/caching';
+import { createJsonClient, HttpOptions } from '#domain/clients';
+import { ServiceCollection } from '#domain';
 import {
-  addCachingOptions,
-  addComposerConfig,
-  addComposerSuggestionResolver,
-  addHttpOptions,
-  addPackagistClient,
-  addSuggestionProvider
+  ComposerConfig,
+  ComposerFeatures,
+  ComposerServiceName,
+  ComposerSuggestionProvider,
+  ComposerSuggestionResolver,
+  IComposerService,
+  PackagistClient
 } from '#domain/providers/composer';
+import { IDomainServices } from 'src/domain/definitions';
 
 /**
- * Configures the Composer service container by registering all necessary services.
- * @param serviceProvider The root service provider.
+ * Registers all Composer-specific services into the provided service collection.
  * @param services The service collection to configure.
- * @returns A promise that resolves to the newly built child service provider.
  */
-export async function configureContainer(
-  serviceProvider: IServiceProvider,
-  services: IServiceCollection
-): Promise<IServiceProvider> {
+export function registerServices(services: ServiceCollection<IDomainServices & IComposerService>) {
 
-  addCachingOptions(services);
+  services.addSingletonFactory(
+    ComposerServiceName.composerCachingOpts,
+    c => new CachingOptions(c.appConfig, ComposerFeatures.Caching, 'caching')
+  );
 
-  addHttpOptions(services);
+  services.addSingletonFactory(
+    ComposerServiceName.composerHttpOpts,
+    c => new HttpOptions(c.appConfig, ComposerFeatures.Http, 'http')
+  );
 
-  addComposerConfig(services);
+  services.addSingletonFactory(
+    ComposerServiceName.composerConfig,
+    c => new ComposerConfig(c.appConfig, c.composerCachingOpts, c.composerHttpOpts)
+  );
 
-  addPackagistClient(services);
+  services.addSingletonFactory(
+    ComposerServiceName.packagistClient,
+    c => new PackagistClient(
+      c.composerConfig,
+      createJsonClient(c.authorizer, c.composerHttpOpts),
+      c.urlRequestCache,
+      c.loggerFactory(PackagistClient)
+    )
+  );
 
-  addComposerSuggestionResolver(services);
+  services.addSingletonFactory(
+    ComposerServiceName.composerSuggestionResolver,
+    c => new ComposerSuggestionResolver(
+      c.composerConfig,
+      c.packagistClient,
+      c.loggerFactory(ComposerSuggestionResolver)
+    )
+  );
 
-  addSuggestionProvider(services);
+  services.addSingletonFactory(
+    "composer.suggestionProvider" as any,
+    c => new ComposerSuggestionProvider(
+      c.composerSuggestionResolver,
+      c.composerConfig,
+      c.loggerFactory(ComposerSuggestionProvider)
+    )
+  );
 
-  return await services.buildChild("composer", serviceProvider);
 }

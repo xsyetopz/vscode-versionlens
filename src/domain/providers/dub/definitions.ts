@@ -45,7 +45,7 @@ export interface IDubServices {
 /**
  * Service name constant for Dub services.
  */
-export const DubService = nameOf<IDubServices>()
+export const DubServiceName = nameOf<IDubServices>()
 
 /**
  * Represents the raw version entry from the Dub API.

@@ -1,8 +1,8 @@
+import type { ServiceProvider } from '#domain';
 import type { IAuthorizer } from '#domain/authorization';
 import type { CachingOptions, IExpiryCache } from '#domain/caching';
 import type { HttpOptions, OsvClient } from '#domain/clients';
 import type { Config } from '#domain/configuration';
-import type { IServiceCollectionFactory, IServiceProvider } from '#domain/di';
 import type { ILoggerSink, LoggerFactory } from '#domain/logging';
 import type { DependencyCache, PackageCache } from '#domain/packages';
 import type { ISuggestionProvider } from '#domain/providers';
@@ -13,20 +13,18 @@ import type {
   GetDependencyChanges,
   GetSuggestionProvider,
   GetSuggestions,
-  GetSuggestionsStats,
   GetVulnerabilities,
   SortDependencies
 } from '#domain/useCases';
-import { type EventScheduler, nameOf } from '#domain/utils';
+import { nameOf } from '#domain/utils';
+export { ServiceCollection, ServiceProvider, type TypeMap } from '@js-injection/service-provider';
 
 /**
  * Defines the core services available in the domain layer.
  */
 export interface IDomainServices {
-  /** Factory for creating service collections. */
-  serviceCollectionFactory: IServiceCollectionFactory
   /** The root service provider for the domain. */
-  serviceProvider: IServiceProvider
+  serviceProvider: ServiceProvider<IDomainServices>
   /** The authorizer for handling credentials. */
   authorizer: IAuthorizer
   /** The application configuration. */
@@ -45,8 +43,6 @@ export interface IDomainServices {
   providerNames: Array<string>
   /** List of initialized suggestion providers. */
   suggestionProviders: Array<ISuggestionProvider>
-  /** The scheduler for recurring events. */
-  eventScheduler: EventScheduler
   /** Cache for dependencies parsed from files. */
   fileWatcherDependencyCache: DependencyCache
   /** Cache for package suggestion responses. */
@@ -69,8 +65,6 @@ export interface IDomainServices {
   getSuggestions: GetSuggestions
   /** Use case for detecting dependency changes in a file. */
   getDependencyChanges: GetDependencyChanges
-  /** Use case for generating suggestion statistics. */
-  getSuggestionsStats: GetSuggestionsStats
   /** Use case for getting vulnerabilities for a package. */
   getVulnerabilities: GetVulnerabilities
   /** Use case for sorting dependencies alphabetically. */

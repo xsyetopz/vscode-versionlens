@@ -1,6 +1,6 @@
+import { ServiceCollection } from '#domain';
 import type { CachingOptions } from '#domain/caching';
 import type { HttpOptions } from '#domain/clients';
-import type { IServiceCollection, IServiceProvider } from '#domain/di';
 import type { ILogger } from '#domain/logging';
 import type {
   PackageClientRequest,
@@ -10,7 +10,7 @@ import type {
 } from '#domain/packages';
 
 /**
- * Base configuration for a package provider.
+ * Interface for provider configurations.
  */
 export interface IProviderConfig {
   /**
@@ -52,15 +52,10 @@ export interface IProviderConfig {
  */
 export interface IProviderModule {
   /**
-   * Configures the service container for the provider.
-   * @param serviceProvider The root service provider.
-   * @param services The service collection to configure.
-   * @returns A promise resolving to the configured service provider.
+   * Registers the provider's services into the service collection.
+   * @param services The service collection to register into.
    */
-  configureContainer(
-    serviceProvider: IServiceProvider,
-    services: IServiceCollection
-  ): Promise<IServiceProvider>
+  registerServices(services: ServiceCollection<any>): Promise<void>;
 }
 
 /**
@@ -105,14 +100,4 @@ export interface ISuggestionProvider {
    * @returns A promise resolving to the package client response containing suggestions.
    */
   fetchSuggestions(request: PackageClientRequest<any>): Promise<PackageClientResponse>;
-}
-
-/**
- * Service mapping for provider-specific services.
- */
-export interface IProviderServices {
-  /**
-   * The suggestion provider service.
-   */
-  suggestionProvider: ISuggestionProvider;
 }

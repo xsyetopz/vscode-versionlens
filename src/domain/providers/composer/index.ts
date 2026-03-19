@@ -5,4 +5,3 @@ export * from './composerSuggestionProvider';
 export * from './composerSuggestionResolver';
 export * from './definitions';
 export * from './packagistClient';
-export * from './serviceFactory';

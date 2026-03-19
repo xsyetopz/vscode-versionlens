@@ -1,2 +1,14 @@
 export * from './definitions';
-export * from './importSuggestionProviders';
+export * as cargo from './cargo/cargoContainer';
+export * as composer from './composer/composerContainer';
+export * as deno from './deno/denoContainer';
+export * as docker from './docker/dockerContainer';
+export * as dotnet from './dotnet/dotnetContainer';
+export * as dub from './dub/dubContainer';
+export * as golang from './golang/goContainer';
+export * as maven from './maven/mavenContainer';
+export * as npm from './npm/npmContainer';
+export * as pnpm from './pnpm/pnpmContainer';
+export * as pub from './pub/pubContainer';
+export * as pypi from './pypi/pypiContainer';
+export * as ruby from './ruby/rubyContainer';

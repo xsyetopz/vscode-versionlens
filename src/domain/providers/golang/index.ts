@@ -5,4 +5,3 @@ export * from './goHttpClient';
 export * from './goModParser';
 export * from './goSuggestionProvider';
 export * from './goSuggestionResolver';
-export * from './serviceFactory';
