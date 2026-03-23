@@ -1,6 +1,6 @@
 import { CachingOptions } from '#domain/caching';
 import { createJsonClient, HttpOptions } from '#domain/clients';
-import { ServiceCollection } from '#domain';
+import { IDomainServices, ServiceCollection } from '#domain';
 import {
   IPubServices,
   PubConfig,
@@ -10,7 +10,6 @@ import {
   PubSuggestionProvider,
   PubSuggestionResolver
 } from '#domain/providers/pub';
-import { IDomainServices } from 'src/domain/definitions';
 
 /**
  * Registers all Pub-specific services into the provided service collection.

@@ -1,7 +1,6 @@
 import { CachingOptions } from '#domain/caching';
 import { HttpOptions } from '#domain/clients';
-import { ServiceCollection } from '#domain';
-import { IDomainServices } from 'src/domain/definitions';
+import { IDomainServices, ServiceCollection } from '#domain';
 import { IPnpmServices, PnpmConfig, PnpmFeatures, PnpmServiceName, PnpmSuggestionProvider } from '.';
 
 /**

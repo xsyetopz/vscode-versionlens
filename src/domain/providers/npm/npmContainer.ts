@@ -1,6 +1,6 @@
 import { CachingOptions } from '#domain/caching';
 import { createJsonClient, GitHubJsonClient, HttpOptions } from '#domain/clients';
-import { ServiceCollection } from '#domain';
+import { IDomainServices, ServiceCollection } from '#domain';
 import {
   INpmServices,
   NpmConfig,
@@ -12,7 +12,6 @@ import {
   NpmSuggestionResolver
 } from '#domain/providers/npm';
 import NpmRegistryFetch from 'npm-registry-fetch';
-import { IDomainServices } from 'src/domain/definitions';
 
 /**
  * Registers all NPM-specific services into the provided service collection.

@@ -1,6 +1,6 @@
+import { IDomainServices, ServiceCollection } from '#domain';
 import { CachingOptions } from '#domain/caching';
 import { createJsonClient, HttpOptions } from '#domain/clients';
-import { ServiceCollection } from '#domain';
 import {
   ComposerConfig,
   ComposerFeatures,
@@ -10,7 +10,6 @@ import {
   IComposerService,
   PackagistClient
 } from '#domain/providers/composer';
-import { IDomainServices } from 'src/domain/definitions';
 
 /**
  * Registers all Composer-specific services into the provided service collection.

@@ -1,6 +1,6 @@
 import { CachingOptions } from '#domain/caching';
 import { createHttpClient, HttpOptions } from '#domain/clients';
-import { ServiceCollection } from '#domain';
+import { IDomainServices, ServiceCollection } from '#domain';
 import {
   IPypiServices,
   PypiConfig,
@@ -10,7 +10,6 @@ import {
   PypiSuggestionProvider,
   PypiSuggestionResolver
 } from '#domain/providers/pypi';
-import { IDomainServices } from 'src/domain/definitions';
 
 /**
  * Registers all PyPi-specific services into the provided service collection.

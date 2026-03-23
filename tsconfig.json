@@ -15,7 +15,7 @@
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
+    "rootDir": ".",
     "paths": {
       "#test/utils": [
         "./test/unit/utils.ts",
@@ -37,7 +37,11 @@
       ]
     },
     "typeRoots": [
+      "./node_modules/@types",
       "./types"
+    ],
+    "types": [
+      "node"
     ]
   },
 }

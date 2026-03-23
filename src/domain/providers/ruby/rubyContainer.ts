@@ -1,4 +1,4 @@
-import { ServiceCollection } from '#domain';
+import { IDomainServices, ServiceCollection } from '#domain';
 import { CachingOptions } from '#domain/caching';
 import { createJsonClient, GitHubJsonClient, HttpOptions } from '#domain/clients';
 import {
@@ -11,7 +11,6 @@ import {
   RubySuggestionProvider,
   RubySuggestionResolver
 } from '#domain/providers/ruby';
-import { IDomainServices } from 'src/domain/definitions';
 
 /**
  * Registers all Ruby-specific services into the provided service collection.

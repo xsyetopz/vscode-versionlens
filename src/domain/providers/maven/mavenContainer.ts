@@ -1,6 +1,6 @@
 import { CachingOptions } from '#domain/caching';
 import { createHttpClient, createShellClient, HttpOptions } from '#domain/clients';
-import { ServiceCollection } from '#domain';
+import { IDomainServices, ServiceCollection } from '#domain';
 import {
   IMavenServices,
   MavenConfig,
@@ -11,7 +11,6 @@ import {
   MavenSuggestionResolver,
   MvnCli
 } from '#domain/providers/maven';
-import { IDomainServices } from 'src/domain/definitions';
 
 /**
  * Registers all Maven-specific services into the provided service collection.

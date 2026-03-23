@@ -1,7 +1,6 @@
+import { IDomainServices, ServiceCollection } from '#domain';
 import { CachingOptions } from '#domain/caching';
 import { createJsonClient, HttpOptions } from '#domain/clients';
-import { ServiceCollection } from '#domain';
-import { IDomainServices } from 'src/domain/definitions';
 import { CargoConfig, CargoSuggestionProvider, CargoSuggestionResolver, CratesClient } from '.';
 import { CargoFeatures, CargoServiceName, ICargoServices } from './definitions';
 

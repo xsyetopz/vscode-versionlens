@@ -1,6 +1,6 @@
 import { CachingOptions } from '#domain/caching';
 import { createJsonClient, HttpOptions } from '#domain/clients';
-import { ServiceCollection } from '#domain';
+import { IDomainServices, ServiceCollection } from '#domain';
 import {
   DubConfig,
   DubFeatures,
@@ -10,7 +10,6 @@ import {
   DubSuggestionResolver,
   IDubServices
 } from '#domain/providers/dub';
-import { IDomainServices } from 'src/domain/definitions';
 
 /**
  * Registers all Dub-specific services into the provided service collection.

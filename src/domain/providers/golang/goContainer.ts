@@ -1,6 +1,6 @@
+import { IDomainServices, ServiceCollection } from '#domain';
 import { CachingOptions } from '#domain/caching';
 import { createHttpClient, HttpOptions } from '#domain/clients';
-import { ServiceCollection } from '#domain';
 import {
   GoConfig,
   GoFeatures,
@@ -10,7 +10,6 @@ import {
   GoSuggestionResolver,
   IGoServices
 } from '#domain/providers/golang';
-import { IDomainServices } from 'src/domain/definitions';
 
 /**
  * Registers all Go-specific services into the provided service collection.

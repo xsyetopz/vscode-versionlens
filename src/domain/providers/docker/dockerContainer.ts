@@ -1,6 +1,6 @@
+import { IDomainServices, ServiceCollection } from '#domain';
 import { CachingOptions } from '#domain/caching';
 import { createJsonClient, HttpOptions } from '#domain/clients';
-import { ServiceCollection } from '#domain';
 import {
   DockerConfig,
   DockerFeatures,
@@ -11,7 +11,6 @@ import {
   IDockerServices,
   MicrosoftDockerClient
 } from '#domain/providers/docker';
-import { IDomainServices } from 'src/domain/definitions';
 
 /**
  * Registers all Docker-specific services into the provided service collection.

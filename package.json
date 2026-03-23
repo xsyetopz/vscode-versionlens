@@ -79,7 +79,7 @@
     "rimraf": "6.1.3",
     "source-map-support": "0.5.21",
     "ts-mockito": "2.6.1",
-    "typescript": "5.9.3"
+    "typescript": "6.0.2"
   },
   "dependencies": {
     "@esm-test/guards": "1.0.0-beta.11",

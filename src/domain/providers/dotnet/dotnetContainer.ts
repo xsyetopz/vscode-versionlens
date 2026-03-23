@@ -1,6 +1,6 @@
+import { IDomainServices, ServiceCollection } from '#domain';
 import { CachingOptions } from '#domain/caching';
 import { createJsonClient, createShellClient, HttpOptions } from '#domain/clients';
-import { ServiceCollection } from '#domain';
 import {
   DotNetCli,
   DotNetConfig,
@@ -12,7 +12,6 @@ import {
   NuGetClient,
   NugetOptions
 } from '#domain/providers/dotnet';
-import { IDomainServices } from 'src/domain/definitions';
 
 /**
  * Registers all DotNet-specific services into the provided service collection.
