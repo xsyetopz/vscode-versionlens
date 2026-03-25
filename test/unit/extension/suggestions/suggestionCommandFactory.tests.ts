@@ -2,6 +2,9 @@ import { SuggestionCategory, SuggestionTypes } from '#domain/packages';
 import { createSuggestedVersionCommand } from '../../../../src/extension/suggestions/suggestionCommandFactory';
 import { test } from 'mocha-ui-esm';
 import { equal, ok } from 'node:assert';
+import * as os from 'node:os';
+
+const isWindows = os.type() === "Windows_NT";
 
 class MockCodeLens {
   command: any;
@@ -45,7 +48,7 @@ export const suggestionCommandFactoryTests = {
     createSuggestedVersionCommand(testCodeLens as any, testIndicators as any);
 
     // verify
-    const expectedTitle = "⚠️latest 1.2.3";
+    const expectedTitle = `⚠️${isWindows ? '' : ' '}latest 1.2.3`;
     equal(testCodeLens.command.title, expectedTitle);
   },
 
