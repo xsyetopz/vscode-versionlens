@@ -368,6 +368,7 @@
             "NoMatch": "⚪",
             "Match": "🟡",
             "Updateable": "↑ ",
+            "UpdateableVulnerable": "⚠️",
             "Build": "≌ "
           },
           "properties": {

@@ -4,7 +4,6 @@ import {
   OsvClient
 } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
-import { type PackageResponse } from '#domain/packages';
 import { GetVulnerabilities } from '#domain/useCases';
 import { deepEqual } from 'node:assert';
 import { instance, mock, verify, when } from 'ts-mockito';
@@ -48,15 +47,6 @@ export const GetVulnerabilitiesTests = {
       source: ClientResponseSource.remote
     };
 
-    const mockResponse = mock<PackageResponse>();
-    const mockDependency = {
-      package: { name: testPackage, version: testVersion },
-      versionRange: testRange
-    };
-    when(mockResponse.providerName).thenReturn(testProvider);
-    when(mockResponse.parsedDependency).thenReturn(mockDependency as any);
-    when(mockResponse.fetchedPackage).thenReturn(null);
-
     when(this.osvClientMock.query(testPackage, 'PyPI', testVersion))
       .thenResolve(testResponse);
 
@@ -70,7 +60,7 @@ export const GetVulnerabilitiesTests = {
     ];
 
     // test
-    const actual = await this.cut.execute(instance(mockResponse));
+    const actual = await this.cut.execute(testProvider, testPackage, testVersion, testRange);
 
     // assert
     deepEqual(actual.vulnerabilities, expectedVulns)
@@ -97,15 +87,6 @@ export const GetVulnerabilitiesTests = {
       source: ClientResponseSource.remote
     };
 
-    const mockResponse = mock<PackageResponse>();
-    const mockDependency = {
-      package: { name: testPackage, version: testRangeVersion },
-      versionRange: testRange
-    };
-    when(mockResponse.providerName).thenReturn(testProvider);
-    when(mockResponse.parsedDependency).thenReturn(mockDependency as any);
-    when(mockResponse.fetchedPackage).thenReturn(null);
-
     // expect query with strippedVersion (2.4.1) not range (>=2.4.1)
     when(this.osvClientMock.query(testPackage, 'PyPI', strippedVersion))
       .thenResolve(testResponse);
@@ -120,7 +101,7 @@ export const GetVulnerabilitiesTests = {
     ];
 
     // test
-    const actual = await this.cut.execute(instance(mockResponse));
+    const actual = await this.cut.execute(testProvider, testPackage, testRangeVersion, testRange);
 
     // assert
     deepEqual(actual.vulnerabilities, expectedVulns)
@@ -133,21 +114,12 @@ export const GetVulnerabilitiesTests = {
     const strippedVersion = '7.0.0'
     const testRange = { start: 10, end: 20 };
 
-    const mockResponse = mock<PackageResponse>();
-    const mockDependency = {
-      package: { name: testPackage, version: testRangeVersion },
-      versionRange: testRange
-    };
-    when(mockResponse.providerName).thenReturn(testProvider);
-    when(mockResponse.parsedDependency).thenReturn(mockDependency as any);
-    when(mockResponse.fetchedPackage).thenReturn(null);
-
     // expect query with first version found (7.0.0)
     when(this.osvClientMock.query(testPackage, 'npm', strippedVersion))
       .thenResolve({ status: 200, data: [], source: ClientResponseSource.remote });
 
     // test
-    await this.cut.execute(instance(mockResponse));
+    await this.cut.execute(testProvider, testPackage, testRangeVersion, testRange);
 
     // verify
     verify(this.osvClientMock.query(testPackage, 'npm', strippedVersion)).once();
@@ -159,73 +131,14 @@ export const GetVulnerabilitiesTests = {
     const testVersion = '0.7.2'
     const testRange = { start: 5, end: 10 };
 
-    const mockResponse = mock<PackageResponse>();
-    const mockDependency = {
-      package: { name: testPackage, version: testVersion },
-      versionRange: testRange
-    };
-    when(mockResponse.providerName).thenReturn(testProvider);
-    when(mockResponse.parsedDependency).thenReturn(mockDependency as any);
-    when(mockResponse.fetchedPackage).thenReturn(null);
-
     when(this.osvClientMock.query(testPackage, 'crates.io', testVersion))
       .thenResolve({ status: 200, data: [], source: ClientResponseSource.remote });
 
     // test
-    await this.cut.execute(instance(mockResponse));
+    await this.cut.execute(testProvider, testPackage, testVersion, testRange);
 
     // verify
     verify(this.osvClientMock.query(testPackage, 'crates.io', testVersion)).once();
-  },
-
-  "prioritizes resolvedVersion from fetchedPackage": async function (this: TestContext) {
-    const testProvider = 'pypi'
-    const testPackage = 'jinja2'
-    const testRangeVersion = '^2.4.1'
-    const fetchedVersion = '2.4.5'
-    const testRange = { start: 10, end: 20 };
-
-    const testVulns = [
-      {
-        id: 'GHSA-FETCHED',
-        modified: '2023-01-01T00:00:00Z',
-        summary: 'Fetched Vuln'
-      }
-    ];
-
-    const testResponse: OsvClientResponse = {
-      status: 200,
-      data: testVulns,
-      source: ClientResponseSource.remote
-    };
-
-    const mockResponse = mock<PackageResponse>();
-    const mockDependency = {
-      package: { name: testPackage, version: testRangeVersion },
-      versionRange: testRange
-    };
-    when(mockResponse.providerName).thenReturn(testProvider);
-    when(mockResponse.parsedDependency).thenReturn(mockDependency as any);
-    when(mockResponse.fetchedPackage).thenReturn({ name: testPackage, version: fetchedVersion });
-
-    // expect query with fetchedVersion
-    when(this.osvClientMock.query(testPackage, 'PyPI', fetchedVersion))
-      .thenResolve(testResponse);
-
-    const expectedVulns = [
-      {
-        id: 'GHSA-FETCHED',
-        range: testRange,
-        msg: `Vulnerability found in ${testPackage}@${fetchedVersion}:\nGHSA-FETCHED: Fetched Vuln`,
-        url: 'https://osv.dev/vulnerability/GHSA-FETCHED'
-      }
-    ];
-
-    // test
-    const actual = await this.cut.execute(instance(mockResponse));
-
-    // assert
-    deepEqual(actual.vulnerabilities, expectedVulns)
   },
 
   "returns empty for unsupported providers": async function (this: TestContext) {
@@ -234,17 +147,8 @@ export const GetVulnerabilitiesTests = {
     const testVersion = '1.0.0'
     const testRange = { start: 5, end: 15 };
 
-    const mockResponse = mock<PackageResponse>();
-    const mockDependency = {
-      package: { name: testPackage, version: testVersion },
-      versionRange: testRange
-    };
-    when(mockResponse.providerName).thenReturn(testProvider);
-    when(mockResponse.parsedDependency).thenReturn(mockDependency as any);
-    when(mockResponse.fetchedPackage).thenReturn(null);
-
     // test
-    const actual = await this.cut.execute(instance(mockResponse));
+    const actual = await this.cut.execute(testProvider, testPackage, testVersion, testRange);
 
     // assert
     deepEqual(actual.vulnerabilities, [])

@@ -1,8 +1,10 @@
-import type { ILogger } from '#domain/logging';
 import { SuggestionTypes, mapToSuggestionUpdate } from '#domain/packages';
+import { GetVulnerabilities } from '#domain/useCases';
 import { Disposable } from '#domain/utils';
 import type { ISuggestionCodeLens, IVersionLensState } from '#extension';
+import type { SuggestionsOptions } from '#extension/suggestions';
 import type { IVsCodeConstructFactory, IVsCodeWorkspace } from '#extension/vscode';
+import { VulnerabilityInteractions } from '#extension/vulnerabilities';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 /**
@@ -14,20 +16,27 @@ export class OnUpdateDependencyClick extends Disposable {
    * Initializes a new instance of the OnUpdateDependencyClick class.
    * @param construct Factory for VS Code constructs.
    * @param workspace VS Code workspace interface.
+   * @param window VS Code window interface.
+   * @param getVulnerabilities Use case for fetching vulnerabilities.
+   * @param suggestionOptions Suggestion configuration options.
    * @param state Extension state.
    * @param logger Logger instance.
    */
   constructor(
     readonly construct: IVsCodeConstructFactory,
     readonly workspace: IVsCodeWorkspace,
-    readonly state: IVersionLensState,
-    readonly logger: ILogger
+    readonly getVulnerabilities: GetVulnerabilities,
+    readonly vulnerabilityInteractions: VulnerabilityInteractions,
+    readonly suggestionOptions: SuggestionsOptions,
+    readonly state: IVersionLensState
   ) {
     super();
     throwUndefinedOrNull('construct', construct);
     throwUndefinedOrNull('workspace', workspace);
+    throwUndefinedOrNull('getVulnerabilities', getVulnerabilities);
+    throwUndefinedOrNull('suggestionOptions', suggestionOptions);
+    throwUndefinedOrNull('vulnerabilityInteractions', vulnerabilityInteractions);
     throwUndefinedOrNull('state', state);
-    throwUndefinedOrNull('logger', logger);
   }
 
   /**
@@ -38,9 +47,6 @@ export class OnUpdateDependencyClick extends Disposable {
   async execute(codeLens: ISuggestionCodeLens): Promise<void> {
     if (this.state.codeLensReplace.value === false) return;
 
-    // disable codelens replace to prevent suggestion race condition
-    await this.state.enableCodeLensReplace(false);
-
     // get the replace version
     const { version, type } = codeLens.packageResponse.suggestion!;
     const isTag = type & SuggestionTypes.tag;
@@ -48,6 +54,25 @@ export class OnUpdateDependencyClick extends Disposable {
     const replaceWithVersion: string = isTag
       ? version
       : codeLens.replaceVersionFn(suggestionUpdate, version);
+    const packageName = codeLens.packageResponse.parsedDependency.package.name;
+
+    // check for vulnerabilities
+    if (this.suggestionOptions.showVulnerabilities) {
+      const response = await this.getVulnerabilities.execute(
+        codeLens.packageResponse.providerName,
+        packageName,
+        replaceWithVersion,
+        codeLens.packageResponse.parsedDependency.versionRange
+      );
+
+      const hasVulnerabilities = response.vulnerabilities.length > 0;
+      if (hasVulnerabilities && await this.vulnerabilityInteractions.alertUpdateHasVulnerability(packageName, replaceWithVersion)) {
+        return;
+      }
+    }
+
+    // disable codelens replace to prevent suggestion race condition
+    await this.state.enableCodeLensReplace(false);
 
     // apply the edit
     const edit = this.construct.createWorkspaceEdit();

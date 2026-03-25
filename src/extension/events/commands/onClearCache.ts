@@ -2,7 +2,7 @@ import type { IExpiryCache } from '#domain/caching';
 import type { ILogger } from '#domain/logging';
 import type { PackageCache } from '#domain/packages';
 import { Disposable } from '#domain/utils';
-import type { VulnerabilityProvider } from '#extension/suggestions';
+import { VulnerabilityProvider } from '#extension/vulnerabilities';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 /**

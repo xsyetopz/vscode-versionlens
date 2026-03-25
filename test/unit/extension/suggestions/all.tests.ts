@@ -1,0 +1,1 @@
+export * as SuggestionCommandFactory from './suggestionCommandFactory.tests';

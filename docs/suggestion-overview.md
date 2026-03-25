@@ -23,6 +23,7 @@ Indicators appear next to the version information to provide a quick summary of 
 | ⚪ | **No Match** | No version was found that satisfies the specified version string. |
 | 🔴 | **Error** | An error occurred while fetching or parsing version data. |
 | ↑ | **Updateable** | An update action to automatically update the version string to the suggestion. |
+| ⚠️ | **Updateable (Vulnerable)** | An update suggestion that contains known security vulnerabilities. Clicking this will prompt for confirmation. |
 | ≌ | **Change Build** | An update action that will present a choice of build versions available |
 | 📁 | **Directory** | The dependency points to a local file or folder location. |
 

@@ -1,6 +1,7 @@
 import type { IFrozenOptions } from '#domain/configuration';
 import { VersionLensState } from '#extension/state';
-import { SuggestionsOptions, VulnerabilityProvider } from '#extension/suggestions';
+import { SuggestionsOptions } from '#extension/suggestions';
+import { VulnerabilityProvider } from '#extension/vulnerabilities';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
 /**

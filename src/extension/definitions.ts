@@ -33,12 +33,9 @@ import type {
   UrlAuthenticationStore
 } from '#extension/authorization';
 import type { VersionLensState } from '#extension/state';
-import type {
-  SuggestionCodeLensProvider,
-  SuggestionsOptions,
-  VulnerabilityProvider
-} from '#extension/suggestions';
-import type { EditorConfig, IVsCodeConstructFactory } from '#extension/vscode';
+import type { SuggestionCodeLensProvider, SuggestionsOptions } from '#extension/suggestions';
+import type { EditorConfig } from '#extension/vscode';
+import { VulnerabilityInteractions, VulnerabilityProvider } from '#extension/vulnerabilities';
 import type { PackageFileWatcher } from '#extension/watcher';
 import type { LogOutputChannel, Range, Uri } from 'vscode';
 
@@ -160,12 +157,11 @@ export interface IExtensionServices {
   packageFileWatcher: PackageFileWatcher
   /** The provider for package vulnerabilities. */
   vulnerabilityProvider: VulnerabilityProvider
-
+  /** Handler for vulnerability UI interactions. */
+  vulnerabilityInteractions: VulnerabilityInteractions
   // vscode adapters
   /** VS Code editor configuration. */
   editorConfig: EditorConfig
-  /** Factory for VS Code constructs. */
-  vsCodeConstructFactory: IVsCodeConstructFactory
 
   // authorization services
   /** Map of authentication providers. */

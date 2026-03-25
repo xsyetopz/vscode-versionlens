@@ -79,6 +79,12 @@ These commands allow you to manually manage credentials for private or restricte
 
 For more details on managing credentials, see the [Authorization Guide](./authorization.md).
 
+### Vulnerability Safeguards
+
+VersionLens automatically checks suggested versions for known security vulnerabilities. If you click to update a dependency to a version that is flagged as vulnerable, a modal confirmation dialog will appear.
+
+This ensures that you are aware of potential security risks before modifying your project manifest. You can choose to "Update Anyway" or cancel the operation.
+
 ---
 
 ### Key Settings
@@ -88,5 +94,5 @@ For more details on managing credentials, see the [Authorization Guide](./author
 | `versionlens.enabledProviders` | `[]` | Controls which package managers versionlens should enable e.g. ['npm', 'dotnet', 'docker']. If empty, all providers are enabled. **Requires VS Code restart when changed.** |
 | `versionlens.suggestions.showOnStartup` | `false` | Show version lenses when a file is opened. |
 | `versionlens.suggestions.showPrereleasesOnStartup` | `false` | Show prerelease suggestions on startup. |
-| `versionlens.suggestions.showVulnerabilities` | `true` | Show package vulnerabilities as red squiggles in the editor. |
+| `versionlens.suggestions.showVulnerabilities` | `true` | Show package vulnerabilities as red squiggles in the editor and enable update safeguards. |
 | `versionlens.caching.duration` | `3` | Cache duration in minutes. |

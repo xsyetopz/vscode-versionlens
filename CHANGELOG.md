@@ -1,3 +1,13 @@
+# 1.27.0-preview
+
+  ### All
+
+  - **Vulnerability Safeguards for Suggested Updates**
+    - VersionLens now automatically checks suggested update versions for known security vulnerabilities.
+    - Added a `⚠️` indicator to updatable CodeLens links that contain vulnerabilities.
+    - Added a modal confirmation dialog when attempting to update to a vulnerable version, allowing you to "Update Anyway" or cancel the operation.
+    - The vulnerability indicator symbol is now configurable via the `versionlens.suggestions.indicators` setting (`UpdateableVulnerable` key).
+
 # 1.26.1
 
   ### All

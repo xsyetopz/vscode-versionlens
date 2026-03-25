@@ -16,9 +16,11 @@ import {
 } from '#domain/useCases';
 import { ExtensionServiceName, IExtensionServices, VersionLensExtension } from '#extension';
 import { VersionLensState } from '#extension/state';
-import { SuggestionCodeLensProvider, SuggestionsOptions, VulnerabilityProvider } from '#extension/suggestions';
+import { SuggestionCodeLensProvider, SuggestionsOptions } from '#extension/suggestions';
 import { EditorConfig } from '#extension/vscode';
-import { EventEmitter, languages, workspace, type DocumentFilter } from 'vscode';
+import { VulnerabilityInteractions, VulnerabilityProvider } from '#extension/vulnerabilities';
+import { EventEmitter, languages, window, workspace, type DocumentFilter } from 'vscode';
+import { VsCodeConstructionFactory } from './vscode/vsCodeConstructFactory';
 import { PackageFileWatcher } from './watcher';
 
 /**
@@ -66,23 +68,7 @@ export function addExtensionServices(services: ServiceCollection<IExtensionServi
     )
   )
 
-  services.addSingletonFactory(
-    ExtensionServiceName.vulnerabilityProvider,
-    c => {
-      const diagnostics = languages.createDiagnosticCollection('versionlens-vulnerabilities');
-      const provider = new VulnerabilityProvider(
-        c.versionLensState,
-        c.getVulnerabilities,
-        diagnostics,
-        c.suggestionOptions,
-        c.loggerFactory(VulnerabilityProvider)
-      );
-
-      provider.disposables.push(diagnostics as any);
-
-      return provider;
-    }
-  );
+  addVulnerabilityServices(services);
 
   services.addSingletonFactory(
     ExtensionServiceName.versionLensProviders,
@@ -289,4 +275,34 @@ export function addSuggestionProviders(services: ServiceCollection<IDomainServic
       .filter(name => providerNames.includes(name as any))
       .map(name => (c as any)[`${name}.suggestionProvider`]),
   );
+}
+
+export function addVulnerabilityServices(
+  services: ServiceCollection<IExtensionServices & IDomainServices>
+) {
+
+  services.addSingletonFactory(
+    ExtensionServiceName.vulnerabilityProvider,
+    c => {
+      const diagnostics = languages.createDiagnosticCollection('versionlens-vulnerabilities');
+      const provider = new VulnerabilityProvider(
+        c.versionLensState,
+        c.getVulnerabilities,
+        diagnostics,
+        new VsCodeConstructionFactory(),
+        c.suggestionOptions,
+        c.loggerFactory(VulnerabilityProvider)
+      );
+
+      provider.disposables.push(diagnostics as any);
+
+      return provider;
+    }
+  );
+
+  services.addSingletonFactory(
+    ExtensionServiceName.vulnerabilityInteractions,
+    _ => new VulnerabilityInteractions(window)
+  );
+
 }

@@ -4,6 +4,7 @@
 import type {
   CancellationToken,
   ConfigurationScope,
+  Diagnostic,
   Event,
   FileSystemWatcher,
   GlobPattern,
@@ -204,6 +205,7 @@ export interface IVsCodeConstructFactory {
   createUri(uri: string): Uri;
   /** Creates a file URI from a path string. */
   createFileUri(path: string): Uri;
+  createDiagnostic(range: Range, msg: string): Diagnostic
 }
 
 /**

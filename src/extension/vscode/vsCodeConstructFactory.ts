@@ -1,4 +1,4 @@
-import { Range, Uri, WorkspaceEdit, type Position } from 'vscode';
+import { Diagnostic, DiagnosticSeverity, Range, Uri, WorkspaceEdit, type Position } from 'vscode';
 import type { IVsCodeConstructFactory } from './definitions';
 
 /**
@@ -41,6 +41,10 @@ export class VsCodeConstructionFactory implements IVsCodeConstructFactory {
    */
   createFileUri(path: string): Uri {
     return Uri.file(path);
+  }
+
+  createDiagnostic(range: Range, msg: string): Diagnostic {
+    return new Diagnostic(range, msg, DiagnosticSeverity.Error);
   }
 
 }

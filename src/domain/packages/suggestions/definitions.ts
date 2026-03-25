@@ -90,6 +90,8 @@ export type PackageSuggestion = {
   name: string,
   /** The suggested version string. */
   version: string,
+  /** Whether the suggested version is vulnerable. */
+  isVulnerable?: boolean
 }
 
 /**

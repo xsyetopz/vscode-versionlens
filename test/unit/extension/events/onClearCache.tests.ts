@@ -2,7 +2,7 @@ import type { IExpiryCache } from '#domain/caching';
 import type { ILogger } from '#domain/logging';
 import type { PackageCache } from '#domain/packages';
 import { OnClearCache } from '#extension/events';
-import type { VulnerabilityProvider } from '#extension/suggestions';
+import { VulnerabilityProvider } from '#extension/vulnerabilities';
 import { test } from 'mocha-ui-esm';
 import { instance, mock, verify } from 'ts-mockito';
 

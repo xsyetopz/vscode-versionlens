@@ -13,9 +13,12 @@ import {
   createTextRange,
   PackageDescriptor
 } from '#domain/parsers';
+import { GetVulnerabilities } from '#domain/useCases';
 import type { IContextState, ISuggestionCodeLens, IVersionLensState } from '#extension';
 import { OnUpdateDependencyClick } from '#extension/events';
-import type { IVsCodeConstructFactory, IVsCodeWorkspace } from '#extension/vscode';
+import { SuggestionsOptions } from '#extension/suggestions';
+import type { IVsCodeConstructFactory, IVsCodeWindow, IVsCodeWorkspace } from '#extension/vscode';
+import { VulnerabilityInteractions } from '#extension/vulnerabilities';
 import { test } from 'mocha-ui-esm';
 import { deepEqual, equal } from 'node:assert';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
@@ -23,6 +26,10 @@ import { anything, instance, mock, verify, when } from 'ts-mockito';
 type TestContext = {
   mockConstruct: IVsCodeConstructFactory
   mockWorkspace: IVsCodeWorkspace
+  mockWindow: IVsCodeWindow
+  mockGetVulnerabilities: GetVulnerabilities
+  mockVulnerabilityInteractions: VulnerabilityInteractions
+  mockSuggestionOptions: SuggestionsOptions
   mockState: IVersionLensState
   mockLogger: ILogger
   mockCodeLensReplace: IContextState<boolean>
@@ -35,6 +42,10 @@ export const onUpdateDependencyClickTests = {
   beforeEach: function (this: TestContext) {
     this.mockConstruct = mock<IVsCodeConstructFactory>()
     this.mockWorkspace = mock<IVsCodeWorkspace>()
+    this.mockWindow = mock<IVsCodeWindow>()
+    this.mockGetVulnerabilities = mock<GetVulnerabilities>()
+    this.mockVulnerabilityInteractions = mock<VulnerabilityInteractions>()
+    this.mockSuggestionOptions = mock<SuggestionsOptions>()
     this.mockState = mock<IVersionLensState>()
     this.mockLogger = mock<ILogger>()
     this.mockCodeLensReplace = mock<IContextState<boolean>>()
@@ -45,8 +56,10 @@ export const onUpdateDependencyClickTests = {
     const testEvent = new OnUpdateDependencyClick(
       instance(this.mockConstruct),
       instance(this.mockWorkspace),
-      instance(this.mockState),
-      instance(this.mockLogger)
+      instance(this.mockGetVulnerabilities),
+      instance(this.mockVulnerabilityInteractions),
+      instance(this.mockSuggestionOptions),
+      instance(this.mockState)
     );
     const testCodelens = mock<ISuggestionCodeLens>()
 
@@ -70,13 +83,13 @@ export const onUpdateDependencyClickTests = {
       const testEvent = new OnUpdateDependencyClick(
         instance(this.mockConstruct),
         instance(this.mockWorkspace),
-        instance(this.mockState),
-        instance(this.mockLogger)
+        instance(this.mockGetVulnerabilities),
+        instance(this.mockVulnerabilityInteractions),
+        instance(this.mockSuggestionOptions),
+        instance(this.mockState)
       );
       const mockCodeLens = mock<ISuggestionCodeLens>()
-      when(mockCodeLens.documentUrl).thenReturn(testDocumentUrl as any)
-      when(mockCodeLens.replaceRange).thenReturn(testReplaceRange as any)
-      when(mockCodeLens.packageResponse).thenReturn({
+      const testPackageResponse = {
         suggestion: {
           name: 'latest',
           version: testVersion,
@@ -94,7 +107,10 @@ export const onUpdateDependencyClickTests = {
           ])
         ),
         order: 0,
-      })
+      }
+      when(mockCodeLens.documentUrl).thenReturn(testDocumentUrl as any)
+      when(mockCodeLens.replaceRange).thenReturn(testReplaceRange as any)
+      when(mockCodeLens.packageResponse).thenReturn(testPackageResponse)
       when(this.mockCodeLensReplace.value).thenReturn(true)
       when(this.mockState.codeLensReplace).thenReturn(instance(this.mockCodeLensReplace))
       const testEdit = {
@@ -107,6 +123,15 @@ export const onUpdateDependencyClickTests = {
       when(this.mockConstruct.createWorkspaceEdit()).thenReturn(testEdit as any)
       when(mockCodeLens.replaceVersionFn(anything(), testVersion)).thenReturn(expectedVersion)
 
+      // vulnerability check setup
+      when(this.mockSuggestionOptions.showVulnerabilities).thenReturn(true)
+      when(this.mockGetVulnerabilities.execute(
+        testPackageResponse.providerName,
+        testPackageResponse.parsedDependency.package.name,
+        expectedVersion,
+        testPackageResponse.parsedDependency.versionRange
+      )).thenReturn(Promise.resolve({ vulnerabilities: [] }))
+
       // test
       await testEvent.execute(instance(mockCodeLens));
 
@@ -118,5 +143,140 @@ export const onUpdateDependencyClickTests = {
       verify(this.mockWorkspace.applyEdit(testEdit as any)).once();
     }
   ],
+
+  "shows warning when vulnerabilities found and cancels": async function (this: TestContext) {
+    // setup
+    const testVersion = '1.2.3'
+    const expectedVersion = '2.3.4'
+    const testEvent = new OnUpdateDependencyClick(
+      instance(this.mockConstruct),
+      instance(this.mockWorkspace),
+      instance(this.mockGetVulnerabilities),
+      instance(this.mockVulnerabilityInteractions),
+      instance(this.mockSuggestionOptions),
+      instance(this.mockState)
+    );
+    const mockCodeLens = mock<ISuggestionCodeLens>()
+    const testPackageResponse = {
+      suggestion: {
+        name: 'latest',
+        version: testVersion,
+        type: SuggestionTypes.release,
+        category: SuggestionCategory.Latest
+      },
+      providerName: 'test-provider',
+      packageSource: PackageSourceType.Registry,
+      type: PackageVersionType.Version,
+      parsedDependency: new PackageDependency(
+        createPackageManifest('test-name', testVersion, 'test/path'),
+        new PackageDescriptor([
+          createPackageNameDesc('test-name', createTextRange(0, 0)),
+          createPackageVersionDesc('1.0.0', createTextRange(1, 1)),
+        ])
+      ),
+      order: 0,
+    }
+    when(mockCodeLens.packageResponse).thenReturn(testPackageResponse)
+    when(this.mockCodeLensReplace.value).thenReturn(true)
+    when(this.mockState.codeLensReplace).thenReturn(instance(this.mockCodeLensReplace))
+    when(mockCodeLens.replaceVersionFn(anything(), testVersion)).thenReturn(expectedVersion)
+
+    // vulnerability check setup
+    when(this.mockSuggestionOptions.showVulnerabilities).thenReturn(true)
+    when(this.mockGetVulnerabilities.execute(
+      testPackageResponse.providerName,
+      testPackageResponse.parsedDependency.package.name,
+      expectedVersion,
+      testPackageResponse.parsedDependency.versionRange
+    )).thenReturn(Promise.resolve({ vulnerabilities: [{ id: '1', range: {} as any, msg: '', url: '' }] }))
+
+    // vulnerability interaction setup
+    when(this.mockVulnerabilityInteractions.alertUpdateHasVulnerability(
+      testPackageResponse.parsedDependency.package.name,
+      expectedVersion
+    )).thenReturn(Promise.resolve(true))
+
+    // test
+    await testEvent.execute(instance(mockCodeLens));
+
+    // verify
+    verify(this.mockVulnerabilityInteractions.alertUpdateHasVulnerability(
+      testPackageResponse.parsedDependency.package.name,
+      expectedVersion
+    )).once();
+    verify(this.mockWorkspace.applyEdit(anything())).never();
+  },
+
+  "shows warning when vulnerabilities found and continues": async function (this: TestContext) {
+    // setup
+    const testVersion = '1.2.3'
+    const expectedVersion = '2.3.4'
+    const testEvent = new OnUpdateDependencyClick(
+      instance(this.mockConstruct),
+      instance(this.mockWorkspace),
+      instance(this.mockGetVulnerabilities),
+      instance(this.mockVulnerabilityInteractions),
+      instance(this.mockSuggestionOptions),
+      instance(this.mockState)
+    );
+    const mockCodeLens = mock<ISuggestionCodeLens>()
+    const testPackageResponse = {
+      suggestion: {
+        name: 'latest',
+        version: testVersion,
+        type: SuggestionTypes.release,
+        category: SuggestionCategory.Latest
+      },
+      providerName: 'test-provider',
+      packageSource: PackageSourceType.Registry,
+      type: PackageVersionType.Version,
+      parsedDependency: new PackageDependency(
+        createPackageManifest('test-name', testVersion, 'test/path'),
+        new PackageDescriptor([
+          createPackageNameDesc('test-name', createTextRange(0, 0)),
+          createPackageVersionDesc('1.0.0', createTextRange(1, 1)),
+        ])
+      ),
+      order: 0,
+    }
+    const testDocumentUrl = 'test-url'
+    const testReplaceRange = {}
+    when(mockCodeLens.documentUrl).thenReturn(testDocumentUrl as any)
+    when(mockCodeLens.replaceRange).thenReturn(testReplaceRange as any)
+    when(mockCodeLens.packageResponse).thenReturn(testPackageResponse)
+    when(this.mockCodeLensReplace.value).thenReturn(true)
+    when(this.mockState.codeLensReplace).thenReturn(instance(this.mockCodeLensReplace))
+    when(mockCodeLens.replaceVersionFn(anything(), testVersion)).thenReturn(expectedVersion)
+
+    // vulnerability check setup
+    when(this.mockSuggestionOptions.showVulnerabilities).thenReturn(true)
+    when(this.mockGetVulnerabilities.execute(
+      testPackageResponse.providerName,
+      testPackageResponse.parsedDependency.package.name,
+      expectedVersion,
+      testPackageResponse.parsedDependency.versionRange
+    )).thenReturn(Promise.resolve({ vulnerabilities: [{ id: '1', range: {} as any, msg: '', url: '' }] }))
+
+    // vulnerability interaction setup
+    when(this.mockVulnerabilityInteractions.alertUpdateHasVulnerability(
+      testPackageResponse.parsedDependency.package.name,
+      expectedVersion
+    )).thenReturn(Promise.resolve(false))
+
+    const testEdit = {
+      replace: function () { }
+    }
+    when(this.mockConstruct.createWorkspaceEdit()).thenReturn(testEdit as any)
+
+    // test
+    await testEvent.execute(instance(mockCodeLens));
+
+    // verify
+    verify(this.mockVulnerabilityInteractions.alertUpdateHasVulnerability(
+      testPackageResponse.parsedDependency.package.name,
+      expectedVersion
+    )).once();
+    verify(this.mockWorkspace.applyEdit(testEdit as any)).once();
+  }
 
 };

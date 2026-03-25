@@ -68,7 +68,9 @@ You can also set the default startup state using `versionlens.suggestions.showPr
 
 VersionLens integrates with [OSV.dev](https://osv.dev) to highlight vulnerable packages directly in your manifest files. 
 
-If a vulnerability is found for your current version, a **red squiggle** will appear under the version. Hovering over the version will show the vulnerability details and a direct link to the advisory.
+*   **Editor Diagnostics:** If a vulnerability is found for your current version, a **red squiggle** will appear. Hovering over the version will show the vulnerability details and a direct link to the advisory.
+*   **Update Safeguards:** If you click to update to a version that is known to be vulnerable, a **modal confirmation** will appear to prevent accidental updates to insecure versions.
+*   **Visual Indicators:** Updatable versions with known vulnerabilities are marked with a `⚠️` indicator in the CodeLens title.
 
 > **Note:** This feature is enabled by default and can be toggled using the `versionlens.suggestions.showVulnerabilities` setting.
 

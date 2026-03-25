@@ -3,7 +3,7 @@ import {
   OsvClient
 } from '#domain/clients';
 import type { ILogger } from '#domain/logging';
-import type { PackageResponse } from '#domain/packages';
+import { PackageTextRange } from '#domain/parsers';
 import type { PackageVulnerabilityResponse } from '#domain/useCases';
 import { throwUndefinedOrNull } from '@esm-test/guards';
 
@@ -42,36 +42,38 @@ export class GetVulnerabilities {
   /**
    * Executes the get vulnerabilities use case.
    * @param packageResponse The package response.
+   * @param packageVersion Optional version to check for vulnerabilities.
    * @returns A promise resolving to the vulnerabilities and the range.
    */
-  async execute(packageResponse: PackageResponse): Promise<PackageVulnerabilityResponse> {
-    const dependency = packageResponse.parsedDependency;
+  async execute(
+    providerName: string,
+    packageName: string,
+    packageVersion: string,
+    textRange: PackageTextRange
+  ): Promise<PackageVulnerabilityResponse> {
     const response: PackageVulnerabilityResponse = { vulnerabilities: [] };
 
-    const ecosystem = providerToOsvEcosystem[packageResponse.providerName];
+    const ecosystem = providerToOsvEcosystem[providerName];
     if (!ecosystem) {
       this.logger.trace(
         "No OSV ecosystem mapping found for provider: {providerName}",
-        packageResponse.providerName
+        providerName
       );
       return response;
     }
 
     try {
-      const version = stripRangeOperators(
-        packageResponse.fetchedPackage?.version ?? dependency.package.version
-      );
-
+      const version = stripRangeOperators(packageVersion);
       const osvResponse: OsvClientResponse = await this.osvClient.query(
-        dependency.package.name,
+        packageName,
         ecosystem,
         version
       );
 
       response.vulnerabilities = osvResponse.data.map(v => ({
         id: v.id,
-        range: dependency.versionRange,
-        msg: `Vulnerability found in ${dependency.package.name}@${version}:\n${v.id}: ${v.summary || 'No summary available'}`,
+        range: textRange,
+        msg: `Vulnerability found in ${packageName}@${version}:\n${v.id}: ${v.summary || 'No summary available'}`,
         url: `https://osv.dev/vulnerability/${v.id}`
       }));
 
@@ -79,8 +81,8 @@ export class GetVulnerabilities {
     } catch (error) {
       this.logger.error(
         "Failed to fetch vulnerabilities for {packageName}@{packageVersion} in {ecosystem}: {error}",
-        dependency.package.name,
-        dependency.package.version,
+        packageName,
+        packageVersion,
         ecosystem,
         error
       );

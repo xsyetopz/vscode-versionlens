@@ -76,10 +76,12 @@ export function createSuggestedVersionCommand(
 ) {
   if (!codeLens.packageResponse.suggestion) return createInvalidCommand(codeLens);
 
-  const { name, version, category, type } = codeLens.packageResponse.suggestion;
+  const { name, version, category, type, isVulnerable } = codeLens.packageResponse.suggestion;
 
   // get the category indicator
-  const indicator = indicators[category] + (isWindows ? '' : ' ');
+  let indicator = getIndicator(category, isVulnerable, indicators);
+
+  indicator += (isWindows ? '' : ' ');
   const indicatedName = indicator ? `${indicator}${name}` : name;
 
   // create the indicated command title
@@ -106,4 +108,38 @@ export function createSuggestedVersionCommand(
       createStatusCommand(cmdTitle, codeLens);
       break;
   }
+}
+
+/**
+ * Gets the indicator for a suggestion category.
+ * @param category The suggestion category.
+ * @param isVulnerable Whether the version is vulnerable.
+ * @param indicators Map of indicators for each suggestion category.
+ * @returns The indicator string.
+ */
+function getIndicator(
+  category: SuggestionCategory,
+  isVulnerable: boolean | undefined,
+  indicators: KeyDictionary<string>
+): string {
+  let indicatorKey = category as string;
+  let useFallbackVulnerableIndicator = false;
+
+  const isUpdateableCategory =
+    category === SuggestionCategory.Updateable ||
+    category === SuggestionCategory.Build;
+
+  if (isVulnerable && isUpdateableCategory) {
+    const vulnerableKey = `${category}Vulnerable`;
+    if (vulnerableKey in indicators) {
+      indicatorKey = vulnerableKey;
+    } else {
+      useFallbackVulnerableIndicator = true;
+    }
+  }
+
+  const indicator = indicators[indicatorKey] || indicators[category] || "";
+  return useFallbackVulnerableIndicator
+    ? (indicators['UpdateableVulnerable'] || "⚠️")
+    : indicator;
 }

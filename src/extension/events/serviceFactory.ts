@@ -164,8 +164,10 @@ function addCommandEventServices(services: ServiceCollection<IExtensionServices 
       const handler = new OnUpdateDependencyClick(
         new VsCodeConstructionFactory(),
         workspace,
-        container.versionLensState,
-        container.loggerFactory(OnUpdateDependencyClick)
+        container.getVulnerabilities,
+        container.vulnerabilityInteractions,
+        container.suggestionOptions,
+        container.versionLensState
       );
 
       // register the vscode command
