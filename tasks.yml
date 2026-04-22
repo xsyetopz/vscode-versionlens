@@ -6,11 +6,11 @@ tasks:
   bundle: [clean, lint, node ./build/esbuild.js]
   bundle:dev: [env: { BUNDLE_DEV: true }, bundle]
   bundle:test: [env: { BUNDLE_TEST: true }, bundle]
-  compile: [clean, tsc]
+  compile: [clean, tsgo]
   coverage: c8 -r=text -r=cobertura -r=text-summary -o .coverage task test
-  lint: tsc --noEmit
+  lint: tsgo --noEmit
   test: [compile, env: { TEST_HEADLESS: true }, node ./dist/test/runner.js]
   test:vscode: [bundle:test, node ./test/vscode.runner.js]
   test:insiders: [bundle:test, env: { TEST_INSIDERS: true }, node ./test/vscode.runner.js]
   build:test: [bundle:test, env: { TEST_HEADLESS: true }, node ./dist/bundled.test.js]
-  trace: [clean, tsc --explainFiles --project ./tsconfig.json > trace.log]
+  trace: [clean, tsgo --explainFiles --project ./tsconfig.json > trace.log]
