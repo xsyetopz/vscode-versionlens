@@ -91,7 +91,7 @@
     "sax": "1.6.0",
     "semver": "7.7.4",
     "toml-eslint-parser": "1.0.3",
-    "yaml": "2.8.3"
+    "yaml": "2.8.4"
   },
   "overrides": {
     "@npmcli/agent": "2.0.0"
