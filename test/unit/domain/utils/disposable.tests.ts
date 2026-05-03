@@ -1,6 +1,6 @@
 import { ILogger } from '#domain/logging';
 import { Disposable, IDisposable } from '#domain/utils';
-import { test } from "mocha-ui-esm";
+import { test } from '@esm-test/esm-test-node';
 import { instance, mock, verify } from "ts-mockito";
 
 type TestContext = {

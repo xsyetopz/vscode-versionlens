@@ -1,6 +1,6 @@
 import { SuggestionUpdate } from '#domain/packages';
 import { npmReplaceVersion } from '#domain/providers/npm';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import assert from 'node:assert';
 import Fixtures from './npmReplaceVersion.fixtures';
 

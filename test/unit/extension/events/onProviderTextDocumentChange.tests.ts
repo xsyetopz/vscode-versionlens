@@ -4,7 +4,7 @@ import type { ISuggestionProvider } from '#domain/providers';
 import type { DependencyChangesResult, GetDependencyChanges } from '#domain/useCases';
 import { OnProviderTextDocumentChange } from '#extension/events';
 import type { ContextState, VersionLensState } from '#extension/state';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { instance, mock, verify, when } from 'ts-mockito';
 
 type TestContext = {

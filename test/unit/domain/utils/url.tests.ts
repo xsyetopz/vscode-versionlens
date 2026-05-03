@@ -4,7 +4,7 @@ import {
   RegistryProtocols,
   trimEndSlash
 } from '#domain/utils';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import assert from 'node:assert';
 
 export const UrlTests = {

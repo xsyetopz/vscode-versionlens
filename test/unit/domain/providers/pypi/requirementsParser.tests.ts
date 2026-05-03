@@ -1,5 +1,5 @@
 import { parseRequirementsTxt } from '#domain/providers/pypi';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { deepEqual, equal } from 'node:assert';
 import Fixtures from './requirementsParser.fixtures';
 

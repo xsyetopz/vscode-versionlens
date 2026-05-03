@@ -1,4 +1,4 @@
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { deepEqual } from 'node:assert';
 import { anything, instance, mock, when } from 'ts-mockito';
 import { type IExpiryCache, CachingOptions } from '#domain/caching';

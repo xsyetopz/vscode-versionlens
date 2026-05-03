@@ -1,5 +1,5 @@
 import { SuggestionIncrements, UpdateableFactory, getProjectVersionSuggestions } from '#domain/packages';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { deepEqual, ok } from 'node:assert';
 
 export const getProjectVersionSuggestionsTests = {

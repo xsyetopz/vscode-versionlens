@@ -3,7 +3,7 @@ import type { ISuggestionProvider } from '#domain/providers';
 import type { GetSuggestionProvider } from '#domain/useCases';
 import { OnTextDocumentChange } from '#extension/events';
 import type { ContextState, VersionLensState } from '#extension/state';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import type {
   TextDocument,

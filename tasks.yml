@@ -7,10 +7,18 @@ tasks:
   bundle:dev: [env: { BUNDLE_DEV: true }, bundle]
   bundle:test: [env: { BUNDLE_TEST: true }, bundle]
   compile: [clean, tsgo]
-  coverage: c8 -r=text -r=cobertura -r=text-summary -o .coverage task test
   lint: tsgo --noEmit
-  test: [compile, env: { TEST_HEADLESS: true }, node ./dist/test/runner.js]
-  test:vscode: [bundle:test, node ./test/vscode.runner.js]
+  test: [compile, env: { TEST_HEADLESS: true }, node --enable-source-maps --experimental-test-coverage dist/test/runner.js]
+  test:vscode: [bundle:test, node test/vscode.runner.js]
   test:insiders: [bundle:test, env: { TEST_INSIDERS: true }, node ./test/vscode.runner.js]
-  build:test: [bundle:test, env: { TEST_HEADLESS: true }, node ./dist/bundled.test.js]
+  test:bundle: [bundle:test, env: { TEST_HEADLESS: true }, node dist/bundled.test.js]
+  coverage: [
+    compile,
+    env: { TEST_HEADLESS: true },
+    node --enable-source-maps --experimental-test-coverage
+      --test-reporter=spec --test-reporter-destination=stdout
+      --test-reporter=junit --test-reporter-destination=./coverage.xml 
+      --test-coverage-exclude=dist/test/**/*.js
+      --test dist/test/runner.js
+  ]
   trace: [clean, tsgo --explainFiles --project ./tsconfig.json > trace.log]

@@ -13,7 +13,7 @@ import {
   RequestLightClient
 } from '#domain/clients/requestLight';
 import { type KeyStringDictionary, createUrl } from '#domain/utils';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import assert from 'node:assert';
 import type { XHROptions } from 'request-light';
 import { anything, capture, deepEqual, instance, mock, verify, when } from 'ts-mockito';

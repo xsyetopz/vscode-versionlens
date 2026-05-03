@@ -1,6 +1,6 @@
 import type { ILogger } from '#domain/logging';
 import { type PubSuggestionResolver, type PubConfig, PubSuggestionProvider } from '#domain/providers/pub';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { deepEqual, equal } from 'node:assert';
 import { instance, mock, when } from 'ts-mockito';
 import Fixtures from './pubSuggestionProvider.fixtures';

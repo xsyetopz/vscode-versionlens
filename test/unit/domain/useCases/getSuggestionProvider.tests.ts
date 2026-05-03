@@ -1,7 +1,7 @@
 import type { ILogger } from '#domain/logging';
 import type { IProviderConfig, ISuggestionProvider } from '#domain/providers';
 import { GetSuggestionProvider } from '#domain/useCases';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import assert from 'node:assert';
 import { instance, mock, when } from 'ts-mockito';
 

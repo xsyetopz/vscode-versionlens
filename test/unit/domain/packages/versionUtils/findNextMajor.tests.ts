@@ -1,6 +1,6 @@
 import { VersionUtils } from '#domain/packages';
 import { equal } from 'assert';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 
 const testReleases = [
   '0.9.0',

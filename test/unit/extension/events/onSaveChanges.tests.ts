@@ -4,7 +4,7 @@ import type { IProviderConfig, ISuggestionProvider } from '#domain/providers';
 import type { IContextState, IVersionLensState } from '#extension';
 import { OnSaveChanges } from '#extension/events';
 import type { IVsCodeTasks } from '#extension/vscode';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import type { Task } from 'vscode';
 

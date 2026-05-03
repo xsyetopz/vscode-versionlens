@@ -2,7 +2,7 @@ import type { ILogger } from '#domain/logging';
 import { PackageSourceType } from '#domain/packages';
 import { OnFileLinkClick } from '#extension/events';
 import type { IVsCodeConstructFactory, IVsCodeEnv, IVsCodeWindow } from '#extension/vscode';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { instance, mock, verify, when } from 'ts-mockito';
 import type { Uri } from 'vscode';
 

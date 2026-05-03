@@ -1,5 +1,5 @@
 import { type AsyncEvent, type IDisposable, AsyncEmitter } from '#domain/utils';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { instance, mock, verify } from 'ts-mockito';
 
 export const asyncEmitterTests = {

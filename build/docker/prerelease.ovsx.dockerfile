@@ -19,7 +19,7 @@ RUN npm install -g npm @vscode/vsce ovsx js-build-tasks
 RUN npm ci
 
 # run tests
-RUN task build:test
+RUN task test:bundle
 
 # bundle
 RUN task bundle

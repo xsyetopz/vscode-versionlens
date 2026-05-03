@@ -5,7 +5,7 @@ import {
   LogLevel,
   LogLevelName
 } from '#domain/logging';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 type TestContext = {

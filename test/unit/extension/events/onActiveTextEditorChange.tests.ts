@@ -4,7 +4,7 @@ import type { GetSuggestionProvider } from '#domain/useCases';
 import { OnActiveTextEditorChange } from '#extension/events';
 import type { ContextState, VersionLensState } from '#extension/state';
 import { SuggestionsOptions } from '#extension/suggestions';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import type { TextDocument, TextEditor, Uri } from 'vscode';
 

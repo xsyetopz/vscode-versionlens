@@ -15,7 +15,7 @@ import {
 } from '#domain/parsers';
 import type { ISuggestionProvider } from '#domain/providers';
 import { FetchPackage, FetchPackages } from '#domain/useCases';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import assert from 'node:assert';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 

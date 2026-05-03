@@ -1,5 +1,5 @@
-import { parsePackagesGoMod } from '../../../../../src/domain/providers/golang/goModParser';
-import { test } from 'mocha-ui-esm';
+import { parsePackagesGoMod } from '#domain/providers/golang';
+import { test } from '@esm-test/esm-test-node';
 import { deepEqual, equal } from 'node:assert';
 import Fixtures from './goModParser.fixtures';
 

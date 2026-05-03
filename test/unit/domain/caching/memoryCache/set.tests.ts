@@ -1,6 +1,6 @@
 import { nullMessage, undefinedMessage } from '@esm-test/guards';
 import { ICache, MemoryCache } from '#domain/caching';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import assert from 'node:assert';
 
 type TestContext = {

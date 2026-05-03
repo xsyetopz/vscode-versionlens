@@ -2,7 +2,7 @@ import type { ILogger } from '#domain/logging';
 import type { DependencyCache } from '#domain/packages';
 import type { ISuggestionProvider } from '#domain/providers';
 import { OnProviderTextDocumentClose } from '#extension/events';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { instance, mock, verify } from 'ts-mockito';
 
 type TestContext = {

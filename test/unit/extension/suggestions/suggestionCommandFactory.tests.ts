@@ -1,6 +1,6 @@
 import { SuggestionCategory, SuggestionTypes } from '#domain/packages';
 import { createSuggestedVersionCommand } from '../../../../src/extension/suggestions/suggestionCommandFactory';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { equal, ok } from 'node:assert';
 import * as os from 'node:os';
 

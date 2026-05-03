@@ -4,7 +4,7 @@ import type { IContextState } from '#extension';
 import { OnCustomInstallClick, OnSaveChanges } from '#extension/events';
 import { VersionLensState } from '#extension/state';
 import { SuggestionCodeLensProvider } from '#extension/suggestions';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { instance, mock, verify, when } from 'ts-mockito';
 
 type TestContext = {

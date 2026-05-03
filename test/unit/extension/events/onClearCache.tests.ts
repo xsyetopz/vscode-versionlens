@@ -3,7 +3,7 @@ import type { ILogger } from '#domain/logging';
 import type { PackageCache } from '#domain/packages';
 import { OnClearCache } from '#extension/events';
 import { VulnerabilityProvider } from '#extension/vulnerabilities';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { instance, mock, verify } from 'ts-mockito';
 
 type TestContext = {

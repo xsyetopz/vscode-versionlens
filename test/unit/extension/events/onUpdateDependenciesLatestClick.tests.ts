@@ -14,7 +14,7 @@ import { GetSuggestionProvider, GetSuggestions } from '#domain/useCases';
 import { IContextState, IVersionLensState, VersionLensExtension } from '#extension';
 import { OnUpdateDependenciesLatestClick } from '#extension/events';
 import { IVsCodeConstructFactory, IVsCodeWorkspace } from '#extension/vscode';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import type { TextEditor, WorkspaceEdit } from 'vscode';
 

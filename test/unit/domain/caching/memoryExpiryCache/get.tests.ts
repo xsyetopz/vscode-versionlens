@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { MemoryExpiryCache } from '#domain/caching';
-import { test } from "mocha-ui-esm";
+import { test } from '@esm-test/esm-test-node';
 
 let testCacheMap: MemoryExpiryCache;
 

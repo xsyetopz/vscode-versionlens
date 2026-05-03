@@ -12,13 +12,11 @@ workflow:
 
 unit_tests:
   script: [task docker:test]
-  coverage: '/Branches\s+:\s(.+)%/'
+  coverage: '/all files\s+\|\s+\d+\.?\d+\s+\|\s+(\d+\.?\d+)/'
   artifacts:
-    paths: [.coverage/cobertura-coverage.xml]
+    paths: [coverage.xml]
     reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: .coverage/cobertura-coverage.xml
+      junit: coverage.xml
   rules:
     - if: $IS_TEST == "1"
 

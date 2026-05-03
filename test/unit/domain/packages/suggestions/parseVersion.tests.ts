@@ -1,5 +1,5 @@
 import { parseVersion } from '#domain/packages';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { equal, notEqual, ok } from 'node:assert';
 
 type TestContext = {

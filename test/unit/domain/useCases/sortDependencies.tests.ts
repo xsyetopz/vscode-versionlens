@@ -10,7 +10,7 @@ import type { PubConfig, PubSuggestionResolver } from '#domain/providers/pub';
 import { PubSuggestionProvider } from '#domain/providers/pub';
 import { parseRequirementsTxt } from '#domain/providers/pypi';
 import { SortDependencies, type TextEdit } from '#domain/useCases';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { deepEqual, equal } from 'node:assert';
 import { instance, mock, when } from 'ts-mockito';
 import fixtures from './sortDependencies.fixtures';

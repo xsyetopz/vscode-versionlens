@@ -1,6 +1,6 @@
 import type { ILogger } from '#domain/logging';
 import { type GoConfig, type GoSuggestionResolver, GoSuggestionProvider } from '#domain/providers/golang';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { deepEqual, equal } from 'node:assert';
 import { instance, mock } from 'ts-mockito';
 import Fixtures from './goSuggestionProvider.fixtures';

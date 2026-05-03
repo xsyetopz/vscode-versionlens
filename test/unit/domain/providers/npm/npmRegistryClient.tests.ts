@@ -9,7 +9,7 @@ import {
   type NpmConfig,
   NpmRegistryClient
 } from '#domain/providers/npm';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import assert from 'node:assert';
 import npa from 'npm-package-arg';
 import { anyOfClass, anything, instance, mock, verify, when } from 'ts-mockito';

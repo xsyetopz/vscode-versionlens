@@ -2,7 +2,7 @@ import type { ILogger } from '#domain/logging';
 import { OnErrorClick } from '#extension/events';
 import type { VersionLensState } from '#extension/state';
 import type { IVsCodeWindow } from '#extension/vscode';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { instance, mock, verify } from 'ts-mockito';
 import type { OutputChannel } from 'vscode';
 

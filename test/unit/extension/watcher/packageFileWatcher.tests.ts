@@ -4,7 +4,7 @@ import type { IProviderConfig, ISuggestionProvider } from '#domain/providers';
 import type { GetDependencyChanges } from '#domain/useCases';
 import type { EditorConfig, IVsCodeWorkspace } from '#extension/vscode';
 import { defaultExcludes, PackageFileWatcher } from '#extension/watcher';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import type { FileSystemWatcher, Uri } from 'vscode';
 

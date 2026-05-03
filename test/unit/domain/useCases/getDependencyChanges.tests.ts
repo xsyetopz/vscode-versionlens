@@ -4,7 +4,7 @@ import { DependencyCache, PackageDependency } from '#domain/packages';
 import { ISuggestionProvider } from '#domain/providers';
 import { IStorage } from '#domain/storage';
 import { GetDependencyChanges } from '#domain/useCases';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { instance, mock, when } from 'ts-mockito';
 
 type TestContext = {

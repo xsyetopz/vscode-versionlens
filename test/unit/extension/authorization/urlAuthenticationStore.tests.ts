@@ -7,7 +7,7 @@ import {
   UrlAuthenticationStore
 } from '#extension/authorization';
 import assert from 'assert';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { anyOfClass, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import type { Memento } from 'vscode';
 

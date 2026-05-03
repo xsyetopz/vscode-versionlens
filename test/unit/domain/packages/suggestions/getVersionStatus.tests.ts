@@ -1,5 +1,5 @@
 import { PackageStatusFactory, getVersionStatus, parseVersion } from '#domain/packages';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { deepEqual } from 'node:assert';
 
 export const getVersionStatusTests = {

@@ -10,7 +10,7 @@ import {
   UrlAuthenticationStatus
 } from '#extension/authorization';
 import { OnRemoveUrlAuthentication } from '#extension/events';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { anyOfClass, instance, mock, verify, when } from 'ts-mockito';
 
 type TestContext = {

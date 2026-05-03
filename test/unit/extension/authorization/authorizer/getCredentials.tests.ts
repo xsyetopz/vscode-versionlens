@@ -11,7 +11,7 @@ import {
   UrlAuthenticationStatus
 } from '#extension/authorization';
 import assert from 'assert';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import {
   deepEqual,
   instance,

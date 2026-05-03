@@ -1,11 +1,12 @@
 var:
   DOCKER_FILE_PATH: ./build/docker
+  COVERAGE_VOL: $PWD/coverage.xml:/versionlens/coverage.xml
 tasks:
   # unit tests
   docker:test:
     - var:
         TEST_IMAGE: versionlens:tests
-        COVERAGE_VOL: $PWD/.coverage:/versionlens/.coverage
+    - touch $PWD/coverage.xml
     - docker build -t $TEST_IMAGE -f $DOCKER_FILE_PATH/test.dockerfile .
     - docker run --rm -v $COVERAGE_VOL --name test-container $TEST_IMAGE
 

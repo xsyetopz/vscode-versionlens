@@ -2,7 +2,7 @@ import { type CachingOptions, MemoryExpiryCache } from '#domain/caching';
 import { ClientResponseSource, ShellClientRequestError } from '#domain/clients';
 import { type PromiseSpawnFn, PromiseSpawnClient } from '#domain/clients/promiseSpawn';
 import type { ILogger } from '#domain/logging';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import assert from 'node:assert';
 import { anything, instance, mock, when } from 'ts-mockito';
 

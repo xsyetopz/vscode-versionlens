@@ -1,43 +1,10 @@
-import Mocha from 'mocha';
-import { registerMochaUiEsm, SortByEnum } from 'mocha-ui-esm';
-import SourceMaps from 'source-map-support';
+import { run, SortByEnum } from '@esm-test/esm-test-node';
 import * as UnitTests from './unit/index.tests';
 
-registerMochaUiEsm(
-  Mocha.interfaces, {
-  sort: SortByEnum.none
-});
-
-const runner = new Mocha({
-  ui: <any>'esm',
-  reporter: 'spec',
-  timeout: 60000,
-  color: true
-});
-
-// add esm unit tests to mocha
-runner.suite.emit('modules', UnitTests);
-
-SourceMaps.install();
-
-export function run(): Promise<void> {
-  return new Promise((success, failed) => {
-    try {
-      runner.run(
-        failures => {
-          if (failures)
-            failed(new Error(`${failures} tests failed.`));
-          else
-            success();
-        }
-      );
-    } catch (err) {
-      console.error(err);
-      failed(err);
-    }
-  });
+export function testRun(): Promise<void> {
+    return run([UnitTests], { sort: SortByEnum.none });
 }
 
 if (process.env.TEST_HEADLESS && process.env.TEST_HEADLESS === 'true') {
-  run().catch(e => process.exit(1));
+  testRun().catch(e => process.exit(1));
 }

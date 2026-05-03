@@ -1,6 +1,6 @@
 import type { ILogger } from '#domain/logging';
 import { CargoSuggestionProvider, type CargoConfig, type CargoSuggestionResolver } from '#domain/providers/cargo';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { deepEqual } from 'node:assert';
 import { instance, mock, when } from 'ts-mockito';
 import fixtures from './cargoSuggestionProvider.fixtures';

@@ -13,7 +13,7 @@ import { OnChooseBuildClick } from '#extension/events';
 import { SuggestionInteractions } from '#extension/suggestions';
 import type { IVsCodeConstructFactory, IVsCodeWorkspace } from '#extension/vscode';
 import { deepEqual, equal } from 'assert';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { anything, instance, mock, verify, when, deepEqual as deepEq } from 'ts-mockito';
 
 type TestContext = {

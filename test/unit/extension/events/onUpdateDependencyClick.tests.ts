@@ -19,7 +19,7 @@ import { OnUpdateDependencyClick } from '#extension/events';
 import { SuggestionsOptions } from '#extension/suggestions';
 import type { IVsCodeConstructFactory, IVsCodeWindow, IVsCodeWorkspace } from '#extension/vscode';
 import { VulnerabilityInteractions } from '#extension/vulnerabilities';
-import { test } from 'mocha-ui-esm';
+import { test } from '@esm-test/esm-test-node';
 import { deepEqual, equal } from 'node:assert';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
