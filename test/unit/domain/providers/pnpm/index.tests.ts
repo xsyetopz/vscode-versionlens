@@ -1,1 +1,0 @@
-export * as PnpmSuggestionProvider from './pnpmSuggestionProvider.tests';

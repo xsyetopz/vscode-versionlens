@@ -1,8 +1,0 @@
-{
-  "name": "smoke-test",
-  "title": "smoke test",
-  "dependencies": {},
-  "devDependencies": {
-    "@scope/some-package": "0.1"
-  }
-}

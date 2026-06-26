@@ -1,8 +1,0 @@
-{
-  "name": "smoke-test",
-  "title": "smoke test",
-  "version": "1.2.0",
-  "dependencies": {
-    "typescript": "4.9.4"
-  }
-}

@@ -1,6 +1,0 @@
-export * as PackageCaching from './cache/all.tests'
-export * as PackageFactories from './factories/all.tests'
-export * as PackageUtils from './packageUtils/all.tests'
-export * as Parser from './parsers/packageDescriptor.tests'
-export * as PackageSuggestions from './suggestions/all.tests'
-export * as VersionUtils from './versionUtils/index.tests'

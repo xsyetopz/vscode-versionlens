@@ -1,3 +1,0 @@
-FROM mcr.microsoft.com/dotnet/sdk
-
-FROM node:20-alpine
