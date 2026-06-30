@@ -1,0 +1,3 @@
+[submodule "external/versionlens/vscode-versionlens"]
+	path = external/versionlens/vscode-versionlens
+	url = https://gitlab.com/versionlens/vscode-versionlens
