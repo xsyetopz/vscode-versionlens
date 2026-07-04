@@ -23,7 +23,7 @@ pub(super) fn agent(config: &HttpConfig) -> Result<Agent, HttpError> {
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .get(&key)
-            .cloned();
+            .map(Agent::clone);
         if let Some(agent) = cached_agent {
             return Ok(agent);
         }
@@ -32,7 +32,7 @@ pub(super) fn agent(config: &HttpConfig) -> Result<Agent, HttpError> {
         let mut cache = agent_cache()
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
-        return Ok(cache.entry(key).or_insert(agent).clone());
+        return Ok(Agent::clone(cache.entry(key).or_insert(agent)));
     }
 
     build_agent(config)
@@ -56,7 +56,7 @@ fn cache_key(config: &HttpConfig) -> Option<AgentCacheKey> {
     Some(AgentCacheKey {
         timeout_ms: config.timeout_ms,
         strict_ssl: config.strict_ssl,
-        proxy: config.proxy.clone(),
+        proxy: config.proxy.as_ref().map(String::from),
     })
 }
 

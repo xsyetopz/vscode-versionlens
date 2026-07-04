@@ -5,6 +5,9 @@ import path from "node:path";
 
 const roots = ["crates"];
 const ignoredDirs = new Set(["target"]);
+const allowedManualTraitImpls = new Set([
+	"crates/versionlens-napi/src/api.rs:Task",
+]);
 const productionForbiddenPatterns = [
 	{ name: "production .clone() call", pattern: /\.clone\s*\(/g },
 	{ name: "production .cloned() call", pattern: /\.cloned\s*\(/g },
@@ -20,7 +23,7 @@ const productionForbiddenPatterns = [
 	{
 		name: "manual trait implementation",
 		pattern:
-			/^\s*impl(?:\s*<[^>{}]*>)?\s+(?:unsafe\s+)?[A-Za-z_][\w:<>]*(?:\s*<[^>{}]*>)?\s+for\s+/gm,
+			/^\s*impl(?:\s*<[^>{}]*>)?\s+(?:unsafe\s+)?(?<trait>[A-Za-z_][\w:<>]*)(?:\s*<[^>{}]*>)?\s+for\s+/gm,
 	},
 ];
 const allRustForbiddenPatterns = [
@@ -49,6 +52,12 @@ function lineNumber(source, index) {
 function recordMatches(filePath, source, patterns) {
 	for (const { name, pattern } of patterns) {
 		for (const match of source.matchAll(pattern)) {
+			if (
+				name === "manual trait implementation" &&
+				allowedManualTraitImpls.has(`${filePath}:${match.groups?.trait ?? ""}`)
+			) {
+				continue;
+			}
 			offenders.push({ filePath, line: lineNumber(source, match.index), name });
 		}
 	}

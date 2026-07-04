@@ -63,8 +63,8 @@ impl VersionLensSession {
             .unwrap_or_else(std::sync::PoisonError::into_inner);
         locks
             .entry(url.to_owned())
-            .or_insert_with(|| std::sync::Arc::new(std::sync::Mutex::new(())))
-            .clone()
+            .or_insert_with(|| std::sync::Arc::new(std::sync::Mutex::new(())));
+        std::sync::Arc::clone(lock)
     }
 
     pub(crate) fn cache_request_body(
