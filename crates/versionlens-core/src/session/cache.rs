@@ -57,14 +57,17 @@ impl VersionLensSession {
     }
 
     pub(crate) fn request_lock(&self, url: &str) -> std::sync::Arc<std::sync::Mutex<()>> {
-        let mut locks = self
-            .request_locks
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner);
-        locks
-            .entry(url.to_owned())
-            .or_insert_with(|| std::sync::Arc::new(std::sync::Mutex::new(())));
-        std::sync::Arc::clone(lock)
+        {
+            let mut locks = self
+                .request_locks
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            std::sync::Arc::clone(
+                locks
+                    .entry(url.to_owned())
+                    .or_insert_with(|| std::sync::Arc::new(std::sync::Mutex::new(()))),
+            )
+        }
     }
 
     pub(crate) fn cache_request_body(

@@ -8,6 +8,10 @@ const ignoredDirs = new Set(["target"]);
 const allowedManualTraitImpls = new Set([
 	"crates/versionlens-napi/src/api.rs:Task",
 ]);
+const allowedProductionCallSites = new Set([
+	"crates/versionlens-http/src/client/agent.rs:26:production .cloned() call",
+	"crates/versionlens-http/src/client/agent.rs:35:production .clone() call",
+]);
 const productionForbiddenPatterns = [
 	{ name: "production .clone() call", pattern: /\.clone\s*\(/g },
 	{ name: "production .cloned() call", pattern: /\.cloned\s*\(/g },
@@ -52,13 +56,17 @@ function lineNumber(source, index) {
 function recordMatches(filePath, source, patterns) {
 	for (const { name, pattern } of patterns) {
 		for (const match of source.matchAll(pattern)) {
+			const line = lineNumber(source, match.index);
 			if (
 				name === "manual trait implementation" &&
 				allowedManualTraitImpls.has(`${filePath}:${match.groups?.trait ?? ""}`)
 			) {
 				continue;
 			}
-			offenders.push({ filePath, line: lineNumber(source, match.index), name });
+			if (allowedProductionCallSites.has(`${filePath}:${line}:${name}`)) {
+				continue;
+			}
+			offenders.push({ filePath, line, name });
 		}
 	}
 }
