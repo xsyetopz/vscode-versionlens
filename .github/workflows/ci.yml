@@ -72,7 +72,6 @@ jobs:
 
       - name: Check extension contracts
         run: |
-          bun run check:vscode-adapter
           bun run check:package-parity
           bun run check:data-objects
           bun run check:entrypoints
@@ -93,6 +92,7 @@ jobs:
         run: |
           bun run check:extension-build
           bun run package
+          bun run check:vscode-adapter
           bun run check:vsix-freshness
 
       - name: Upload VSIX artifact
