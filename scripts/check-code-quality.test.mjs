@@ -625,5 +625,4 @@ pub(crate) use crate::support::default;
 
 		expect(result.overqualifiedPaths).toEqual([]);
 	});
-
 });

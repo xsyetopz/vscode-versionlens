@@ -63,11 +63,14 @@ const RUST_PASS_THROUGH_PATTERN =
 const TYPESCRIPT_PASS_THROUGH_PATTERN =
 	/^return\s+([A-Za-z_$][\w$.]*)\s*\([^{};]*\)$/u;
 const UPPERCASE_START_PATTERN = /^[A-Z]/u;
-const RUST_CRATE_TYPE_QUALIFICATION_PATTERN = /\bcrate::([A-Z][A-Za-z0-9_]*)\b/gu;
+const RUST_CRATE_TYPE_QUALIFICATION_PATTERN =
+	/\bcrate::([A-Z][A-Za-z0-9_]*)\b/gu;
 const RUST_CRATE_MODULE_CALL_PATTERN =
 	/\bcrate::([a-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)+)\s*\(/gu;
 const RUST_STDLIB_CALL_PATTERN =
 	/\bstd::([a-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)+)\s*\(/gu;
+const RUST_USE_DECLARATION_PATTERN = /^(?:pub(?:\([^)]*\))?\s+)?use\s/u;
+const TRAILING_OPEN_PAREN_PATTERN = /\($/u;
 
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: comment stripping is a small lexer.
 function stripComments(source) {
@@ -807,7 +810,7 @@ function collectOverqualifiedPaths(files, options = {}) {
 		const lines = source.split("\n");
 		for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
 			const line = lines[lineIndex];
-			if (/^(?:pub(?:\([^)]*\))?\s+)?use\s/u.test(line.trimStart())) {
+			if (RUST_USE_DECLARATION_PATTERN.test(line.trimStart())) {
 				continue;
 			}
 			recordOverqualifiedMatches(
@@ -826,7 +829,8 @@ function collectOverqualifiedPaths(files, options = {}) {
 				line,
 				RUST_CRATE_MODULE_CALL_PATTERN,
 				"crate-module-call",
-				(match) => `${match[1].split("::").at(0)}::${match[1].split("::").at(-1)}()`,
+				(match) =>
+					`${match[1].split("::").at(0)}::${match[1].split("::").at(-1)}()`,
 			);
 			recordOverqualifiedMatches(
 				findings,
@@ -858,7 +862,7 @@ function recordOverqualifiedMatches(
 			path: filePath,
 			line,
 			kind,
-			qualified: match[0].trim().replace(/\($/u, ""),
+			qualified: match[0].trim().replace(TRAILING_OPEN_PAREN_PATTERN, ""),
 			suggested: suggestionForMatch(match),
 		});
 	}
