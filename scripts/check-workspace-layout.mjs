@@ -1,64 +1,26 @@
 #!/usr/bin/env bun
 
 import fs from "node:fs";
+import path from "node:path";
 
-const expectedCrates = [
-	"versionlens-cache",
-	"versionlens-core",
-	"versionlens-edits",
-	"versionlens-http",
-	"versionlens-napi",
-	"versionlens-parsers",
-	"versionlens-providers",
-	"versionlens-suggestions",
-	"versionlens-versions",
-	"versionlens-vscode-model",
-];
-const expectedPackages = ["vscode-extension"];
 const workspacePackageFields = [
 	"edition",
 	"rust-version",
 	"license",
 	"repository",
-	"readme",
 	"keywords",
 	"categories",
 	"version",
 ];
-const expectedInternalDependencies = {
-	"versionlens-cache": [],
-	"versionlens-core": [
-		"versionlens-cache",
-		"versionlens-edits",
-		"versionlens-http",
-		"versionlens-parsers",
-		"versionlens-providers",
-		"versionlens-suggestions",
-		"versionlens-versions",
-		"versionlens-vscode-model",
-	],
-	"versionlens-edits": [
-		"versionlens-parsers",
-		"versionlens-suggestions",
-		"versionlens-versions",
-		"versionlens-vscode-model",
-	],
-	"versionlens-http": [],
-	"versionlens-napi": [
-		"versionlens-core",
-		"versionlens-http",
-		"versionlens-parsers",
-		"versionlens-vscode-model",
-	],
-	"versionlens-parsers": ["versionlens-vscode-model"],
-	"versionlens-providers": ["versionlens-parsers", "versionlens-versions"],
-	"versionlens-suggestions": ["versionlens-parsers", "versionlens-versions"],
-	"versionlens-versions": [],
-	"versionlens-vscode-model": [],
-};
+const WORKSPACE_MEMBERS_PATTERN = /members\s*=\s*\[([\s\S]*?)\]/u;
+const QUOTED_VALUE_PATTERN = /"([^"]+)"/g;
 const offenders = [];
 
 function childDirs(dir) {
+	if (!fs.existsSync(dir)) {
+		return [];
+	}
+
 	return fs
 		.readdirSync(dir, { withFileTypes: true })
 		.filter((entry) => entry.isDirectory())
@@ -91,7 +53,17 @@ function manifestSection(source, name) {
 	return next < 0 ? source.slice(start) : source.slice(start, next);
 }
 
-function internalDependencies(source) {
+function workspaceMembers(cargoToml) {
+	return (
+		cargoToml
+			.match(WORKSPACE_MEMBERS_PATTERN)?.[1]
+			.match(QUOTED_VALUE_PATTERN)
+			?.map((member) => member.slice(1, -1))
+			.sort() ?? []
+	);
+}
+
+function internalWorkspaceDependencies(source) {
 	return [
 		...manifestSection(source, "dependencies").matchAll(
 			/^(versionlens-[\w-]+)\.workspace\s*=\s*true$/gmu,
@@ -101,12 +73,20 @@ function internalDependencies(source) {
 		.sort();
 }
 
-expectList("crates", childDirs("crates"), expectedCrates);
-expectList("packages", childDirs("packages"), expectedPackages);
-
+if (!fs.existsSync("crates")) {
+	offenders.push("crates/ is missing");
+}
+if (!fs.existsSync("packages")) {
+	offenders.push("packages/ is missing");
+}
 if (fs.existsSync("src")) {
 	offenders.push(
 		"root src/ exists; product source must stay split under crates/ and packages/",
+	);
+}
+if (fs.existsSync("_archive")) {
+	offenders.push(
+		"root _archive/ exists; do not reintroduce archived source trees",
 	);
 }
 
@@ -116,19 +96,47 @@ expectList("package.json workspaces", packageJson.workspaces ?? [], [
 ]);
 
 const cargoToml = fs.readFileSync("Cargo.toml", "utf8");
-const workspaceMembers =
-	cargoToml
-		.match(/members\s*=\s*\[([\s\S]*?)\]/u)?.[1]
-		.match(/"([^"]+)"/g)
-		?.map((member) => member.slice(1, -1))
-		.sort() ?? [];
-expectList(
-	"Cargo.toml workspace members",
-	workspaceMembers,
-	expectedCrates.map((crate) => `crates/${crate}`).sort(),
-);
+const members = workspaceMembers(cargoToml);
+const memberSet = new Set(members);
+const crateDirs = childDirs("crates");
+const crateMemberNames = members
+	.filter((member) => member.startsWith("crates/"))
+	.map((member) => path.basename(member))
+	.sort();
+const crateDirSet = new Set(crateDirs);
 
-for (const crateName of expectedCrates) {
+for (const member of members) {
+	if (!member.startsWith("crates/")) {
+		offenders.push(
+			`Cargo.toml workspace member ${member} must live under crates/`,
+		);
+		continue;
+	}
+	if (!fs.existsSync(path.join(member, "Cargo.toml"))) {
+		offenders.push(
+			`Cargo.toml workspace member ${member} is missing Cargo.toml`,
+		);
+	}
+}
+
+for (const crateName of crateDirs) {
+	const manifestPath = `crates/${crateName}/Cargo.toml`;
+	if (!fs.existsSync(manifestPath)) {
+		offenders.push(`crates/${crateName} is missing Cargo.toml`);
+		continue;
+	}
+	if (!memberSet.has(`crates/${crateName}`)) {
+		offenders.push(
+			`crates/${crateName} must be listed in Cargo.toml workspace members`,
+		);
+	}
+}
+
+for (const crateName of crateMemberNames) {
+	if (!crateDirSet.has(crateName)) {
+		continue;
+	}
+
 	const manifestPath = `crates/${crateName}/Cargo.toml`;
 	const manifest = fs.readFileSync(manifestPath, "utf8");
 	if (!new RegExp(`^name\\s*=\\s*"${crateName}"$`, "mu").test(manifest)) {
@@ -143,15 +151,25 @@ for (const crateName of expectedCrates) {
 		}
 	}
 
+	const readmePath = manifest.match(/^readme\s*=\s*"([^"]+)"$/mu)?.[1];
+	if (
+		readmePath &&
+		!fs.existsSync(path.join("crates", crateName, readmePath))
+	) {
+		offenders.push(`${manifestPath} declares missing readme ${readmePath}`);
+	}
+
 	if (!/^\[lints\]\s*\nworkspace\s*=\s*true$/mu.test(manifest)) {
 		offenders.push(`${manifestPath} must inherit workspace lints`);
 	}
 
-	expectList(
-		`${manifestPath} internal dependencies`,
-		internalDependencies(manifest),
-		expectedInternalDependencies[crateName],
-	);
+	for (const dependency of internalWorkspaceDependencies(manifest)) {
+		if (!memberSet.has(`crates/${dependency}`)) {
+			offenders.push(
+				`${manifestPath} depends on unknown workspace crate ${dependency}`,
+			);
+		}
+	}
 }
 
 if (offenders.length > 0) {

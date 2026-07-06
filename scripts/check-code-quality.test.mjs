@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { analyzeSources, formatFindings } from "./check-code-quality.mjs";
+import { analyzeSources, formatFindings } from "./check-code-quality-core.mjs";
 
 const rustConfig = `
 struct BuildRequest {

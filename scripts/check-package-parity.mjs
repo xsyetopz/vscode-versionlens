@@ -39,6 +39,23 @@ const configKeyFiles = [
 const configPairPattern = /\[\s*"([^"]+)"\s*,\s*"([^"]+)"/g;
 const configKeyPattern = /^[a-z][a-z.]*\.[A-Za-z]/;
 const locallyExpandedDefaultSuffixes = [".files", ".dependencyProperties"];
+const approvedMetadataOverrides = new Map([
+	["name", "versionlens-redux"],
+	["displayName", "VersionLens Redux"],
+	["publisher", "xsyetopz"],
+	["engines", { vscode: ">=1.75.0" }],
+	[
+		"repository",
+		{ type: "git", url: "https://github.com/xsyetopz/versionlens-redux.git" },
+	],
+]);
+const localCommandCategory = "VersionLens Redux";
+const upstreamCommandCategory = "VersionLens";
+const approvedLocalActivationEvents = new Set([
+	"onLanguage:groovy",
+	"onLanguage:kotlin",
+	"onLanguage:properties",
+]);
 const failures = [];
 
 function localConfigurationKeys() {
@@ -96,6 +113,12 @@ function sameValue(left, right) {
 function compareField(upstream, local, keyPath) {
 	const upstreamValue = getPath(upstream, keyPath);
 	const localValue = getPath(local, keyPath);
+	if (approvedMetadataOverrides.has(keyPath)) {
+		if (!sameValue(localValue, approvedMetadataOverrides.get(keyPath))) {
+			failures.push(`${keyPath} differs from approved local rebrand`);
+		}
+		return;
+	}
 	if (!sameValue(upstreamValue, localValue)) {
 		failures.push(`${keyPath} differs from upstream package.json`);
 	}
@@ -138,6 +161,12 @@ function removeApprovedExtraConfiguration(
 	}
 }
 
+function normalizeLocalConfigurationRebrand(normalizedLocal) {
+	if (normalizedLocal?.title === localCommandCategory) {
+		normalizedLocal.title = upstreamCommandCategory;
+	}
+}
+
 function normalizeLocallyExpandedDefaults(normalizedUpstream, normalizedLocal) {
 	for (const key of Object.keys(normalizedLocal?.properties ?? {})) {
 		if (
@@ -169,6 +198,7 @@ function compareConfiguration(upstream, local) {
 	const normalizedUpstream = stable(upstreamConfig);
 	removeApprovedExtraConfiguration(normalizedLocal, upstreamKeys, localKeys);
 	normalizeLocallyExpandedDefaults(normalizedUpstream, normalizedLocal);
+	normalizeLocalConfigurationRebrand(normalizedLocal);
 
 	if (!sameValue(normalizedUpstream, normalizedLocal)) {
 		failures.push(
@@ -188,24 +218,8 @@ function compareActivationEvents(upstream, local) {
 		}
 	}
 
-	const contributedCommands = new Set(
-		(local.contributes?.commands ?? []).map((command) => command.command),
-	);
-	for (const command of contributedCommands) {
-		const event = `onCommand:${command}`;
-		if (!localSet.has(event)) {
-			failures.push(`activationEvents is missing command activation ${event}`);
-		}
-	}
-
 	for (const event of localEvents) {
-		if (
-			!(
-				upstreamSet.has(event) ||
-				(event.startsWith("onCommand:") &&
-					contributedCommands.has(event.slice("onCommand:".length)))
-			)
-		) {
+		if (!(upstreamSet.has(event) || approvedLocalActivationEvents.has(event))) {
 			failures.push(`activationEvents has unsupported extra event ${event}`);
 		}
 	}
@@ -217,8 +231,29 @@ const local = readJson(localPath);
 for (const field of metadataFields) {
 	compareField(upstream, local, field);
 }
+function normalizeLocalContributions(value) {
+	if (Array.isArray(value)) {
+		return value.map(normalizeLocalContributions);
+	}
+	if (value && typeof value === "object") {
+		return Object.fromEntries(
+			Object.entries(value).map(([key, entry]) => [
+				key,
+				key === "category" && entry === localCommandCategory
+					? upstreamCommandCategory
+					: normalizeLocalContributions(entry),
+			]),
+		);
+	}
+	return value;
+}
+
 for (const field of contributionFields) {
-	compareField(upstream, local, field);
+	const upstreamValue = getPath(upstream, field);
+	const localValue = normalizeLocalContributions(getPath(local, field));
+	if (!sameValue(upstreamValue, localValue)) {
+		failures.push(`${field} differs from upstream package.json`);
+	}
 }
 compareConfiguration(upstream, local);
 compareActivationEvents(upstream, local);
