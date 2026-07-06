@@ -22,7 +22,7 @@ pub(super) fn dependencies_from_tag(
     tag_kind: DotnetTagKind,
 ) -> Vec<Dependency> {
     let Some(tag_name) = event_name(event) else {
-        return Vec::new();
+        return vec![];
     };
     if tag_name == "Sdk" {
         return sdk_dependency_from_tag(context).into_iter().collect();
@@ -35,5 +35,5 @@ pub(super) fn dependencies_from_tag(
         return package_dependencies_from_tag(context, &tag_name, tag_kind);
     }
 
-    Vec::new()
+    vec![]
 }

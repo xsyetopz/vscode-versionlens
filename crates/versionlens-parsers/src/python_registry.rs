@@ -1,9 +1,12 @@
-use toml_edit::{Document, Item, Value as TomlValue};
+use toml_edit::{Array as TomlArray, Item, Value as TomlValue};
+
+type UvRegistryUrls = Vec<String>;
+type UvRegistryItem<'a> = Option<&'a Item>;
 
 #[derive(Debug, PartialEq, Eq)]
-pub(crate) struct PoetrySource {
-    pub(crate) name: String,
-    pub(crate) url: String,
+pub struct PoetrySource {
+    pub name: String,
+    pub url: String,
 }
 
 pub fn parse_python_registry_urls(text: &str) -> Vec<String> {
@@ -14,20 +17,23 @@ pub fn parse_python_registry_urls(text: &str) -> Vec<String> {
         .collect()
 }
 
-pub fn parse_uv_registry_urls(text: &str) -> Vec<String> {
-    let Ok(document) = Document::parse(text) else {
-        return Vec::new();
+pub fn parse_uv_registry_urls(text: &str) -> UvRegistryUrls {
+    let Ok(document) = crate::parse_toml_document(text) else {
+        return vec![];
     };
 
     uv_registry_urls(document.as_item())
 }
 
 pub fn parse_pipfile_source_urls(text: &str) -> Vec<String> {
-    let Ok(document) = Document::parse(text) else {
-        return Vec::new();
+    let Ok(document) = crate::parse_toml_document(text) else {
+        return vec![];
     };
-    let Some(sources) = document.get("source").and_then(Item::as_array_of_tables) else {
-        return Vec::new();
+    let Some(sources) = document
+        .get("source")
+        .and_then(|value| value.as_array_of_tables())
+    else {
+        return vec![];
     };
 
     sources
@@ -43,17 +49,17 @@ pub fn parse_poetry_source_urls(text: &str) -> Vec<String> {
         .collect()
 }
 
-pub(crate) fn parse_poetry_sources(text: &str) -> Vec<PoetrySource> {
-    let Ok(document) = Document::parse(text) else {
-        return Vec::new();
+pub fn parse_poetry_sources(text: &str) -> Vec<PoetrySource> {
+    let Ok(document) = crate::parse_toml_document(text) else {
+        return vec![];
     };
     let Some(sources) = document
         .get("tool")
         .and_then(|tool| tool.get("poetry"))
         .and_then(|poetry| poetry.get("source"))
-        .and_then(Item::as_array_of_tables)
+        .and_then(|value| value.as_array_of_tables())
     else {
-        return Vec::new();
+        return vec![];
     };
 
     sources
@@ -104,26 +110,26 @@ fn pip_env_registry_values(key: &str, value: &str) -> Option<Vec<String>> {
 }
 
 fn parse_uv_pyproject_registry_urls(text: &str) -> Vec<String> {
-    let Ok(document) = Document::parse(text) else {
-        return Vec::new();
+    let Ok(document) = crate::parse_toml_document(text) else {
+        return vec![];
     };
     let Some(uv) = document.get("tool").and_then(|tool| tool.get("uv")) else {
-        return Vec::new();
+        return vec![];
     };
 
     uv_registry_urls(uv)
 }
 
-fn uv_registry_urls(item: &Item) -> Vec<String> {
-    let mut urls = Vec::new();
+fn uv_registry_urls(item: &Item) -> UvRegistryUrls {
+    let mut urls = vec![];
     push_uv_url(&mut urls, item.get("index-url"));
     push_uv_urls(&mut urls, item.get("extra-index-url"));
     push_uv_index_urls(&mut urls, item.get("index"));
     urls
 }
 
-fn push_uv_index_urls(urls: &mut Vec<String>, item: Option<&Item>) {
-    let Some(array) = item.and_then(Item::as_array_of_tables) else {
+fn push_uv_index_urls(urls: &mut UvRegistryUrls, item: UvRegistryItem<'_>) {
+    let Some(array) = item.and_then(|value| value.as_array_of_tables()) else {
         return;
     };
 
@@ -134,18 +140,26 @@ fn push_uv_index_urls(urls: &mut Vec<String>, item: Option<&Item>) {
     );
 }
 
-fn push_uv_urls(urls: &mut Vec<String>, item: Option<&Item>) {
+fn toml_item_value(item: &Item) -> Option<&TomlValue> {
+    item.as_value()
+}
+
+fn toml_value_array(value: &TomlValue) -> Option<&TomlArray> {
+    value.as_array()
+}
+
+fn push_uv_urls(urls: &mut UvRegistryUrls, item: UvRegistryItem<'_>) {
     if let Some(url) = item.and_then(toml_string_url) {
         urls.push(url);
         return;
     }
 
-    if let Some(array) = item.and_then(Item::as_value).and_then(TomlValue::as_array) {
+    if let Some(array) = item.and_then(toml_item_value).and_then(toml_value_array) {
         urls.extend(array.iter().filter_map(uv_value_string));
     }
 }
 
-fn push_uv_url(urls: &mut Vec<String>, item: Option<&Item>) {
+fn push_uv_url(urls: &mut UvRegistryUrls, item: UvRegistryItem<'_>) {
     if let Some(url) = item.and_then(toml_string_url) {
         urls.push(url);
     }

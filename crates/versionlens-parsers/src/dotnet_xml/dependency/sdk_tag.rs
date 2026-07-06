@@ -1,3 +1,4 @@
+use self::DotnetDependencyRange::Name as DotnetRangeName;
 use crate::model::Dependency;
 
 use super::super::DotnetEventContext;
@@ -10,7 +11,7 @@ pub(super) fn sdk_dependency_from_tag(context: &DotnetEventContext<'_>) -> Optio
             group: "Sdk",
             name_attr: "Name",
             version_attr: "Version",
-            range: DotnetDependencyRange::Name,
+            range: DotnetRangeName,
         },
     )
 }

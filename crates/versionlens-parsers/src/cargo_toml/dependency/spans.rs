@@ -1,19 +1,23 @@
+use std::ops::Range as ByteRange;
+
 use versionlens_vscode_model::{Position, Range};
 
-use crate::model::{Dependency, Ecosystem};
+use crate::model::Dependency;
+use crate::model::Ecosystem::Cargo;
 use crate::positions::offset_range;
 
 pub(super) struct CargoDependencySource<'a> {
     pub(super) text: &'a str,
     pub(super) group: &'a str,
     pub(super) name: &'a str,
+    pub(super) hosted_name: Option<&'a str>,
     pub(super) requirement: &'a str,
     pub(super) hosted_url: Option<&'a str>,
 }
 
 pub(super) struct CargoDependencySpans {
-    pub(super) name: Option<std::ops::Range<usize>>,
-    pub(super) requirement: Option<std::ops::Range<usize>>,
+    pub(super) name: Option<ByteRange<usize>>,
+    pub(super) requirement: Option<ByteRange<usize>>,
 }
 
 pub(super) fn cargo_dependency_from_span(
@@ -32,14 +36,14 @@ pub(super) fn cargo_dependency_from_span(
     Dependency {
         name: source.name.to_owned(),
         requirement: source.requirement.to_owned(),
-        ecosystem: Ecosystem::Cargo,
+        ecosystem: Cargo,
         group: source.group.to_owned(),
-        hosted_url: source.hosted_url.map(str::to_owned),
-        hosted_name: None,
+        hosted_url: source.hosted_url.map(|value| value.to_owned()),
+        hosted_name: source.hosted_name.map(|value| value.to_owned()),
         range,
         requirement_range,
-        requirement_prefix: String::new(),
-        requirement_suffix: String::new(),
+        requirement_prefix: "".to_owned(),
+        requirement_suffix: "".to_owned(),
     }
 }
 

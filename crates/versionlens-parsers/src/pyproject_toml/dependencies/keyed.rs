@@ -38,7 +38,7 @@ pub(in crate::pyproject_toml) fn keyed_dependency(
             group: input.group,
             name: input.name,
             requirement: requirement.as_str()?,
-            hosted_url: None,
+            hosted_url: inline_dependency_source(input.value),
         },
         PythonDependencySpans {
             name: input.key.span(),
@@ -53,4 +53,11 @@ fn inline_dependency_requirement(value: &TomlValue) -> Option<&TomlValue> {
         .into_iter()
         .find_map(|field| inline.get(field))
         .filter(|value| value.as_str().is_some())
+}
+
+fn inline_dependency_source(value: &TomlValue) -> Option<&str> {
+    value
+        .as_inline_table()?
+        .get("source")
+        .and_then(|value| value.as_str())
 }

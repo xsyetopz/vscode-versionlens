@@ -1,14 +1,20 @@
 use quick_xml::events::Event;
+use quick_xml::events::Event::{
+    Empty as XmlEventEmpty, End as XmlEventEnd, Eof as XmlEventEof, Start as XmlEventStart,
+    Text as XmlEventText,
+};
 
 use super::{state::XmlCollector, text::collect_xml_text};
 
+type XmlEvent<'a> = Event<'a>;
+
 pub(super) fn xml_event_finished(
-    event: Event<'_>,
+    event: XmlEvent<'_>,
     collector: &mut XmlCollector,
     start: usize,
     end: usize,
 ) -> Option<bool> {
-    if matches!(event, Event::Eof) {
+    if matches!(event, XmlEventEof) {
         return Some(true);
     }
 
@@ -17,7 +23,7 @@ pub(super) fn xml_event_finished(
 }
 
 fn collect_xml_event(
-    event: Event<'_>,
+    event: XmlEvent<'_>,
     collector: &mut XmlCollector,
     start: usize,
     end: usize,
@@ -26,7 +32,7 @@ fn collect_xml_event(
         return Some(());
     }
 
-    if let Event::Text(event) = event {
+    if let XmlEventText(event) = event {
         return collect_xml_text(event, collector, start, end);
     }
 
@@ -39,15 +45,15 @@ fn collect_xml_element_event(
     start: usize,
     end: usize,
 ) -> Option<bool> {
-    if let Event::Start(event) = event {
+    if let XmlEventStart(event) = event {
         collector.open_node(event, start)?;
         return Some(true);
     }
-    if let Event::Empty(event) = event {
+    if let XmlEventEmpty(event) = event {
         collector.empty_node(event, start, end)?;
         return Some(true);
     }
-    if let Event::End(event) = event {
+    if let XmlEventEnd(event) = event {
         collector.close_node(event.name().as_ref(), end)?;
         return Some(true);
     }

@@ -1,28 +1,21 @@
-use super::{DocumentInput, Ecosystem, parse_document};
+use crate::document::test_support::extract_range;
+use std::fs::read_to_string;
+use std::path::PathBuf;
+
+use super::{DocumentInput, parse_document};
+use crate::model::Ecosystem::Composer;
 
 #[test]
 fn parses_composer_json_dependency_groups() {
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/composer.json".to_owned(),
         language_id: "json".to_owned(),
-        text: r#"{
-  "version": "1.0.0",
-  "require": {
-    "php": "^8.3",
-    "phpunit/phpunit": "^10.0",
-    "local": { "path": "../local" },
-    "remote": { "repository": "git@example.com:org/repo.git" }
-  },
-  "require-dev": {
-    "friendsofphp/php-cs-fixer": "^3.0"
-  }
-}"#
-        .to_owned(),
+        text: package_file_fixture("parses-composer-json-dependency-groups.json").to_owned(),
         workspace_root: None,
     });
 
     assert_eq!(dependencies.len(), 6);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Composer);
+    assert_eq!(dependencies[0].ecosystem, Composer);
     assert_eq!(dependencies[0].group, "version");
     assert_eq!(dependencies[1].group, "require");
     assert_eq!(dependencies[1].name, "php");
@@ -33,22 +26,72 @@ fn parses_composer_json_dependency_groups() {
 }
 
 #[test]
+fn parses_composer_package_link_groups() {
+    let dependencies = parse_document(&DocumentInput {
+        uri: "file:///work/composer.json".to_owned(),
+        language_id: "json".to_owned(),
+        text: package_file_fixture("parses-composer-package-link-groups.json").to_owned(),
+        workspace_root: None,
+    });
+
+    assert_eq!(dependencies.len(), 3);
+    assert_eq!(dependencies[0].ecosystem, Composer);
+    assert_eq!(dependencies[0].group, "conflict");
+    assert_eq!(dependencies[0].name, "vendor/bad");
+    assert_eq!(dependencies[0].requirement, "<1.0 || >=2.0");
+    assert_eq!(dependencies[1].group, "replace");
+    assert_eq!(dependencies[1].name, "vendor/original");
+    assert_eq!(dependencies[1].requirement, "self.version");
+    assert_eq!(dependencies[2].group, "provide");
+    assert_eq!(dependencies[2].name, "psr/log-implementation");
+    assert_eq!(dependencies[2].requirement, "1.0|2.0");
+}
+
+#[test]
+fn parses_composer_stability_flags_and_references_as_suffixes() {
+    let text =
+        package_file_fixture("parses-composer-stability-flags-and-references-as-suffixes.txt");
+    let dependencies = parse_document(&DocumentInput {
+        uri: "file:///work/composer.json".to_owned(),
+        language_id: "json".to_owned(),
+        text: text.to_owned(),
+        workspace_root: None,
+    });
+
+    assert_eq!(dependencies.len(), 4);
+    assert_eq!(dependencies[0].name, "monolog/monolog");
+    assert_eq!(dependencies[0].requirement, "1.0.*");
+    assert_eq!(dependencies[0].requirement_suffix, "@beta");
+    assert_eq!(
+        extract_range(text, dependencies[0].requirement_range),
+        "1.0.*@beta"
+    );
+    assert_eq!(dependencies[1].name, "acme/foo");
+    assert_eq!(dependencies[1].requirement, "dev-master");
+    assert_eq!(dependencies[1].requirement_suffix, "#abc123");
+    assert_eq!(
+        extract_range(text, dependencies[1].requirement_range),
+        "dev-master#abc123"
+    );
+    assert_eq!(dependencies[2].name, "acme/bar");
+    assert_eq!(dependencies[2].requirement, "1.0.x-dev");
+    assert_eq!(dependencies[2].requirement_suffix, "#def456");
+    assert_eq!(
+        extract_range(text, dependencies[2].requirement_range),
+        "1.0.x-dev#def456"
+    );
+    assert_eq!(dependencies[3].name, "acme/inline");
+    assert_eq!(dependencies[3].requirement, "dev-bugfix");
+    assert_eq!(dependencies[3].requirement_suffix, " as 1.0.x-dev");
+    assert_eq!(
+        extract_range(text, dependencies[3].requirement_range),
+        "dev-bugfix as 1.0.x-dev"
+    );
+}
+
+#[test]
 fn parses_smoke_composer_smoke_shapes() {
-    let text = r#"{
-  "name": "cerzat43/smoke-test",
-  "description": "smoke tests for vscode-versionlens extension",
-  "version": "1.0.0",
-  "require": {
-    "php": "^7.1.3",
-    "allocine/twigcs": "^3.1.3",
-    "phpunit/phpunit": "13.2.1",
-    "symfony/console": "8.1.*"
-  },
-  "require-dev": {
-    "symfony/dotenv": "8.1.*",
-    "squizlabs/php_codesniffer": "^4.0.1"
-  }
-}"#;
+    let text = package_file_fixture("parses-smoke-composer-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/composer.json".to_owned(),
         language_id: "json".to_owned(),
@@ -57,7 +100,7 @@ fn parses_smoke_composer_smoke_shapes() {
     });
 
     assert_eq!(dependencies.len(), 7);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Composer);
+    assert_eq!(dependencies[0].ecosystem, Composer);
     assert_eq!(dependencies[0].group, "version");
     assert_eq!(dependencies[0].name, "1.0.0");
     assert_eq!(dependencies[1].group, "require");
@@ -68,4 +111,25 @@ fn parses_smoke_composer_smoke_shapes() {
     assert_eq!(dependencies[5].group, "require-dev");
     assert_eq!(dependencies[6].name, "squizlabs/php_codesniffer");
     assert_eq!(dependencies[6].requirement, "^4.0.1");
+}
+
+fn package_file_fixture(name: &str) -> &'static str {
+    let path = repo_root()
+        .join("tests/fixtures/versionlens-parsers/src/json_manifest/tests/composer")
+        .join(name);
+    let contents = read_to_string(&path).unwrap_or_else(|error| {
+        panic!(
+            "failed to read package-file fixture {}: {error}",
+            path.display()
+        )
+    });
+    crate::leaked_string(contents)
+}
+
+fn repo_root() -> PathBuf {
+    <PathBuf as From<&str>>::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|path| path.parent())
+        .expect("crate should be under crates/")
+        .to_path_buf()
 }

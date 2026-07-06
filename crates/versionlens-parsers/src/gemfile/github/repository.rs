@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use std::borrow::Cow::{Borrowed as CowBorrowed, Owned as CowOwned};
 
 use super::super::syntax::attr_string_span;
 
@@ -22,8 +22,8 @@ pub(super) fn normalize_github_repository(value: &str) -> Option<&str> {
 fn borrowed_attr_string<'a>(content: &'a str, name: &str) -> Option<&'a str> {
     let (value, _, _, _) = attr_string_span(content, name)?;
     match value {
-        Cow::Borrowed(value) => Some(value),
-        Cow::Owned(_) => None,
+        CowBorrowed(value) => Some(value),
+        CowOwned(_) => None,
     }
 }
 

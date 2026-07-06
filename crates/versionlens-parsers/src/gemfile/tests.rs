@@ -1,24 +1,12 @@
 use crate::document::test_support::extract_range;
-use crate::{DocumentInput, Ecosystem, parse_document};
+use crate::model::Ecosystem::Ruby;
+use crate::{DocumentInput, parse_document};
+use std::fs::read_to_string;
+use std::path::PathBuf;
 
 #[test]
 fn parses_gemfile_dependencies() {
-    let text = r#"
-source "https://rubygems.org"
-gem "rails", "8.1.3"
-gem 'puma', '>= 8.0.2' # comment
-gem "rails", git: "https://github.com/rails/rails.git"
-gem "sqlite3"
-gem "local", path: "vendor/local"
-gem "rspec-rails", github: "rspec/rspec-rails", tag: "v6.0.1"
-gem "rspec-core", github: "rspec/rspec-core", ref: "abcdef1"
-gem "rspec-mocks", github: "rspec/rspec-mocks", branch: "main"
-gem "fragment", git: "https://example.test/repo.git#main"
-gem "quoted-comment" # "not-a-version"
-group :production do
-  gem "pg", "1.6.2"
-end
-"#;
+    let text = package_file_fixture("parses-gemfile-dependencies.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/Gemfile".to_owned(),
         language_id: "ruby".to_owned(),
@@ -27,7 +15,7 @@ end
     });
 
     assert_eq!(dependencies.len(), 11);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Ruby);
+    assert_eq!(dependencies[0].ecosystem, Ruby);
     assert_eq!(dependencies[0].group, "dependencies");
     assert_eq!(dependencies[0].name, "rails");
     assert_eq!(dependencies[0].requirement, "8.1.3");
@@ -107,15 +95,7 @@ end
 
 #[test]
 fn parses_gemfile_source_block_dependencies() {
-    let text = r#"
-source "https://private.gems.example.test/" do
-  gem "private_gem", "1.0.0"
-  group :development do
-    gem "dev_private", "2.0.0"
-  end
-  gem "remote", github: "owner/remote", tag: "v1.0.0"
-end
-"#;
+    let text = package_file_fixture("parses-gemfile-source-block-dependencies.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/Gemfile".to_owned(),
         language_id: "ruby".to_owned(),
@@ -144,13 +124,7 @@ end
 
 #[test]
 fn parses_gemfile_dependency_source_option() {
-    let text = r#"
-source "https://block.gems.example.test/" do
-  gem "block_private", "1.0.0"
-  gem "explicit_private", "2.0.0", source: "https://explicit.gems.example.test/"
-end
-gem "standalone_private", source: "https://standalone.gems.example.test/"
-"#;
+    let text = package_file_fixture("parses-gemfile-dependency-source-option.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/Gemfile".to_owned(),
         language_id: "ruby".to_owned(),
@@ -179,7 +153,7 @@ gem "standalone_private", source: "https://standalone.gems.example.test/"
 
 #[test]
 fn parses_gemfile_missing_single_quote_version_insert() {
-    let text = "gem 'nokogiri'";
+    let text = package_file_fixture("parses-gemfile-missing-single-quote-version-insert.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/Gemfile".to_owned(),
         language_id: "ruby".to_owned(),
@@ -198,7 +172,8 @@ fn parses_gemfile_missing_single_quote_version_insert() {
 
 #[test]
 fn parses_gemfile_github_dependencies_without_ref_from_commits() {
-    let text = r#"gem "devise", github: "heartcombo/devise""#;
+    let text =
+        package_file_fixture("parses-gemfile-github-dependencies-without-ref-from-commitsGemfile");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/Gemfile".to_owned(),
         language_id: "ruby".to_owned(),
@@ -220,9 +195,7 @@ fn parses_gemfile_github_dependencies_without_ref_from_commits() {
 
 #[test]
 fn parses_gemfile_git_github_tag_and_ref_dependencies() {
-    let text = r#"gem "rails", git: "git@github.com:rails/rails.git", tag: "v8.0.0"
-gem "core", git: "https://github.com/rspec/rspec-core.git", branch: "main"
-"#;
+    let text = package_file_fixture("parses-gemfile-git-github-tag-and-ref-dependencies.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/Gemfile".to_owned(),
         language_id: "ruby".to_owned(),
@@ -260,7 +233,7 @@ gem "core", git: "https://github.com/rspec/rspec-core.git", branch: "main"
 
 #[test]
 fn parses_gemfile_git_github_dependencies_without_ref() {
-    let text = r#"gem "rails", git: "https://github.com/rails/rails.git""#;
+    let text = package_file_fixture("parses-gemfile-git-github-dependencies-without-ref.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/Gemfile".to_owned(),
         language_id: "ruby".to_owned(),
@@ -283,25 +256,7 @@ fn parses_gemfile_git_github_dependencies_without_ref() {
 
 #[test]
 fn parses_smoke_gemfile_smoke_shapes() {
-    let text = r#"# Gemfile for smoke testing
-source 'https://rubygems.org'
-
-gem 'rails', '8.1.3'
-gem 'sqlite3', '~> 1.4'
-gem 'puma', '>= 8.0.2'
-gem 'bootsnap', '1.24.6'
-gem 'sass-rails', '6.0.0'
-gem 'byebug', '13.0.0' # test comment
-gem 'ffaker', '2.25.0'
-gem 'rspec-rails', '~> 8.0.4'
-gem 'not_found_gem', '9.9.9'
-gem 'rails', git: "https://github.com/rails/rails.git"
-
-group :production do
-  gem 'pg', '1.6.3'
-  gem 'rails_12factor', '0.0.3'
-end
-"#;
+    let text = package_file_fixture("parses-smoke-gemfile-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/Gemfile".to_owned(),
         language_id: "ruby".to_owned(),
@@ -310,7 +265,7 @@ end
     });
 
     assert_eq!(dependencies.len(), 12);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Ruby);
+    assert_eq!(dependencies[0].ecosystem, Ruby);
     assert_eq!(dependencies[0].name, "rails");
     assert_eq!(dependencies[0].requirement, "8.1.3");
     assert_eq!(dependencies[5].name, "byebug");
@@ -328,13 +283,7 @@ end
 
 #[test]
 fn parses_smoke_gemfile_github_smoke_shapes() {
-    let text = r#"source 'https://rubygems.org'
-
-gem 'rspec-rails', github: 'rspec/rspec-rails', tag: 'v8.0.4'
-gem 'rails', github: 'rails/rails', ref: '9a475c8'
-gem 'devise', github: 'heartcombo/devise', ref: '372b295'
-gem 'factory_bot', github: 'thoughtbot/factory_bot', ref: 'f923a81'
-"#;
+    let text = package_file_fixture("parses-smoke-gemfile-github-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/Gemfile".to_owned(),
         language_id: "ruby".to_owned(),
@@ -357,7 +306,8 @@ gem 'factory_bot', github: 'thoughtbot/factory_bot', ref: 'f923a81'
 }
 #[test]
 fn gemfile_dependency_range_starts_at_gem_keyword_like_upstream() {
-    let text = "  gem \"rails\", \"8.1.3\"\n";
+    let text =
+        package_file_fixture("gemfile-dependency-range-starts-at-gem-keyword-like-upstream.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/Gemfile".to_owned(),
         language_id: "ruby".to_owned(),
@@ -373,7 +323,8 @@ fn gemfile_dependency_range_starts_at_gem_keyword_like_upstream() {
 }
 #[test]
 fn gemfile_group_end_accepts_trailing_whitespace_like_upstream() {
-    let text = "group :test do\n  gem \"rspec\", \"3.13.0\"\nend   \ngem \"rails\", \"8.1.3\"\n";
+    let text =
+        package_file_fixture("gemfile-group-end-accepts-trailing-whitespace-like-upstreamGemfile");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/Gemfile".to_owned(),
         language_id: "ruby".to_owned(),
@@ -386,4 +337,111 @@ fn gemfile_group_end_accepts_trailing_whitespace_like_upstream() {
     assert_eq!(dependencies[0].group, "group :test");
     assert_eq!(dependencies[1].name, "rails");
     assert_eq!(dependencies[1].group, "dependencies");
+}
+
+#[test]
+fn parses_gemspec_dependencies() {
+    let text = package_file_fixture("parses-gemspec-dependenciesGemfile");
+    let dependencies = parse_document(&DocumentInput {
+        uri: "file:///work/example.gemspec".to_owned(),
+        language_id: "ruby".to_owned(),
+        text: text.to_owned(),
+        workspace_root: None,
+    });
+
+    assert_eq!(dependencies.len(), 4);
+    assert_eq!(dependencies[0].ecosystem, Ruby);
+    assert_eq!(dependencies[0].group, "add_dependency");
+    assert_eq!(dependencies[0].name, "rack");
+    assert_eq!(dependencies[0].requirement, "~> 2.2");
+    assert_eq!(
+        extract_range(text, dependencies[0].requirement_range),
+        "~> 2.2"
+    );
+    assert_eq!(dependencies[1].group, "add_runtime_dependency");
+    assert_eq!(dependencies[1].name, "thor");
+    assert_eq!(dependencies[1].requirement, ">= 1.0");
+    assert_eq!(dependencies[2].group, "add_development_dependency");
+    assert_eq!(dependencies[2].name, "rspec");
+    assert_eq!(dependencies[2].requirement, "~> 3.13");
+    assert_eq!(dependencies[3].group, "add_dependency");
+    assert_eq!(dependencies[3].name, "json");
+    assert_eq!(dependencies[3].requirement, "2.7.2");
+}
+
+#[test]
+fn parses_gemfile_git_and_path_block_dependencies_as_non_registry_sources() {
+    let text = package_file_fixture(
+        "parses-gemfile-git-and-path-block-dependencies-as-non-registry-sources.txt",
+    );
+    let dependencies = parse_document(&DocumentInput {
+        uri: "file:///work/Gemfile".to_owned(),
+        language_id: "ruby".to_owned(),
+        text: text.to_owned(),
+        workspace_root: None,
+    });
+
+    assert_eq!(dependencies.len(), 3);
+    assert_eq!(dependencies[0].name, "local_one");
+    assert_eq!(dependencies[0].requirement, "vendor/local");
+    assert_eq!(dependencies[0].group, "path vendor/local");
+    assert_eq!(extract_range(text, dependencies[0].requirement_range), "");
+    assert_eq!(dependencies[1].name, "activesupport");
+    assert_eq!(
+        dependencies[1].requirement,
+        "https://github.com/rails/rails.git"
+    );
+    assert_eq!(
+        dependencies[1].group,
+        "git https://github.com/rails/rails.git"
+    );
+    assert_eq!(extract_range(text, dependencies[1].requirement_range), "");
+    assert_eq!(dependencies[2].name, "actionpack");
+    assert_eq!(
+        dependencies[2].requirement,
+        "https://github.com/rails/rails.git"
+    );
+}
+
+#[test]
+fn parses_gemfile_inline_group_options_as_dependency_groups() {
+    let text = package_file_fixture("parses-gemfile-inline-group-options-as-dependency-groups.txt");
+    let dependencies = parse_document(&DocumentInput {
+        uri: "file:///work/Gemfile".to_owned(),
+        language_id: "ruby".to_owned(),
+        text: text.to_owned(),
+        workspace_root: None,
+    });
+
+    assert_eq!(dependencies.len(), 3);
+    assert_eq!(dependencies[0].name, "rubocop");
+    assert_eq!(dependencies[0].group, "group :development");
+    assert_eq!(dependencies[0].requirement, "1.80.2");
+    assert_eq!(dependencies[1].name, "rspec");
+    assert_eq!(dependencies[1].group, "groups :development, :test");
+    assert_eq!(dependencies[1].requirement, "3.13.0");
+    assert_eq!(dependencies[2].name, "guard");
+    assert_eq!(dependencies[2].group, "group development, test");
+    assert_eq!(dependencies[2].requirement, "2.19.1");
+}
+
+fn package_file_fixture(name: &str) -> &'static str {
+    let path = repo_root()
+        .join("tests/fixtures/versionlens-parsers/src/gemfile/tests")
+        .join(name);
+    let contents = read_to_string(&path).unwrap_or_else(|error| {
+        panic!(
+            "failed to read package-file fixture {}: {error}",
+            path.display()
+        )
+    });
+    crate::leaked_string(contents)
+}
+
+fn repo_root() -> PathBuf {
+    <PathBuf as From<&str>>::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|path| path.parent())
+        .expect("crate should be under crates/")
+        .to_path_buf()
 }

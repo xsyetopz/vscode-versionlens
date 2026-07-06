@@ -1,41 +1,12 @@
-use super::{DocumentInput, Ecosystem, parse_document, parse_document_with_dependency_paths};
+use super::{DocumentInput, parse_document, parse_document_with_dependency_paths};
 use crate::document::test_support::extract_range;
+use crate::model::Ecosystem::Npm;
+use std::fs::read_to_string;
+use std::path::PathBuf;
 
 #[test]
 fn parses_package_json_nested_wildcard_and_scalars() {
-    let text = r#"{
-  "version": "1.2.3",
-  "packageManager": "pnpm@9.1.2",
-  "overrides": {
-    "react@18.0.0": "18.2.0",
-    "@scope/pkg@1.2.3": "1.2.4",
-    "parent": {
-      "child": "2.0.0"
-    }
-  },
-  "jspm": {
-    "dependencies": {
-      "systemjs": "6.0.0"
-    }
-  },
-  "pnpm": {
-    "overrides": {
-      "nested": {
-        "leaf": "1.0.0"
-      }
-    }
-  },
-  "workspaces": {
-    "catalog": {
-      "react-dom": "^19.2.7"
-    },
-    "catalogs": {
-      "testing": {
-        "jest": "30.0.0"
-      }
-    }
-  }
-}"#;
+    let text = package_file_fixture("parses-package-json-nested-wildcard-and-scalars.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/package.json".to_owned(),
         language_id: "jsonc".to_owned(),
@@ -43,7 +14,7 @@ fn parses_package_json_nested_wildcard_and_scalars() {
         workspace_root: None,
     });
 
-    assert_eq!(dependencies.len(), 7);
+    assert_eq!(dependencies.len(), 9);
     assert_eq!(dependencies[0].group, "version");
     assert_eq!(dependencies[0].name, "1.2.3");
     assert_eq!(dependencies[1].group, "packageManager");
@@ -54,46 +25,27 @@ fn parses_package_json_nested_wildcard_and_scalars() {
         "9.1.2"
     );
     assert_eq!(dependencies[2].name, "react");
-    assert_eq!(dependencies[3].name, "@scope/pkg@1.2.3");
+    assert_eq!(dependencies[3].name, "@scope/pkg");
     assert_eq!(dependencies[4].group, "overrides");
     assert_eq!(dependencies[4].name, "child");
     assert_eq!(dependencies[5].group, "jspm.dependencies");
     assert_eq!(dependencies[6].group, "pnpm.overrides");
     assert_eq!(dependencies[6].name, "leaf");
+    assert_eq!(dependencies[7].group, "workspaces.catalog");
+    assert_eq!(dependencies[7].name, "react-dom");
+    assert_eq!(dependencies[8].group, "workspaces.catalogs.testing");
+    assert_eq!(dependencies[8].name, "jest");
 }
 
 #[test]
-fn parses_configured_package_json_pnpm_package_extensions() {
-    let text = r#"{
-  "pnpm": {
-    "packageExtensions": {
-      "react-redux": {
-        "peerDependencies": {
-          "react-dom": "*"
-        }
-      },
-      "vite@5": {
-        "optionalDependencies": {
-          "fsevents": "^2.3.3"
-        }
-      }
-    }
-  }
-}"#;
-    let dependencies = parse_document_with_dependency_paths(
-        &DocumentInput {
-            uri: "file:///work/package.json".to_owned(),
-            language_id: "json".to_owned(),
-            text: text.to_owned(),
-            workspace_root: None,
-        },
-        &[
-            "pnpm.packageExtensions.*.dependencies",
-            "pnpm.packageExtensions.*.devDependencies",
-            "pnpm.packageExtensions.*.peerDependencies",
-            "pnpm.packageExtensions.*.optionalDependencies",
-        ],
-    );
+fn parses_package_json_pnpm_package_extensions_by_default() {
+    let text = package_file_fixture("parses-package-json-pnpm-package-extensions-by-default.txt");
+    let dependencies = parse_document(&DocumentInput {
+        uri: "file:///work/package.json".to_owned(),
+        language_id: "json".to_owned(),
+        text: text.to_owned(),
+        workspace_root: None,
+    });
 
     assert_eq!(dependencies.len(), 2);
     assert_eq!(
@@ -112,55 +64,30 @@ fn parses_configured_package_json_pnpm_package_extensions() {
 }
 
 #[test]
-fn parses_configured_package_json_workspace_catalogs() {
-    let text = r#"{
-  "dependencies": {
-    "react": "catalog:"
-  },
-  "workspaces": {
-    "catalog": {
-      "react": "^19.2.7",
-      "react-dom": "^19.2.7"
-    },
-    "catalogs": {
-      "testing": {
-        "jest": "30.0.0"
-      }
-    }
-  }
-}"#;
-    let dependencies = parse_document_with_dependency_paths(
-        &DocumentInput {
-            uri: "file:///work/package.json".to_owned(),
-            language_id: "json".to_owned(),
-            text: text.to_owned(),
-            workspace_root: None,
-        },
-        &[
-            "dependencies",
-            "workspaces.catalog",
-            "workspaces.catalogs.*",
-        ],
-    );
+fn parses_package_json_bun_catalogs_by_default() {
+    let text = package_file_fixture("parses-package-json-bun-catalogs-by-default.txt");
+    let dependencies = parse_document(&DocumentInput {
+        uri: "file:///work/package.json".to_owned(),
+        language_id: "json".to_owned(),
+        text: text.to_owned(),
+        workspace_root: None,
+    });
 
-    assert_eq!(dependencies.len(), 3);
-    assert_eq!(dependencies[0].group, "workspaces.catalog");
-    assert_eq!(dependencies[0].name, "react");
-    assert_eq!(dependencies[1].name, "react-dom");
-    assert_eq!(dependencies[2].group, "workspaces.catalogs.testing");
-    assert_eq!(dependencies[2].name, "jest");
+    assert_eq!(dependencies.len(), 5);
+    assert_eq!(dependencies[0].group, "catalog");
+    assert_eq!(dependencies[0].name, "typescript");
+    assert_eq!(dependencies[1].group, "catalogs.build");
+    assert_eq!(dependencies[1].name, "webpack");
+    assert_eq!(dependencies[2].group, "workspaces.catalog");
+    assert_eq!(dependencies[2].name, "react");
+    assert_eq!(dependencies[3].name, "react-dom");
+    assert_eq!(dependencies[4].group, "workspaces.catalogs.testing");
+    assert_eq!(dependencies[4].name, "jest");
 }
 
 #[test]
 fn parses_configured_smoke_npm_custom_dependency_paths() {
-    let text = r#"{
-  "devDependencies": {
-    "typescript": "^6.0.3"
-  },
-  "customDependencies": {
-    "@types/hammerjs": "2.0.33"
-  }
-}"#;
+    let text = package_file_fixture("parses-configured-smoke-npm-custom-dependency-paths.txt");
     let dependencies = parse_document_with_dependency_paths(
         &DocumentInput {
             uri: "file:///work/package.json".to_owned(),
@@ -172,7 +99,7 @@ fn parses_configured_smoke_npm_custom_dependency_paths() {
     );
 
     assert_eq!(dependencies.len(), 1);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Npm);
+    assert_eq!(dependencies[0].ecosystem, Npm);
     assert_eq!(dependencies[0].group, "customDependencies");
     assert_eq!(dependencies[0].name, "@types/hammerjs");
     assert_eq!(dependencies[0].requirement, "2.0.33");
@@ -180,4 +107,25 @@ fn parses_configured_smoke_npm_custom_dependency_paths() {
         extract_range(text, dependencies[0].requirement_range),
         "2.0.33"
     );
+}
+
+fn package_file_fixture(name: &str) -> &'static str {
+    let path = repo_root()
+        .join("tests/fixtures/versionlens-parsers/src/json_manifest/tests/npm_nested")
+        .join(name);
+    let contents = read_to_string(&path).unwrap_or_else(|error| {
+        panic!(
+            "failed to read package-file fixture {}: {error}",
+            path.display()
+        )
+    });
+    crate::leaked_string(contents)
+}
+
+fn repo_root() -> PathBuf {
+    <PathBuf as From<&str>>::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|path| path.parent())
+        .expect("crate should be under crates/")
+        .to_path_buf()
 }

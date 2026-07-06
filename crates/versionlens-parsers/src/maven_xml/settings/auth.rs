@@ -7,12 +7,14 @@ use super::model::{MavenAuthEntry, MavenMirror, MavenNamedRepository};
 
 pub fn parse_maven_settings_auth_entries(text: &str) -> Vec<MavenAuthEntry> {
     let Some(nodes) = collect_nodes(text) else {
-        return Vec::new();
+        return vec![];
     };
     let credentials = server_credentials(&nodes);
+    let active_profiles = active_profile_ids(&nodes);
 
-    repository_sources(&nodes)
+    repository_sources(&nodes, &active_profiles)
         .into_iter()
+        .chain(plugin_repository_sources(&nodes, &active_profiles))
         .chain(mirror_sources(&nodes))
         .filter_map(|(id, url)| auth_entry(id, url, &credentials))
         .collect()
@@ -27,12 +29,14 @@ pub fn parse_maven_settings_repository_urls(text: &str) -> Vec<String> {
 
 pub fn parse_maven_settings_repositories(text: &str) -> Vec<MavenNamedRepository> {
     let Some(nodes) = collect_nodes(text) else {
-        return Vec::new();
+        return vec![];
     };
+    let active_profiles = active_profile_ids(&nodes);
 
     local_repository_sources(&nodes)
         .into_iter()
-        .chain(repository_sources(&nodes))
+        .chain(repository_sources(&nodes, &active_profiles))
+        .chain(plugin_repository_sources(&nodes, &active_profiles))
         .map(|(id, url)| MavenNamedRepository { id, url })
         .collect()
 }
@@ -47,7 +51,7 @@ pub fn parse_maven_settings_mirror_urls(text: &str) -> Vec<String> {
 
 pub fn parse_maven_settings_mirrors(text: &str) -> Vec<MavenMirror> {
     let Some(nodes) = collect_nodes(text) else {
-        return Vec::new();
+        return vec![];
     };
 
     nodes
@@ -79,10 +83,23 @@ fn mirror(node: &XmlNode, nodes: &[XmlNode]) -> Option<MavenMirror> {
     })
 }
 
-fn repository_sources(nodes: &[XmlNode]) -> Vec<(String, String)> {
+fn repository_sources(nodes: &[XmlNode], active_profiles: &[String]) -> Vec<(String, String)> {
     nodes
         .iter()
         .filter(|node| node.path == "settings.profiles.profile.repositories.repository")
+        .filter(|node| profile_is_active(node, nodes, active_profiles))
+        .filter_map(|node| repository_source(node, nodes))
+        .collect()
+}
+
+fn plugin_repository_sources(
+    nodes: &[XmlNode],
+    active_profiles: &[String],
+) -> Vec<(String, String)> {
+    nodes
+        .iter()
+        .filter(|node| node.path == "settings.profiles.profile.pluginRepositories.pluginRepository")
+        .filter(|node| profile_is_active(node, nodes, active_profiles))
         .filter_map(|node| repository_source(node, nodes))
         .collect()
 }
@@ -101,6 +118,31 @@ fn repository_source(node: &XmlNode, nodes: &[XmlNode]) -> Option<(String, Strin
     let id = child_named(&children, "id")?.text.as_str().to_owned();
     let url = child_named(&children, "url")?.text.as_str().to_owned();
     Some((id, url))
+}
+
+fn active_profile_ids(nodes: &[XmlNode]) -> Vec<String> {
+    nodes
+        .iter()
+        .filter(|node| node.path == "settings.activeProfiles.activeProfile")
+        .filter(|node| !node.text.is_empty())
+        .map(|node| node.text.as_str().to_owned())
+        .collect()
+}
+
+fn profile_is_active(node: &XmlNode, nodes: &[XmlNode], active_profiles: &[String]) -> bool {
+    active_profiles.is_empty()
+        || profile_id_for_node(node, nodes)
+            .is_some_and(|profile_id| active_profiles.iter().any(|active| active == profile_id))
+}
+
+fn profile_id_for_node<'a>(node: &XmlNode, nodes: &'a [XmlNode]) -> Option<&'a str> {
+    let profile = nodes.iter().find(|candidate| {
+        candidate.path == "settings.profiles.profile"
+            && candidate.open_start < node.open_start
+            && candidate.close_end > node.close_end
+    })?;
+    let children = direct_children(profile, nodes);
+    child_named(&children, "id").map(|id| id.text.as_str())
 }
 
 fn server_credentials(nodes: &[XmlNode]) -> HashMap<String, (String, String)> {

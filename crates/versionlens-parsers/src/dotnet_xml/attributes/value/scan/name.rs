@@ -1,4 +1,5 @@
-use std::ops::Range as ByteRange;
+use Range as ByteRange;
+use std::ops::Range;
 
 pub(super) fn attribute_name_range(bytes: &[u8], mut index: usize) -> (ByteRange<usize>, usize) {
     let start = index;

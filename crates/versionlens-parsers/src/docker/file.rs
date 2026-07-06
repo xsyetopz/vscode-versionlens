@@ -1,8 +1,7 @@
-use crate::{
-    docker::image::split_image_reference,
-    model::{Dependency, Ecosystem},
-    positions::line_range,
-};
+use crate::docker::image::split_image_reference;
+use crate::model::Dependency;
+use crate::model::Ecosystem::Docker;
+use crate::positions::line_range;
 
 pub(crate) fn parse_dockerfile(text: &str) -> Vec<Dependency> {
     text.lines()
@@ -19,14 +18,17 @@ fn parse_from_line(line_index: usize, line: &str) -> Option<Dependency> {
     if !trimmed
         .as_bytes()
         .get(4)
-        .is_some_and(u8::is_ascii_whitespace)
+        .is_some_and(|value| value.is_ascii_whitespace())
     {
         return None;
     }
 
     let mut rest = trimmed.get(4..)?.trim_start();
     while rest.starts_with("--") {
-        rest = rest.split_once(char::is_whitespace)?.1.trim_start();
+        rest = rest
+            .split_once(|value: char| value.is_whitespace())?
+            .1
+            .trim_start();
     }
 
     let image_ref = rest.split_whitespace().next()?;
@@ -36,14 +38,21 @@ fn parse_from_line(line_index: usize, line: &str) -> Option<Dependency> {
         return None;
     }
     let name_start = image_start + image.name_offset;
-    let requirement_start = image_start + image.tag_offset;
-
-    let requirement_prefix = if image.tag.is_empty() { ":" } else { "" };
+    let (requirement, requirement_start, requirement_prefix) =
+        if image.tag.is_empty() && !image.digest.is_empty() {
+            (image.digest, image_start + image.digest_offset, "@")
+        } else {
+            (
+                image.tag,
+                image_start + image.tag_offset,
+                if image.tag.is_empty() { ":" } else { "" },
+            )
+        };
 
     Some(Dependency {
         name: image.name.to_owned(),
-        requirement: image.tag.to_owned(),
-        ecosystem: Ecosystem::Docker,
+        requirement: requirement.to_owned(),
+        ecosystem: Docker,
         group: "FROM".to_owned(),
         hosted_url: (!image.registry.is_empty()).then(|| image.registry.to_owned()),
         hosted_name: None,
@@ -52,9 +61,9 @@ fn parse_from_line(line_index: usize, line: &str) -> Option<Dependency> {
             line_index,
             line,
             requirement_start,
-            requirement_start + image.tag.len(),
+            requirement_start + requirement.len(),
         ),
         requirement_prefix: requirement_prefix.to_owned(),
-        requirement_suffix: String::new(),
+        requirement_suffix: "".to_owned(),
     })
 }

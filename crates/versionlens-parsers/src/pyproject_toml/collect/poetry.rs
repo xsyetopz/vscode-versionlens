@@ -9,9 +9,11 @@ use super::super::dependencies::{
 use super::super::paths::{TomlPathContext, is_poetry_dependency_path};
 use super::{TomlValueContext, push_keyed_dependency};
 
+type PoetryDependencies = Vec<Dependency>;
+
 pub(super) fn collect_poetry_table_dependency(
     context: &TomlValueContext<'_>,
-    out: &mut Vec<Dependency>,
+    out: &mut PoetryDependencies,
 ) -> bool {
     let Some((group, name_key)) = poetry_table_dependency(context.keys, context.dependency_paths)
     else {
@@ -40,7 +42,7 @@ pub(super) fn collect_poetry_table_dependency(
 pub(super) fn collect_poetry_dependency(
     context: &TomlValueContext<'_>,
     paths: &TomlPathContext,
-    out: &mut Vec<Dependency>,
+    out: &mut PoetryDependencies,
 ) {
     if !is_poetry_dependency_path(context.keys)
         || !path_or_member_enabled_exact(

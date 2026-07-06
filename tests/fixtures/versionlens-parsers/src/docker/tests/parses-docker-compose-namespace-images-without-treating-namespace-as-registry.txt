@@ -1,0 +1,4 @@
+
+services:
+  app:
+    image: library/nginx:1.25

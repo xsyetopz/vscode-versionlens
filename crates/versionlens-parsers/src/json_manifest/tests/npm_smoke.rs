@@ -1,14 +1,12 @@
-use super::{DocumentInput, Ecosystem, parse_document};
+use super::{DocumentInput, parse_document};
 use crate::document::test_support::extract_range;
+use crate::model::Ecosystem::Npm;
+use std::fs::read_to_string;
+use std::path::PathBuf;
 
 #[test]
 fn parses_smoke_npm_range_smoke_shapes() {
-    let text = r#"{
-  "dependencies": {
-    "@faker-js/faker": "> 10.0.0 < 10.5.0",
-    "typescript": "> 6.0.0 < 6.0.3"
-  }
-}"#;
+    let text = package_file_fixture("parses-smoke-npm-range-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/package.json".to_owned(),
         language_id: "json".to_owned(),
@@ -17,7 +15,7 @@ fn parses_smoke_npm_range_smoke_shapes() {
     });
 
     assert_eq!(dependencies.len(), 2);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Npm);
+    assert_eq!(dependencies[0].ecosystem, Npm);
     assert_eq!(dependencies[0].group, "dependencies");
     assert_eq!(dependencies[0].name, "@faker-js/faker");
     assert_eq!(dependencies[0].requirement, "> 10.0.0 < 10.5.0");
@@ -31,21 +29,7 @@ fn parses_smoke_npm_range_smoke_shapes() {
 
 #[test]
 fn parses_smoke_jspm_package_json_smoke_shapes() {
-    let text = r#"{
-  "name": "smoke-test",
-  "jspm": {
-    "dependencies": {
-      "bluebird": "npm:bluebird@^3.7.2",
-      "webpack": "npm:webpack@*",
-      "bootstrap": "github:twbs/bootstrap#v5.3.8",
-      "css": "npm:systemjs-plugin-css@^0.1.37",
-      "es6-shim": "github:es-shims/es6-shim#0.35.8"
-    },
-    "devDependencies": {
-      "core-js": "npm:core-js@^3.49.0"
-    }
-  }
-}"#;
+    let text = package_file_fixture("parses-smoke-jspm-package-json-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/package.json".to_owned(),
         language_id: "json".to_owned(),
@@ -68,28 +52,7 @@ fn parses_smoke_jspm_package_json_smoke_shapes() {
 
 #[test]
 fn parses_smoke_typical_package_json_smoke_shapes() {
-    let text = r#"{
-  "name": "smoke-test",
-  "devDependencies": {
-    "typescript": "^6.0.3",
-    "aliased": "npm:typescript@6.0.3",
-    "bootstrap": "twbs/bootstrap#v5.3.8",
-    "express": "expressjs/express#semver:v5.2.1",
-    "test": "file:../../..",
-    "@types/angular": "~1.8.9",
-    "@types/node": "latest",
-    "@angular/core": "22.0.3",
-    "webpack": "5.108.0",
-    "semver": "7.8.5",
-    "@openapitools/openapi-generator-cli": "2.39.0",
-    "npm": ">=11.17.0",
-    "invalid": ">=4.5.",
-    "@could-not-be-found/a": "^1.0.0"
-  },
-  "customDependencies": {
-    "@types/hammerjs": "2.0.33"
-  }
-}"#;
+    let text = package_file_fixture("parses-smoke-typical-package-json-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/package.json".to_owned(),
         language_id: "json".to_owned(),
@@ -119,26 +82,7 @@ fn parses_smoke_typical_package_json_smoke_shapes() {
 
 #[test]
 fn parses_smoke_npm_workspaces_smoke_shapes() {
-    let text = r#"{
-  "dependencies": {
-    "react": "catalog:"
-  },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ],
-    "catalog": {
-      "react": "^19.2.7",
-      "react-dom": "^19.2.7"
-    },
-    "catalogs": {
-      "testing": {
-        "jest": "30.0.0",
-        "testing-library": "14.0.0"
-      }
-    }
-  }
-}"#;
+    let text = package_file_fixture("parses-smoke-npm-workspaces-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/package.json".to_owned(),
         language_id: "json".to_owned(),
@@ -146,20 +90,20 @@ fn parses_smoke_npm_workspaces_smoke_shapes() {
         workspace_root: None,
     });
 
-    assert!(dependencies.is_empty());
+    assert_eq!(dependencies.len(), 4);
+    assert_eq!(dependencies[0].group, "workspaces.catalog");
+    assert_eq!(dependencies[0].name, "react");
+    assert_eq!(dependencies[1].group, "workspaces.catalog");
+    assert_eq!(dependencies[1].name, "react-dom");
+    assert_eq!(dependencies[2].group, "workspaces.catalogs.testing");
+    assert_eq!(dependencies[2].name, "jest");
+    assert_eq!(dependencies[3].group, "workspaces.catalogs.testing");
+    assert_eq!(dependencies[3].name, "testing-library");
 }
 
 #[test]
 fn parses_smoke_npm_overrides_smoke_shapes() {
-    let text = r#"{
-  "overrides": {
-    "semver": "7.8.5",
-    "somepackage": {
-      "typescript": "6.0.3",
-      "semver": "7.8.5"
-    }
-  }
-}"#;
+    let text = package_file_fixture("parses-smoke-npm-overrides-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/package.json".to_owned(),
         language_id: "json".to_owned(),
@@ -168,11 +112,32 @@ fn parses_smoke_npm_overrides_smoke_shapes() {
     });
 
     assert_eq!(dependencies.len(), 3);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Npm);
+    assert_eq!(dependencies[0].ecosystem, Npm);
     assert_eq!(dependencies[0].group, "overrides");
     assert_eq!(dependencies[0].name, "semver");
     assert_eq!(dependencies[0].requirement, "7.8.5");
     assert_eq!(dependencies[1].group, "overrides");
     assert_eq!(dependencies[1].name, "typescript");
     assert_eq!(dependencies[2].name, "semver");
+}
+
+fn package_file_fixture(name: &str) -> &'static str {
+    let path = repo_root()
+        .join("tests/fixtures/versionlens-parsers/src/json_manifest/tests/npm_smoke")
+        .join(name);
+    let contents = read_to_string(&path).unwrap_or_else(|error| {
+        panic!(
+            "failed to read package-file fixture {}: {error}",
+            path.display()
+        )
+    });
+    crate::leaked_string(contents)
+}
+
+fn repo_root() -> PathBuf {
+    <PathBuf as From<&str>>::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|path| path.parent())
+        .expect("crate should be under crates/")
+        .to_path_buf()
 }

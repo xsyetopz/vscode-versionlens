@@ -24,12 +24,19 @@ use nodes::collect_nodes;
 const MAVEN_DEPENDENCY_PATHS: &[&str] = &[
     "project.version",
     "project.dependencies.dependency",
+    "project.dependencyManagement.dependencies.dependency",
     "project.parent",
+    "project.build.plugins.plugin",
+    "project.build.pluginManagement.plugins.plugin",
+    "project.profiles.profile.dependencies.dependency",
+    "project.profiles.profile.dependencyManagement.dependencies.dependency",
+    "project.profiles.profile.build.plugins.plugin",
+    "project.profiles.profile.build.pluginManagement.plugins.plugin",
 ];
 
 pub(crate) fn parse_maven_xml_with_paths(text: &str, dependency_paths: &[&str]) -> Vec<Dependency> {
     let Some(nodes) = collect_nodes(text) else {
-        return Vec::new();
+        return vec![];
     };
     let dependency_paths = selected_dependency_paths(dependency_paths);
     collect_maven_dependencies(text, &nodes, &dependency_paths)

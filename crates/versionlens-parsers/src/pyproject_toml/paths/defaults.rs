@@ -3,8 +3,11 @@ const PYPI_DEPENDENCY_PATHS: &[&str] = &[
     "packages",
     "dev-packages",
     "tool.poetry.dependencies",
+    "tool.poetry.dev-dependencies",
     "tool.poetry.group.*.dependencies",
     "project.optional-dependencies",
+    "dependency-groups",
+    "tool.uv.sources",
 ];
 
 pub(in crate::pyproject_toml) fn selected_dependency_paths<'a>(

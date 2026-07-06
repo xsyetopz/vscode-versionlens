@@ -1,17 +1,22 @@
+use quick_xml::Error as XmlError;
 use quick_xml::events::Event;
+use quick_xml::events::Event::{
+    Empty as XmlEventEmpty, End as XmlEventEnd, Eof as XmlEventEof, Start as XmlEventStart,
+    Text as XmlEventText,
+};
 
 use super::state::DotnetXmlCollector;
 use crate::dotnet_xml::DotnetEventContext;
 
 pub(super) fn dotnet_xml_event_finished(
     context: &DotnetEventContext<'_>,
-    event: Result<Event<'_>, quick_xml::Error>,
+    event: Result<Event<'_>, XmlError>,
     collector: &mut DotnetXmlCollector<'_>,
 ) -> bool {
     let Ok(event) = event else {
         return true;
     };
-    if matches!(event, Event::Eof) {
+    if matches!(event, XmlEventEof) {
         return true;
     }
 
@@ -28,7 +33,7 @@ fn collect_dotnet_xml_event(
         return;
     }
 
-    if let Event::Text(event) = event {
+    if let XmlEventText(event) = event {
         collector.text(&event);
     }
 }
@@ -38,15 +43,15 @@ fn collect_dotnet_element_event(
     event: &Event<'_>,
     collector: &mut DotnetXmlCollector<'_>,
 ) -> bool {
-    if let Event::Start(event) = event {
+    if let XmlEventStart(event) = event {
         collector.start_tag(context, event);
         return true;
     }
-    if let Event::Empty(event) = event {
+    if let XmlEventEmpty(event) = event {
         collector.empty_tag(context, event);
         return true;
     }
-    if let Event::End(event) = event {
+    if let XmlEventEnd(event) = event {
         collector.end_tag(context.text, event.name().as_ref());
         return true;
     }

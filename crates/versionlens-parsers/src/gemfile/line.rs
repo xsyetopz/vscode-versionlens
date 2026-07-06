@@ -1,4 +1,5 @@
 use crate::positions::line_range;
+use versionlens_vscode_model::Range;
 
 pub(super) struct GemLineContext<'a> {
     pub(super) line_index: usize,
@@ -13,10 +14,7 @@ pub(super) struct GemNameSpan<'a> {
     pub(super) end: usize,
 }
 
-pub(super) fn gem_name_range(
-    context: &GemLineContext<'_>,
-    _name: &GemNameSpan<'_>,
-) -> versionlens_vscode_model::Range {
+pub(super) fn gem_name_range(context: &GemLineContext<'_>) -> Range {
     line_range(
         context.line_index,
         context.line,

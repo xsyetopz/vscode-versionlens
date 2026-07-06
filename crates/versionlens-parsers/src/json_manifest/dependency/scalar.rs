@@ -1,12 +1,13 @@
+use crate::json_manifest::npm::parse_package_manager;
 use jsonc_parser::ast::{ObjectProp, StringLit};
 
-use crate::model::{Dependency, Ecosystem};
+use crate::model::Dependency;
 
-use super::super::npm;
 use super::{
     JsonDependencyRanges, JsonDependencySource, json_manifest_dependency, property_name_range,
     string_content_end, string_content_start,
 };
+use crate::model::Ecosystem::Npm;
 
 pub(super) fn scalar_json_manifest_dependency(
     source: &JsonDependencySource<'_>,
@@ -46,9 +47,7 @@ fn scalar_dependency_parts<'a>(
     value_end: usize,
 ) -> Option<ScalarDependencyParts<'a>> {
     match source.group {
-        "packageManager" if source.ecosystem == Ecosystem::Npm => {
-            package_manager_parts(raw, value_end)
-        }
+        "packageManager" if source.ecosystem == Npm => package_manager_parts(raw, value_end),
         "version" => Some(ScalarDependencyParts {
             name: raw,
             requirement: raw,
@@ -60,7 +59,7 @@ fn scalar_dependency_parts<'a>(
 }
 
 fn package_manager_parts(raw: &str, value_end: usize) -> Option<ScalarDependencyParts<'_>> {
-    let (name, requirement) = npm::parse_package_manager(raw)?;
+    let (name, requirement) = parse_package_manager(raw)?;
 
     Some(ScalarDependencyParts {
         name,

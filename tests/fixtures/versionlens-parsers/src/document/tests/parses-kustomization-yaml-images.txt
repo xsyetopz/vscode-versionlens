@@ -1,0 +1,6 @@
+images:
+  - name: nginx
+    newName: registry.example.com/platform/nginx
+    newTag: 1.25.3
+  - name: redis
+    digest: sha256:abcdef

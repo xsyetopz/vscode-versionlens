@@ -1,11 +1,13 @@
+use crate::model::Ecosystem;
 use jsonc_parser::ast::{Object, ObjectProp};
 
-use crate::model::{Dependency, Ecosystem};
+use crate::model::Dependency;
 
 use super::{
     JsonDependencyRanges, JsonDependencySource, json_manifest_dependency, property_name_range,
     string_content_end, string_content_start,
 };
+use crate::model::Ecosystem::Dub;
 
 pub(super) fn object_json_manifest_dependency(
     source: &JsonDependencySource<'_>,
@@ -34,8 +36,8 @@ pub(super) fn object_json_manifest_dependency(
 }
 
 fn object_dependency_fields(ecosystem: Ecosystem) -> &'static [&'static str] {
-    if ecosystem == Ecosystem::Dub {
-        &["version"]
+    if ecosystem == Dub {
+        &["path", "repository", "version"]
     } else {
         &["version", "path", "repository"]
     }

@@ -2,6 +2,8 @@ use toml_edit::{Key, Value as TomlValue};
 
 use crate::model::Dependency;
 
+type PythonTomlDependencies = Vec<Dependency>;
+
 use super::dependencies::{PythonKeyedDependencyInput, keyed_dependency};
 use super::paths::paths_for_keys;
 
@@ -31,7 +33,7 @@ pub(super) struct TomlValueContext<'a> {
     pub(super) value: &'a TomlValue,
 }
 
-pub(super) fn collect_toml_value(context: &TomlValueContext<'_>, out: &mut Vec<Dependency>) {
+pub(super) fn collect_toml_value(context: &TomlValueContext<'_>, out: &mut PythonTomlDependencies) {
     let paths = paths_for_keys(context.keys);
 
     if collect_pipfile_dependency(context, &paths, out) {
@@ -60,7 +62,7 @@ pub(super) fn collect_toml_value(context: &TomlValueContext<'_>, out: &mut Vec<D
 pub(in crate::pyproject_toml::collect) fn push_keyed_dependency(
     context: &TomlValueContext<'_>,
     group: &str,
-    out: &mut Vec<Dependency>,
+    out: &mut PythonTomlDependencies,
 ) {
     let Some(name_key) = context.keys.last() else {
         return;

@@ -1,19 +1,21 @@
-use marked_yaml::types::{MarkedMappingNode, Node};
+use crate::model::Dependency;
+use crate::pnpm_yaml::nodes::mapping_node;
+use marked_yaml::types::MarkedMappingNode;
+use marked_yaml::types::Node::Mapping as YamlMapping;
 
-use crate::{
-    model::Dependency,
-    pnpm_yaml::{PnpmCollectContext, nodes::mapping_node},
-};
+use super::super::PnpmCollectContext;
 
 use super::mapping::collect_dependency_mapping;
+
+type PnpmCatalogDependencies = Vec<Dependency>;
 
 pub(in crate::pnpm_yaml) fn collect_catalog(
     context: &PnpmCollectContext<'_>,
     root: &MarkedMappingNode,
     group: &str,
-    out: &mut Vec<Dependency>,
+    out: &mut PnpmCatalogDependencies,
 ) {
-    let Some(Node::Mapping(catalog)) = root.get_node(group) else {
+    let Some(YamlMapping(catalog)) = root.get_node(group) else {
         return;
     };
 
@@ -23,9 +25,9 @@ pub(in crate::pnpm_yaml) fn collect_catalog(
 pub(in crate::pnpm_yaml) fn collect_catalogs(
     context: &PnpmCollectContext<'_>,
     root: &MarkedMappingNode,
-    out: &mut Vec<Dependency>,
+    out: &mut PnpmCatalogDependencies,
 ) {
-    let Some(Node::Mapping(catalogs)) = root.get_node("catalogs") else {
+    let Some(YamlMapping(catalogs)) = root.get_node("catalogs") else {
         return;
     };
 

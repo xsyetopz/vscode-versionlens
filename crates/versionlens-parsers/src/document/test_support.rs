@@ -1,4 +1,5 @@
-pub(crate) fn extract_range(text: &str, range: versionlens_vscode_model::Range) -> &str {
+use versionlens_vscode_model::Range;
+pub(crate) fn extract_range(text: &str, range: Range) -> &str {
     let line = text.lines().nth(range.start.line as usize).unwrap_or("");
     let start = utf16_character_to_byte(line, range.start.character);
     let end = utf16_character_to_byte(line, range.end.character);

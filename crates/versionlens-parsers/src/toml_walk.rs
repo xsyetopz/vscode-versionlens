@@ -1,3 +1,7 @@
+use toml_edit::Item::{
+    ArrayOfTables as TomlArrayOfTables, None as TomlNone, Table as TomlTable,
+    Value as TomlItemValue,
+};
 use toml_edit::{Item, Key, Table, Value as TomlValue};
 
 pub(crate) fn walk_toml_values<'a>(
@@ -22,8 +26,8 @@ fn visit_toml_item<'a>(
     visit: &mut impl FnMut(&[&'a Key], &'a TomlValue),
 ) {
     match item {
-        Item::Value(value) => visit(keys, value),
-        Item::Table(child) => walk_toml_values(child, keys, visit),
-        Item::ArrayOfTables(_) | Item::None => {}
+        TomlItemValue(value) => visit(keys, value),
+        TomlTable(child) => walk_toml_values(child, keys, visit),
+        TomlArrayOfTables(_) | TomlNone => {}
     }
 }

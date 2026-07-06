@@ -1,7 +1,8 @@
-use crate::model::{Dependency, Ecosystem};
+use crate::model::Dependency;
 use crate::positions::offset_range;
 
 use super::super::OpenProjectVersion;
+use crate::model::Ecosystem::Dotnet;
 
 pub(in crate::dotnet_xml) fn project_version_dependency(
     text: &str,
@@ -16,13 +17,13 @@ pub(in crate::dotnet_xml) fn project_version_dependency(
     Dependency {
         name,
         requirement: value.to_owned(),
-        ecosystem: Ecosystem::Dotnet,
+        ecosystem: Dotnet,
         group: "PropertyGroup".to_owned(),
         hosted_url: None,
         hosted_name: None,
         range: offset_range(text, value_start, value_start + value.len()),
         requirement_range: offset_range(text, value_start, value_start + value.len()),
-        requirement_prefix: String::new(),
-        requirement_suffix: String::new(),
+        requirement_prefix: "".to_owned(),
+        requirement_suffix: "".to_owned(),
     }
 }

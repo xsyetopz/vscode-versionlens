@@ -1,7 +1,9 @@
-use jsonc_parser::ast::Value;
-use jsonc_parser::{CollectOptions, ParseOptions, parse_to_ast};
+use crate::model::Ecosystem;
+use jsonc_parser::ast::Value::Object as JsonValueObject;
+use jsonc_parser::errors::ParseError as JsonParseError;
+use jsonc_parser::parse_to_ast;
 
-use crate::model::{Dependency, Ecosystem};
+use crate::model::Dependency;
 
 use super::collect::{JsonManifestContext, collect_json_path};
 
@@ -9,13 +11,13 @@ pub(super) fn parse_json_manifest(
     text: &str,
     dependency_paths: &[&str],
     ecosystem: Ecosystem,
-) -> Result<Vec<Dependency>, jsonc_parser::errors::ParseError> {
-    let parse_result = parse_to_ast(text, &CollectOptions::default(), &ParseOptions::default())?;
-    let Some(Value::Object(root)) = parse_result.value else {
-        return Ok(Vec::new());
+) -> Result<Vec<Dependency>, JsonParseError> {
+    let parse_result = parse_to_ast(text, &crate::default(), &crate::default())?;
+    let Some(JsonValueObject(root)) = parse_result.value else {
+        return Ok(vec![]);
     };
 
-    let mut dependencies = Vec::new();
+    let mut dependencies = vec![];
     let context = JsonManifestContext {
         text,
         root: &root,

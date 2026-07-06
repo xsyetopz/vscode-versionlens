@@ -1,25 +1,11 @@
-use super::{DocumentInput, Ecosystem, parse_document};
+use super::{DocumentInput, parse_document};
+use crate::model::Ecosystem::{Dub, Npm};
+use std::fs::read_to_string;
+use std::path::PathBuf;
 
 #[test]
 fn parses_smoke_pnpm_package_json_smoke_shapes() {
-    let text = r#"{
-  "packageManager": "pnpm@10.34.4",
-  "dependencies": {
-    "astro": "workspace:*",
-    "something": "catalog:*",
-    "overrides": "link:../overrides",
-    "@types/react": "npm:types-react"
-  },
-  "pnpm": {
-    "overrides": {
-      "semver": "7.8.5",
-      "axios@<1": "1.18.1",
-      "somepackage": {
-        "typescript": "6.0.3"
-      }
-    }
-  }
-}"#;
+    let text = package_file_fixture("parses-smoke-pnpm-package-json-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/package.json".to_owned(),
         language_id: "json".to_owned(),
@@ -28,7 +14,7 @@ fn parses_smoke_pnpm_package_json_smoke_shapes() {
     });
 
     assert_eq!(dependencies.len(), 6);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Npm);
+    assert_eq!(dependencies[0].ecosystem, Npm);
     assert_eq!(dependencies[0].group, "packageManager");
     assert_eq!(dependencies[0].name, "pnpm");
     assert_eq!(dependencies[0].requirement, "10.34.4");
@@ -46,13 +32,7 @@ fn parses_smoke_pnpm_package_json_smoke_shapes() {
 
 #[test]
 fn parses_smoke_npm_custom_file_smoke_shapes() {
-    let text = r#"{
-  "name": "smoke npm file registration",
-  "dependencies": {},
-  "devDependencies": {
-    "typescript": "^6.0.3"
-  }
-}"#;
+    let text = package_file_fixture("parses-smoke-npm-custom-file-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/web-module.json".to_owned(),
         language_id: "json".to_owned(),
@@ -61,7 +41,7 @@ fn parses_smoke_npm_custom_file_smoke_shapes() {
     });
 
     assert_eq!(dependencies.len(), 1);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Npm);
+    assert_eq!(dependencies[0].ecosystem, Npm);
     assert_eq!(dependencies[0].group, "devDependencies");
     assert_eq!(dependencies[0].name, "typescript");
     assert_eq!(dependencies[0].requirement, "^6.0.3");
@@ -69,15 +49,7 @@ fn parses_smoke_npm_custom_file_smoke_shapes() {
 
 #[test]
 fn parses_smoke_npm_git_smoke_shapes() {
-    let text = r#"{
-  "name": "smoke-test",
-  "title": "bun git smoke test",
-  "dependencies": {},
-  "devDependencies": {
-    "gitpkgnotfound1": "git+https://git@github.com/testuser/test.git",
-    "gitpkgnotfound2": "git+ssh://git@some.com/testuser/test.git"
-  }
-}"#;
+    let text = package_file_fixture("parses-smoke-npm-git-smoke-shapes.json");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/package.json".to_owned(),
         language_id: "json".to_owned(),
@@ -86,7 +58,7 @@ fn parses_smoke_npm_git_smoke_shapes() {
     });
 
     assert_eq!(dependencies.len(), 2);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Npm);
+    assert_eq!(dependencies[0].ecosystem, Npm);
     assert_eq!(dependencies[0].group, "devDependencies");
     assert_eq!(dependencies[0].name, "gitpkgnotfound1");
     assert_eq!(
@@ -117,7 +89,7 @@ fn parses_smoke_npm_faq_and_npmrc_smoke_shapes() {
     });
 
     assert_eq!(faq_dependencies.len(), 3);
-    assert_eq!(faq_dependencies[0].ecosystem, Ecosystem::Npm);
+    assert_eq!(faq_dependencies[0].ecosystem, Npm);
     assert_eq!(faq_dependencies[0].group, "devDependencies");
     assert_eq!(faq_dependencies[0].name, "projectz");
     assert_eq!(faq_dependencies[0].requirement, "4.2.0");
@@ -142,7 +114,7 @@ fn parses_smoke_npm_faq_and_npmrc_smoke_shapes() {
     });
 
     assert_eq!(npmrc_dependencies.len(), 1);
-    assert_eq!(npmrc_dependencies[0].ecosystem, Ecosystem::Npm);
+    assert_eq!(npmrc_dependencies[0].ecosystem, Npm);
     assert_eq!(npmrc_dependencies[0].group, "devDependencies");
     assert_eq!(npmrc_dependencies[0].name, "@scope/some-package");
     assert_eq!(npmrc_dependencies[0].requirement, "0.1");
@@ -150,28 +122,7 @@ fn parses_smoke_npm_faq_and_npmrc_smoke_shapes() {
 
 #[test]
 fn parses_smoke_dub_smoke_shapes() {
-    let text = r#"{
-  "name": "sharex-lite",
-  "description": "A minimal D application.",
-  "dependencies": {
-    "gtk-d:gtkd": "~>3.11.0",
-    "imageformats": "~>7.0.2",
-    "derelict-sdl2": "~>2.1.4",
-    "luad": "~master",
-    "painlessjson": {
-      "version": "1.4.0"
-    },
-    "eventsystem": "~>2.0.0",
-    "i18n": "~>0.1.0",
-    "standardpaths": "~>0.8.3"
-  },
-  "subPackages": [
-    "./modules/selector",
-    {
-      "standardpaths": "~>0.2.1"
-    }
-  ]
-}"#;
+    let text = package_file_fixture("parses-smoke-dub-smoke-shapes.json");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/dub.json".to_owned(),
         language_id: "json".to_owned(),
@@ -180,7 +131,7 @@ fn parses_smoke_dub_smoke_shapes() {
     });
 
     assert_eq!(dependencies.len(), 8);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Dub);
+    assert_eq!(dependencies[0].ecosystem, Dub);
     assert_eq!(dependencies[0].name, "gtk-d:gtkd");
     assert_eq!(dependencies[0].requirement, "~>3.11.0");
     assert_eq!(dependencies[4].name, "painlessjson");
@@ -189,14 +140,7 @@ fn parses_smoke_dub_smoke_shapes() {
 
 #[test]
 fn parses_smoke_dub_selections_smoke_shapes() {
-    let text = r#"{
-  "fileVersion": 1,
-  "versions": {
-    "gtk-d:gtkd": "3.11.0",
-    "imageformats": "7.0.2",
-    "derelict-sdl2": "2.1.4"
-  }
-}"#;
+    let text = package_file_fixture("parses-smoke-dub-selections-smoke-shapes.json");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/dub.selections.json".to_owned(),
         language_id: "json".to_owned(),
@@ -205,10 +149,31 @@ fn parses_smoke_dub_selections_smoke_shapes() {
     });
 
     assert_eq!(dependencies.len(), 3);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Dub);
+    assert_eq!(dependencies[0].ecosystem, Dub);
     assert_eq!(dependencies[0].group, "versions");
     assert_eq!(dependencies[0].name, "gtk-d:gtkd");
     assert_eq!(dependencies[0].requirement, "3.11.0");
     assert_eq!(dependencies[2].name, "derelict-sdl2");
     assert_eq!(dependencies[2].requirement, "2.1.4");
+}
+
+fn package_file_fixture(name: &str) -> &'static str {
+    let path = repo_root()
+        .join("tests/fixtures/versionlens-parsers/src/json_manifest/tests/smoke")
+        .join(name);
+    let contents = read_to_string(&path).unwrap_or_else(|error| {
+        panic!(
+            "failed to read package-file fixture {}: {error}",
+            path.display()
+        )
+    });
+    crate::leaked_string(contents)
+}
+
+fn repo_root() -> PathBuf {
+    <PathBuf as From<&str>>::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|path| path.parent())
+        .expect("crate should be under crates/")
+        .to_path_buf()
 }

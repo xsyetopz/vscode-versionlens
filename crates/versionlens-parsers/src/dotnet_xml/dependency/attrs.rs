@@ -1,8 +1,11 @@
-use crate::model::{Dependency, Ecosystem};
+use self::DotnetDependencyRange::Name as DotnetRangeName;
+use self::DotnetDependencyRange::Tag as DotnetRangeTag;
+use crate::model::Dependency;
 use crate::positions::offset_range;
 
 use super::super::DotnetEventContext;
 use super::super::attributes::{attr_value, tag_bounds, version_insert};
+use crate::model::Ecosystem::Dotnet;
 
 pub(super) struct DotnetDependencyAttrs<'a> {
     pub(super) group: &'a str,
@@ -33,23 +36,21 @@ pub(super) fn dependency_from_attrs(
     let name_start = tag_start + name.range.start;
     let version_start = tag_start + version.range.start;
     let range = match attrs.range {
-        DotnetDependencyRange::Name => {
-            offset_range(context.text, name_start, name_start + name.len)
-        }
-        DotnetDependencyRange::Tag => offset_range(context.text, tag_start, tag_end),
+        DotnetRangeName => offset_range(context.text, name_start, name_start + name.len),
+        DotnetRangeTag => offset_range(context.text, tag_start, tag_end),
     };
 
     Some(Dependency {
         name: name.value,
         requirement: version.value,
-        ecosystem: Ecosystem::Dotnet,
+        ecosystem: Dotnet,
         group: attrs.group.to_owned(),
         hosted_url: None,
         hosted_name: None,
         range,
         requirement_range: offset_range(context.text, version_start, version_start + version.len),
-        requirement_prefix: String::new(),
-        requirement_suffix: String::new(),
+        requirement_prefix: "".to_owned(),
+        requirement_suffix: "".to_owned(),
     })
 }
 
@@ -66,7 +67,7 @@ pub(super) fn missing_version_dependency(
     Some(Dependency {
         name: name.value,
         requirement: "*".to_owned(),
-        ecosystem: Ecosystem::Dotnet,
+        ecosystem: Dotnet,
         group: attrs.group.to_owned(),
         hosted_url: None,
         hosted_name: None,

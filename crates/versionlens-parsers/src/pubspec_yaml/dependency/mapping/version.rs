@@ -1,11 +1,10 @@
+use super::super::scalar::scalar_dependency_from_source;
+use super::super::source::PubspecDependencySource;
 use marked_yaml::types::{MarkedMappingNode, MarkedScalarNode};
 
 use crate::model::Dependency;
 
 use super::hosted::{hosted_name, hosted_url};
-use crate::pubspec_yaml::dependency::{
-    scalar::scalar_dependency_from_source, source::PubspecDependencySource,
-};
 
 pub(super) fn version_mapping_dependency(
     source: &PubspecDependencySource<'_>,

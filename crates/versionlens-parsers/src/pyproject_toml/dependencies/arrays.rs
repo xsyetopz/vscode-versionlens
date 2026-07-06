@@ -1,10 +1,11 @@
 use toml_edit::Value as TomlValue;
 
-use crate::model::{Dependency, Ecosystem};
+use crate::model::Dependency;
 use crate::positions::offset_range;
 use crate::requirements_txt::split_python_requirement;
 
 use super::spans::string_content_bounds;
+use crate::model::Ecosystem::Python;
 
 pub(in crate::pyproject_toml) fn collect_requirement_array(
     text: &str,
@@ -30,7 +31,7 @@ pub(in crate::pyproject_toml) fn collect_requirement_array(
         out.push(Dependency {
             name: name.to_owned(),
             requirement: requirement.to_owned(),
-            ecosystem: Ecosystem::Python,
+            ecosystem: Python,
             group: group.to_owned(),
             hosted_url: None,
             hosted_name: None,
@@ -43,9 +44,9 @@ pub(in crate::pyproject_toml) fn collect_requirement_array(
             requirement_prefix: if requirement.is_empty() {
                 "==".to_owned()
             } else {
-                String::new()
+                "".to_owned()
             },
-            requirement_suffix: String::new(),
+            requirement_suffix: "".to_owned(),
         });
     }
 }

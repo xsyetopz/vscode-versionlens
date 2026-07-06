@@ -1,5 +1,6 @@
 use crate::model::Dependency;
 use quick_xml::events::BytesStart;
+use std::str;
 
 mod attributes;
 mod collect;
@@ -15,6 +16,9 @@ const DOTNET_DEPENDENCY_PATHS: &[&str] = &[
     "Project.ItemGroup.PackageReference",
     "Project.ItemGroup.PackageVersion",
     "Project.ItemGroup.DotNetCliToolReference",
+    "packages.package",
+    "paket.dependencies",
+    "paket.references",
 ];
 
 pub(crate) fn parse_dotnet_xml_with_paths(
@@ -58,7 +62,7 @@ pub(super) fn event_name(event: &BytesStart<'_>) -> Option<String> {
 }
 
 pub(super) fn event_name_from_bytes(bytes: &[u8]) -> Option<String> {
-    std::str::from_utf8(bytes).ok().map(ToOwned::to_owned)
+    str::from_utf8(bytes).ok().map(|value| value.to_owned())
 }
 
 #[cfg(test)]

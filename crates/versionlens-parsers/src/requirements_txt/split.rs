@@ -81,7 +81,7 @@ fn strip_comment(input: &str) -> &str {
     input
         .char_indices()
         .find_map(|(index, char)| {
-            (char == '#' && input[..index].ends_with(char::is_whitespace))
+            (char == '#' && input[..index].ends_with(crate::is_whitespace))
                 .then_some(&input[..index])
         })
         .unwrap_or(input)
@@ -99,7 +99,10 @@ fn requirement_operator_len(value: &str) -> usize {
 }
 
 fn leading_space_len(value: &str) -> usize {
-    value.bytes().take_while(u8::is_ascii_whitespace).count()
+    value
+        .bytes()
+        .take_while(|byte| byte.is_ascii_whitespace())
+        .count()
 }
 
 fn valid_upstream_requirement_version_byte(byte: u8) -> bool {

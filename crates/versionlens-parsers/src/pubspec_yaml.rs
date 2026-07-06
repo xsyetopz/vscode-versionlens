@@ -1,3 +1,4 @@
+use self::collect::collect_pubspec_workspace;
 use marked_yaml::parse_yaml;
 
 use crate::model::Dependency;
@@ -14,19 +15,20 @@ pub(crate) fn parse_pubspec_yaml_with_paths(
     dependency_paths: &[&str],
 ) -> Vec<Dependency> {
     let Ok(root) = parse_yaml(0, text) else {
-        return Vec::new();
+        return vec![];
     };
     let Some(root) = root.as_mapping() else {
-        return Vec::new();
+        return vec![];
     };
 
-    let mut dependencies = Vec::new();
+    let mut dependencies = vec![];
     let dependency_paths = selected_dependency_paths(dependency_paths);
     let context = PubspecCollectContext {
         text,
         dependency_paths: &dependency_paths,
     };
     collect_pubspec_version(&context, root, &mut dependencies);
+    collect_pubspec_workspace(&context, root, &mut dependencies);
     collect_pubspec_dependency_groups(&context, root, &mut dependencies);
 
     dependencies

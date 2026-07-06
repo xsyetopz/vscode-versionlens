@@ -1,0 +1,14 @@
+pluginManagement {
+    repositories {
+        maven {
+            url = uri("https://plugins.example.test/releases")
+        }
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+}

@@ -3,6 +3,8 @@ use super::{
     parse_nuget_config_auth_entries, parse_nuget_config_source_mappings,
     parse_nuget_config_source_urls,
 };
+use std::fs::read_to_string;
+use std::path::PathBuf;
 
 #[test]
 fn parses_dotnet_sources() {
@@ -85,24 +87,7 @@ fn parses_nuget_config_package_sources() {
 
 #[test]
 fn parses_nuget_config_clear_elements_per_section() {
-    let text = r#"
-<configuration>
-  <packageSources>
-    <add key="old" value="https://old.example.test/v3/index.json" />
-    <clear />
-    <add key="new" value="https://new.example.test/v3/index.json" />
-  </packageSources>
-  <disabledPackageSources>
-    <add key="new" value="true" />
-    <clear />
-  </disabledPackageSources>
-  <packageSourceMapping>
-    <packageSource key="old"><package pattern="Old.*" /></packageSource>
-    <clear />
-    <packageSource key="new"><package pattern="New.*" /></packageSource>
-  </packageSourceMapping>
-</configuration>
-"#;
+    let text = package_file_fixture("parses-nuget-config-clear-elements-per-section.txt");
 
     let urls = parse_nuget_config_source_urls(text);
     let mappings = parse_nuget_config_source_mappings(text);
@@ -115,24 +100,7 @@ fn parses_nuget_config_clear_elements_per_section() {
 
 #[test]
 fn parses_nuget_config_remove_elements_per_section() {
-    let text = r#"
-<configuration>
-  <packageSources>
-    <add key="old" value="https://old.example.test/v3/index.json" />
-    <add key="new" value="https://new.example.test/v3/index.json" />
-    <remove key="old" />
-  </packageSources>
-  <disabledPackageSources>
-    <add key="new" value="true" />
-    <remove key="new" />
-  </disabledPackageSources>
-  <packageSourceMapping>
-    <packageSource key="old"><package pattern="Old.*" /></packageSource>
-    <packageSource key="new"><package pattern="New.*" /></packageSource>
-    <remove key="old" />
-  </packageSourceMapping>
-</configuration>
-"#;
+    let text = package_file_fixture("parses-nuget-config-remove-elements-per-section.txt");
 
     let urls = parse_nuget_config_source_urls(text);
     let mappings = parse_nuget_config_source_mappings(text);
@@ -201,4 +169,25 @@ fn parses_nuget_config_package_source_mappings() {
     assert_eq!(mappings[1].pattern, "Serilog");
     assert_eq!(mappings[2].source, "private");
     assert_eq!(mappings[2].pattern, "Contoso.*");
+}
+
+fn package_file_fixture(name: &str) -> &'static str {
+    let path = repo_root()
+        .join("tests/fixtures/versionlens-parsers/src/dotnet_sources/tests")
+        .join(name);
+    let contents = read_to_string(&path).unwrap_or_else(|error| {
+        panic!(
+            "failed to read package-file fixture {}: {error}",
+            path.display()
+        )
+    });
+    crate::leaked_string(contents)
+}
+
+fn repo_root() -> PathBuf {
+    <PathBuf as From<&str>>::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|path| path.parent())
+        .expect("crate should be under crates/")
+        .to_path_buf()
 }

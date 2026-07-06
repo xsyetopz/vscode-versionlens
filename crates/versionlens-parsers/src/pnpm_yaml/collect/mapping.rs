@@ -1,10 +1,10 @@
-use marked_yaml::types::{MarkedMappingNode, Node};
+use marked_yaml::types::MarkedMappingNode;
+use marked_yaml::types::Node::Scalar as YamlScalar;
 
-use crate::{
-    model::Dependency,
-    path_patterns::path_or_member_enabled,
-    pnpm_yaml::{PnpmCollectContext, dependency},
-};
+use super::super::dependency::dependency;
+use crate::model::Dependency;
+use crate::path_patterns::path_or_member_enabled;
+use crate::pnpm_yaml::PnpmCollectContext;
 
 pub(in crate::pnpm_yaml::collect) fn collect_dependency_mapping(
     context: &PnpmCollectContext<'_>,
@@ -13,13 +13,13 @@ pub(in crate::pnpm_yaml::collect) fn collect_dependency_mapping(
     out: &mut Vec<Dependency>,
 ) {
     for (key, value) in dependencies.iter() {
-        let Node::Scalar(value) = value else {
+        let YamlScalar(value) = value else {
             continue;
         };
         if !path_or_member_enabled(context.dependency_paths, group, Some(key.as_str())) {
             continue;
         }
-        if let Some(dependency) = dependency::dependency(context.text, group, key, value) {
+        if let Some(dependency) = dependency(context.text, group, key, value) {
             out.push(dependency);
         }
     }

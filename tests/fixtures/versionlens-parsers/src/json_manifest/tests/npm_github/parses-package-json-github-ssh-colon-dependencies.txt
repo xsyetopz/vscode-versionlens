@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "git+ssh-colon": "git+ssh://git@github.com:owner/git-ssh-colon.git#89abcde"
+  }
+}

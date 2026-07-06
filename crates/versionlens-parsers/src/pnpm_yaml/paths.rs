@@ -6,6 +6,10 @@ pub(super) const PACKAGE_EXTENSION_GROUPS: &[&str] = &[
 ];
 
 const PNPM_DEPENDENCY_PATHS: &[&str] = &[
+    "dependencies",
+    "devDependencies",
+    "peerDependencies",
+    "optionalDependencies",
     "catalog",
     "catalogs.*.*",
     "overrides",

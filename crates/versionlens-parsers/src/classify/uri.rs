@@ -1,5 +1,3 @@
-use std::path::Path;
-
 pub(super) const SCHEMA_URI: &str = "versionlens:/versionlens.multi-registries.json";
 
 pub(super) fn document_uri(uri: &str) -> &str {
@@ -15,7 +13,7 @@ pub(super) fn file_name(uri: &str) -> Option<&str> {
 }
 
 pub(super) fn has_extension<const N: usize>(name: &str, extensions: [&str; N]) -> bool {
-    Path::new(name).extension().is_some_and(|extension| {
+    crate::path(name).extension().is_some_and(|extension| {
         extensions
             .iter()
             .any(|item| extension.eq_ignore_ascii_case(item))

@@ -2,17 +2,14 @@ mod event;
 mod state;
 mod text;
 
-use quick_xml::Reader;
-
 use crate::positions::to_usize;
 
 use super::XmlNode;
 use event::xml_event_finished;
-use state::XmlCollector;
 
 pub(in crate::maven_xml) fn collect_nodes(text: &str) -> Option<Vec<XmlNode>> {
-    let mut reader = Reader::from_str(text);
-    let mut collector = XmlCollector::default();
+    let mut reader = crate::xml_reader(text);
+    let mut collector = crate::default();
 
     loop {
         let start = to_usize(reader.buffer_position());

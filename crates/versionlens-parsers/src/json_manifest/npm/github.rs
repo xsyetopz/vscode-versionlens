@@ -9,7 +9,8 @@ use super::super::dependency::{
 
 mod reference;
 
-use reference::{GitHubReferenceKind, github_reference, is_commit_sha};
+use reference::GitHubReferenceKind::Shortcut as GitHubShortcut;
+use reference::{github_reference, is_commit_sha};
 
 pub(in crate::json_manifest) fn github_dependency(
     source: &JsonDependencySource<'_>,
@@ -18,7 +19,7 @@ pub(in crate::json_manifest) fn github_dependency(
     value_start: usize,
 ) -> Option<Dependency> {
     let reference = github_reference(value)?;
-    if reference.fragment.is_none() && reference.kind != GitHubReferenceKind::Shortcut {
+    if reference.fragment.is_none() && reference.kind != GitHubShortcut {
         return None;
     }
     if reference.fragment.is_some_and(str::is_empty) {

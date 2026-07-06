@@ -1,0 +1,11 @@
+{
+  "configurations": [
+    {
+      "name": "tls",
+      "dependencies": {
+        "openssl": { "version": "~>2.0.0" },
+        "localdep": { "path": "../localdep" }
+      }
+    }
+  ]
+}

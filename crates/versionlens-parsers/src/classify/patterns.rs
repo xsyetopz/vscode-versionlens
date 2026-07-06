@@ -1,4 +1,8 @@
 use crate::model::ManifestKind;
+use crate::model::ManifestKind::{
+    DockerComposeYaml, DotnetXml, PnpmYaml, PythonPipfile, PythonPyprojectToml,
+    PythonRequirementsTxt,
+};
 
 mod docker;
 mod dotnet;
@@ -14,26 +18,26 @@ use workspace::is_pnpm_yaml_uri;
 
 pub(super) fn classify_early_pattern_manifest(uri: &str) -> Option<ManifestKind> {
     if is_dotnet_xml_uri(uri) {
-        return Some(ManifestKind::DotnetXml);
+        return Some(DotnetXml);
     }
     if is_docker_compose_uri(uri) {
-        return Some(ManifestKind::DockerComposeYaml);
+        return Some(DockerComposeYaml);
     }
     if is_pnpm_yaml_uri(uri) {
-        return Some(ManifestKind::PnpmYaml);
+        return Some(PnpmYaml);
     }
     None
 }
 
 pub(super) fn classify_python_manifest(language_id: &str, uri: &str) -> Option<ManifestKind> {
     if language_id == "pip-requirements" || is_requirements_txt_uri(uri) {
-        return Some(ManifestKind::PythonRequirementsTxt);
+        return Some(PythonRequirementsTxt);
     }
     if is_pipfile_uri(uri) {
-        return Some(ManifestKind::PythonPipfile);
+        return Some(PythonPipfile);
     }
     if is_pyproject_toml_uri(uri) {
-        return Some(ManifestKind::PythonPyprojectToml);
+        return Some(PythonPyprojectToml);
     }
     None
 }

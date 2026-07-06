@@ -1,6 +1,7 @@
 use marked_yaml::types::MarkedScalarNode;
+use std::ops::Range;
 
-pub(crate) fn scalar_range(text: &str, value: &MarkedScalarNode) -> Option<std::ops::Range<usize>> {
+pub(crate) fn scalar_range(text: &str, value: &MarkedScalarNode) -> Option<Range<usize>> {
     let raw_start = byte_offset(text, value.span().start()?.character())?;
     if matches!(text.as_bytes().get(raw_start), Some(b'"' | b'\'')) {
         let start = raw_start + 1;

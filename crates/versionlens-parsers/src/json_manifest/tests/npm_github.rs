@@ -1,20 +1,11 @@
 use super::{DocumentInput, parse_document};
 use crate::document::test_support::extract_range;
+use std::fs::read_to_string;
+use std::path::PathBuf;
 
 #[test]
 fn parses_package_json_github_dependencies() {
-    let text = r#"{
-  "dependencies": {
-    "core.js": "github:octokit/core.js#semver:^2",
-    "plain": "github:owner/plain#v1.0.0",
-    "commit": "github:owner/commit#abcdef1",
-    "shortcut": "owner/shortcut#v2.0.0",
-    "url": "git+https://github.com/owner/url.git#semver:^3",
-    "ssh": "git@github.com:owner/ssh.git#1234567",
-    "git+ssh": "git+ssh://git@github.com/owner/git-ssh.git#7654321",
-    "bare": "github:owner/bare"
-  }
-}"#;
+    let text = package_file_fixture("parses-package-json-github-dependencies.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/package.json".to_owned(),
         language_id: "json".to_owned(),
@@ -103,11 +94,7 @@ fn parses_package_json_github_dependencies() {
 
 #[test]
 fn parses_package_json_github_ssh_colon_dependencies() {
-    let text = r#"{
-  "dependencies": {
-    "git+ssh-colon": "git+ssh://git@github.com:owner/git-ssh-colon.git#89abcde"
-  }
-}"#;
+    let text = package_file_fixture("parses-package-json-github-ssh-colon-dependencies.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/package.json".to_owned(),
         language_id: "json".to_owned(),
@@ -130,11 +117,7 @@ fn parses_package_json_github_ssh_colon_dependencies() {
 
 #[test]
 fn parses_github_url_without_ref_as_plain_git_dependency() {
-    let text = r#"{
-  "dependencies": {
-    "git-url": "git+https://github.com/owner/url.git"
-  }
-}"#;
+    let text = package_file_fixture("parses-github-url-without-ref-as-plain-git-dependency.json");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/package.json".to_owned(),
         language_id: "json".to_owned(),
@@ -153,11 +136,8 @@ fn parses_github_url_without_ref_as_plain_git_dependency() {
 
 #[test]
 fn parses_package_json_github_branch_dependencies_as_commits() {
-    let text = r#"{
-  "dependencies": {
-    "branch": "github:owner/branch#main"
-  }
-}"#;
+    let text =
+        package_file_fixture("parses-package-json-github-branch-dependencies-as-commits.json");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/package.json".to_owned(),
         language_id: "json".to_owned(),
@@ -172,4 +152,25 @@ fn parses_package_json_github_branch_dependencies_as_commits() {
         dependencies[0].hosted_url.as_deref(),
         Some("https://api.github.com/repos/owner/branch/commits")
     );
+}
+
+fn package_file_fixture(name: &str) -> &'static str {
+    let path = repo_root()
+        .join("tests/fixtures/versionlens-parsers/src/json_manifest/tests/npm_github")
+        .join(name);
+    let contents = read_to_string(&path).unwrap_or_else(|error| {
+        panic!(
+            "failed to read package-file fixture {}: {error}",
+            path.display()
+        )
+    });
+    crate::leaked_string(contents)
+}
+
+fn repo_root() -> PathBuf {
+    <PathBuf as From<&str>>::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|path| path.parent())
+        .expect("crate should be under crates/")
+        .to_path_buf()
 }

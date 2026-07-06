@@ -1,4 +1,4 @@
-use crate::{DocumentInput, Ecosystem, parse_document, parse_document_with_dependency_paths};
+use crate::{DocumentInput, parse_document, parse_document_with_dependency_paths};
 
 mod composer;
 mod deno;

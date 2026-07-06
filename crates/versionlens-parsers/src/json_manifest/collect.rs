@@ -1,6 +1,7 @@
+use crate::model::Ecosystem;
 use jsonc_parser::ast::Object;
 
-use crate::model::{Dependency, Ecosystem};
+use crate::model::Dependency;
 
 mod path;
 mod path_target;

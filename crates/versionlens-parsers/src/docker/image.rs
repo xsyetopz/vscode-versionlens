@@ -2,8 +2,10 @@ pub(crate) struct ImageRef<'a> {
     pub(crate) registry: &'a str,
     pub(crate) name: &'a str,
     pub(crate) tag: &'a str,
+    pub(crate) digest: &'a str,
     pub(crate) name_offset: usize,
     pub(crate) tag_offset: usize,
+    pub(crate) digest_offset: usize,
 }
 
 pub(crate) fn split_image_reference(input: &str) -> ImageRef<'_> {
@@ -23,13 +25,19 @@ pub(crate) fn split_image_reference(input: &str) -> ImageRef<'_> {
         .get(name_end + 1..)
         .filter(|_| name_end < image_with_tag.len())
         .unwrap_or("");
+    let digest = input
+        .get(digest_start + 1..)
+        .filter(|_| digest_start < input.len())
+        .unwrap_or("");
 
     ImageRef {
         registry,
         name: &image_with_tag[..name_end],
         tag,
+        digest,
         name_offset: registry_len,
         tag_offset: registry_len + name_end + usize::from(!tag.is_empty()),
+        digest_offset: digest_start + usize::from(!digest.is_empty()),
     }
 }
 

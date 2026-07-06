@@ -1,5 +1,9 @@
+use Range as ByteRange;
 use quick_xml::events::BytesStart;
-use std::ops::Range as ByteRange;
+use std::ops::Range;
+use std::str;
+
+type MavenXmlEvent<'a> = BytesStart<'a>;
 
 use super::super::XmlNode;
 
@@ -10,14 +14,14 @@ pub(super) struct XmlCollector {
 }
 
 impl XmlCollector {
-    pub(super) fn open_node(&mut self, event: &BytesStart<'_>, start: usize) -> Option<()> {
+    pub(super) fn open_node(&mut self, event: &MavenXmlEvent<'_>, start: usize) -> Option<()> {
         let name = event_name(event)?;
         let path = child_path(&self.stack, &name);
         self.stack.push(OpenNode {
             name,
             path,
             open_start: start,
-            text: String::new(),
+            text: "".to_owned(),
             text_range: None,
         });
         Some(())
@@ -25,7 +29,7 @@ impl XmlCollector {
 
     pub(super) fn empty_node(
         &mut self,
-        event: &BytesStart<'_>,
+        event: &MavenXmlEvent<'_>,
         open_start: usize,
         close_end: usize,
     ) -> Option<()> {
@@ -36,7 +40,7 @@ impl XmlCollector {
             path,
             open_start,
             close_end,
-            text: String::new(),
+            text: "".to_owned(),
             text_range: None,
         });
         Some(())
@@ -91,8 +95,8 @@ fn child_path(stack: &[OpenNode], name: &str) -> String {
     parts.join(".")
 }
 
-fn event_name(event: &BytesStart<'_>) -> Option<String> {
-    std::str::from_utf8(event.name().as_ref())
+fn event_name(event: &MavenXmlEvent<'_>) -> Option<String> {
+    str::from_utf8(event.name().as_ref())
         .ok()
-        .map(ToOwned::to_owned)
+        .map(|value| value.to_owned())
 }

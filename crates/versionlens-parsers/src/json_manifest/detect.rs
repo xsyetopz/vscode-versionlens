@@ -1,5 +1,5 @@
-use jsonc_parser::ast::Value;
-use jsonc_parser::{CollectOptions, ParseOptions, parse_to_ast};
+use jsonc_parser::ast::Value::Object as JsonValueObject;
+use jsonc_parser::parse_to_ast;
 
 const PACKAGE_JSON_KEYS: &[&str] = &[
     "dependencies",
@@ -16,11 +16,10 @@ const PACKAGE_JSON_KEYS: &[&str] = &[
 ];
 
 pub(super) fn looks_like_package_json(text: &str) -> bool {
-    let Ok(parse_result) = parse_to_ast(text, &CollectOptions::default(), &ParseOptions::default())
-    else {
+    let Ok(parse_result) = parse_to_ast(text, &crate::default(), &crate::default()) else {
         return false;
     };
-    let Some(Value::Object(root)) = parse_result.value else {
+    let Some(JsonValueObject(root)) = parse_result.value else {
         return false;
     };
 

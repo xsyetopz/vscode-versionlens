@@ -1,8 +1,9 @@
-use crate::model::{Dependency, Ecosystem};
+use crate::model::Dependency;
 use crate::positions::offset_range;
 
 use super::super::nodes::{XmlNode, child_named, direct_children, text_range};
 use super::{MavenParseContext, resolve_property};
+use crate::model::Ecosystem::Maven;
 
 pub(super) fn package_dependency(
     context: &MavenParseContext<'_>,
@@ -31,13 +32,13 @@ pub(super) fn package_dependency(
     Some(Dependency {
         name: format!("{}:{}", group.text, artifact.text),
         requirement: version.text.as_str().to_owned(),
-        ecosystem: Ecosystem::Maven,
+        ecosystem: Maven,
         group: node.path.as_str().to_owned(),
         hosted_url: None,
         hosted_name: None,
         range: offset_range(context.text, node.open_start, node.close_end),
         requirement_range: text_range(context.text, version),
-        requirement_prefix: String::new(),
-        requirement_suffix: String::new(),
+        requirement_prefix: "".to_owned(),
+        requirement_suffix: "".to_owned(),
     })
 }

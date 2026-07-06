@@ -1,25 +1,12 @@
 use crate::document::test_support::extract_range;
-use crate::{DocumentInput, Ecosystem, parse_document};
+use crate::model::Ecosystem::Dotnet;
+use crate::{DocumentInput, parse_document};
+use std::fs::read_to_string;
+use std::path::PathBuf;
 
 #[test]
 fn parses_smoke_dotnet_fsproj_smoke_shapes() {
-    let text = r#"<Project Sdk="FSharp.NET.Sdk;Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Copyright></Copyright>
-    <VersionPrefix>1.0.0</VersionPrefix>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DebugType>portable</DebugType>
-    <TargetFramework>netstandard1.6</TargetFramework>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="something.fs" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
-    <PackageReference Include="FSharp.Core" Version="4.1.2" />
-    <PackageReference Include="FSharp.Net.Sdk" Version="1.0.1" PrivateAssets="All" />
-  </ItemGroup>
-</Project>"#;
+    let text = package_file_fixture("parses-smoke-dotnet-fsproj-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/project.fsproj".to_owned(),
         language_id: "xml".to_owned(),
@@ -42,17 +29,7 @@ fn parses_smoke_dotnet_fsproj_smoke_shapes() {
 
 #[test]
 fn parses_smoke_dotnet_override_smoke_shapes() {
-    let text = r#"<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <!-- VersionOverride -->
-    <PackageReference Include="jQuery" VersionOverride="3.7.*" />
-  </ItemGroup>
-</Project>"#;
+    let text = package_file_fixture("parses-smoke-dotnet-override-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/project.override.csproj".to_owned(),
         language_id: "xml".to_owned(),
@@ -75,15 +52,7 @@ fn parses_smoke_dotnet_override_smoke_shapes() {
 
 #[test]
 fn parses_smoke_dotnet_central_package_props_smoke_shapes() {
-    let text = r#"<Project>
-  <Sdk Name="Microsoft.Build.CentralPackageVersions" Version="2.1.3" />
-  <ItemGroup>
-    <PackageVersion Include="System.Text.Json" Version="4.7.2" />
-  </ItemGroup>
-  <ItemGroup>
-    <GlobalPackageReference Include="Microsoft.Azure.ServiceBus" Version="(3.0,)" />
-  </ItemGroup>
-</Project>"#;
+    let text = package_file_fixture("parses-smoke-dotnet-central-package-props-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/Directory.Packages.props".to_owned(),
         language_id: "xml".to_owned(),
@@ -112,16 +81,7 @@ fn parses_smoke_dotnet_central_package_props_smoke_shapes() {
 
 #[test]
 fn parses_smoke_dotnet_bom_smoke_shapes() {
-    let text = "\u{feff}<Project Sdk=\"Microsoft.NET.Sdk\">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include=\"jQuery\" VersionOverride=\"3.7.1\" />
-  </ItemGroup>
-</Project>";
+    let text = package_file_fixture("parses-smoke-dotnet-bom-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/project.bom.csproj".to_owned(),
         language_id: "xml".to_owned(),
@@ -130,7 +90,7 @@ fn parses_smoke_dotnet_bom_smoke_shapes() {
     });
 
     assert_eq!(dependencies.len(), 2);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Dotnet);
+    assert_eq!(dependencies[0].ecosystem, Dotnet);
     assert_eq!(dependencies[0].group, "Project.Sdk");
     assert_eq!(dependencies[0].name, "Microsoft.NET.Sdk");
     assert_eq!(dependencies[0].requirement, "*");
@@ -140,4 +100,25 @@ fn parses_smoke_dotnet_bom_smoke_shapes() {
         extract_range(text, dependencies[1].requirement_range),
         "3.7.1"
     );
+}
+
+fn package_file_fixture(name: &str) -> &'static str {
+    let path = repo_root()
+        .join("tests/fixtures/versionlens-parsers/src/dotnet_xml/tests/sdk_smoke")
+        .join(name);
+    let contents = read_to_string(&path).unwrap_or_else(|error| {
+        panic!(
+            "failed to read package-file fixture {}: {error}",
+            path.display()
+        )
+    });
+    crate::leaked_string(contents)
+}
+
+fn repo_root() -> PathBuf {
+    <PathBuf as From<&str>>::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|path| path.parent())
+        .expect("crate should be under crates/")
+        .to_path_buf()
 }

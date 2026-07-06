@@ -1,7 +1,8 @@
-use crate::{
-    DocumentInput, Ecosystem, document::test_support::extract_range, parse_document,
-    parse_document_with_dependency_paths,
-};
+use super::MavenRepository;
+use crate::document::test_support::extract_range;
+use crate::{DocumentInput, parse_document, parse_document_with_dependency_paths};
+use std::fs::read_to_string;
+use std::path::PathBuf;
 
 use super::{
     extract_maven_repository_urls, parse_maven_effective_settings_https_repositories,
@@ -11,33 +12,11 @@ use super::{
     parse_maven_settings_auth_entries, parse_maven_settings_mirror_urls,
     parse_maven_settings_mirrors, parse_maven_settings_repository_urls,
 };
+use crate::model::Ecosystem::Maven;
 
 #[test]
 fn parses_maven_pom_dependencies() {
-    let text = r#"<project>
-  <version>1.3.6-SNAPSHOT</version>
-  <properties>
-    <tomcat.version>9.0.12</tomcat.version>
-    <tomcat.artifactId>tomcat</tomcat.artifactId>
-  </properties>
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.5.16.RELEASE</version>
-  </parent>
-  <dependencies>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>5.0.7.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>${tomcat.artifactId}</artifactId>
-      <version>${tomcat.version}</version>
-    </dependency>
-  </dependencies>
-</project>"#;
+    let text = package_file_fixture("parses-maven-pom-dependencies.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/pom.xml".to_owned(),
         language_id: "xml".to_owned(),
@@ -46,7 +25,7 @@ fn parses_maven_pom_dependencies() {
     });
 
     assert_eq!(dependencies.len(), 4);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Maven);
+    assert_eq!(dependencies[0].ecosystem, Maven);
     assert_eq!(dependencies[0].group, "project.version");
     assert_eq!(dependencies[0].name, "version");
     assert_eq!(dependencies[0].requirement, "1.3.6-SNAPSHOT");
@@ -78,21 +57,37 @@ fn parses_maven_pom_dependencies() {
 }
 
 #[test]
+fn parses_maven_plugin_dependencies_by_default() {
+    let text = package_file_fixture("parses-maven-plugin-dependencies-by-default.txt");
+    let dependencies = parse_document(&DocumentInput {
+        uri: "file:///work/pom.xml".to_owned(),
+        language_id: "xml".to_owned(),
+        text: text.to_owned(),
+        workspace_root: None,
+    });
+
+    assert_eq!(dependencies.len(), 2);
+    assert_eq!(dependencies[0].group, "project.build.plugins.plugin");
+    assert_eq!(
+        dependencies[0].name,
+        "org.apache.maven.plugins:maven-compiler-plugin"
+    );
+    assert_eq!(dependencies[0].requirement, "3.13.0");
+    assert_eq!(
+        dependencies[1].group,
+        "project.build.pluginManagement.plugins.plugin"
+    );
+    assert_eq!(
+        dependencies[1].name,
+        "org.codehaus.mojo:versions-maven-plugin"
+    );
+    assert_eq!(dependencies[1].requirement, "2.16.2");
+}
+
+#[test]
 fn maven_property_references_trim_before_resolution_like_upstream() {
-    let text = r#"<project>
-  <properties>
-    <example.group>com.example</example.group>
-    <example.artifact>demo</example.artifact>
-    <example.version>1.2.3</example.version>
-  </properties>
-  <dependencies>
-    <dependency>
-      <groupId> ${example.group} </groupId>
-      <artifactId> ${example.artifact} </artifactId>
-      <version> ${example.version} </version>
-    </dependency>
-  </dependencies>
-</project>"#;
+    let text =
+        package_file_fixture("maven-property-references-trim-before-resolution-like-upstream.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/pom.xml".to_owned(),
         language_id: "xml".to_owned(),
@@ -110,67 +105,28 @@ fn maven_property_references_trim_before_resolution_like_upstream() {
 }
 
 #[test]
+fn resolves_maven_project_and_parent_interpolation_properties() {
+    let text =
+        package_file_fixture("resolves-maven-project-and-parent-interpolation-properties.xml");
+    let dependencies = parse_document(&DocumentInput {
+        uri: "file:///work/pom.xml".to_owned(),
+        language_id: "xml".to_owned(),
+        text: text.to_owned(),
+        workspace_root: None,
+    });
+
+    assert_eq!(dependencies.len(), 3);
+    assert_eq!(dependencies[0].name, "org.parent:parent-pom");
+    assert_eq!(dependencies[0].requirement, "3.4.5");
+    assert_eq!(dependencies[1].name, "org.parent:runtime");
+    assert_eq!(dependencies[1].requirement, "3.4.5");
+    assert_eq!(dependencies[2].name, "org.example:child-app");
+    assert_eq!(dependencies[2].requirement, "3.4.5");
+}
+
+#[test]
 fn parses_smoke_maven_pom_smoke_shapes() {
-    let text = r#"<project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
->
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>vscode-contrib</groupId>
-  <artifactId>vscode-versionlens</artifactId>
-  <packaging>war</packaging>
-  <version>1.3.6-SNAPSHOT</version>
-  <name>smoke-test</name>
-  <properties>
-    <tomcat.groupId>org.apache.tomcat</tomcat.groupId>
-    <tomcat.artifactId>tomcat</tomcat.artifactId>
-    <tomcat.version>11.0.23</tomcat.version>
-  </properties>
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>4.1.0</version>
-  </parent>
-  <dependencies>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>7.0.8</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
-    </dependency>
-    <dependency>
-      <groupId>${tomcat.groupId}</groupId>
-      <artifactId>${tomcat.artifactId}</artifactId>
-      <version>${tomcat.version}</version>
-      <type>pom</type>
-    </dependency>
-    <dependency>
-      <groupId>com.oracle</groupId>
-      <artifactId>ojdbc6</artifactId>
-      <version>10.0</version>
-    </dependency>
-    <dependency>
-      <groupId>crespo.fernando</groupId>
-      <artifactId>condominio</artifactId>
-      <version>*</version>
-    </dependency>
-    <dependency>
-      <groupId>crespo.fernando</groupId>
-      <artifactId>other</artifactId>
-      <version>*</version>
-    </dependency>
-  </dependencies>
-  <repositories>
-    <repository>
-      <url>https://packages.atlassian.com/maven-3rdparty/</url>
-    </repository>
-  </repositories>
-</project>"#;
+    let text = package_file_fixture("parses-smoke-maven-pom-smoke-shapes.xml");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/pom.xml".to_owned(),
         language_id: "xml".to_owned(),
@@ -197,35 +153,17 @@ fn parses_smoke_maven_pom_smoke_shapes() {
 }
 
 #[test]
-fn parses_maven_dependency_management_dependencies_when_configured() {
-    let text = r#"<project>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.example</groupId>
-        <artifactId>managed</artifactId>
-        <version>2.3.4</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-</project>"#;
+fn parses_maven_dependency_management_dependencies_by_default() {
+    let text =
+        package_file_fixture("parses-maven-dependency-management-dependencies-by-default.txt");
     let default_dependencies = parse_document(&DocumentInput {
         uri: "file:///work/pom.xml".to_owned(),
         language_id: "xml".to_owned(),
         text: text.to_owned(),
         workspace_root: None,
     });
-    assert_eq!(default_dependencies.len(), 0);
-
-    let dependencies = parse_document_with_dependency_paths(
-        &DocumentInput {
-            uri: "file:///work/pom.xml".to_owned(),
-            language_id: "xml".to_owned(),
-            text: text.to_owned(),
-            workspace_root: None,
-        },
-        &["project.dependencyManagement.dependencies.dependency"],
-    );
+    assert_eq!(default_dependencies.len(), 1);
+    let dependencies = default_dependencies;
 
     assert_eq!(dependencies.len(), 1);
     assert_eq!(
@@ -241,18 +179,54 @@ fn parses_maven_dependency_management_dependencies_when_configured() {
 }
 
 #[test]
+fn parses_maven_profile_dependencies_by_default() {
+    let text = package_file_fixture("parses-maven-profile-dependencies-by-default.xml");
+    let dependencies = parse_document(&DocumentInput {
+        uri: "file:///work/pom.xml".to_owned(),
+        language_id: "xml".to_owned(),
+        text: text.to_owned(),
+        workspace_root: None,
+    });
+
+    assert_eq!(dependencies.len(), 4);
+    assert_eq!(
+        dependencies[0].group,
+        "project.profiles.profile.dependencies.dependency"
+    );
+    assert_eq!(dependencies[0].name, "org.junit.jupiter:junit-jupiter");
+    assert_eq!(dependencies[0].requirement, "5.11.4");
+    assert_eq!(
+        dependencies[1].group,
+        "project.profiles.profile.dependencyManagement.dependencies.dependency"
+    );
+    assert_eq!(
+        dependencies[1].name,
+        "org.springframework.boot:spring-boot-dependencies"
+    );
+    assert_eq!(dependencies[1].requirement, "3.4.1");
+    assert_eq!(
+        dependencies[2].group,
+        "project.profiles.profile.build.plugins.plugin"
+    );
+    assert_eq!(
+        dependencies[2].name,
+        "org.apache.maven.plugins:maven-surefire-plugin"
+    );
+    assert_eq!(dependencies[2].requirement, "3.5.2");
+    assert_eq!(
+        dependencies[3].group,
+        "project.profiles.profile.build.pluginManagement.plugins.plugin"
+    );
+    assert_eq!(
+        dependencies[3].name,
+        "org.codehaus.mojo:versions-maven-plugin"
+    );
+    assert_eq!(dependencies[3].requirement, "2.18.0");
+}
+
+#[test]
 fn parses_configured_maven_plugin_dependency_paths() {
-    let text = r#"<project>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.14.0</version>
-      </plugin>
-    </plugins>
-  </build>
-</project>"#;
+    let text = package_file_fixture("parses-configured-maven-plugin-dependency-paths.txt");
     let dependencies = parse_document_with_dependency_paths(
         &DocumentInput {
             uri: "file:///work/pom.xml".to_owned(),
@@ -274,15 +248,7 @@ fn parses_configured_maven_plugin_dependency_paths() {
 
 #[test]
 fn configured_maven_dependency_paths_match_exact_nodes_only() {
-    let text = r#"<project>
-  <dependencies>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>5.0.7.RELEASE</version>
-    </dependency>
-  </dependencies>
-</project>"#;
+    let text = package_file_fixture("configured-maven-dependency-paths-match-exact-nodes-only.xml");
     let dependencies = parse_document_with_dependency_paths(
         &DocumentInput {
             uri: "file:///work/pom.xml".to_owned(),
@@ -298,19 +264,7 @@ fn configured_maven_dependency_paths_match_exact_nodes_only() {
 
 #[test]
 fn maven_property_resolution_uses_first_matching_property() {
-    let text = r#"<project>
-  <properties>
-    <tomcat.version>9.0.12</tomcat.version>
-    <tomcat.version>11.0.23</tomcat.version>
-  </properties>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>tomcat</artifactId>
-      <version>${tomcat.version}</version>
-    </dependency>
-  </dependencies>
-</project>"#;
+    let text = package_file_fixture("maven-property-resolution-uses-first-matching-property.xml");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/pom.xml".to_owned(),
         language_id: "xml".to_owned(),
@@ -329,25 +283,7 @@ fn maven_property_resolution_uses_first_matching_property() {
 
 #[test]
 fn parses_maven_pom_repository_urls() {
-    let text = r#"<project>
-  <repositories>
-    <repository>
-      <url>https://packages.example.test/maven</url>
-    </repository>
-    <repository>
-      <url>https://repo.maven.apache.org/maven2</url>
-    </repository>
-  </repositories>
-  <profiles>
-    <profile>
-      <repositories>
-        <repository>
-          <url>https://profile.example.test/releases</url>
-        </repository>
-      </repositories>
-    </profile>
-  </profiles>
-</project>"#;
+    let text = package_file_fixture("parses-maven-pom-repository-urls.xml");
 
     assert_eq!(
         parse_maven_pom_repository_urls(text),
@@ -355,31 +291,15 @@ fn parses_maven_pom_repository_urls() {
             "https://packages.example.test/maven",
             "https://repo.maven.apache.org/maven2",
             "https://profile.example.test/releases",
+            "https://profile-plugins.example.test/maven",
+            "https://plugins.example.test/maven",
         ]
     );
 }
 
 #[test]
 fn parses_maven_effective_settings_repositories() {
-    let text = r#"
-[INFO] Effective user-specific configuration settings:
-<?xml version="1.0" encoding="UTF-8"?>
-<settings>
-  <localRepository>/Users/example/.m2/repository</localRepository>
-  <profiles>
-    <profile>
-      <repositories>
-        <repository>
-          <url>https://repo1.maven.org/maven2</url>
-        </repository>
-        <repository>
-          <url>http://repo.example.test/releases</url>
-        </repository>
-      </repositories>
-    </profile>
-  </profiles>
-</settings>
-"#;
+    let text = package_file_fixture("parses-maven-effective-settings-repositories.txt");
 
     assert_eq!(
         parse_maven_effective_settings_repositories(text),
@@ -387,11 +307,15 @@ fn parses_maven_effective_settings_repositories() {
             "/Users/example/.m2/repository",
             "https://repo1.maven.org/maven2",
             "http://repo.example.test/releases",
+            "https://plugins.example.test/maven",
         ]
     );
     assert_eq!(
         parse_maven_effective_settings_https_repositories(text),
-        vec!["https://repo1.maven.org/maven2"]
+        vec![
+            "https://repo1.maven.org/maven2",
+            "https://plugins.example.test/maven",
+        ]
     );
     assert_eq!(
         parse_maven_effective_settings_https_repositories(""),
@@ -401,16 +325,7 @@ fn parses_maven_effective_settings_repositories() {
 
 #[test]
 fn parses_maven_metadata_versions() {
-    let text = r#"<metadata>
-  <groupId>org.springframework</groupId>
-  <artifactId>spring-core</artifactId>
-  <versioning>
-    <versions>
-      <version>5.0.7.RELEASE</version>
-      <version>5.1.0.RELEASE</version>
-    </versions>
-  </versioning>
-</metadata>"#;
+    let text = package_file_fixture("parses-maven-metadata-versions.txt");
 
     assert_eq!(
         parse_maven_metadata_versions(text),
@@ -420,43 +335,32 @@ fn parses_maven_metadata_versions() {
 
 #[test]
 fn parses_maven_repository_sources() {
-    let text = r#"
-<?xml version="1.0" encoding="UTF-8"?>
-<settings>
-  <localRepository>/Users/example/.m2/repository</localRepository>
-  <profiles>
-    <profile>
-      <repositories>
-        <repository><url>https://repo1.maven.org/maven2</url></repository>
-        <repository><url>http://repo.example.test/releases</url></repository>
-      </repositories>
-    </profile>
-  </profiles>
-</settings>
-"#;
+    let text = package_file_fixture("parses-maven-repository-sources.txt");
 
     let sources = parse_maven_effective_settings_repository_sources(text);
 
-    assert_eq!(sources.len(), 3);
+    assert_eq!(sources.len(), 4);
     assert_eq!(sources[0].url, "/Users/example/.m2/repository");
     assert_eq!(sources[0].protocol, "file:");
     assert_eq!(sources[1].protocol, "https:");
     assert_eq!(sources[2].protocol, "http:");
+    assert_eq!(sources[3].protocol, "https:");
     assert_eq!(
         extract_maven_repository_urls(&sources),
         vec![
             "/Users/example/.m2/repository",
             "https://repo1.maven.org/maven2",
             "http://repo.example.test/releases",
+            "https://plugins.example.test/maven",
         ]
     );
     assert_eq!(
         parse_maven_effective_settings_https_repository_sources(text),
-        vec![sources[1].clone()]
+        vec![sources[1].clone(), sources[3].clone()]
     );
     assert_eq!(
         parse_maven_effective_settings_repository_sources(""),
-        vec![super::MavenRepository {
+        vec![MavenRepository {
             url: "https://repo.maven.apache.org/maven2/".to_owned(),
             protocol: "https:".to_owned(),
         }]
@@ -465,106 +369,70 @@ fn parses_maven_repository_sources() {
 
 #[test]
 fn parses_maven_settings_repositories_and_auth_entries() {
-    let text = r#"<settings>
-  <servers>
-    <server>
-      <id>private</id>
-      <username>user</username>
-      <password>pass</password>
-    </server>
-  </servers>
-  <profiles>
-    <profile>
-      <repositories>
-        <repository>
-          <id>private</id>
-          <url>https://maven.example.test/repository/releases</url>
-        </repository>
-        <repository>
-          <id>public</id>
-          <url>https://repo.maven.apache.org/maven2</url>
-        </repository>
-      </repositories>
-    </profile>
-  </profiles>
-</settings>"#;
+    let text = package_file_fixture("parses-maven-settings-repositories-and-auth-entries.txt");
 
     assert_eq!(
         parse_maven_settings_repository_urls(text),
         vec![
             "https://maven.example.test/repository/releases",
             "https://repo.maven.apache.org/maven2",
+            "https://plugins.example.test/maven",
         ]
     );
 
     let entries = parse_maven_settings_auth_entries(text);
-    assert_eq!(entries.len(), 1);
+    assert_eq!(entries.len(), 2);
     assert_eq!(
         entries[0].registry,
         "https://maven.example.test/repository/releases"
     );
     assert_eq!(entries[0].header_value, "Basic dXNlcjpwYXNz");
+    assert_eq!(entries[1].registry, "https://plugins.example.test/maven");
+    assert_eq!(
+        entries[1].header_value,
+        "Basic cGx1Z2luLXVzZXI6cGx1Z2luLXBhc3M="
+    );
 }
 
 #[test]
-fn parses_maven_settings_local_repository_as_named_repository() {
-    let text = r#"<settings>
-  <localRepository>/Users/example/.m2/repository</localRepository>
-</settings>"#;
+fn parses_only_active_maven_settings_profile_repositories_when_active_profiles_are_declared() {
+    let text = package_file_fixture(
+        "parses-only-active-maven-settings-profile-repositories-when-active-profiles-are-declared.txt",
+    );
 
-    let repositories = parse_maven_settings_mirrors(text);
-    assert!(repositories.is_empty());
     assert_eq!(
         parse_maven_settings_repository_urls(text),
-        vec!["/Users/example/.m2/repository"]
+        vec!["https://active.example.test/maven"]
+    );
+
+    let entries = parse_maven_settings_auth_entries(text);
+    assert_eq!(entries.len(), 1);
+    assert_eq!(entries[0].registry, "https://active.example.test/maven");
+    assert_eq!(
+        entries[0].header_value,
+        "Basic YWN0aXZlLXVzZXI6YWN0aXZlLXBhc3M="
     );
 }
 
-#[test]
-fn parses_maven_settings_mirrors() {
-    let text = r#"<settings>
-  <mirrors>
-    <mirror>
-      <id>internal</id>
-      <mirrorOf>*</mirrorOf>
-      <url>https://maven.example.test/mirror</url>
-    </mirror>
-  </mirrors>
-</settings>"#;
+include!("tests/repositories.rs");
 
-    let mirrors = parse_maven_settings_mirrors(text);
-    assert_eq!(mirrors.len(), 1);
-    assert_eq!(mirrors[0].id, "internal");
-    assert_eq!(mirrors[0].mirror_of, "*");
-    assert_eq!(mirrors[0].url, "https://maven.example.test/mirror");
-    assert_eq!(
-        parse_maven_settings_mirror_urls(text),
-        vec!["https://maven.example.test/mirror"]
-    );
+fn package_file_fixture(name: &str) -> &'static str {
+    let path = repo_root()
+        .join("tests/fixtures/versionlens-parsers/src/maven_xml/tests")
+        .join(name);
+    let contents = read_to_string(&path).unwrap_or_else(|error| {
+        panic!(
+            "failed to read package-file fixture {}: {error}",
+            path.display()
+        )
+    });
+    crate::leaked_string(contents)
 }
 
-#[test]
-fn parses_maven_pom_repositories_with_ids() {
-    let repositories = parse_maven_pom_repositories(
-        r#"<project>
-  <repositories>
-    <repository>
-      <id>private</id>
-      <url>https://maven.example.test/repository/releases</url>
-    </repository>
-    <repository>
-      <url>https://anonymous.example.test/maven</url>
-    </repository>
-  </repositories>
-</project>"#,
-    );
-
-    assert_eq!(repositories.len(), 2);
-    assert_eq!(repositories[0].id, "private");
-    assert_eq!(
-        repositories[0].url,
-        "https://maven.example.test/repository/releases"
-    );
-    assert_eq!(repositories[1].id, "");
-    assert_eq!(repositories[1].url, "https://anonymous.example.test/maven");
+fn repo_root() -> PathBuf {
+    <PathBuf as From<&str>>::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|path| path.parent())
+        .expect("crate should be under crates/")
+        .to_path_buf()
 }

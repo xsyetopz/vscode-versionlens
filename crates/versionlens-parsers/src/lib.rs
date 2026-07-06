@@ -1,37 +1,75 @@
+use quick_xml::Reader as XmlReader;
+use std::path::Path as StdPath;
+use toml_edit::{Document as TomlDocument, TomlError};
+mod ansible_galaxy;
+mod bazel_module;
 mod bunfig;
 mod cargo_config;
 mod cargo_toml;
 mod classify;
+mod clojure_deps;
+mod cocoapods_podfile;
 mod composer_repositories;
+mod conan;
+mod cpanfile;
 mod docker;
 mod document;
 mod dotnet_sources;
 mod dotnet_xml;
+mod dub_sdl;
+mod dune_project;
 mod gemfile;
+mod gleam_toml;
 mod go_mod;
 mod go_proxy;
+mod gradle_build;
+mod gradle_version_catalog;
+mod hackage;
+mod haxelib;
+mod helm_chart;
 mod json_manifest;
+mod julia;
+mod kustomization_yaml;
+mod leiningen_project;
+mod luarocks;
 mod maven_xml;
+mod mix_exs;
 mod model;
+mod nimble;
+mod nix_flake;
 mod npmrc;
+mod opam;
+mod paket;
 mod path_patterns;
 mod pnpm_yaml;
 mod positions;
 mod pubspec_yaml;
 mod pyproject_toml;
 mod python_registry;
+mod quoted;
+mod r_description;
+mod rebar_config;
+mod requirement_range;
 mod requirements_txt;
+mod sbt_build;
+mod scanner;
+mod swift_package;
+mod terraform_hcl;
 mod toml_walk;
+mod unity_manifest;
+mod vcpkg;
 mod yaml;
 mod yarnrc;
+mod zig_zon;
 
 pub use bunfig::{
     parse_bunfig_npm_auth_entries_with_env, parse_bunfig_npm_registry_entries_with_env,
 };
 pub use cargo_config::{CargoRegistrySource, parse_cargo_config_registry_sources};
 pub use classify::classify_document;
+pub use clojure_deps::parse_clojure_maven_repositories;
 pub use composer_repositories::{
-    ComposerAuthEntry, ComposerRepository, parse_composer_auth_entries,
+    ComposerAuthEntry, ComposerRepository, ComposerRepositoryPackage, parse_composer_auth_entries,
     parse_composer_packagist_disabled, parse_composer_repositories, parse_composer_repository_urls,
 };
 pub use document::{
@@ -46,6 +84,11 @@ pub use dotnet_sources::{
 };
 pub use gemfile::parse_gemfile_source_urls;
 pub use go_proxy::parse_go_proxy_urls;
+pub use gradle_build::{
+    GradleMavenRepositories, parse_gradle_dependency_maven_repositories,
+    parse_gradle_maven_repositories, parse_gradle_plugin_maven_repositories,
+};
+pub use leiningen_project::parse_leiningen_maven_repositories;
 pub use maven_xml::{
     MavenAuthEntry, MavenMirror, MavenNamedRepository, MavenRepository,
     extract_maven_repository_urls, parse_maven_effective_settings_https_repositories,
@@ -66,10 +109,42 @@ pub use npmrc::{
     parse_npmrc_client_cert_entries_with_env, parse_npmrc_http_config_with_env,
     parse_npmrc_registry_entries, parse_npmrc_registry_entries_with_env,
 };
+pub use paket::parse_paket_source_urls;
 pub use python_registry::{
-    parse_pip_conf_registry_urls, parse_pip_env_registry_urls, parse_pipfile_source_urls,
-    parse_poetry_source_urls, parse_python_registry_urls, parse_uv_registry_urls,
+    PoetrySource, parse_pip_conf_registry_urls, parse_pip_env_registry_urls,
+    parse_pipfile_source_urls, parse_poetry_source_urls, parse_poetry_sources,
+    parse_python_registry_urls, parse_uv_registry_urls,
 };
+pub use sbt_build::parse_sbt_maven_repositories;
 pub use yarnrc::{
     parse_yarnrc_npm_auth_entries_with_env, parse_yarnrc_npm_registry_entries_with_env,
 };
+
+#[cfg(test)]
+pub(crate) fn leaked_string(contents: String) -> &'static str {
+    <Box<str>>::leak(contents.into_boxed_str())
+}
+
+pub(crate) fn default<T: Default>() -> T {
+    <T as Default>::default()
+}
+
+pub(crate) fn path(value: &str) -> &StdPath {
+    value.as_ref()
+}
+
+pub(crate) fn xml_reader(text: &str) -> XmlReader<&[u8]> {
+    quick_xml::Reader::from_str(text)
+}
+
+pub(crate) fn is_whitespace(value: char) -> bool {
+    value.is_whitespace()
+}
+
+pub(crate) fn parse_toml_document(text: &str) -> Result<TomlDocument<String>, TomlError> {
+    text.parse()
+}
+
+pub(crate) fn string_from_utf8_lossy(bytes: &[u8]) -> String {
+    <String>::from_utf8_lossy(bytes).into_owned()
+}

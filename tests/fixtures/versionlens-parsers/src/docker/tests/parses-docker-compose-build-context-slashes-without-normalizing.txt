@@ -1,0 +1,8 @@
+
+services:
+  worker:
+    build: backend/
+  mapped:
+    build:
+      context: ./ctx/
+      dockerfile: Dockerfile.prod

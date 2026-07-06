@@ -1,6 +1,7 @@
 use jsonc_parser::ast::{ObjectProp, StringLit};
 
-use crate::model::{Dependency, Ecosystem};
+use crate::model::Dependency;
+use crate::model::Ecosystem::Npm;
 
 mod literal;
 mod npm;
@@ -15,7 +16,7 @@ pub(super) fn string_json_manifest_dependency(
     prop: &ObjectProp<'_>,
     lit: &StringLit<'_>,
 ) -> Option<Dependency> {
-    if source.ecosystem == Ecosystem::Npm {
+    if source.ecosystem == Npm {
         return npm_string_json_manifest_dependency(source, prop, lit);
     }
 

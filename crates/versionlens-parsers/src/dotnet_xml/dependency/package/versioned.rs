@@ -1,9 +1,12 @@
+use self::DotnetDependencyRange::Name as DotnetRangeName;
+use self::DotnetTagKind::{Empty as DotnetTagEmpty, Start as DotnetTagStart};
 use crate::model::Dependency;
 
-use crate::dotnet_xml::{
-    DotnetEventContext, DotnetTagKind,
-    dependency::attrs::{DotnetDependencyAttrs, DotnetDependencyRange, dependency_from_attrs},
+use crate::dotnet_xml::dependency::attrs::DotnetDependencyRange::Tag as DotnetRangeTag;
+use crate::dotnet_xml::dependency::attrs::{
+    DotnetDependencyAttrs, DotnetDependencyRange, dependency_from_attrs,
 };
+use crate::dotnet_xml::{DotnetEventContext, DotnetTagKind};
 
 const VERSIONED_ATTRS: &[(&str, &str)] = &[
     ("Include", "VersionOverride"),
@@ -18,8 +21,8 @@ pub(super) fn versioned_package_dependency(
     tag_kind: DotnetTagKind,
 ) -> Option<Dependency> {
     let range = match tag_kind {
-        DotnetTagKind::Empty => DotnetDependencyRange::Tag,
-        DotnetTagKind::Start => DotnetDependencyRange::Name,
+        DotnetTagEmpty => DotnetRangeTag,
+        DotnetTagStart => DotnetRangeName,
     };
 
     VERSIONED_ATTRS

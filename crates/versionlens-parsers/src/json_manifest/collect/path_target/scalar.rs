@@ -1,15 +1,20 @@
+use jsonc_parser::ast::StringLit;
+
 use crate::json_manifest::dependency::{
     JsonDependencySource, json_manifest_dependency_from_property, scalar_json_manifest_dependency,
 };
 use crate::model::Dependency;
+
+type JsonPathTargetDependencies = Vec<Dependency>;
+type JsonStringLit<'a> = &'a StringLit<'a>;
 
 use super::super::path::object_at_path;
 use super::JsonPathTargetContext;
 
 pub(super) fn collect_scalar_json_path(
     context: &JsonPathTargetContext<'_>,
-    value: &jsonc_parser::ast::StringLit<'_>,
-    out: &mut Vec<Dependency>,
+    value: JsonStringLit<'_>,
+    out: &mut JsonPathTargetDependencies,
 ) {
     if context.parents.is_empty() {
         collect_root_scalar_json_path(context, value, out);
@@ -20,8 +25,8 @@ pub(super) fn collect_scalar_json_path(
 
 fn collect_root_scalar_json_path(
     context: &JsonPathTargetContext<'_>,
-    value: &jsonc_parser::ast::StringLit<'_>,
-    out: &mut Vec<Dependency>,
+    value: JsonStringLit<'_>,
+    out: &mut JsonPathTargetDependencies,
 ) {
     let manifest = context.manifest;
     let source = JsonDependencySource {
@@ -36,7 +41,10 @@ fn collect_root_scalar_json_path(
     }
 }
 
-fn collect_nested_scalar_json_path(context: &JsonPathTargetContext<'_>, out: &mut Vec<Dependency>) {
+fn collect_nested_scalar_json_path(
+    context: &JsonPathTargetContext<'_>,
+    out: &mut JsonPathTargetDependencies,
+) {
     let group = context.parents.join(".");
     let source = JsonDependencySource {
         text: context.manifest.text,

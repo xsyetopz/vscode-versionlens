@@ -1,4 +1,8 @@
-use marked_yaml::types::{MarkedScalarNode, Node};
+use marked_yaml::types::MarkedScalarNode;
+use marked_yaml::types::Node;
+use marked_yaml::types::Node::{
+    Mapping as YamlMapping, Scalar as YamlScalar, Sequence as YamlSequence,
+};
 
 use crate::model::Dependency;
 
@@ -18,9 +22,9 @@ pub(super) fn dependency_from_node(
 ) -> Option<Dependency> {
     let source = PubspecDependencySource { text, group, key };
     match value {
-        Node::Scalar(value) => scalar_dependency_from_source(&source, value),
-        Node::Mapping(map) => mapping_dependency(&source, map),
-        Node::Sequence(_) => None,
+        YamlScalar(value) => scalar_dependency_from_source(&source, value),
+        YamlMapping(map) => mapping_dependency(&source, map),
+        YamlSequence(_) => None,
     }
 }
 

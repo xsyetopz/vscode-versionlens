@@ -1,8 +1,12 @@
+use base64::engine::general_purpose::STANDARD as BASE64_STANDARD;
+use serde_json::from_str;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NpmRegistryEntry {
     pub scope: Option<String>,
     pub url: String,
 }
+
+pub(crate) type NpmRegistryEntries = Vec<NpmRegistryEntry>;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NpmAuthEntry {
@@ -10,12 +14,16 @@ pub struct NpmAuthEntry {
     pub header_value: String,
 }
 
+type NpmAuthResult = Option<NpmAuthEntry>;
+
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct NpmClientCertEntry {
     pub registry: String,
     pub cert_file: Option<String>,
     pub key_file: Option<String>,
 }
+
+type NpmClientCertEntries = Vec<NpmClientCertEntry>;
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct NpmGenericProxyConfig {
@@ -45,8 +53,10 @@ struct NpmUsernamePasswordAuth {
     password: Option<String>,
 }
 
+type NpmUsernamePasswordAuths = Vec<NpmUsernamePasswordAuth>;
+
 impl NpmUsernamePasswordAuth {
-    fn into_entry(self) -> Option<NpmAuthEntry> {
+    fn into_entry(self) -> NpmAuthResult {
         let username = self.username?;
         let password = self.password?;
         if username.is_empty() || password.is_empty() {
@@ -59,14 +69,14 @@ impl NpmUsernamePasswordAuth {
     }
 }
 
-pub fn parse_npmrc_registry_entries(text: &str) -> Vec<NpmRegistryEntry> {
+pub fn parse_npmrc_registry_entries(text: &str) -> NpmRegistryEntries {
     parse_npmrc_registry_entries_with_env(text, &[])
 }
 
 pub fn parse_npmrc_registry_entries_with_env(
     text: &str,
     env: &[(String, String)],
-) -> Vec<NpmRegistryEntry> {
+) -> NpmRegistryEntries {
     text.lines()
         .filter_map(|line| parse_npmrc_registry_line_with_env(line, env))
         .collect()
@@ -76,8 +86,8 @@ pub fn parse_npmrc_auth_entries_with_env(
     text: &str,
     env: &[(String, String)],
 ) -> Vec<NpmAuthEntry> {
-    let mut entries = Vec::new();
-    let mut username_passwords = Vec::<NpmUsernamePasswordAuth>::new();
+    let mut entries = vec![];
+    let mut username_passwords = crate::default();
 
     for line in text.lines() {
         if let Some(entry) = parse_npmrc_auth_line_with_env(line, env) {
@@ -90,7 +100,7 @@ pub fn parse_npmrc_auth_entries_with_env(
     entries.extend(
         username_passwords
             .into_iter()
-            .filter_map(NpmUsernamePasswordAuth::into_entry),
+            .filter_map(npm_username_password_auth_into_entry),
     );
     entries
 }
@@ -99,7 +109,7 @@ pub fn parse_npmrc_client_cert_entries_with_env(
     text: &str,
     env: &[(String, String)],
 ) -> Vec<NpmClientCertEntry> {
-    let mut entries = Vec::new();
+    let mut entries = crate::default();
     for line in text.lines() {
         push_npmrc_client_cert_entry(&mut entries, line, env);
     }
@@ -107,21 +117,21 @@ pub fn parse_npmrc_client_cert_entries_with_env(
 }
 
 pub fn parse_npmrc_http_config_with_env(text: &str, env: &[(String, String)]) -> NpmHttpConfig {
-    let mut config = NpmHttpConfig::default();
+    let mut config: NpmHttpConfig = crate::default();
     for line in text.lines() {
         push_npmrc_http_line(&mut config, line, env);
     }
     config
 }
 
-pub fn parse_npm_env_registry_entries(env: &[(String, String)]) -> Vec<NpmRegistryEntry> {
+pub fn parse_npm_env_registry_entries(env: &[(String, String)]) -> NpmRegistryEntries {
     env.iter()
         .filter_map(|(key, value)| parse_npm_env_registry_entry(key, value))
         .collect()
 }
 
 pub fn parse_npm_env_http_config(env: &[(String, String)]) -> NpmHttpConfig {
-    let mut config = NpmHttpConfig::default();
+    let mut config: NpmHttpConfig = crate::default();
     for (key, value) in env {
         push_npm_env_http_entry(&mut config, key, value);
     }
@@ -268,7 +278,7 @@ fn env_value_ignore_ascii_case(env: &[(String, String)], key: &str) -> Option<St
         .find(|(candidate, _)| candidate.eq_ignore_ascii_case(key))
         .map(|(_, value)| value.trim())
         .filter(|value| !value.is_empty())
-        .map(str::to_owned)
+        .map(|value| value.to_owned())
 }
 
 fn normalized_npm_env_key(key: &str) -> Option<String> {
@@ -291,7 +301,7 @@ fn npmrc_timeout_ms(value: &str) -> Option<u64> {
 }
 
 fn push_npmrc_client_cert_entry(
-    entries: &mut Vec<NpmClientCertEntry>,
+    entries: &mut NpmClientCertEntries,
     line: &str,
     env: &[(String, String)],
 ) {
@@ -320,7 +330,7 @@ fn push_npmrc_client_cert_entry(
 }
 
 fn npm_client_cert_entry(
-    entries: &mut Vec<NpmClientCertEntry>,
+    entries: &mut NpmClientCertEntries,
     registry: String,
 ) -> &mut NpmClientCertEntry {
     if let Some(index) = entries.iter().position(|entry| entry.registry == registry) {
@@ -335,7 +345,11 @@ fn npm_client_cert_entry(
     &mut entries[index]
 }
 
-fn parse_npmrc_auth_line_with_env(line: &str, env: &[(String, String)]) -> Option<NpmAuthEntry> {
+fn npm_username_password_auth_into_entry(auth: NpmUsernamePasswordAuth) -> Option<NpmAuthEntry> {
+    auth.into_entry()
+}
+
+fn parse_npmrc_auth_line_with_env(line: &str, env: &[(String, String)]) -> NpmAuthResult {
     let trimmed = line.trim();
     if ignored_line(trimmed) {
         return None;
@@ -347,7 +361,7 @@ fn parse_npmrc_auth_line_with_env(line: &str, env: &[(String, String)]) -> Optio
 }
 
 fn push_npmrc_username_password_auth(
-    auths: &mut Vec<NpmUsernamePasswordAuth>,
+    auths: &mut NpmUsernamePasswordAuths,
     line: &str,
     env: &[(String, String)],
 ) {
@@ -374,7 +388,7 @@ fn push_npmrc_username_password_auth(
 }
 
 fn npm_username_password_auth(
-    auths: &mut Vec<NpmUsernamePasswordAuth>,
+    auths: &mut NpmUsernamePasswordAuths,
     registry: String,
 ) -> &mut NpmUsernamePasswordAuth {
     if let Some(index) = auths.iter().position(|auth| auth.registry == registry) {
@@ -395,13 +409,13 @@ fn decoded_npm_password(value: &str) -> Option<String> {
     if value.is_empty() {
         return None;
     }
-    base64::engine::general_purpose::STANDARD
+    BASE64_STANDARD
         .decode(value)
         .ok()
-        .map(|bytes| String::from_utf8_lossy(&bytes).into_owned())
+        .map(|bytes| crate::string_from_utf8_lossy(&bytes))
 }
 
-fn parse_bearer_auth(key: &str, value: &str, env: &[(String, String)]) -> Option<NpmAuthEntry> {
+fn parse_bearer_auth(key: &str, value: &str, env: &[(String, String)]) -> NpmAuthResult {
     let registry = npmrc_auth_registry(key, ":_authToken")?;
     let token = expanded_value(value, env);
     (!token.is_empty()).then(|| NpmAuthEntry {
@@ -410,7 +424,7 @@ fn parse_bearer_auth(key: &str, value: &str, env: &[(String, String)]) -> Option
     })
 }
 
-fn parse_basic_auth(key: &str, value: &str, env: &[(String, String)]) -> Option<NpmAuthEntry> {
+fn parse_basic_auth(key: &str, value: &str, env: &[(String, String)]) -> NpmAuthResult {
     let registry = npmrc_auth_registry(key, ":_auth")?;
     let token = expanded_value(value, env);
     (!token.is_empty()).then(|| NpmAuthEntry {
@@ -427,11 +441,7 @@ fn npmrc_auth_registry(key: &str, suffix: &str) -> Option<String> {
     Some(registry.trim_end_matches('/').to_owned())
 }
 
-pub(crate) fn bearer_auth_entry(
-    url: &str,
-    token: &str,
-    env: &[(String, String)],
-) -> Option<NpmAuthEntry> {
+pub(crate) fn bearer_auth_entry(url: &str, token: &str, env: &[(String, String)]) -> NpmAuthResult {
     let registry = auth_registry_from_url(url, env)?;
     let token = expanded_value(token, env);
     (!token.is_empty()).then(|| NpmAuthEntry {
@@ -440,11 +450,7 @@ pub(crate) fn bearer_auth_entry(
     })
 }
 
-pub(crate) fn basic_auth_entry(
-    url: &str,
-    ident: &str,
-    env: &[(String, String)],
-) -> Option<NpmAuthEntry> {
+pub(crate) fn basic_auth_entry(url: &str, ident: &str, env: &[(String, String)]) -> NpmAuthResult {
     let registry = auth_registry_from_url(url, env)?;
     let ident = expanded_value(ident, env);
     if ident.is_empty() {
@@ -466,7 +472,7 @@ pub(crate) fn auth_registry_from_url(url: &str, env: &[(String, String)]) -> Opt
 }
 
 pub(crate) fn expand_env(value: &str, env: &[(String, String)]) -> String {
-    let mut expanded = String::new();
+    let mut expanded = "".to_owned();
     let mut rest = value;
 
     while let Some(start) = rest.find("${") {
@@ -504,13 +510,12 @@ fn ignored_line(trimmed: &str) -> bool {
 
 fn base64_encode(value: &str) -> String {
     use base64::Engine;
-    base64::engine::general_purpose::STANDARD.encode(value)
+    BASE64_STANDARD.encode(value)
 }
 
 fn unquote_value(value: &str) -> String {
     if value.starts_with('"') && value.ends_with('"') {
-        return serde_json::from_str::<String>(value)
-            .unwrap_or_else(|_| value.trim_matches('"').to_owned());
+        return from_str::<String>(value).unwrap_or_else(|_| value.trim_matches('"').to_owned());
     }
     value
         .strip_prefix('\'')

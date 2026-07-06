@@ -18,3 +18,22 @@ fn parses_go_proxy_urls_from_env() {
         ]
     );
 }
+
+#[test]
+fn parses_go_proxy_urls_from_last_env_entry() {
+    let env = vec![
+        (
+            "GOPROXY".to_owned(),
+            "https://process-proxy.example.test".to_owned(),
+        ),
+        (
+            "GOPROXY".to_owned(),
+            "https://workspace-proxy.example.test".to_owned(),
+        ),
+    ];
+
+    assert_eq!(
+        parse_go_proxy_urls(&env),
+        vec!["https://workspace-proxy.example.test/{base-module}/@v/list"]
+    );
+}

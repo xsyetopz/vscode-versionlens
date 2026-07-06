@@ -1,9 +1,12 @@
 use crate::document::test_support::extract_range;
-use crate::{DocumentInput, Ecosystem, parse_document};
+use crate::model::Ecosystem::Python;
+use crate::{DocumentInput, parse_document};
+use std::fs::read_to_string;
+use std::path::PathBuf;
 
 #[test]
 fn parses_requirements_txt_dependencies() {
-    let text = "# nope\n requests>=2.0 # comment\n-r other.txt\nflask==3.0.0\nhttpx[socks]>=0.28; python_version >= '3.12'\nimportlib-metadata; python_version < '3.8'\nlocal @ https://example.test/local.whl#sha256=abc\n";
+    let text = package_file_fixture("parses-requirements-txt-dependencies.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/requirements.txt".to_owned(),
         language_id: "pip-requirements".to_owned(),
@@ -15,7 +18,7 @@ fn parses_requirements_txt_dependencies() {
     assert_eq!(dependencies[0].name, "requests");
     assert_eq!(dependencies[0].requirement, ">=2.0");
     assert_eq!(dependencies[0].group, "dependencies");
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Python);
+    assert_eq!(dependencies[0].ecosystem, Python);
     assert_eq!(dependencies[0].range.start.character, 1);
     assert_eq!(
         extract_range(text, dependencies[0].requirement_range),
@@ -53,7 +56,8 @@ fn parses_requirements_txt_dependencies() {
 
 #[test]
 fn requirements_txt_adjacent_hash_not_part_of_normal_version() {
-    let text = "pkg==1.2.3#keep\n";
+    let text =
+        package_file_fixture("requirements-txt-adjacent-hash-not-part-of-normal-version.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/requirements.txt".to_owned(),
         language_id: "pip-requirements".to_owned(),
@@ -72,18 +76,7 @@ fn requirements_txt_adjacent_hash_not_part_of_normal_version() {
 
 #[test]
 fn parses_smoke_requirements_smoke_shapes() {
-    let text = "# Requirements for smoke testing
-requests==2.34.2
-flask>=3.1.3
-django<=6.0.6
-pytest>9.1.1
-numpy<=2.5.0
-pandas~=3.0.3
-urllib3===2.7.0
-six==1.17.0
-python-dateutil==2.9.0
-not_found_package==1.17.0
-";
+    let text = package_file_fixture("parses-smoke-requirements-smoke-shapes.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/requirements.txt".to_owned(),
         language_id: "pip-requirements".to_owned(),
@@ -92,7 +85,7 @@ not_found_package==1.17.0
     });
 
     assert_eq!(dependencies.len(), 10);
-    assert_eq!(dependencies[0].ecosystem, Ecosystem::Python);
+    assert_eq!(dependencies[0].ecosystem, Python);
     assert_eq!(dependencies[0].name, "requests");
     assert_eq!(dependencies[0].requirement, "==2.34.2");
     assert_eq!(dependencies[1].name, "flask");
@@ -112,10 +105,7 @@ not_found_package==1.17.0
 
 #[test]
 fn requirements_txt_rejects_names_outside_upstream_regex() {
-    let text = "@scope/pkg==1.0.0
-valid_name-1.2==2.0.0
-name$bad==3.0.0
-";
+    let text = package_file_fixture("requirements-txt-rejects-names-outside-upstream-regex.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/requirements.txt".to_owned(),
         language_id: "pip-requirements".to_owned(),
@@ -133,8 +123,8 @@ name$bad==3.0.0
 
 #[test]
 fn requirements_txt_direct_urls_match_upstream_blank_version() {
-    let text = "local @ https://example.test/local.whl#sha256=abc
-";
+    let text =
+        package_file_fixture("requirements-txt-direct-urls-match-upstream-blank-version.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/requirements.txt".to_owned(),
         language_id: "pip-requirements".to_owned(),
@@ -152,9 +142,8 @@ fn requirements_txt_direct_urls_match_upstream_blank_version() {
 
 #[test]
 fn requirements_txt_versions_stop_at_first_upstream_version_token() {
-    let text = "pkg>=1.0,<2.0
-other==1.0; python_version >= '3.12'
-";
+    let text =
+        package_file_fixture("requirements-txt-versions-stop-at-first-upstream-version-token.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/requirements.txt".to_owned(),
         language_id: "pip-requirements".to_owned(),
@@ -174,7 +163,9 @@ other==1.0; python_version >= '3.12'
 }
 #[test]
 fn requirements_txt_descriptor_versions_omit_operator_spacing_like_upstream() {
-    let text = "pkg>= 1.0\nother == 2.0\n";
+    let text = package_file_fixture(
+        "requirements-txt-descriptor-versions-omit-operator-spacing-like-upstream.txt",
+    );
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/requirements.txt".to_owned(),
         language_id: "pip-requirements".to_owned(),
@@ -198,7 +189,9 @@ fn requirements_txt_descriptor_versions_omit_operator_spacing_like_upstream() {
 }
 #[test]
 fn requirements_txt_accepts_raw_version_without_operator_like_upstream() {
-    let text = "pkg 1.0\nlocal @ https://example.test/local.whl\n";
+    let text = package_file_fixture(
+        "requirements-txt-accepts-raw-version-without-operator-like-upstream.txt",
+    );
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/requirements.txt".to_owned(),
         language_id: "pip-requirements".to_owned(),
@@ -220,7 +213,7 @@ fn requirements_txt_accepts_raw_version_without_operator_like_upstream() {
 }
 #[test]
 fn requirements_txt_option_like_lines_parse_like_upstream() {
-    let text = "-r other.txt\n--index-url https://example.test/simple\n";
+    let text = package_file_fixture("requirements-txt-option-like-lines-parse-like-upstream.txt");
     let dependencies = parse_document(&DocumentInput {
         uri: "file:///work/requirements.txt".to_owned(),
         language_id: "pip-requirements".to_owned(),
@@ -238,4 +231,25 @@ fn requirements_txt_option_like_lines_parse_like_upstream() {
     );
     assert_eq!(dependencies[1].name, "--index-url");
     assert_eq!(dependencies[1].requirement, "https");
+}
+
+fn package_file_fixture(name: &str) -> &'static str {
+    let path = repo_root()
+        .join("tests/fixtures/versionlens-parsers/src/requirements_txt/tests")
+        .join(name);
+    let contents = read_to_string(&path).unwrap_or_else(|error| {
+        panic!(
+            "failed to read package-file fixture {}: {error}",
+            path.display()
+        )
+    });
+    crate::leaked_string(contents)
+}
+
+fn repo_root() -> PathBuf {
+    <PathBuf as From<&str>>::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|path| path.parent())
+        .expect("crate should be under crates/")
+        .to_path_buf()
 }

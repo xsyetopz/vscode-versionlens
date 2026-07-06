@@ -1,3 +1,4 @@
+use self::DotnetTagKind::{Empty as DotnetTagEmpty, Start as DotnetTagStart};
 mod missing;
 mod tag;
 mod versioned;
@@ -24,6 +25,8 @@ fn package_dependency(
     group: &str,
     tag_kind: DotnetTagKind,
 ) -> Option<Dependency> {
-    versioned_package_dependency(context, group, tag_kind)
-        .or_else(|| missing_version_package_dependency(context, group))
+    versioned_package_dependency(context, group, tag_kind).or_else(|| match tag_kind {
+        DotnetTagEmpty => missing_version_package_dependency(context, group),
+        DotnetTagStart => None,
+    })
 }

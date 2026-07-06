@@ -7,7 +7,7 @@ use block::{GoModBlock, go_mod_dependency_group, update_go_mod_block};
 use dependency::parse_go_mod_dependency;
 
 pub(crate) fn parse_go_mod(text: &str) -> Vec<Dependency> {
-    let mut dependencies = Vec::new();
+    let mut dependencies = vec![];
     let mut current_block: GoModBlock = None;
 
     for (line_index, line) in text.lines().enumerate() {

@@ -1,0 +1,4 @@
+packages: .
+constraints:
+  lens == 5.2.3,
+  text >= 2.0

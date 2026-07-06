@@ -1,10 +1,12 @@
 use marked_yaml::types::MarkedScalarNode;
+use std::ops::Range;
 
-use crate::model::{Dependency, Ecosystem};
+use crate::model::Dependency;
 use crate::positions::offset_range;
 use crate::yaml::{byte_offset, scalar_range};
 
 use super::source::PubspecDependencySource;
+use crate::model::Ecosystem::Pub;
 
 pub(super) fn scalar_dependency_from_source(
     source: &PubspecDependencySource<'_>,
@@ -13,8 +15,8 @@ pub(super) fn scalar_dependency_from_source(
     let text = source.text;
     let key = source.key;
     let value_range = scalar_range(text, value).unwrap_or_else(|| empty_value_range(text, key));
-    let mut requirement_prefix = String::new();
-    let mut requirement_suffix = String::new();
+    let mut requirement_prefix = "".to_owned();
+    let mut requirement_suffix = "".to_owned();
     let key_tail = key_line_tail(text, key);
     let requirement = if value.as_str() == "any" {
         "*"
@@ -34,7 +36,7 @@ pub(super) fn scalar_dependency_from_source(
     Some(Dependency {
         name: key.as_str().to_owned(),
         requirement: requirement.to_owned(),
-        ecosystem: Ecosystem::Pub,
+        ecosystem: Pub,
         group: source.group.to_owned(),
         hosted_url: None,
         hosted_name: None,
@@ -55,7 +57,7 @@ fn key_line_tail<'a>(text: &'a str, key: &MarkedScalarNode) -> Option<&'a str> {
     line.get(colon + 1..)
 }
 
-fn empty_value_range(text: &str, key: &MarkedScalarNode) -> std::ops::Range<usize> {
+fn empty_value_range(text: &str, key: &MarkedScalarNode) -> Range<usize> {
     let Some(key_start) = key
         .span()
         .start()

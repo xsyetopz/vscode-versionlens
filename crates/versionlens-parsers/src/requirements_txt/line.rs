@@ -1,8 +1,7 @@
-use crate::{
-    model::{Dependency, Ecosystem},
-    positions::line_range,
-    requirements_txt::split::split_requirements_txt_requirement,
-};
+use crate::model::Dependency;
+use crate::model::Ecosystem::Python;
+use crate::positions::line_range;
+use crate::requirements_txt::split::split_requirements_txt_requirement;
 
 pub(super) fn parse_requirement_line(line_index: usize, line: &str) -> Option<Dependency> {
     let trimmed = line.trim_start();
@@ -28,14 +27,14 @@ pub(super) fn parse_requirement_line(line_index: usize, line: &str) -> Option<De
     Some(Dependency {
         name: name.to_owned(),
         requirement: requirement_value,
-        ecosystem: Ecosystem::Python,
+        ecosystem: Python,
         group: "dependencies".to_owned(),
         hosted_url: None,
         hosted_name: None,
         range: line_range(line_index, line, offset, offset + name.len()),
         requirement_range: line_range(line_index, line, requirement_start, requirement_end),
         requirement_prefix: requirement_prefix.to_owned(),
-        requirement_suffix: String::new(),
+        requirement_suffix: "".to_owned(),
     })
 }
 
@@ -50,7 +49,7 @@ fn requirements_txt_descriptor_version(raw: &str) -> String {
         let Some(after_operator) = raw.strip_prefix(operator) else {
             continue;
         };
-        let version = after_operator.trim_start_matches(char::is_whitespace);
+        let version = after_operator.trim_start_matches(crate::is_whitespace);
         if version.len() != after_operator.len() {
             return format!("{operator}{version}");
         }

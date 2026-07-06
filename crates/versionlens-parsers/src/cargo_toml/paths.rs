@@ -8,6 +8,12 @@ const CARGO_DEPENDENCY_PATHS: &[&str] = &[
     "dev-dependencies.*",
     "build-dependencies",
     "build-dependencies.*",
+    "target.*.dependencies",
+    "target.*.dependencies.*",
+    "target.*.dev-dependencies",
+    "target.*.dev-dependencies.*",
+    "target.*.build-dependencies",
+    "target.*.build-dependencies.*",
     "workspace.dependencies",
     "workspace.dependencies.*",
 ];

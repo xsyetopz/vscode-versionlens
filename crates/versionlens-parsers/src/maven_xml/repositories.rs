@@ -4,11 +4,15 @@ use super::settings::MavenNamedRepository;
 const PROJECT_REPOSITORY_PATHS: &[&str] = &[
     "project.repositories.repository",
     "project.profiles.profile.repositories.repository",
+    "project.profiles.profile.pluginRepositories.pluginRepository",
+    "project.pluginRepositories.pluginRepository",
 ];
 
 const PROJECT_REPOSITORY_URL_PATHS: &[&str] = &[
     "project.repositories.repository.url",
     "project.profiles.profile.repositories.repository.url",
+    "project.profiles.profile.pluginRepositories.pluginRepository.url",
+    "project.pluginRepositories.pluginRepository.url",
 ];
 
 pub fn parse_maven_pom_repository_urls(text: &str) -> Vec<String> {

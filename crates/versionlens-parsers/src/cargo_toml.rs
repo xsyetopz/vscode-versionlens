@@ -1,5 +1,3 @@
-use toml_edit::Document;
-
 use crate::model::Dependency;
 use crate::toml_walk::walk_toml_values;
 
@@ -14,12 +12,12 @@ pub(crate) fn parse_cargo_toml_with_paths(
     text: &str,
     dependency_paths: &[&str],
 ) -> Vec<Dependency> {
-    let Ok(document) = Document::parse(text) else {
-        return Vec::new();
+    let Ok(document) = crate::parse_toml_document(text) else {
+        return vec![];
     };
 
-    let mut dependencies = Vec::new();
-    let mut keys = Vec::new();
+    let mut dependencies = vec![];
+    let mut keys = vec![];
     let dependency_paths = selected_dependency_paths(dependency_paths);
     let context = CargoCollectContext {
         text,

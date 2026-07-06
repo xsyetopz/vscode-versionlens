@@ -1,9 +1,7 @@
 use crate::model::Dependency;
 
-use crate::dotnet_xml::{
-    DotnetEventContext,
-    dependency::attrs::{DotnetMissingVersionAttrs, missing_version_dependency},
-};
+use crate::dotnet_xml::DotnetEventContext;
+use crate::dotnet_xml::dependency::attrs::{DotnetMissingVersionAttrs, missing_version_dependency};
 
 const MISSING_VERSION_ATTRS: &[&str] = &["Include", "Update"];
 

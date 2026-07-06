@@ -1,12 +1,11 @@
-use crate::{
-    model::{Dependency, Ecosystem},
-    positions::line_range,
-};
+use crate::model::Dependency;
+use crate::positions::line_range;
 
 use super::super::line::{GemLineContext, GemNameSpan, gem_name_range};
 use super::super::syntax::attr_string_span;
 use super::repository::github_repository;
 use super::url::github_api_url;
+use crate::model::Ecosystem::Ruby;
 
 pub(in crate::gemfile) fn gem_github_ref_dependency(
     context: &GemLineContext<'_>,
@@ -35,11 +34,11 @@ fn gem_github_value_dependency(
     Some(Dependency {
         name: repo.to_owned(),
         requirement: value.into_owned(),
-        ecosystem: Ecosystem::Ruby,
+        ecosystem: Ruby,
         group: context.group.to_owned(),
         hosted_url: Some(github_api_url(&repo, "commits")),
         hosted_name: Some(name.name.to_owned()),
-        range: gem_name_range(context, name),
+        range: gem_name_range(context),
         requirement_range: line_range(
             context.line_index,
             context.line,
@@ -69,8 +68,8 @@ fn replacement_span(
         return ReplacementSpan {
             start: value_start,
             end: value_end,
-            prefix: String::new(),
-            suffix: String::new(),
+            prefix: "".to_owned(),
+            suffix: "".to_owned(),
         };
     }
 

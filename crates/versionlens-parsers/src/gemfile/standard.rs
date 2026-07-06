@@ -1,12 +1,12 @@
+use crate::positions::line_range;
 use std::borrow::Cow;
+use std::borrow::Cow::Borrowed as CowBorrowed;
 
-use crate::{
-    model::{Dependency, Ecosystem},
-    positions::line_range,
-};
+use crate::model::Dependency;
 
 use super::line::{GemLineContext, GemNameSpan, gem_name_range};
 use super::syntax::{attr_string, github_string};
+use crate::model::Ecosystem::Ruby;
 
 pub(super) fn standard_gem_dependency(
     context: &GemLineContext<'_>,
@@ -16,16 +16,17 @@ pub(super) fn standard_gem_dependency(
 ) -> Dependency {
     let (requirement, requirement_start, requirement_end, requirement_prefix, requirement_suffix) =
         gem_requirement(context.content, name.end, version);
-    let hosted_url = gem_source_url(context.content).or_else(|| source_url.map(str::to_owned));
+    let hosted_url =
+        gem_source_url(context.content).or_else(|| source_url.map(|value| value.to_owned()));
 
     Dependency {
         name: name.name.to_owned(),
         requirement: requirement.into_owned(),
-        ecosystem: Ecosystem::Ruby,
+        ecosystem: Ruby,
         group: context.group.to_owned(),
         hosted_url,
         hosted_name: None,
-        range: gem_name_range(context, name),
+        range: gem_name_range(context),
         requirement_range: line_range(
             context.line_index,
             context.line,
@@ -53,11 +54,11 @@ fn gem_requirement<'a>(
         && !content[name_end..start].contains(':')
     {
         return (
-            Cow::Borrowed(requirement),
+            CowBorrowed(requirement),
             start,
             end,
-            String::new(),
-            String::new(),
+            "".to_owned(),
+            "".to_owned(),
         );
     }
 
@@ -65,13 +66,13 @@ fn gem_requirement<'a>(
         .or_else(|| attr_string(content, "git"))
         .or_else(|| github_string(content))
     {
-        return (requirement, start, end, String::new(), String::new());
+        return (requirement, start, end, "".to_owned(), "".to_owned());
     }
 
     let quote = content.as_bytes().get(name_end).copied().unwrap_or(b'"') as char;
     let insert_at = name_end + quote.len_utf8();
     (
-        Cow::Borrowed("*"),
+        CowBorrowed("*"),
         insert_at,
         insert_at,
         format!(", {quote}"),

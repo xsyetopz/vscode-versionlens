@@ -1,5 +1,14 @@
+use base64::engine::general_purpose::STANDARD as BASE64_STANDARD;
+use jsonc_parser::ast::Value::BooleanLit as ComposerBooleanLit;
+use jsonc_parser::ast::Value::{
+    Array as JsonValueArray, Object as JsonValueObject, StringLit as JsonValueStringLit,
+};
 use jsonc_parser::ast::{Object, Value};
-use jsonc_parser::{CollectOptions, ParseOptions, parse_to_ast};
+use jsonc_parser::parse_to_ast;
+
+type ComposerJsonObject<'a> = Object<'a>;
+type ComposerJsonValue<'a> = Value<'a>;
+type ComposerAuthEntries = Vec<ComposerAuthEntry>;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ComposerAuthEntry {
@@ -12,22 +21,30 @@ pub struct ComposerRepository {
     pub url: String,
     pub only: Vec<String>,
     pub exclude: Vec<String>,
+    pub packages: Vec<ComposerRepositoryPackage>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ComposerRepositoryPackage {
+    pub name: String,
+    pub version: String,
 }
 
 pub fn parse_composer_packagist_disabled(text: &str) -> bool {
-    let Ok(parse_result) = parse_to_ast(text, &CollectOptions::default(), &ParseOptions::default())
-    else {
+    let Ok(parse_result) = parse_to_ast(text, &crate::default(), &crate::default()) else {
         return false;
     };
-    let Some(Value::Object(root)) = parse_result.value else {
+    let Some(JsonValueObject(root)) = parse_result.value else {
         return false;
     };
 
     match root.get("repositories").map(|property| &property.value) {
-        Some(Value::Object(repositories)) => repositories.properties.iter().any(|property| {
+        Some(JsonValueObject(repositories)) => repositories.properties.iter().any(|property| {
             property.name.as_str() == "packagist.org" && value_is_false(&property.value)
         }),
-        Some(Value::Array(repositories)) => repositories.elements.iter().any(packagist_false_entry),
+        Some(JsonValueArray(repositories)) => {
+            repositories.elements.iter().any(packagist_false_entry)
+        }
         _ => false,
     }
 }
@@ -35,56 +52,54 @@ pub fn parse_composer_packagist_disabled(text: &str) -> bool {
 pub fn parse_composer_repository_urls(text: &str) -> Vec<String> {
     parse_composer_repositories(text)
         .into_iter()
-        .map(|repository| repository.url)
+        .filter_map(|repository| (!repository.url.is_empty()).then_some(repository.url))
         .collect()
 }
 
 pub fn parse_composer_repositories(text: &str) -> Vec<ComposerRepository> {
-    let Ok(parse_result) = parse_to_ast(text, &CollectOptions::default(), &ParseOptions::default())
-    else {
-        return Vec::new();
+    let Ok(parse_result) = parse_to_ast(text, &crate::default(), &crate::default()) else {
+        return vec![];
     };
-    let Some(Value::Object(root)) = parse_result.value else {
-        return Vec::new();
+    let Some(JsonValueObject(root)) = parse_result.value else {
+        return vec![];
     };
 
     match root.get("repositories").map(|property| &property.value) {
-        Some(Value::Array(repositories)) => repositories
+        Some(JsonValueArray(repositories)) => repositories
             .elements
             .iter()
             .filter_map(repository)
             .collect(),
-        Some(Value::Object(repositories)) => repositories
+        Some(JsonValueObject(repositories)) => repositories
             .properties
             .iter()
             .filter_map(|property| repository(&property.value))
             .collect(),
-        _ => Vec::new(),
+        _ => vec![],
     }
 }
 
-pub fn parse_composer_auth_entries(text: &str) -> Vec<ComposerAuthEntry> {
-    let Ok(parse_result) = parse_to_ast(text, &CollectOptions::default(), &ParseOptions::default())
-    else {
-        return Vec::new();
+pub fn parse_composer_auth_entries(text: &str) -> ComposerAuthEntries {
+    let Ok(parse_result) = parse_to_ast(text, &crate::default(), &crate::default()) else {
+        return vec![];
     };
-    let Some(Value::Object(root)) = parse_result.value else {
-        return Vec::new();
+    let Some(JsonValueObject(root)) = parse_result.value else {
+        return vec![];
     };
 
-    let mut entries = Vec::new();
+    let mut entries = vec![];
     collect_http_basic_entries(&root, &mut entries);
     collect_bearer_entries(&root, &mut entries);
     entries
 }
 
-fn collect_http_basic_entries(root: &Object<'_>, out: &mut Vec<ComposerAuthEntry>) {
+fn collect_http_basic_entries(root: &ComposerJsonObject<'_>, out: &mut ComposerAuthEntries) {
     let Some(registries) = root.get_object("http-basic") else {
         return;
     };
 
     for property in &registries.properties {
-        let Value::Object(credentials) = &property.value else {
+        let JsonValueObject(credentials) = &property.value else {
             continue;
         };
         let (Some(username), Some(password)) = (
@@ -102,13 +117,13 @@ fn collect_http_basic_entries(root: &Object<'_>, out: &mut Vec<ComposerAuthEntry
     }
 }
 
-fn collect_bearer_entries(root: &Object<'_>, out: &mut Vec<ComposerAuthEntry>) {
+fn collect_bearer_entries(root: &ComposerJsonObject<'_>, out: &mut ComposerAuthEntries) {
     let Some(registries) = root.get_object("bearer") else {
         return;
     };
 
     for property in &registries.properties {
-        let Value::StringLit(token) = &property.value else {
+        let JsonValueStringLit(token) = &property.value else {
             continue;
         };
         let token = token.value.as_ref().trim();
@@ -124,19 +139,32 @@ fn collect_bearer_entries(root: &Object<'_>, out: &mut Vec<ComposerAuthEntry>) {
     }
 }
 
-fn repository(value: &Value<'_>) -> Option<ComposerRepository> {
-    let Value::Object(repository) = value else {
+fn repository(value: &ComposerJsonValue<'_>) -> Option<ComposerRepository> {
+    let JsonValueObject(repository) = value else {
         return None;
     };
-    composer_repository_url(repository).map(|url| ComposerRepository {
-        url: url.to_owned(),
-        only: string_array(repository, "only"),
-        exclude: string_array(repository, "exclude"),
+    let only = string_array(repository, "only");
+    let exclude = string_array(repository, "exclude");
+    if let Some(url) = composer_repository_url(repository) {
+        return Some(ComposerRepository {
+            url: url.to_owned(),
+            only,
+            exclude,
+            packages: vec![],
+        });
+    }
+
+    let packages = composer_repository_packages(repository);
+    (!packages.is_empty()).then_some(ComposerRepository {
+        url: "".to_owned(),
+        only,
+        exclude,
+        packages,
     })
 }
 
-fn packagist_false_entry(value: &Value<'_>) -> bool {
-    let Value::Object(object) = value else {
+fn packagist_false_entry(value: &ComposerJsonValue<'_>) -> bool {
+    let JsonValueObject(object) = value else {
         return false;
     };
 
@@ -145,20 +173,20 @@ fn packagist_false_entry(value: &Value<'_>) -> bool {
         .is_some_and(|property| value_is_false(&property.value))
 }
 
-fn value_is_false(value: &Value<'_>) -> bool {
-    matches!(value, Value::BooleanLit(boolean) if !boolean.value)
+fn value_is_false(value: &ComposerJsonValue<'_>) -> bool {
+    matches!(value, ComposerBooleanLit(boolean) if !boolean.value)
 }
 
-fn string_array(repository: &Object<'_>, field: &str) -> Vec<String> {
-    let Some(Value::Array(array)) = repository.get(field).map(|property| &property.value) else {
-        return Vec::new();
+fn string_array(repository: &ComposerJsonObject<'_>, field: &str) -> Vec<String> {
+    let Some(JsonValueArray(array)) = repository.get(field).map(|property| &property.value) else {
+        return vec![];
     };
 
     array
         .elements
         .iter()
         .filter_map(|element| match element {
-            Value::StringLit(value) => Some(value.value.as_ref().to_owned()),
+            JsonValueStringLit(value) => Some(value.value.as_ref().to_owned()),
             _ => None,
         })
         .collect()
@@ -182,19 +210,57 @@ fn normalized_registry(registry: &str) -> Option<String> {
 fn basic_header(username: &str, password: &str) -> String {
     use base64::Engine;
     let credentials = format!("{username}:{password}");
-    format!(
-        "Basic {}",
-        base64::engine::general_purpose::STANDARD.encode(credentials)
-    )
+    format!("Basic {}", BASE64_STANDARD.encode(credentials))
 }
 
-fn composer_repository_url<'a>(repository: &'a Object<'a>) -> Option<&'a str> {
+fn composer_repository_url<'a>(repository: &'a ComposerJsonObject<'a>) -> Option<&'a str> {
     let repository_type = repository.get_string("type")?.value.as_ref();
     if repository_type != "composer" {
         return None;
     }
 
     repository.get_string("url").map(|url| url.value.as_ref())
+}
+
+fn composer_repository_packages(
+    repository: &ComposerJsonObject<'_>,
+) -> Vec<ComposerRepositoryPackage> {
+    let Some(repository_type) = repository.get_string("type") else {
+        return vec![];
+    };
+    if repository_type.value.as_ref() != "package" {
+        return vec![];
+    }
+
+    match repository.get("package").map(|property| &property.value) {
+        Some(JsonValueObject(package)) => {
+            composer_repository_package(package).into_iter().collect()
+        }
+        Some(JsonValueArray(packages)) => packages
+            .elements
+            .iter()
+            .filter_map(|value| match value {
+                JsonValueObject(package) => composer_repository_package(package),
+                _ => None,
+            })
+            .collect(),
+        _ => vec![],
+    }
+}
+
+fn composer_repository_package(
+    package: &ComposerJsonObject<'_>,
+) -> Option<ComposerRepositoryPackage> {
+    let name = package.get_string("name")?.value.as_ref().trim();
+    let version = package.get_string("version")?.value.as_ref().trim();
+    if name.is_empty() || version.is_empty() {
+        return None;
+    }
+
+    Some(ComposerRepositoryPackage {
+        name: name.to_owned(),
+        version: version.to_owned(),
+    })
 }
 
 #[cfg(test)]

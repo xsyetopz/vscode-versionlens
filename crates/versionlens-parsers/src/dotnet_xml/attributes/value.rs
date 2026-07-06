@@ -1,4 +1,5 @@
-use std::ops::Range as ByteRange;
+use Range as ByteRange;
+use std::ops::Range;
 
 mod scan;
 

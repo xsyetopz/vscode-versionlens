@@ -1,0 +1,8 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "dependencies": {
+    "tink_core": "2.0.0",
+    "tink_macro": ""
+  }
+}

@@ -1,6 +1,6 @@
-use crate::maven_xml::settings::{
-    model::MavenRepository, protocol::protocol_from_url, xml::repository_urls_from_settings_xml,
-};
+use super::super::model::MavenRepository;
+use super::super::protocol::protocol_from_url;
+use super::super::xml::repository_urls_from_settings_xml;
 
 const DEFAULT_MAVEN_REPOSITORY: &str = "https://repo.maven.apache.org/maven2/";
 

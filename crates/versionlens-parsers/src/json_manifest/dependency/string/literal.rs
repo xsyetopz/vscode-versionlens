@@ -1,7 +1,12 @@
+use crate::json_manifest::npm::{
+    string_requirement as npm_string_requirement, terminal_resolution_selector,
+    trim_package_descriptor,
+};
+use crate::model::Ecosystem;
+use crate::model::Ecosystem::Npm;
 use jsonc_parser::ast::{ObjectProp, StringLit};
 
-use crate::json_manifest::npm;
-use crate::model::{Dependency, Ecosystem};
+use crate::model::Dependency;
 
 use super::super::{
     JsonDependencyRanges, JsonDependencySource, json_manifest_dependency, property_name_range,
@@ -17,7 +22,7 @@ pub(super) fn string_literal_json_manifest_dependency(
     let (name_start, name_end) = property_name_range(prop);
     json_manifest_dependency(
         source,
-        dependency_selector(name, source.ecosystem),
+        dependency_selector(name, source),
         string_requirement(lit.value.as_ref(), source.ecosystem),
         JsonDependencyRanges {
             name_start,
@@ -29,16 +34,18 @@ pub(super) fn string_literal_json_manifest_dependency(
 }
 
 fn string_requirement(value: &str, ecosystem: Ecosystem) -> String {
-    if ecosystem == Ecosystem::Npm {
-        return npm::string_requirement(value);
+    if ecosystem == Npm {
+        return npm_string_requirement(value);
     }
     value.to_owned()
 }
 
-fn dependency_selector(name: &str, ecosystem: Ecosystem) -> &str {
-    if ecosystem == Ecosystem::Npm {
-        npm::trim_selector(name)
-    } else {
-        name
+fn dependency_selector<'a>(name: &'a str, source: &JsonDependencySource<'_>) -> &'a str {
+    if source.ecosystem != Npm {
+        return name;
     }
+    if source.group == "resolutions" {
+        return terminal_resolution_selector(name);
+    }
+    trim_package_descriptor(name)
 }

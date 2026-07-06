@@ -1,12 +1,10 @@
+use crate::cargo_toml::paths::is_cargo_project_version;
 use toml_edit::{Key, Value as TomlValue};
 
 use crate::model::Dependency;
 
 use super::CargoCollectContext;
-use crate::cargo_toml::{
-    dependency::{CargoTomlDependencyInput, toml_dependency},
-    paths::is_cargo_project_version,
-};
+use crate::cargo_toml::dependency::{CargoTomlDependencyInput, toml_dependency};
 
 pub(super) fn collect_cargo_project_version(
     context: &CargoCollectContext<'_>,
@@ -24,6 +22,7 @@ pub(super) fn collect_cargo_project_version(
         name: "version",
         value,
         name_key: keys[1],
+        value_key: keys[1],
     }) {
         out.push(dependency);
     }

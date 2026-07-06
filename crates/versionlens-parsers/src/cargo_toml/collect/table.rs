@@ -1,12 +1,7 @@
+use crate::cargo_toml::dependency::{CargoTomlDependencyInput, toml_dependency};
+use crate::cargo_toml::paths::match_cargo_dependency_table;
+use crate::model::Dependency;
 use toml_edit::{Key, Value as TomlValue};
-
-use crate::{
-    cargo_toml::{
-        dependency::{CargoTomlDependencyInput, toml_dependency},
-        paths::match_cargo_dependency_table,
-    },
-    model::Dependency,
-};
 
 use super::CargoCollectContext;
 
@@ -28,6 +23,7 @@ pub(super) fn collect_cargo_table_dependency(
         name: name_key.get(),
         value,
         name_key,
+        value_key: keys[keys.len() - 1],
     }) {
         out.push(dependency);
     }
@@ -42,7 +38,13 @@ fn cargo_dependency_name_key<'a>(keys: &'a [&'a Key], table_match: &str) -> &'a 
 }
 
 fn cargo_dependency_group(keys: &[&Key]) -> String {
-    keys[..keys.len() - 1]
+    let group_end = if keys.last().is_some_and(|key| key.get() == "workspace") && keys.len() >= 3 {
+        keys.len() - 2
+    } else {
+        keys.len() - 1
+    };
+
+    keys[..group_end]
         .iter()
         .map(|key| key.get())
         .collect::<Vec<_>>()

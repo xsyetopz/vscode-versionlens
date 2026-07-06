@@ -1,19 +1,21 @@
-use toml_edit::{Document, InlineTable, Item, Table, Value as TomlValue};
+use toml_edit::{InlineTable, Item, Table};
 
 use crate::npmrc::{NpmAuthEntry, NpmRegistryEntry, bearer_auth_entry, expand_env};
+
+type BunfigRegistryEntries = Vec<NpmRegistryEntry>;
 
 pub fn parse_bunfig_npm_registry_entries_with_env(
     text: &str,
     env: &[(String, String)],
 ) -> Vec<NpmRegistryEntry> {
-    let Ok(document) = Document::parse(text) else {
-        return Vec::new();
+    let Ok(document) = crate::parse_toml_document(text) else {
+        return vec![];
     };
     let Some(install) = document.get("install") else {
-        return Vec::new();
+        return vec![];
     };
 
-    let mut entries = Vec::new();
+    let mut entries = vec![];
     if let Some(url) = string_item(install, "registry") {
         push_registry_entry(&mut entries, None, &url, env);
     }
@@ -25,20 +27,20 @@ pub fn parse_bunfig_npm_auth_entries_with_env(
     text: &str,
     env: &[(String, String)],
 ) -> Vec<NpmAuthEntry> {
-    let Ok(document) = Document::parse(text) else {
-        return Vec::new();
+    let Ok(document) = crate::parse_toml_document(text) else {
+        return vec![];
     };
     let Some(install) = document.get("install") else {
-        return Vec::new();
+        return vec![];
     };
 
-    let mut entries = Vec::new();
+    let mut entries = vec![];
     push_scope_auth_entries(&mut entries, install, env);
     entries
 }
 
 fn push_scope_registry_entries(
-    out: &mut Vec<NpmRegistryEntry>,
+    out: &mut BunfigRegistryEntries,
     install: &Item,
     env: &[(String, String)],
 ) {
@@ -71,11 +73,11 @@ fn scope_auth_entry(item: &Item, env: &[(String, String)]) -> Option<NpmAuthEntr
 }
 
 fn scope_registry_url(item: &Item) -> Option<String> {
-    item.as_str().map(str::to_owned).or_else(|| {
+    item.as_str().map(|value| value.to_owned()).or_else(|| {
         inline_table_item(item)?
             .get("url")?
             .as_str()
-            .map(str::to_owned)
+            .map(|value| value.to_owned())
     })
 }
 
@@ -86,7 +88,7 @@ fn registry_entry(scope: Option<&str>, url: &str, env: &[(String, String)]) -> N
 }
 
 fn push_registry_entry(
-    out: &mut Vec<NpmRegistryEntry>,
+    out: &mut BunfigRegistryEntries,
     scope: Option<&str>,
     url: &str,
     env: &[(String, String)],
@@ -102,16 +104,16 @@ fn table_child<'a>(item: &'a Item, field: &str) -> Option<&'a Table> {
 }
 
 fn inline_table_item(item: &Item) -> Option<&InlineTable> {
-    item.as_value().and_then(TomlValue::as_inline_table)
+    item.as_value().and_then(|value| value.as_inline_table())
 }
 
 fn string_item(item: &Item, field: &str) -> Option<String> {
     item.as_table()?
         .get(field)?
         .as_str()
-        .map(str::trim)
+        .map(|value| value.trim())
         .filter(|url| !url.is_empty())
-        .map(str::to_owned)
+        .map(|value| value.to_owned())
 }
 
 fn normalize_bun_scope(scope: &str) -> String {

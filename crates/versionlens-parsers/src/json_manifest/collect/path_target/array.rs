@@ -1,18 +1,23 @@
-use jsonc_parser::ast::{StringLit, Value};
+use jsonc_parser::ast::Array as JsonArray;
+use jsonc_parser::ast::StringLit;
+use jsonc_parser::ast::Value::{Object as JsonValueObject, StringLit as JsonValueStringLit};
 
 use crate::json_manifest::dependency::{
     JsonDependencyRanges, JsonDependencySource, collect_dependency_object,
     json_manifest_dependency, string_content_end, string_content_start,
 };
-use crate::model::{Dependency, Ecosystem};
+use crate::model::Dependency;
+use crate::model::Ecosystem::Npm;
 
 use super::super::JsonManifestContext;
+
+type JsonArrayPathDependencies = Vec<Dependency>;
 
 pub(super) fn collect_json_array_path(
     context: &JsonManifestContext<'_>,
     path: &str,
-    array: &jsonc_parser::ast::Array<'_>,
-    out: &mut Vec<Dependency>,
+    array: &JsonArray<'_>,
+    out: &mut JsonArrayPathDependencies,
 ) {
     let source = JsonDependencySource {
         text: context.text,
@@ -21,8 +26,8 @@ pub(super) fn collect_json_array_path(
     };
     for element in &array.elements {
         match element {
-            Value::Object(object) => collect_dependency_object(&source, object, out),
-            Value::StringLit(value) => collect_package_name_array_dependency(&source, value, out),
+            JsonValueObject(object) => collect_dependency_object(&source, object, out),
+            JsonValueStringLit(value) => collect_package_name_array_dependency(&source, value, out),
             _ => {}
         }
     }
@@ -31,9 +36,9 @@ pub(super) fn collect_json_array_path(
 fn collect_package_name_array_dependency(
     source: &JsonDependencySource<'_>,
     value: &StringLit<'_>,
-    out: &mut Vec<Dependency>,
+    out: &mut JsonArrayPathDependencies,
 ) {
-    if source.ecosystem != Ecosystem::Npm || !is_npm_bundle_group(source.group) {
+    if source.ecosystem != Npm || !is_npm_name_only_array_group(source.group) {
         return;
     }
 
@@ -47,7 +52,7 @@ fn collect_package_name_array_dependency(
     out.push(json_manifest_dependency(
         source,
         name,
-        String::new(),
+        "".to_owned(),
         JsonDependencyRanges {
             name_start,
             name_end,
@@ -57,6 +62,9 @@ fn collect_package_name_array_dependency(
     ));
 }
 
-fn is_npm_bundle_group(group: &str) -> bool {
-    matches!(group, "bundledDependencies" | "bundleDependencies")
+fn is_npm_name_only_array_group(group: &str) -> bool {
+    matches!(
+        group,
+        "bundledDependencies" | "bundleDependencies" | "trustedDependencies"
+    )
 }

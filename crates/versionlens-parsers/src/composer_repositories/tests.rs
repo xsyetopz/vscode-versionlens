@@ -1,3 +1,5 @@
+use super::parse_composer_auth_entries;
+use super::parse_composer_packagist_disabled;
 use super::{parse_composer_repositories, parse_composer_repository_urls};
 
 #[test]
@@ -45,21 +47,48 @@ fn parses_composer_repository_package_filters() {
 }
 
 #[test]
+fn parses_composer_inline_package_repositories() {
+    let repositories = parse_composer_repositories(
+        r#"{
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "smarty/smarty",
+        "version": "3.1.7",
+        "dist": {"url": "https://www.smarty.net/files/Smarty-3.1.7.zip", "type": "zip"}
+      },
+      "only": ["smarty/*"]
+    }
+  ]
+}"#,
+    );
+
+    assert_eq!(repositories.len(), 1);
+    assert_eq!(repositories[0].url, "");
+    assert_eq!(repositories[0].only, vec!["smarty/*"]);
+    assert_eq!(repositories[0].exclude, Vec::<String>::new());
+    assert_eq!(repositories[0].packages.len(), 1);
+    assert_eq!(repositories[0].packages[0].name, "smarty/smarty");
+    assert_eq!(repositories[0].packages[0].version, "3.1.7");
+}
+
+#[test]
 fn parses_disabled_packagist_repository() {
-    assert!(super::parse_composer_packagist_disabled(
+    assert!(parse_composer_packagist_disabled(
         r#"{"repositories":{"packagist.org": false}}"#
     ));
-    assert!(super::parse_composer_packagist_disabled(
+    assert!(parse_composer_packagist_disabled(
         r#"{"repositories":[{"packagist.org": false}]}"#
     ));
-    assert!(!super::parse_composer_packagist_disabled(
+    assert!(!parse_composer_packagist_disabled(
         r#"{"repositories":{"packagist.org": true}}"#
     ));
 }
 
 #[test]
 fn parses_composer_auth_entries() {
-    let entries = super::parse_composer_auth_entries(
+    let entries = parse_composer_auth_entries(
         r#"{
   "http-basic": {
     "repo.example.test": {"username":"user","password":"pass"},

@@ -1,5 +1,7 @@
 use std::ops::Range as ByteRange;
 
+use versionlens_vscode_model::Range;
+
 use crate::positions::offset_range;
 
 mod collect;
@@ -32,7 +34,7 @@ pub(super) fn texts_from_nodes(nodes: &[XmlNode], path: &str) -> Vec<String> {
         .collect()
 }
 
-pub(super) fn text_range(text: &str, node: &XmlNode) -> versionlens_vscode_model::Range {
+pub(super) fn text_range(text: &str, node: &XmlNode) -> Range {
     let range = node
         .text_range
         .as_ref()

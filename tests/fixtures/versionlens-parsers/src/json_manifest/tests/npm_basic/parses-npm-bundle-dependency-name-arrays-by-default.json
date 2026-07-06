@@ -1,0 +1,4 @@
+{
+  "bundledDependencies": ["left-pad"],
+  "bundleDependencies": ["right-pad"]
+}

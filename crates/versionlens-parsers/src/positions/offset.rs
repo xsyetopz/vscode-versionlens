@@ -32,5 +32,5 @@ fn prefix_at_byte_offset(text: &str, offset: usize) -> &str {
 }
 
 pub(super) fn utf16_code_units(value: &str) -> usize {
-    value.chars().map(char::len_utf16).sum()
+    value.chars().map(|value| value.len_utf16()).sum()
 }

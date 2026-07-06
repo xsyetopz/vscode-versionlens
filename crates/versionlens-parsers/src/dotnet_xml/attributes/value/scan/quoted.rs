@@ -1,4 +1,5 @@
-use std::ops::Range as ByteRange;
+use Range as ByteRange;
+use std::ops::Range;
 
 pub(super) fn is_attribute_quote(byte: u8) -> bool {
     byte == b'"' || byte == b'\''

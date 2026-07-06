@@ -2,7 +2,8 @@ use std::ops::Range as ByteRange;
 
 use versionlens_vscode_model::{Position, Range};
 
-use crate::model::{Dependency, Ecosystem};
+use crate::model::Dependency;
+use crate::model::Ecosystem::Python;
 use crate::positions::offset_range;
 
 pub(in crate::pyproject_toml) struct PythonDependencySource<'a> {
@@ -37,18 +38,18 @@ pub(in crate::pyproject_toml) fn dependency_from_span(
     Dependency {
         name: source.name.to_owned(),
         requirement: source.requirement.to_owned(),
-        ecosystem: Ecosystem::Python,
+        ecosystem: Python,
         group: source.group.to_owned(),
-        hosted_url: source.hosted_url.map(str::to_owned),
+        hosted_url: source.hosted_url.map(|value| value.to_owned()),
         hosted_name: None,
         range,
         requirement_range,
         requirement_prefix: if source.requirement.is_empty() {
             "==".to_owned()
         } else {
-            String::new()
+            "".to_owned()
         },
-        requirement_suffix: String::new(),
+        requirement_suffix: "".to_owned(),
     }
 }
 

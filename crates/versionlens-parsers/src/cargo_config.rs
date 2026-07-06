@@ -1,4 +1,4 @@
-use toml_edit::{Document, Item, Value as TomlValue};
+use toml_edit::{Item, Value as TomlValue};
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct CargoRegistrySource {
@@ -7,19 +7,21 @@ pub struct CargoRegistrySource {
     pub replace_with: Option<String>,
 }
 
-pub fn parse_cargo_config_registry_sources(text: &str) -> Vec<CargoRegistrySource> {
-    let Ok(document) = Document::parse(text) else {
-        return Vec::new();
+type CargoRegistrySources = Vec<CargoRegistrySource>;
+
+pub fn parse_cargo_config_registry_sources(text: &str) -> CargoRegistrySources {
+    let Ok(document) = crate::parse_toml_document(text) else {
+        return vec![];
     };
 
-    let mut sources = Vec::new();
+    let mut sources = vec![];
     push_registries(&mut sources, document.get("registries"));
     push_sources(&mut sources, document.get("source"));
     sources
 }
 
-fn push_registries(out: &mut Vec<CargoRegistrySource>, item: Option<&Item>) {
-    let Some(table) = item.and_then(Item::as_table) else {
+fn push_registries(out: &mut CargoRegistrySources, item: Option<&Item>) {
+    let Some(table) = item.and_then(|value| value.as_table()) else {
         return;
     };
 
@@ -32,8 +34,8 @@ fn push_registries(out: &mut Vec<CargoRegistrySource>, item: Option<&Item>) {
     }));
 }
 
-fn push_sources(out: &mut Vec<CargoRegistrySource>, item: Option<&Item>) {
-    let Some(table) = item.and_then(Item::as_table) else {
+fn push_sources(out: &mut CargoRegistrySources, item: Option<&Item>) {
+    let Some(table) = item.and_then(|value| value.as_table()) else {
         return;
     };
 
@@ -68,7 +70,7 @@ fn string_item(item: &Item, field: &str) -> Option<String> {
         .and_then(item_string_url)
         .or_else(|| {
             item.as_value()
-                .and_then(TomlValue::as_inline_table)
+                .and_then(|value| value.as_inline_table())
                 .and_then(|table| table.get(field))
                 .and_then(value_string_url)
         })
@@ -81,9 +83,9 @@ fn item_string_url(item: &Item) -> Option<String> {
 fn value_string_url(value: &TomlValue) -> Option<String> {
     value
         .as_str()
-        .map(str::trim)
+        .map(|value| value.trim())
         .filter(|url| !url.is_empty())
-        .map(str::to_owned)
+        .map(|value| value.to_owned())
 }
 
 #[cfg(test)]

@@ -4,6 +4,8 @@ mod name;
 pub(super) use commit::is_commit_sha;
 use name::github_dependency_name;
 
+use GitHubReferenceKind::{Shortcut as GitHubShortcut, Url as GitHubUrl};
+
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub(super) enum GitHubReferenceKind {
     Shortcut,
@@ -22,9 +24,9 @@ pub(super) fn github_reference(value: &str) -> Option<GitHubReference<'_>> {
         .map_or((value, None), |(base, fragment)| (base, Some(fragment)));
     let name = github_dependency_name(base)?;
     let kind = if is_github_shortcut(base) {
-        GitHubReferenceKind::Shortcut
+        GitHubShortcut
     } else {
-        GitHubReferenceKind::Url
+        GitHubUrl
     };
     Some(GitHubReference {
         name,

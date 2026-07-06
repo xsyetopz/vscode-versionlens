@@ -2,6 +2,7 @@ use std::collections::BTreeSet;
 
 pub(super) const PUBSPEC_DEPENDENCY_PATHS: &[&str] = &[
     "version",
+    "workspace",
     "dependencies",
     "dev_dependencies",
     "dependency_overrides",
@@ -16,7 +17,7 @@ pub(super) fn selected_dependency_paths<'a>(dependency_paths: &'a [&'a str]) -> 
 }
 
 pub(super) fn dependency_groups<'a>(dependency_paths: &[&'a str]) -> Vec<&'a str> {
-    let mut seen = BTreeSet::new();
+    let mut seen: BTreeSet<&str> = crate::default();
     dependency_paths
         .iter()
         .filter_map(|path| dependency_group(path))

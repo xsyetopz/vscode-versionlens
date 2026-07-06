@@ -1,7 +1,8 @@
+use jsonc_parser::ast::Value::Object as JsonValueObject;
 use jsonc_parser::ast::{Object, Value};
 
 pub(super) fn object_at_path<'a>(root: &'a Object<'a>, path: &[&str]) -> Option<&'a Object<'a>> {
-    let Value::Object(object) = value_at_path(root, path)? else {
+    let JsonValueObject(object) = value_at_path(root, path)? else {
         return None;
     };
     Some(object)

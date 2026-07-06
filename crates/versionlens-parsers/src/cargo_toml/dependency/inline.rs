@@ -12,7 +12,7 @@ pub(super) fn inline_registry_name(value: &TomlValue) -> Option<&str> {
     value
         .as_inline_table()?
         .get("registry")
-        .and_then(TomlValue::as_str)
-        .map(str::trim)
+        .and_then(|value| value.as_str())
+        .map(|value| value.trim())
         .filter(|name| !name.is_empty())
 }

@@ -2,10 +2,11 @@ use crate::json_manifest::looks_like_package_json;
 use crate::model::{DocumentInput, ManifestKind};
 
 use super::uri::{file_name, has_extension};
+use crate::model::ManifestKind::NpmPackageJson;
 
 pub(super) fn classify_content_manifest(input: &DocumentInput, uri: &str) -> Option<ManifestKind> {
     if is_json_document(&input.language_id, uri) && looks_like_package_json(&input.text) {
-        return Some(ManifestKind::NpmPackageJson);
+        return Some(NpmPackageJson);
     }
     None
 }
