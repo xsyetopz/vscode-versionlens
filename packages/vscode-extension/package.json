@@ -5,7 +5,7 @@
 	"publisher": "xsyetopz",
 	"private": true,
 	"preview": false,
-	"version": "1.28.0",
+	"version": "2.0.0",
 	"main": "./dist/extension.js",
 	"repository": {
 		"type": "git",

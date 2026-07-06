@@ -1,6 +1,6 @@
 {
   "name": "cerzat43/smoke-test",
-  "description": "smoke tests for vscode-versionlens extension",
+  "description": "smoke tests for vscode-versionlens-redux extension",
   "version": "1.0.0",
   "require": {
     "php": "^7.1.3",
