@@ -1,13 +1,25 @@
 import { expect, test } from "bun:test";
 import { resolve } from "node:path";
 
-test("activation events match upstream manifest", async () => {
+test("activation events preserve upstream manifest events", async () => {
 	const upstream = await packageJson(
 		"external/versionlens/vscode-versionlens/package.json",
 	);
 	const local = await packageJson("packages/vscode-extension/package.json");
+	const upstreamEvents = upstream.activationEvents ?? [];
 
-	expect(local.activationEvents).toEqual(upstream.activationEvents);
+	expect(local.activationEvents?.slice(0, upstreamEvents.length)).toEqual(
+		upstreamEvents,
+	);
+});
+
+test("command activation events cover contributed commands", async () => {
+	const local = await packageJson("packages/vscode-extension/package.json");
+	const activationEvents = new Set(local.activationEvents ?? []);
+
+	for (const command of local.contributes?.commands ?? []) {
+		expect(activationEvents.has(`onCommand:${command.command}`)).toBe(true);
+	}
 });
 
 test("package keywords match upstream manifest metadata", async () => {
@@ -40,6 +52,12 @@ test("common configuration contribution schemas match upstream manifest", async 
 	const localProperties = local.contributes?.configuration?.properties ?? {};
 
 	for (const key of Object.keys(upstreamProperties)) {
+		if (key.endsWith(".files") || key.endsWith(".dependencyProperties")) {
+			expect(omitDefault(localProperties[key])).toEqual(
+				omitDefault(upstreamProperties[key]),
+			);
+			continue;
+		}
 		expect(localProperties[key]).toEqual(upstreamProperties[key]);
 	}
 });
@@ -66,10 +84,22 @@ async function packageJson(path: string) {
 		activationEvents?: string[];
 		keywords?: string[];
 		contributes?: {
+			commands?: { command: string }[];
 			jsonValidation?: unknown[];
 			configuration?: {
 				properties?: { [key: string]: unknown };
 			};
 		};
 	};
+}
+
+function omitDefault(value: unknown) {
+	if (value === null || typeof value !== "object" || Array.isArray(value)) {
+		return value;
+	}
+	const { default: _default, ...rest } = value as {
+		default?: unknown;
+		[key: string]: unknown;
+	};
+	return rest;
 }

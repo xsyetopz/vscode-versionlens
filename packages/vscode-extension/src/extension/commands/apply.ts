@@ -57,13 +57,12 @@ export async function applyRustEdits(
 	if (!output) {
 		return;
 	}
+	const selection = { dependencyName, command, selectedVersion };
 	output = await resolveAuthenticationIfNeeded(
 		state,
 		editor.document,
 		output,
-		dependencyName,
-		command,
-		selectedVersion,
+		selection,
 	);
 	if (!output) {
 		return;
@@ -86,21 +85,24 @@ export async function applyRustEdits(
 		state,
 		editor.document,
 		output.edits,
-		codeLensReplacementMode(command, dependencyName, selectedVersion),
+		codeLensReplacementMode(selection),
 	);
 }
 
 type CodeLensReplacementMode = "disable" | "disableThenEnable" | "preserve";
+type ApplySelection = {
+	dependencyName: string | undefined;
+	command: NativeApplyCommand | undefined;
+	selectedVersion: string | undefined;
+};
 
 function codeLensReplacementMode(
-	command: NativeApplyCommand | undefined,
-	dependencyName: string | undefined,
-	selectedVersion: string | undefined,
+	selection: ApplySelection,
 ): CodeLensReplacementMode {
-	if (command === "sort") {
+	if (selection.command === "sort") {
 		return "preserve";
 	}
-	if (dependencyName || selectedVersion) {
+	if (selection.dependencyName || selection.selectedVersion) {
 		return "disable";
 	}
 	return "disableThenEnable";
@@ -135,9 +137,7 @@ async function resolveAuthenticationIfNeeded(
 	state: ExtensionState,
 	document: vscode.TextDocument,
 	output: ResolveDocumentOutput,
-	dependencyName: string | undefined,
-	command: NativeApplyCommand | undefined,
-	selectedVersion: string | undefined,
+	selection: ApplySelection,
 ) {
 	if (!(output.authorizationRequiredCount > 0)) {
 		return output;
@@ -157,9 +157,7 @@ async function resolveAuthenticationIfNeeded(
 	const retried = await retryAfterAddingAuthentication(
 		state,
 		document,
-		dependencyName,
-		command,
-		selectedVersion,
+		selection,
 		authRequest,
 	);
 	return retried && !(retried.authorizationRequiredCount > 0)
@@ -170,9 +168,7 @@ async function resolveAuthenticationIfNeeded(
 async function retryAfterAddingAuthentication(
 	state: ExtensionState,
 	document: vscode.TextDocument,
-	dependencyName: string | undefined,
-	command: NativeApplyCommand | undefined,
-	selectedVersion: string | undefined,
+	selection: ApplySelection,
 	authRequest: Parameters<typeof addAuthHeader>[1],
 ) {
 	if (!(await addAuthHeader(state, authRequest))) {
@@ -182,9 +178,9 @@ async function retryAfterAddingAuthentication(
 	return applyCommand(
 		state,
 		document,
-		dependencyName,
-		command,
-		selectedVersion,
+		selection.dependencyName,
+		selection.command,
+		selection.selectedVersion,
 	);
 }
 

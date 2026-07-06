@@ -1,4 +1,5 @@
 import { expect, mock, test } from "bun:test";
+import { readFileSync } from "node:fs";
 
 const createdWatchers: {
 	pattern: unknown;
@@ -20,6 +21,7 @@ const filesConfig: Record<string, unknown> = {
 	exclude: { "**/dist/**": true, "**/tmp/**": false },
 };
 const versionlensConfig: Record<string, unknown> = {
+	"hex.files": "**/{mix.exs,rebar.config,gleam.toml}",
 	"npm.files": "**/package.json",
 };
 
@@ -33,7 +35,7 @@ function uri(value: string) {
 
 function document(
 	value: string,
-	text = '{"dependencies":{"left-pad":"1.0.0"}}',
+	text = packageFileFixture("package-left-pad.json"),
 ) {
 	return {
 		getText: () => text,
@@ -190,6 +192,11 @@ test("registers VS Code file watchers for configured package-file patterns", asy
 	expect(
 		createdWatchers.some((watcher) => watcher.pattern === "**/package.json"),
 	).toBe(true);
+	expect(
+		createdWatchers.some(
+			(watcher) => watcher.pattern === "**/{mix.exs,rebar.config,gleam.toml}",
+		),
+	).toBe(true);
 	expect(createdWatchers.every((watcher) => watcher.created.length === 1)).toBe(
 		true,
 	);
@@ -233,7 +240,7 @@ test("initial workspace scan analyzes discovered package files through the nativ
 	).toContain("file:///workspace/package.json");
 	expect(analyzedInputs).toContainEqual({
 		languageId: "json",
-		text: '{"dependencies":{"left-pad":"1.0.0"}}',
+		text: packageFileFixture("package-left-pad.json"),
 		uri: "file:///workspace/package.json",
 		workspaceRoot: "/workspace",
 	});
@@ -316,7 +323,7 @@ test("single-file activation analyzes the active file without workspace scanning
 	expect(findFilesCalls).toEqual([]);
 	expect(analyzedInputs).toContainEqual({
 		languageId: "json",
-		text: '{"dependencies":{"left-pad":"1.0.0"}}',
+		text: packageFileFixture("package-left-pad.json"),
 		uri: "file:///standalone/package.json",
 	});
 	expect(
@@ -357,7 +364,7 @@ test("workspace mode watches activated package files outside the workspace", asy
 
 	expect(analyzedInputs).toContainEqual({
 		languageId: "json",
-		text: '{"dependencies":{"left-pad":"1.0.0"}}',
+		text: packageFileFixture("package-left-pad.json"),
 		uri: "file:///outside/package.json",
 	});
 	expect(
@@ -395,3 +402,10 @@ test("disposing package file watchers clears workspace and external watcher stat
 	expect(currentState.lifecycle.packageFileWatchers).toEqual([]);
 	expect(currentState.lifecycle.externalPackageFileWatchers.size).toBe(0);
 });
+
+function packageFileFixture(name: string): string {
+	return readFileSync(
+		`${process.cwd()}/tests/fixtures/vscode-extension/${name}`,
+		"utf8",
+	);
+}

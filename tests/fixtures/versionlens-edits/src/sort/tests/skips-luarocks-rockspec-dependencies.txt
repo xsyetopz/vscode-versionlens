@@ -1,0 +1,4 @@
+dependencies = {
+   "zlib >= 1.0.0",
+   "busted >= 2.0.0"
+}

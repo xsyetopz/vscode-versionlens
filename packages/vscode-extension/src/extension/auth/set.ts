@@ -15,6 +15,8 @@ import {
 } from "./store.ts";
 
 type AuthenticationScheme = "Basic" | "Custom";
+type AuthContext = NonNullable<ExtensionState["context"]>;
+type AuthorizationPromptResult = Promise<string | undefined>;
 type AuthHeaderStatus = "User cancelled" | "Credentials failed";
 
 type ProviderQuickPick = vscode.QuickPickItem & {
@@ -102,7 +104,7 @@ async function retryExistingAuthHeader(
 	if (!(context && options.authUrl)) {
 		return undefined;
 	}
-	const header = existingAuthHeader(context, options.authUrl);
+	const header = getUrlAuthentication(context, options.authUrl);
 	if (!header || header.scheme === notSetScheme) {
 		return undefined;
 	}
@@ -168,13 +170,6 @@ function authHeaderLabelForScheme(scheme: AuthenticationScheme) {
 	return scheme === basicScheme ? "Basic Auth" : "Custom Value";
 }
 
-function existingAuthHeader(
-	context: NonNullable<ExtensionState["context"]>,
-	url: string,
-) {
-	return getUrlAuthentication(context, url);
-}
-
 export function isAuthHeaderSuppressed(
 	state: ExtensionState,
 	options: AddAuthHeaderOptions | undefined,
@@ -184,13 +179,13 @@ export function isAuthHeaderSuppressed(
 	if (!(authUrl && context)) {
 		return false;
 	}
-	return existingAuthHeader(context, authUrl)?.scheme === notSetScheme;
+	return getUrlAuthentication(context, authUrl)?.scheme === notSetScheme;
 }
 
 async function promptAuthorizationUrl(
 	options: AddAuthHeaderOptions,
 	suggestedUrl = options.authUrl,
-): Promise<string | undefined> {
+): AuthorizationPromptResult {
 	const url = normalizedAuthorizationUrl(
 		await vscode.window.showInputBox({
 			ignoreFocusOut: true,
@@ -275,7 +270,7 @@ async function confirmInsecureUrl(url: string) {
 async function authorizationValue(
 	scheme: AuthenticationScheme,
 	url: string,
-): Promise<string | undefined> {
+): AuthorizationPromptResult {
 	if (scheme === customScheme) {
 		return normalizedAuthHeaderValue(
 			await vscode.window.showInputBox({
@@ -290,9 +285,7 @@ async function authorizationValue(
 	return await basicAuthorizationValue(url);
 }
 
-async function basicAuthorizationValue(
-	url: string,
-): Promise<string | undefined> {
+async function basicAuthorizationValue(url: string): AuthorizationPromptResult {
 	const username = await vscode.window.showInputBox({
 		ignoreFocusOut: true,
 		password: false,
@@ -324,7 +317,7 @@ async function basicAuthorizationValue(
 }
 
 async function suppressAuthPrompt(
-	context: NonNullable<ExtensionState["context"]>,
+	context: AuthContext,
 	url: string | undefined,
 	status: AuthHeaderStatus = userCancelledStatus,
 ) {
@@ -339,7 +332,7 @@ async function suppressAuthPrompt(
 }
 
 async function writeUrlAuthentication(
-	context: NonNullable<ExtensionState["context"]>,
+	context: AuthContext,
 	url: string,
 	metadataOrStatus?: AuthHeaderMetadata | AuthHeaderStatus,
 ) {

@@ -1,4 +1,5 @@
 import { expect, mock, test } from "bun:test";
+import { readFileSync } from "node:fs";
 
 let activeTextEditor: { document: unknown } | undefined;
 let applyEditBlocker: Promise<void> | undefined;
@@ -619,8 +620,19 @@ function commandState(session: unknown, extra: Record<string, unknown> = {}) {
 
 function documentStub(packageName: string) {
 	return {
-		getText: () => `{"dependencies":{"${packageName}":"1.0.0"}}`,
+		getText: () =>
+			packageFileFixture("package-left-pad-template.json").replace(
+				"__PACKAGE__",
+				packageName,
+			),
 		languageId: "json",
 		uri: { toString: () => "file:///package.json" },
 	};
+}
+
+function packageFileFixture(name: string): string {
+	return readFileSync(
+		`${process.cwd()}/tests/fixtures/vscode-extension/${name}`,
+		"utf8",
+	);
 }

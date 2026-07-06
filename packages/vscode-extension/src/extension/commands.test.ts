@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
 
 import {
 	appliedEdits,
@@ -505,7 +506,7 @@ test("resolve command applies Rust-produced edits", async () => {
 	appliedEdits.length = 0;
 	clearRegisteredCommands();
 	const document = {
-		getText: () => '{"dependencies":{"left-pad":"1.0.0"}}',
+		getText: () => packageFileFixture("package-left-pad.json"),
 		languageId: "json",
 		uri: { toString: () => "file:///package.json" },
 	};
@@ -571,7 +572,7 @@ test("choose build command applies the selected Rust build edit", async () => {
 	quickPickOptions.length = 0;
 	clearRegisteredCommands();
 	const document = {
-		getText: () => '{"dependencies":{"left-pad":"1.0.0+build.1"}}',
+		getText: () => packageFileFixture("package-left-pad-build.json"),
 		languageId: "json",
 		uri: { toString: () => "file:///package.json" },
 	};
@@ -629,7 +630,7 @@ test("resolve command confirms vulnerable updates before applying edits", async 
 	testState.warningChoice = undefined;
 	clearRegisteredCommands();
 	const document = {
-		getText: () => '{"dependencies":{"left-pad":"1.0.0"}}',
+		getText: () => packageFileFixture("package-left-pad.json"),
 		languageId: "json",
 		uri: { toString: () => "file:///package.json" },
 	};
@@ -673,3 +674,10 @@ test("resolve command confirms vulnerable updates before applying edits", async 
 	expect(appliedEdits).toHaveLength(1);
 	testState.warningChoice = undefined;
 });
+
+function packageFileFixture(name: string): string {
+	return readFileSync(
+		`${process.cwd()}/tests/fixtures/vscode-extension/${name}`,
+		"utf8",
+	);
+}

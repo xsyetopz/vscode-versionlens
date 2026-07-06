@@ -1,0 +1,7 @@
+require (
+	zeta.example/pkg v1.0.0
+)
+
+require (
+	alpha.example/pkg v1.0.0
+)

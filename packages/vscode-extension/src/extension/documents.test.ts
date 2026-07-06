@@ -1,9 +1,14 @@
 import { expect, mock, test } from "bun:test";
+import { readFileSync } from "node:fs";
 
 const defaultFilePatternEntries = [
 	["cargo.files", "**/Cargo.toml", ["toml"]],
 	["composer.files", "**/composer.json", ["json", "jsonc"]],
-	["deno.files", "**/{deno.json,deno.jsonc}", ["json", "jsonc"]],
+	[
+		"deno.files",
+		"**/{deno.json,deno.jsonc,import_map.json,jsr.json,jsr.jsonc}",
+		["json", "jsonc"],
+	],
 	[
 		"docker.files",
 		"**/{dockerfile,*.dockerfile,Dockerfile,*.Dockerfile,compose.yaml,compose.yml,*.compose.yaml,*.compose.yml,compose.*.yaml,compose.*.yml,docker-compose.yaml,docker-compose.yml,docker-compose.*.yaml,docker-compose.*.yml}",
@@ -11,13 +16,25 @@ const defaultFilePatternEntries = [
 	],
 	[
 		"dotnet.files",
-		"**/{*.csproj,*.fsproj,*.vbproj,project.json,*.targets,*.props}",
-		["xml", "json", "jsonc"],
+		"**/{*.csproj,*.fsproj,*.vbproj,project.json,packages.config,paket.dependencies,paket.references,*.targets,*.props}",
+		["xml", "json", "jsonc", "plaintext"],
 	],
-	["dub.files", "**/{dub.json,dub.selections.json}", ["json", "jsonc"]],
-	["golang.files", "**/go.mod", ["go.mod"]],
-	["maven.files", "**/pom.xml", ["xml"]],
-	["npm.files", "**/package.json", ["json", "jsonc"]],
+	[
+		"dub.files",
+		"**/{dub.json,dub.selections.json,dub.sdl}",
+		["json", "jsonc", "plaintext"],
+	],
+	["golang.files", "**/{go.mod,go.work}", ["go.mod"]],
+	[
+		"maven.files",
+		"**/{pom.xml,build.gradle,build.gradle.kts,settings.gradle,settings.gradle.kts,gradle/libs.versions.toml,build.sbt,deps.edn,project.clj}",
+		["xml", "groovy", "kotlin", "toml", "scala", "clojure"],
+	],
+	[
+		"npm.files",
+		"**/{package.json,package.json5,package.yaml,package.yml}",
+		["json", "jsonc", "json5", "yaml"],
+	],
 	[
 		"pnpm.files",
 		"**/{pnpm-workspace.yaml,pnpm-workspace.yml,.yarnrc.yaml,.yarnrc.yml}",
@@ -25,11 +42,28 @@ const defaultFilePatternEntries = [
 	],
 	[
 		"pypi.files",
-		"**/{Pipfile,pyproject.toml,*requirements*.txt}",
+		"**/{Pipfile,pyproject.toml,*requirements*.txt,*constraints*.txt}",
 		["toml", "pip-requirements", "plaintext"],
 	],
-	["pub.files", "**/{pubspec.yaml,pubspec.yml}", ["yaml"]],
+	[
+		"pub.files",
+		"**/{pubspec.yaml,pubspec.yml,pubspec_overrides.yaml}",
+		["yaml"],
+	],
 	["ruby.files", "**/Gemfile", ["ruby", "plaintext"]],
+	[
+		"hex.files",
+		"**/{mix.exs,rebar.config,gleam.toml}",
+		["elixir", "erlang", "toml", "plaintext"],
+	],
+	["opam.files", "**/{opam,*.opam,dune-project}", ["plaintext"]],
+	[
+		"hackage.files",
+		"**/{*.cabal,cabal.project,stack.yaml,stack.yml}",
+		["plaintext", "yaml"],
+	],
+	["julia.files", "**/{Project.toml,Manifest.toml,Manifest-v*.toml}", ["toml"]],
+	["cran.files", "**/{DESCRIPTION,renv.lock}", ["plaintext", "json"]],
 ] as const;
 const defaultFilePatterns = defaultFilePatternEntries.map(
 	([, pattern]) => pattern,
@@ -105,6 +139,15 @@ mock.module("vscode", () => ({
 
 		constructor(...values: number[]) {
 			this.values = values;
+		}
+	},
+	RelativePattern: class {
+		base: unknown;
+		pattern: string;
+
+		constructor(base: unknown, pattern: string) {
+			this.base = base;
+			this.pattern = pattern;
 		}
 	},
 	Uri: {
@@ -219,12 +262,17 @@ test("documentSelectors filters file-backed providers using enabledProviders lik
 
 	expect(selectors).toContainEqual({
 		language: "json",
-		pattern: "**/package.json",
+		pattern: "**/{package.json,package.json5,package.yaml,package.yml}",
 		scheme: "file",
 	});
 	expect(selectors).toContainEqual({
 		language: "jsonc",
-		pattern: "**/package.json",
+		pattern: "**/{package.json,package.json5,package.yaml,package.yml}",
+		scheme: "file",
+	});
+	expect(selectors).toContainEqual({
+		language: "yaml",
+		pattern: "**/{package.json,package.json5,package.yaml,package.yml}",
 		scheme: "file",
 	});
 	expect(selectors).not.toContainEqual({
@@ -243,7 +291,7 @@ test("code lens provider renders cached Rust code lenses before background resol
 	let analyzeDocumentCount = 0;
 	let refreshCount = 0;
 	const document = {
-		getText: () => '{"dependencies":{"left-pad":"1.0.0"}}',
+		getText: () => packageFileFixture("package-left-pad.json"),
 		languageId: "json",
 		uri: { toString: () => "file:///package.json" },
 	};
@@ -330,7 +378,7 @@ test("code lens provider reports native resolve failures without blocking cached
 	codeLensProviders.length = 0;
 	const failure = new Error("resolve failed");
 	const document = {
-		getText: () => '{"dependencies":{"left-pad":"1.0.0"}}',
+		getText: () => packageFileFixture("package-left-pad.json"),
 		languageId: "json",
 		uri: { toString: () => "file:///package.json" },
 	};
@@ -370,7 +418,7 @@ test("code lens provider does not resolve or refresh after lenses are hidden", a
 	let resolveDocumentCount = 0;
 	let refreshCount = 0;
 	const document = {
-		getText: () => '{"dependencies":{"left-pad":"1.0.0"}}',
+		getText: () => packageFileFixture("package-left-pad.json"),
 		languageId: "json",
 		uri: { toString: () => "file:///package.json" },
 	};
@@ -416,7 +464,7 @@ test("code lens provider rejects when native analyze fails", async () => {
 	codeLensProviders.length = 0;
 	const failure = new Error("analyze failed");
 	const document = {
-		getText: () => '{"dependencies":{"left-pad":"1.0.0"}}',
+		getText: () => packageFileFixture("package-left-pad.json"),
 		languageId: "json",
 		uri: { toString: () => "file:///package.json" },
 	};
@@ -452,7 +500,7 @@ test("code lens command argument carries native payload through the CodeLens obj
 	}
 	const applyInputs: unknown[] = [];
 	const document = {
-		getText: () => '{"dependencies":{"left-pad":"1.0.0"}}',
+		getText: () => packageFileFixture("package-left-pad.json"),
 		languageId: "json",
 		uri: { toString: () => "file:///package.json" },
 	};
@@ -546,7 +594,7 @@ test("refreshDiagnostics renders upstream vulnerability diagnostics without stat
 	diagnosticsSets.length = 0;
 	let resolveDocumentCount = 0;
 	const document = {
-		getText: () => '{"dependencies":{"left-pad":"1.0.0"}}',
+		getText: () => packageFileFixture("package-left-pad.json"),
 		isDirty: false,
 		languageId: "json",
 		uri: { toString: () => "file:///package.json" },
@@ -617,3 +665,10 @@ test("refreshDiagnostics renders upstream vulnerability diagnostics without stat
 		"left-pad@1.0.0",
 	);
 });
+
+function packageFileFixture(name: string): string {
+	return readFileSync(
+		`${process.cwd()}/tests/fixtures/vscode-extension/${name}`,
+		"utf8",
+	);
+}

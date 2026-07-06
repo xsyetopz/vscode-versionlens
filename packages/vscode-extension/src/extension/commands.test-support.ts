@@ -1,4 +1,5 @@
 import { mock } from "bun:test";
+import { readFileSync } from "node:fs";
 
 let activeTextEditor: { document: unknown } | undefined;
 let analyzed:
@@ -251,7 +252,7 @@ mock.module("vscode", () => ({
 		getWorkspaceFolder: () => ({ uri: { fsPath: "/workspace" } }),
 		openTextDocument(uri: unknown) {
 			return {
-				getText: () => '{"dependencies":{"left-pad":"1.0.0"}}',
+				getText: () => packageFileFixture("package-left-pad.json"),
 				languageId: "json",
 				uri,
 			};
@@ -402,3 +403,10 @@ export {
 	warningMessages,
 	workspaceConfig,
 };
+
+function packageFileFixture(name: string): string {
+	return readFileSync(
+		`${process.cwd()}/tests/fixtures/vscode-extension/${name}`,
+		"utf8",
+	);
+}

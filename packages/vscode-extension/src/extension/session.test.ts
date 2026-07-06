@@ -53,6 +53,7 @@ test("dependencyProperties leaves parser defaults in Rust unless configured", as
 	const npmDependencyProperties = [
 		"version",
 		"packageManager",
+		"devEngines.packageManager",
 		"dependencies",
 		"devDependencies",
 		"peerDependencies",

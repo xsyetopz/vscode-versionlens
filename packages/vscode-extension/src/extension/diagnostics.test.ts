@@ -1,4 +1,5 @@
 import { expect, mock, test } from "bun:test";
+import { readFileSync } from "node:fs";
 
 let activeTextEditor: { document: TextDocumentStub } | undefined;
 let warningChoice: string | undefined;
@@ -433,7 +434,7 @@ function state(extra: Record<string, unknown> = {}) {
 
 function documentStub(uri: string): TextDocumentStub {
 	return {
-		getText: () => "{}",
+		getText: () => packageFileFixture("empty.json"),
 		languageId: "json",
 		uri: {
 			toString: () => uri,
@@ -485,4 +486,11 @@ function outputFor(uri: string) {
 			vulnerabilityCount: 0,
 		},
 	};
+}
+
+function packageFileFixture(name: string): string {
+	return readFileSync(
+		`${process.cwd()}/tests/fixtures/vscode-extension/${name}`,
+		"utf8",
+	);
 }
