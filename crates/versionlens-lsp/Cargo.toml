@@ -1,0 +1,24 @@
+[package]
+name = "versionlens-lsp"
+edition.workspace = true
+rust-version.workspace = true
+description = "Editor-neutral VersionLens language server"
+license.workspace = true
+repository.workspace = true
+readme = "README.md"
+keywords.workspace = true
+categories.workspace = true
+version.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+anyhow.workspace = true
+lsp-server.workspace = true
+lsp-types.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+versionlens-core.workspace = true
+versionlens-parsers.workspace = true
+versionlens-vscode-model.workspace = true

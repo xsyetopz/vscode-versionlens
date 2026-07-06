@@ -5,6 +5,7 @@ members = [
   "crates/versionlens-edits",
   "crates/versionlens-http",
   "crates/versionlens-napi",
+  "crates/versionlens-lsp",
   "crates/versionlens-parsers",
   "crates/versionlens-providers",
   "crates/versionlens-suggestions",
@@ -17,7 +18,7 @@ resolver = "3"
 edition = "2024"
 rust-version = "1.96"
 license = "ISC"
-repository = "https://gitlab.com/versionlens/vscode-versionlens.git"
+repository = "https://github.com/xsyetopz/versionlens-redux.git"
 readme = "README.md"
 keywords = ["versionlens", "vscode", "dependencies"]
 categories = ["development-tools"]
@@ -26,10 +27,12 @@ version = "0.1.0"
 [workspace.dependencies]
 base64 = "0.22.1"
 anyhow = "1.0.103"
-napi = "3.9.4"
+napi = "3.10.3"
 napi-build = "2.3.2"
-napi-derive = "3.5.7"
+napi-derive = "3.5.9"
 jsonc-parser = "0.32.4"
+lsp-server = "0.8.0"
+lsp-types = "0.97.0"
 marked-yaml = "0.8.0"
 quick-xml = "0.41.0"
 semver = "1.0.28"
@@ -43,6 +46,7 @@ versionlens-cache = { path = "crates/versionlens-cache" }
 versionlens-core = { path = "crates/versionlens-core" }
 versionlens-edits = { path = "crates/versionlens-edits" }
 versionlens-http = { path = "crates/versionlens-http" }
+versionlens-lsp = { path = "crates/versionlens-lsp" }
 versionlens-parsers = { path = "crates/versionlens-parsers" }
 versionlens-providers = { path = "crates/versionlens-providers" }
 versionlens-suggestions = { path = "crates/versionlens-suggestions" }

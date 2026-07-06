@@ -1,0 +1,73 @@
+authors = ["VersionLens contributors"]
+description = "VersionLens Redux dependency hints, diagnostics, and code lenses through the shared VersionLens language server."
+id = "versionlens"
+name = "VersionLens Redux"
+repository = "https://github.com/xsyetopz/versionlens-redux"
+schema_version = 1
+version = "0.1.0"
+
+[language_servers.versionlens]
+language = "JSON"
+languages = [
+  "C",
+  "C#",
+  "C++",
+  "Clojure",
+  "Dockerfile",
+  "Elixir",
+  "Erlang",
+  "Gleam",
+  "Go",
+  "HCL",
+  "Java",
+  "JavaScript",
+  "JSON",
+  "JSONC",
+  "Kotlin",
+  "Lua",
+  "Nix",
+  "Python",
+  "Ruby",
+  "Rust",
+  "Scala",
+  "Shell Script",
+  "Swift",
+  "TOML",
+  "TSX",
+  "TypeScript",
+  "XML",
+  "YAML",
+  "Zig",
+]
+name = "VersionLens Redux Language Server"
+
+[language_servers.versionlens.language_ids]
+"C" = "c"
+"C#" = "csharp"
+"C++" = "cpp"
+"Clojure" = "clojure"
+"Dockerfile" = "dockerfile"
+"Elixir" = "elixir"
+"Erlang" = "erlang"
+"Gleam" = "gleam"
+"Go" = "go"
+"HCL" = "terraform"
+"Java" = "java"
+"JavaScript" = "javascript"
+"JSON" = "json"
+"JSONC" = "jsonc"
+"Kotlin" = "kotlin"
+"Lua" = "lua"
+"Nix" = "nix"
+"Python" = "python"
+"Ruby" = "ruby"
+"Rust" = "rust"
+"Scala" = "scala"
+"Shell Script" = "shellscript"
+"Swift" = "swift"
+"TOML" = "toml"
+"TSX" = "typescriptreact"
+"TypeScript" = "typescript"
+"XML" = "xml"
+"YAML" = "yaml"
+"Zig" = "zig"

@@ -1,0 +1,13 @@
+<idea-plugin>
+  <id>com.versionlens.jetbrains</id>
+  <name>VersionLens Redux</name>
+  <vendor>VersionLens contributors</vendor>
+
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.lsp</depends>
+  <depends>com.intellij.modules.ultimate</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <platform.lsp.serverSupportProvider implementation="com.versionlens.jetbrains.VersionLensLspServerSupportProvider" />
+  </extensions>
+</idea-plugin>
