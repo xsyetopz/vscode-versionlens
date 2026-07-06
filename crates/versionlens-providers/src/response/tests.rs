@@ -6,7 +6,7 @@ use crate::{
 };
 
 use super::{
-    LatestVersionRequest, RegistryErrorStatus, build_versions_from_response, docker_tag_exists,
+    LatestVersionRequest, build_versions_from_response, docker_tag_exists,
     http_status_message_from_code, latest_version_from_response,
     latest_version_from_response_for_request, latest_version_from_response_with_prereleases,
     npm_build_versions, npm_error_status_from_response, release_versions_from_response,
@@ -57,3 +57,4 @@ mod dotnet;
 mod latest;
 mod npm_errors;
 mod vulnerability;
+mod vulnerability_identity;

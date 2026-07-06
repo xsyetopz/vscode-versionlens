@@ -15,7 +15,7 @@ pub(crate) fn latest_version_array(
         .filter_map(|entry| {
             entry
                 .as_str()
-                .or_else(|| entry.get(field).and_then(Value::as_str))
+                .or_else(|| entry.get(field).and_then(|value| value.as_str()))
         });
 
     latest_version_with_prerelease_tags(versions, include_prereleases, prerelease_tags)
@@ -31,7 +31,7 @@ pub(crate) fn latest_version_strings(
         .unwrap_or(value)
         .as_array()?
         .iter()
-        .filter_map(Value::as_str);
+        .filter_map(|value| value.as_str());
 
     latest_version_with_prerelease_tags(versions, include_prereleases, prerelease_tags)
 }

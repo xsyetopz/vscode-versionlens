@@ -1,37 +1,56 @@
 use versionlens_parsers::Ecosystem;
 
 use super::ResponseRequest;
+use crate::response::cran::latest_cran_version;
 use crate::response::go::latest_go_version;
+use crate::response::haxelib::latest_haxelib_version;
+use crate::response::helm::latest_helm_version;
+use crate::response::julia::latest_julia_version;
+use crate::response::luarocks::latest_luarocks_version;
+use crate::response::opam::latest_opam_version;
 use crate::response::python::latest_python_version;
 use crate::response::xml::latest_maven_version;
+use versionlens_parsers::Ecosystem::{
+    Cran, Go, Haxelib, Helm, Julia, LuaRocks, Maven, Opam, Python,
+};
 
 pub(super) fn latest_text_response(
     ecosystem: Ecosystem,
     body: &str,
-    request: &ResponseRequest<'_>,
+    request: &TextResponseRequest<'_>,
 ) -> Option<String> {
-    TEXT_RESPONSE_PARSERS
-        .iter()
-        .find_map(|(known, parse)| (*known == ecosystem).then(|| parse(body, request)))
-        .flatten()
+    match ecosystem {
+        Cran => latest_cran_version(
+            body,
+            request.package,
+            request.include_prereleases,
+            request.prerelease_tags,
+        ),
+        Go => latest_go_version(body, request.include_prereleases, request.prerelease_tags),
+        Haxelib => latest_haxelib_version(
+            body,
+            request.package,
+            request.include_prereleases,
+            request.prerelease_tags,
+        ),
+        Helm => latest_helm_version(
+            body,
+            request.package,
+            request.include_prereleases,
+            request.prerelease_tags,
+        ),
+        Julia => latest_julia_version(body, request.include_prereleases, request.prerelease_tags),
+        LuaRocks => latest_luarocks_version(
+            body,
+            request.package,
+            request.include_prereleases,
+            request.prerelease_tags,
+        ),
+        Maven => latest_maven_version(body, request.include_prereleases, request.prerelease_tags),
+        Opam => latest_opam_version(body, request.include_prereleases, request.prerelease_tags),
+        Python => latest_python_version(body, request.include_prereleases, request.prerelease_tags),
+        _ => None,
+    }
 }
 
-type TextResponseParser = for<'a> fn(&str, &ResponseRequest<'a>) -> Option<String>;
-
-const TEXT_RESPONSE_PARSERS: &[(Ecosystem, TextResponseParser)] = &[
-    (Ecosystem::Go, latest_go_text_response),
-    (Ecosystem::Maven, latest_maven_text_response),
-    (Ecosystem::Python, latest_python_text_response),
-];
-
-fn latest_go_text_response(body: &str, request: &ResponseRequest<'_>) -> Option<String> {
-    latest_go_version(body, request.include_prereleases, request.prerelease_tags)
-}
-
-fn latest_maven_text_response(body: &str, request: &ResponseRequest<'_>) -> Option<String> {
-    latest_maven_version(body, request.include_prereleases, request.prerelease_tags)
-}
-
-fn latest_python_text_response(body: &str, request: &ResponseRequest<'_>) -> Option<String> {
-    latest_python_version(body, request.include_prereleases, request.prerelease_tags)
-}
+type TextResponseRequest<'a> = ResponseRequest<'a>;

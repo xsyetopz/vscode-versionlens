@@ -14,7 +14,7 @@ pub(crate) fn latest_deno_version(
 
     value
         .get("latest")
-        .and_then(Value::as_str)
+        .and_then(|value| value.as_str())
         .filter(|version| !deno_release_is_yanked(value, version))
         .and_then(|version| {
             latest_version_with_prerelease_tags([version], include_prereleases, prerelease_tags)
@@ -29,7 +29,7 @@ fn latest_deno_version_key(
 ) -> Option<String> {
     if let Some(versions) = value.get("versions").or(Some(value))?.as_array() {
         return latest_version_with_prerelease_tags(
-            versions.iter().filter_map(Value::as_str),
+            versions.iter().filter_map(|value| value.as_str()),
             include_prereleases,
             prerelease_tags,
         );
@@ -50,7 +50,7 @@ fn latest_deno_version_key(
 fn deno_release_is_yanked(value: &Value, version: &str) -> bool {
     value
         .get("versions")
-        .and_then(Value::as_object)
+        .and_then(|value| value.as_object())
         .and_then(|versions| versions.get(version))
         .is_some_and(deno_version_is_yanked)
 }
@@ -58,6 +58,6 @@ fn deno_release_is_yanked(value: &Value, version: &str) -> bool {
 fn deno_version_is_yanked(entry: &Value) -> bool {
     entry
         .get("yanked")
-        .and_then(Value::as_bool)
+        .and_then(crate::json_bool)
         .unwrap_or(false)
 }

@@ -7,5 +7,14 @@ pub(super) fn go_registry_url_with_base(base_url: &str, name: &str) -> String {
 }
 
 pub(super) fn go_base_module(name: &str) -> String {
-    name.to_lowercase()
+    let mut encoded: String = crate::default();
+    for ch in name.chars() {
+        if ch.is_ascii_uppercase() {
+            encoded.push('!');
+            encoded.push(ch.to_ascii_lowercase());
+        } else {
+            encoded.push(ch);
+        }
+    }
+    encoded
 }

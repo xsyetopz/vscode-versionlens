@@ -1,10 +1,12 @@
 use super::trim_end_slash;
+use serde_json::Value;
+use serde_json::from_str;
 
 const NUGET_PACKAGE_BASE_ADDRESS: &str = "PackageBaseAddress";
 
 pub fn dotnet_package_url_from_service_index(body: &str, name: &str) -> Option<String> {
     let name = name.trim();
-    let value = serde_json::from_str::<serde_json::Value>(body).ok()?;
+    let value = from_str::<Value>(body).ok()?;
     let resource = value
         .get("resources")?
         .as_array()?
@@ -13,10 +15,10 @@ pub fn dotnet_package_url_from_service_index(body: &str, name: &str) -> Option<S
     Some(dotnet_package_url(resource, &name.to_lowercase()))
 }
 
-fn package_base_address_resource(resource: &serde_json::Value) -> Option<&str> {
+fn package_base_address_resource(resource: &Value) -> Option<&str> {
     if !resource
         .get("@type")
-        .and_then(serde_json::Value::as_str)
+        .and_then(|value| value.as_str())
         .is_some_and(|kind| kind.contains(NUGET_PACKAGE_BASE_ADDRESS))
     {
         return None;
@@ -25,7 +27,7 @@ fn package_base_address_resource(resource: &serde_json::Value) -> Option<&str> {
     resource
         .get("@id")?
         .as_str()
-        .map(str::trim)
+        .map(|value| value.trim())
         .filter(|id| !id.is_empty())
 }
 

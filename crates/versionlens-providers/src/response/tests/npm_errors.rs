@@ -1,14 +1,18 @@
 use super::{
-    RegistryErrorStatus, http_status_message_from_code, latest_version_for_requirement,
-    npm_error_status_from_response,
+    http_status_message_from_code, latest_version_for_requirement, npm_error_status_from_response,
 };
-use versionlens_parsers::Ecosystem;
+use crate::response::RegistryErrorStatus::{
+    Error as RegistryStatusError, Invalid as RegistryStatusInvalid,
+    InvalidWithLatest as RegistryStatusInvalidWithLatest,
+    NotSupported as RegistryStatusNotSupported,
+};
+use versionlens_parsers::Ecosystem::Npm;
 
 #[test]
 fn resolves_npm_dist_tag_requirements() {
     assert_eq!(
         latest_version_for_requirement(
-            Ecosystem::Npm,
+            Npm,
             "typescript",
             "next",
             r#"{"dist-tags":{"latest":"6.0.3","next":"7.0.0-beta.1"},"versions":{"6.0.3":{},"7.0.0-beta.1":{}}}"#,
@@ -21,33 +25,33 @@ fn resolves_npm_dist_tag_requirements() {
 fn reads_npm_error_statuses_from_responses() {
     assert_eq!(
         npm_error_status_from_response(r#"{"status":"ECONNREFUSED"}"#),
-        Some(RegistryErrorStatus::Error("connection refused".to_owned()))
+        Some(RegistryStatusError("connection refused".to_owned()))
     );
     assert_eq!(
         npm_error_status_from_response(r#"{"code":"EUNSUPPORTEDPROTOCOL"}"#),
-        Some(RegistryErrorStatus::NotSupported)
+        Some(RegistryStatusNotSupported)
     );
     assert_eq!(
         npm_error_status_from_response(r#"{"error":{"code":"EINVALIDTAGNAME"}}"#),
-        Some(RegistryErrorStatus::InvalidWithLatest(
+        Some(RegistryStatusInvalidWithLatest(
             "invalid version".to_owned()
         ))
     );
     assert_eq!(
         npm_error_status_from_response(r#"{"error":{"code":"EINVALIDPACKAGENAME"}}"#),
-        Some(RegistryErrorStatus::Invalid("invalid version".to_owned()))
+        Some(RegistryStatusInvalid("invalid version".to_owned()))
     );
     assert_eq!(
         npm_error_status_from_response(r#"{"status":"E404"}"#),
-        Some(RegistryErrorStatus::Error("not found".to_owned()))
+        Some(RegistryStatusError("not found".to_owned()))
     );
     assert_eq!(
         npm_error_status_from_response(r#"{"status":128}"#),
-        Some(RegistryErrorStatus::Error("not found".to_owned()))
+        Some(RegistryStatusError("not found".to_owned()))
     );
     assert_eq!(
         npm_error_status_from_response(r#"{"status":"ENOTFOUND"}"#),
-        Some(RegistryErrorStatus::Error("ENOTFOUND".to_owned()))
+        Some(RegistryStatusError("ENOTFOUND".to_owned()))
     );
 }
 

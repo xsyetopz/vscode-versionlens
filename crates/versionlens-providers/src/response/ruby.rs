@@ -1,10 +1,9 @@
+use super::common::latest_version_array;
 use serde_json::Value;
+use serde_json::from_str;
 use versionlens_versions::{compare_versions, normalized_version};
 
-use super::{
-    common::latest_version_array,
-    github::{latest_github_commit, latest_github_tag},
-};
+use super::github::{latest_github_commit, latest_github_tag};
 
 pub(crate) fn latest_ruby_version(
     value: &Value,
@@ -26,8 +25,8 @@ pub(crate) fn latest_ruby_version(
 }
 
 pub(crate) fn ruby_release_versions(body: &str) -> Vec<String> {
-    let Ok(value) = serde_json::from_str::<Value>(body) else {
-        return Vec::new();
+    let Ok(value) = from_str::<Value>(body) else {
+        return vec![];
     };
 
     let mut versions = value
@@ -39,7 +38,7 @@ pub(crate) fn ruby_release_versions(body: &str) -> Vec<String> {
         .filter_map(|entry| {
             entry
                 .as_str()
-                .or_else(|| entry.get("number").and_then(Value::as_str))
+                .or_else(|| entry.get("number").and_then(|value| value.as_str()))
         })
         .filter_map(normalized_version)
         .collect::<Vec<_>>();

@@ -1,9 +1,27 @@
-use quick_xml::Reader;
+use self::ElementTextEvent::{
+    End as ElementTextEnd, Finished as ElementTextFinished, Ignored as ElementTextIgnored,
+    Start as ElementTextStart, Text as ElementTextText,
+};
 use quick_xml::events::Event;
 
 mod event;
 
 use event::{ElementTextEvent, element_text_event};
+
+fn element_text_collector<'a, F>(
+    element_name: &'a [u8],
+    map_text: &'a mut F,
+) -> ElementTextCollector<'a, F>
+where
+    F: FnMut(&str) -> Option<String>,
+{
+    ElementTextCollector {
+        element_name,
+        in_element: false,
+        versions: vec![],
+        map_text,
+    }
+}
 
 pub(super) fn collect_element_texts<F>(
     body: &str,
@@ -13,8 +31,8 @@ pub(super) fn collect_element_texts<F>(
 where
     F: FnMut(&str) -> Option<String>,
 {
-    let mut reader = Reader::from_str(body);
-    let mut collector = ElementTextCollector::new(element_name, &mut map_text);
+    let mut reader = crate::xml_reader(body);
+    let mut collector = element_text_collector(element_name, &mut map_text);
 
     loop {
         let event = reader.read_event().ok()?;
@@ -40,22 +58,13 @@ impl<'a, F> ElementTextCollector<'a, F>
 where
     F: FnMut(&str) -> Option<String>,
 {
-    fn new(element_name: &'a [u8], map_text: &'a mut F) -> Self {
-        Self {
-            element_name,
-            in_element: false,
-            versions: Vec::new(),
-            map_text,
-        }
-    }
-
     fn event_finished(&mut self, event: Event<'_>) -> Option<bool> {
         match element_text_event(event, self.in_element, self.element_name)? {
-            ElementTextEvent::Start => self.in_element = true,
-            ElementTextEvent::Text(text) => self.collect_text(&text),
-            ElementTextEvent::End => self.in_element = false,
-            ElementTextEvent::Finished => return Some(true),
-            ElementTextEvent::Ignored => {}
+            ElementTextStart => self.in_element = true,
+            ElementTextText(text) => self.collect_text(&text),
+            ElementTextEnd => self.in_element = false,
+            ElementTextFinished => return Some(true),
+            ElementTextIgnored => {}
         }
 
         Some(false)

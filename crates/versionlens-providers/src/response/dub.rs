@@ -30,7 +30,7 @@ pub(crate) fn latest_dub_version(
 fn dub_version_entry(entry: &Value) -> Option<&str> {
     entry
         .as_str()
-        .or_else(|| entry.get("version").and_then(Value::as_str))
+        .or_else(|| entry.get("version").and_then(|value| value.as_str()))
 }
 
 fn latest_single_dub_pinned_version(versions: &[&str]) -> Option<String> {

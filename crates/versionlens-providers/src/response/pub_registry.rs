@@ -6,7 +6,7 @@ pub(crate) fn latest_pub_version(
     include_prereleases: bool,
     prerelease_tags: &[String],
 ) -> Option<String> {
-    if let Some(versions) = value.get("versions").and_then(Value::as_array) {
+    if let Some(versions) = value.get("versions").and_then(|value| value.as_array()) {
         return latest_version_with_prerelease_tags(
             versions
                 .iter()
@@ -28,7 +28,7 @@ fn latest_pub_alias_version(
 ) -> Option<String> {
     value
         .pointer("/latest/version")
-        .and_then(Value::as_str)
+        .and_then(|value| value.as_str())
         .and_then(|version| {
             latest_version_with_prerelease_tags([version], include_prereleases, prerelease_tags)
         })
@@ -37,12 +37,12 @@ fn latest_pub_alias_version(
 fn pub_version_entry(entry: &Value) -> Option<&str> {
     entry
         .as_str()
-        .or_else(|| entry.get("version").and_then(Value::as_str))
+        .or_else(|| entry.get("version").and_then(|value| value.as_str()))
 }
 
 fn pub_version_is_retracted(entry: &Value) -> bool {
     entry
         .get("retracted")
-        .and_then(Value::as_bool)
+        .and_then(crate::json_bool)
         .unwrap_or(false)
 }

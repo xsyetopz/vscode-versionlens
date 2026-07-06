@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::cmp::Ordering::Equal as OrderingEqual;
 
 pub(super) fn docker_version_key(
     tag: &str,
@@ -61,10 +62,10 @@ pub(super) fn compare_docker_key(left: &[u64], right: &[u64]) -> Ordering {
                 .unwrap_or(&0)
                 .cmp(right.get(index).unwrap_or(&0))
         })
-        .find(|ordering| *ordering != Ordering::Equal)
-        .unwrap_or(Ordering::Equal);
+        .find(|ordering| *ordering != OrderingEqual)
+        .unwrap_or(OrderingEqual);
 
-    if number_ordering == Ordering::Equal {
+    if number_ordering == OrderingEqual {
         left.len().cmp(&right.len())
     } else {
         number_ordering

@@ -1,17 +1,18 @@
 use serde_json::Value;
+use serde_json::from_str;
 use versionlens_versions::{compare_versions, normalized_version};
 
 pub(crate) fn dotnet_release_versions(body: &str) -> Vec<String> {
-    let Ok(value) = serde_json::from_str::<Value>(body) else {
-        return Vec::new();
+    let Ok(value) = from_str::<Value>(body) else {
+        return vec![];
     };
-    let Some(versions) = value.get("versions").and_then(Value::as_array) else {
-        return Vec::new();
+    let Some(versions) = value.get("versions").and_then(|value| value.as_array()) else {
+        return vec![];
     };
 
     let mut releases = versions
         .iter()
-        .filter_map(Value::as_str)
+        .filter_map(|value| value.as_str())
         .filter_map(normalized_version)
         .collect::<Vec<_>>();
 

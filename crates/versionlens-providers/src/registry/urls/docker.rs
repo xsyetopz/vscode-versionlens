@@ -1,4 +1,6 @@
 use serde_json::Value;
+use serde_json::from_str;
+use serde_json::to_string as to_json_string;
 
 use super::trim_end_slash;
 
@@ -6,8 +8,19 @@ const DOCKER_HUB_TAGS_PREFIX: &str = "https://hub.docker.com/v2/namespaces/";
 const DOCKER_HUB_TAGS_SUFFIX: &str = "/tags";
 
 pub(super) fn docker_registry_url(name: &str) -> String {
-    if let Some(repository) = explicit_registry_repository(name) {
+    if let Some(repository) = explicit_microsoft_repository(name) {
         return microsoft_docker_url(repository);
+    }
+
+    if let Some(repository) = explicit_docker_hub_repository(name) {
+        let (namespace, repo) = docker_namespace_repo(repository);
+        return format!(
+            "https://hub.docker.com/v2/namespaces/{namespace}/repositories/{repo}/tags"
+        );
+    }
+
+    if let Some((registry, repository)) = explicit_oci_repository(name) {
+        return docker_registry_url_with_base(&format!("https://{registry}"), repository);
     }
 
     let (namespace, repo) = docker_namespace_repo(name);
@@ -30,7 +43,7 @@ pub fn docker_hub_tags_page_url(url: &str, page: u8) -> Option<String> {
 }
 
 pub fn docker_hub_body_has_next_page(body: &str) -> bool {
-    serde_json::from_str::<Value>(body)
+    from_str::<Value>(body)
         .ok()
         .and_then(|value| docker_hub_next_page_present(&value))
         .unwrap_or(false)
@@ -39,7 +52,7 @@ pub fn docker_hub_body_has_next_page(body: &str) -> bool {
 pub fn merge_docker_hub_response_pages(pages: Vec<String>) -> Option<String> {
     let mut pages = pages.into_iter();
     let first = pages.next()?;
-    let Ok(mut merged) = serde_json::from_str::<Value>(&first) else {
+    let Ok(mut merged) = from_str::<Value>(&first) else {
         return Some(first);
     };
 
@@ -47,7 +60,7 @@ pub fn merge_docker_hub_response_pages(pages: Vec<String>) -> Option<String> {
         append_docker_hub_results(&mut merged, &page);
     }
 
-    Some(serde_json::to_string(&merged).unwrap_or(first))
+    Some(to_json_string(&merged).unwrap_or(first))
 }
 
 fn docker_namespace_repo(name: &str) -> (&str, &str) {
@@ -58,13 +71,23 @@ fn docker_namespace_repo(name: &str) -> (&str, &str) {
     parts.next().map_or(("library", name), |repo| (first, repo))
 }
 
-fn explicit_registry_repository(name: &str) -> Option<&str> {
+fn explicit_oci_repository(name: &str) -> Option<(&str, &str)> {
     let (registry, repository) = name.split_once('/')?;
     if !is_explicit_registry(registry) || repository.is_empty() {
         return None;
     }
 
-    Some(repository)
+    Some((registry, repository))
+}
+
+fn explicit_microsoft_repository(name: &str) -> Option<&str> {
+    let (registry, repository) = explicit_oci_repository(name)?;
+    (registry == "mcr.microsoft.com").then_some(repository)
+}
+
+fn explicit_docker_hub_repository(name: &str) -> Option<&str> {
+    let (registry, repository) = explicit_oci_repository(name)?;
+    matches!(registry, "docker.io" | "registry-1.docker.io").then_some(repository)
 }
 
 fn is_explicit_registry(registry: &str) -> bool {
@@ -86,13 +109,13 @@ fn docker_hub_next_page_present(value: &Value) -> Option<bool> {
 }
 
 fn append_docker_hub_results(merged: &mut Value, page: &str) {
-    let Ok(mut page) = serde_json::from_str::<Value>(page) else {
+    let Ok(mut page) = from_str::<Value>(page) else {
         return;
     };
-    let Some(page_results) = page.get_mut("results").and_then(Value::as_array_mut) else {
+    let Some(page_results) = page.get_mut("results").and_then(crate::json_array_mut) else {
         return;
     };
-    let Some(merged_results) = merged.get_mut("results").and_then(Value::as_array_mut) else {
+    let Some(merged_results) = merged.get_mut("results").and_then(crate::json_array_mut) else {
         return;
     };
 

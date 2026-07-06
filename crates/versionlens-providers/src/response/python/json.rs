@@ -17,7 +17,7 @@ pub(super) fn latest_python_json_version(
 
     value
         .pointer("/info/version")
-        .and_then(Value::as_str)
+        .and_then(|value| value.as_str())
         .filter(|version| !python_release_is_yanked(value, version))
         .and_then(|version| {
             latest_version_with_prerelease_tags([version], include_prereleases, prerelease_tags)
@@ -36,7 +36,7 @@ fn latest_python_release_key(
         releases
             .keys()
             .filter(|version| !python_release_is_yanked(value, version))
-            .map(String::as_str),
+            .map(|value| value.as_str()),
         include_prereleases,
         prerelease_tags,
     )

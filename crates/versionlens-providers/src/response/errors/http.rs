@@ -3,6 +3,7 @@ const HTTP_STATUS_MESSAGES: &[(u16, &str)] = &[
     (401, "401 not authorized"),
     (403, "403 forbidden"),
     (404, "not found"),
+    (429, "too many requests"),
     (500, "500 internal server error"),
 ];
 

@@ -1,7 +1,8 @@
 use serde_json::Value;
+use serde_json::from_str;
 
 pub(super) fn npm_response_status(body: &str) -> Option<String> {
-    let value = serde_json::from_str::<Value>(body).ok()?;
+    let value = from_str::<Value>(body).ok()?;
     let status = value
         .get("status")
         .or_else(|| value.get("code"))
@@ -9,6 +10,6 @@ pub(super) fn npm_response_status(body: &str) -> Option<String> {
 
     status
         .as_str()
-        .map(str::to_owned)
+        .map(|value| value.to_owned())
         .or_else(|| status.as_u64().map(|status| status.to_string()))
 }

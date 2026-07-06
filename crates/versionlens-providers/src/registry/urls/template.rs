@@ -1,6 +1,7 @@
 use versionlens_parsers::Ecosystem;
 
 use super::go::go_base_module;
+use versionlens_parsers::Ecosystem::Go;
 
 const NAME_TOKEN: &str = "{name}";
 const BASE_MODULE_TOKEN: &str = "{base-module}";
@@ -23,7 +24,7 @@ pub(super) fn template_registry_url(
 }
 
 fn base_module_name(ecosystem: Ecosystem, name: &str) -> String {
-    if ecosystem == Ecosystem::Go {
+    if ecosystem == Go {
         return go_base_module(name);
     }
 

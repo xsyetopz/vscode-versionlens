@@ -1,4 +1,11 @@
+use self::ElementTextEvent::{
+    End as ElementTextEnd, Finished as ElementTextFinished, Ignored as ElementTextIgnored,
+    Start as ElementTextStart, Text as ElementTextText,
+};
 use quick_xml::events::Event;
+use quick_xml::events::Event::{
+    End as XmlEventEnd, Eof as XmlEventEof, Start as XmlEventStart, Text as XmlEventText,
+};
 
 pub(super) enum ElementTextEvent {
     Start,
@@ -14,14 +21,12 @@ pub(super) fn element_text_event(
     element_name: &[u8],
 ) -> Option<ElementTextEvent> {
     match event {
-        Event::Start(event) if event.name().as_ref() == element_name => {
-            Some(ElementTextEvent::Start)
+        XmlEventStart(event) if event.name().as_ref() == element_name => Some(ElementTextStart),
+        XmlEventText(event) if in_element => {
+            Some(ElementTextText(event.decode().ok()?.into_owned()))
         }
-        Event::Text(event) if in_element => {
-            Some(ElementTextEvent::Text(event.decode().ok()?.into_owned()))
-        }
-        Event::End(event) if event.name().as_ref() == element_name => Some(ElementTextEvent::End),
-        Event::Eof => Some(ElementTextEvent::Finished),
-        _ => Some(ElementTextEvent::Ignored),
+        XmlEventEnd(event) if event.name().as_ref() == element_name => Some(ElementTextEnd),
+        XmlEventEof => Some(ElementTextFinished),
+        _ => Some(ElementTextIgnored),
     }
 }

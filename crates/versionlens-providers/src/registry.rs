@@ -8,14 +8,44 @@ pub use eligibility::{
     is_unsupported_dotnet_requirement,
 };
 pub use urls::{
-    docker_hub_body_has_next_page, docker_hub_tags_page_url, dotnet_package_url_from_service_index,
-    merge_docker_hub_response_pages, python_package_json_url_template, registry_url,
-    registry_url_with_base,
+    ansible_role_registry_url_with_base, docker_hub_body_has_next_page, docker_hub_tags_page_url,
+    dotnet_package_url_from_service_index, merge_docker_hub_response_pages,
+    python_package_json_url_template, registry_url, registry_url_with_base,
 };
 
 const PROVIDER_IDS: &[&str] = &[
-    "cargo", "composer", "deno", "dotnet", "docker", "dub", "go", "maven", "npm", "python", "pub",
+    "cargo",
+    "composer",
+    "deno",
+    "dotnet",
+    "docker",
+    "dub",
+    "go",
+    "maven",
+    "npm",
+    "python",
+    "pub",
     "ruby",
+    "hex",
+    "opam",
+    "hackage",
+    "julia",
+    "cran",
+    "conan",
+    "vcpkg",
+    "swift",
+    "zig",
+    "nim",
+    "luarocks",
+    "cpan",
+    "haxelib",
+    "terraform",
+    "helm",
+    "ansible",
+    "bazel",
+    "nix",
+    "unity",
+    "cocoapods",
 ];
 
 pub fn provider_id(ecosystem: Ecosystem) -> &'static str {

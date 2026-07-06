@@ -1,30 +1,31 @@
 use super::super::RegistryErrorStatus;
+use crate::response::RegistryErrorStatus::{
+    Error as RegistryStatusError, Invalid as RegistryStatusInvalid,
+    InvalidWithLatest as RegistryStatusInvalidWithLatest,
+    NotSupported as RegistryStatusNotSupported,
+};
 
 type RegistryErrorBuilder = fn(String) -> RegistryErrorStatus;
 type NpmErrorStatusSpec = (&'static str, RegistryErrorBuilder, &'static str);
 
 const NPM_ERROR_STATUSES: &[NpmErrorStatusSpec] = &[
-    (
-        "ECONNREFUSED",
-        RegistryErrorStatus::Error,
-        "connection refused",
-    ),
-    ("ECONNRESET", RegistryErrorStatus::Error, "connection reset"),
+    ("ECONNREFUSED", RegistryStatusError, "connection refused"),
+    ("ECONNRESET", RegistryStatusError, "connection reset"),
     ("EUNSUPPORTEDPROTOCOL", not_supported, "not supported"),
     (
         "EINVALIDTAGNAME",
-        RegistryErrorStatus::InvalidWithLatest,
+        RegistryStatusInvalidWithLatest,
         "invalid version",
     ),
     (
         "EINVALIDPACKAGENAME",
-        RegistryErrorStatus::Invalid,
+        RegistryStatusInvalid,
         "invalid version",
     ),
 ];
 
 fn not_supported(_: String) -> RegistryErrorStatus {
-    RegistryErrorStatus::NotSupported
+    RegistryStatusNotSupported
 }
 
 pub(super) fn npm_known_error_status(status: &str) -> Option<RegistryErrorStatus> {

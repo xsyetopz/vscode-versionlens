@@ -15,14 +15,3 @@ pub struct LatestVersionRequest<'a> {
     pub include_prereleases: bool,
     pub prerelease_tags: &'a [String],
 }
-
-impl<'a> ResponseRequest<'a> {
-    pub(super) fn from_latest(request: &LatestVersionRequest<'a>) -> Self {
-        Self {
-            package: request.package,
-            requirement: request.requirement,
-            include_prereleases: request.include_prereleases,
-            prerelease_tags: request.prerelease_tags,
-        }
-    }
-}

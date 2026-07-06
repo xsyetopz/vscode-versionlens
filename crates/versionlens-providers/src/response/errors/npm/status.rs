@@ -1,8 +1,9 @@
 use super::super::{RegistryErrorStatus, http_status_message_from_code};
+use crate::response::RegistryErrorStatus::Error as RegistryStatusError;
 
 pub(super) fn npm_status_error(status: &str) -> RegistryErrorStatus {
     if status == "128" {
-        return RegistryErrorStatus::Error("not found".to_owned());
+        return RegistryStatusError("not found".to_owned());
     }
 
     if let Some(message) = status
@@ -12,8 +13,8 @@ pub(super) fn npm_status_error(status: &str) -> RegistryErrorStatus {
         .ok()
         .and_then(http_status_message_from_code)
     {
-        return RegistryErrorStatus::Error(message.to_owned());
+        return RegistryStatusError(message.to_owned());
     }
 
-    RegistryErrorStatus::Error(status.to_owned())
+    RegistryStatusError(status.to_owned())
 }

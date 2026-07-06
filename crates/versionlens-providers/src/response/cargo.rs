@@ -33,7 +33,7 @@ fn latest_cargo_crate_version(
     if include_prereleases {
         return value
             .pointer("/crate/max_version")
-            .and_then(Value::as_str)
+            .and_then(|value| value.as_str())
             .and_then(|version| {
                 latest_version_with_prerelease_tags([version], true, prerelease_tags)
             })
@@ -43,7 +43,7 @@ fn latest_cargo_crate_version(
     stable_cargo_crate_version(value).or_else(|| {
         value
             .pointer("/crate/max_version")
-            .and_then(Value::as_str)
+            .and_then(|value| value.as_str())
             .and_then(|version| latest_version([version], false))
     })
 }
@@ -51,7 +51,7 @@ fn latest_cargo_crate_version(
 fn stable_cargo_crate_version(value: &Value) -> Option<String> {
     value
         .pointer("/crate/max_stable_version")
-        .and_then(Value::as_str)
+        .and_then(|value| value.as_str())
         .and_then(|version| latest_version([version], false))
 }
 
@@ -72,6 +72,6 @@ fn cargo_version_label(entry: &Value) -> Option<&str> {
 fn crate_is_yanked(entry: &Value) -> bool {
     entry
         .get("yanked")
-        .and_then(Value::as_bool)
+        .and_then(crate::json_bool)
         .unwrap_or(false)
 }

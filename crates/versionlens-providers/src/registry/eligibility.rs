@@ -1,4 +1,5 @@
 use versionlens_parsers::Ecosystem;
+use versionlens_parsers::Ecosystem::{Composer, Cran, Docker, Pub, Ruby};
 
 mod docker;
 mod nuget;
@@ -12,10 +13,13 @@ pub fn is_unsupported_dotnet_requirement(requirement: &str) -> bool {
 
 pub fn is_registry_requirement(ecosystem: Ecosystem, requirement: &str) -> bool {
     let requirement = requirement.trim();
-    if ecosystem == Ecosystem::Docker && requirement.starts_with("sha256:") {
+    if ecosystem == Docker && requirement.starts_with("sha256:") {
         return false;
     }
-    if ecosystem == Ecosystem::Ruby && requirement.contains('/') {
+    if ecosystem == Ruby && requirement.contains('/') {
+        return false;
+    }
+    if ecosystem == Pub && requirement.contains('/') {
         return false;
     }
 
@@ -31,7 +35,11 @@ pub fn is_registry_requirement(ecosystem: Ecosystem, requirement: &str) -> bool 
         || requirement.starts_with("git+")
         || requirement.starts_with("git@")
         || requirement.starts_with("link:")
+        || requirement.starts_with("portal:")
+        || requirement.starts_with("exec:")
+        || requirement.starts_with("patch:")
         || requirement.starts_with("path:")
+        || requirement.starts_with("sdk:")
         || requirement.starts_with("workspace:")
         || requirement.starts_with("catalog:")
         || requirement.contains("://"))
@@ -39,8 +47,9 @@ pub fn is_registry_requirement(ecosystem: Ecosystem, requirement: &str) -> bool 
 
 pub fn is_registry_dependency(ecosystem: Ecosystem, name: &str, requirement: &str) -> bool {
     is_registry_requirement(ecosystem, requirement)
-        && (ecosystem != Ecosystem::Docker || is_supported_docker_dependency(name))
-        && (ecosystem != Ecosystem::Composer || !is_composer_platform_dependency(name))
+        && (ecosystem != Cran || name != "R")
+        && (ecosystem != Docker || is_supported_docker_dependency(name))
+        && (ecosystem != Composer || !is_composer_platform_dependency(name))
 }
 
 pub fn is_composer_platform_dependency(name: &str) -> bool {

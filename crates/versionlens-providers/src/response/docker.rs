@@ -1,3 +1,5 @@
+use self::entries::DockerTagEntry;
+use serde_json::from_str;
 use std::collections::BTreeSet;
 
 use serde_json::Value;
@@ -8,8 +10,10 @@ mod version_key;
 
 use entries::docker_tag_entries;
 
+type DockerTagEntries<'a> = &'a [DockerTagEntry<'a>];
+
 pub fn docker_tag_exists(body: &str, tag: &str) -> Option<bool> {
-    let value = serde_json::from_str::<Value>(body).ok()?;
+    let value = from_str::<Value>(body).ok()?;
     Some(
         docker_tag_entries(&value)
             .iter()
@@ -18,8 +22,8 @@ pub fn docker_tag_exists(body: &str, tag: &str) -> Option<bool> {
 }
 
 pub(crate) fn docker_build_versions(body: &str, requirement: &str) -> Vec<String> {
-    let Ok(value) = serde_json::from_str::<Value>(body) else {
-        return Vec::new();
+    let Ok(value) = from_str::<Value>(body) else {
+        return vec![];
     };
     let entries = docker_tag_entries(&value);
     let requirement = if requirement.is_empty() {
@@ -32,11 +36,11 @@ pub(crate) fn docker_build_versions(body: &str, requirement: &str) -> Vec<String
         .find(|entry| entry.name == requirement)
         .and_then(|entry| entry.digest)
     else {
-        return Vec::new();
+        return vec![];
     };
 
     let mut has_latest = false;
-    let mut aliases = BTreeSet::new();
+    let mut aliases: BTreeSet<&str> = crate::default();
     let fixed_cores = docker_fixed_cores(&entries);
     for entry in entries
         .iter()
@@ -69,16 +73,16 @@ pub(crate) fn docker_build_versions(body: &str, requirement: &str) -> Vec<String
         }
     }
 
-    let mut builds = Vec::with_capacity(aliases.len() + usize::from(has_latest));
+    let mut builds = vec![];
     if has_latest {
         builds.push("latest".to_owned());
     }
-    builds.extend(aliases.into_iter().map(str::to_owned));
+    builds.extend(aliases.into_iter().map(|value| value.to_owned()));
     builds
 }
 
 fn docker_latest_canonical_core(
-    entries: &[entries::DockerTagEntry<'_>],
+    entries: DockerTagEntries<'_>,
     fixed_cores: &[[u64; 3]],
     target_digest: &str,
 ) -> Option<[u64; 3]> {
@@ -88,7 +92,7 @@ fn docker_latest_canonical_core(
         .find_map(|entry| docker_canonical_core(entry.name, fixed_cores))
 }
 
-fn docker_fixed_cores(entries: &[entries::DockerTagEntry<'_>]) -> Vec<[u64; 3]> {
+fn docker_fixed_cores(entries: DockerTagEntries<'_>) -> Vec<[u64; 3]> {
     entries
         .iter()
         .filter_map(|entry| {

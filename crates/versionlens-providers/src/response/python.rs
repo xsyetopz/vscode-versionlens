@@ -1,3 +1,4 @@
+use serde_json::from_str;
 mod json;
 mod yanked;
 
@@ -12,15 +13,15 @@ pub(crate) fn latest_python_version(
     include_prereleases: bool,
     prerelease_tags: &[String],
 ) -> Option<String> {
-    serde_json::from_str::<Value>(body)
+    from_str::<Value>(body)
         .ok()
         .and_then(|value| latest_python_json_version(&value, include_prereleases, prerelease_tags))
         .or_else(|| latest_python_rss_version(body, include_prereleases, prerelease_tags))
 }
 
 pub(crate) fn python_release_versions(body: &str) -> Vec<String> {
-    let Ok(value) = serde_json::from_str::<Value>(body) else {
-        return Vec::new();
+    let Ok(value) = from_str::<Value>(body) else {
+        return vec![];
     };
 
     let mut versions = value
@@ -29,7 +30,7 @@ pub(crate) fn python_release_versions(body: &str) -> Vec<String> {
         .as_array()
         .into_iter()
         .flatten()
-        .filter_map(Value::as_str)
+        .filter_map(|value| value.as_str())
         .filter_map(normalized_version)
         .collect::<Vec<_>>();
 

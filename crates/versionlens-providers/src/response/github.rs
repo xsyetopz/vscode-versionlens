@@ -11,7 +11,7 @@ pub(crate) fn latest_github_tag(
             entry
                 .as_str()
                 .filter(|tag| !is_commit_sha(tag))
-                .or_else(|| entry.get("name").and_then(Value::as_str))
+                .or_else(|| entry.get("name").and_then(|value| value.as_str()))
         }),
         include_prereleases,
         prerelease_tags,
@@ -22,7 +22,7 @@ pub(crate) fn latest_github_commit(value: &Value) -> Option<String> {
     let first = value.as_array()?.first()?;
     let sha = first
         .as_str()
-        .or_else(|| first.get("sha").and_then(Value::as_str))?;
+        .or_else(|| first.get("sha").and_then(|value| value.as_str()))?;
     (!sha.is_empty()).then(|| sha.chars().take(7).collect())
 }
 
