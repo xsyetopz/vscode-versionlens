@@ -13,6 +13,7 @@ use crate::VersionLensSession;
 use crate::command::install_task_config_key_for_manifest;
 use crate::dependency::into_dependency_payloads;
 use crate::model::{AnalyzeDocumentOutput, RegistryResponseInput, ResolveDocumentOutput};
+use crate::registry;
 use crate::schema::schema_output;
 use crate::snapshot::dependency_signature;
 use crate::status::{status_payload, to_u32};
@@ -146,7 +147,7 @@ impl VersionLensSession {
         project_bump: Option<ProjectVersionBump>,
     ) -> Vec<Suggestion> {
         let manifest_kind = self.classify_document(&input);
-        let context = crate::registry::registry_context_from_document_kind(&input, manifest_kind);
+        let context = registry::registry_context_from_document_kind(&input, manifest_kind);
         let suggestions = self.resolve_dependencies(ResolutionRequest {
             dependencies: self.dependencies(&input),
             document_uri: &input.uri,
@@ -168,7 +169,7 @@ impl VersionLensSession {
         project_bump: Option<ProjectVersionBump>,
     ) -> Vec<Suggestion> {
         let manifest_kind = self.classify_document(&input);
-        let context = crate::registry::registry_context_from_document_kind(&input, manifest_kind);
+        let context = registry::registry_context_from_document_kind(&input, manifest_kind);
         let dependencies = self
             .dependencies(&input)
             .into_iter()

@@ -123,7 +123,7 @@ fn trim_optional(value: Option<String>) -> Option<String> {
 #[cfg(test)]
 mod tests;
 
-pub(crate) fn http_config_from_input(input: HttpConfigInput) -> HttpConfig {
+pub fn http_config_from_input(input: HttpConfigInput) -> HttpConfig {
     input.into()
 }
 

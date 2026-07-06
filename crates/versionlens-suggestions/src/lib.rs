@@ -1,8 +1,8 @@
-use semver::{Error as SemverError, Version as SemverVersion};
 mod choices;
 mod constructors;
 mod model;
 mod resolve;
+mod support;
 
 pub use choices::{release_update_choices, release_update_choices_with_prereleases};
 pub use constructors::{
@@ -11,7 +11,4 @@ pub use constructors::{
 };
 pub use model::{Suggestion, SuggestionStatus, UpdateChoice};
 pub use resolve::resolve_dependency;
-
-pub(crate) fn parse_semver(value: &str) -> Result<SemverVersion, SemverError> {
-    value.parse()
-}
+pub(crate) use support::parse_semver;

@@ -565,4 +565,65 @@ fn private_two(text: &str) -> Vec<Dependency> {
 		expect(output).toContain("oversized shapes");
 		expect(output).toContain("BuildRequest fields=11");
 	});
+	test("reports overqualified Rust crate and std paths", () => {
+		const result = analyzeSources([
+			{
+				path: "crates/example/src/support.rs",
+				language: "rust",
+				source: `
+use crate::MemoryCache;
+use std::fs;
+
+fn create() -> crate::MemoryCache<String> {
+    crate::memory::memory_cache(std::time::Duration::from_secs(1))
+}
+`,
+			},
+		]);
+
+		expect(result.overqualifiedPaths).toContainEqual(
+			expect.objectContaining({
+				path: "crates/example/src/support.rs",
+				line: 5,
+				kind: "crate-type",
+				qualified: "crate::MemoryCache",
+				suggested: "MemoryCache",
+			}),
+		);
+		expect(result.overqualifiedPaths).toContainEqual(
+			expect.objectContaining({
+				path: "crates/example/src/support.rs",
+				line: 6,
+				kind: "crate-module-call",
+				qualified: "crate::memory::memory_cache",
+				suggested: "memory::memory_cache()",
+			}),
+		);
+		expect(result.overqualifiedPaths).toContainEqual(
+			expect.objectContaining({
+				path: "crates/example/src/support.rs",
+				line: 6,
+				kind: "std-module-call",
+				qualified: "std::time::Duration::from_secs",
+				suggested: "time::Duration::from_secs()",
+			}),
+		);
+	});
+
+	test("does not report overqualified paths in Rust use declarations", () => {
+		const result = analyzeSources([
+			{
+				path: "crates/example/src/lib.rs",
+				language: "rust",
+				source: `
+use crate::MemoryCache;
+pub use crate::ProviderSettings;
+pub(crate) use crate::support::default;
+`,
+			},
+		]);
+
+		expect(result.overqualifiedPaths).toEqual([]);
+	});
+
 });

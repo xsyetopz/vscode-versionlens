@@ -1,6 +1,3 @@
-use quick_xml::Reader as XmlReader;
-use std::path::Path as StdPath;
-use toml_edit::{Document as TomlDocument, TomlError};
 mod ansible_galaxy;
 mod bazel_module;
 mod bunfig;
@@ -53,6 +50,7 @@ mod requirement_range;
 mod requirements_txt;
 mod sbt_build;
 mod scanner;
+mod support;
 mod swift_package;
 mod terraform_hcl;
 mod toml_walk;
@@ -116,35 +114,11 @@ pub use python_registry::{
     parse_python_registry_urls, parse_uv_registry_urls,
 };
 pub use sbt_build::parse_sbt_maven_repositories;
+#[cfg(test)]
+pub(crate) use support::leaked_string;
+pub(crate) use support::{
+    default, is_whitespace, parse_toml_document, path, string_from_utf8_lossy, xml_reader,
+};
 pub use yarnrc::{
     parse_yarnrc_npm_auth_entries_with_env, parse_yarnrc_npm_registry_entries_with_env,
 };
-
-#[cfg(test)]
-pub(crate) fn leaked_string(contents: String) -> &'static str {
-    <Box<str>>::leak(contents.into_boxed_str())
-}
-
-pub(crate) fn default<T: Default>() -> T {
-    <T as Default>::default()
-}
-
-pub(crate) fn path(value: &str) -> &StdPath {
-    value.as_ref()
-}
-
-pub(crate) fn xml_reader(text: &str) -> XmlReader<&[u8]> {
-    quick_xml::Reader::from_str(text)
-}
-
-pub(crate) fn is_whitespace(value: char) -> bool {
-    value.is_whitespace()
-}
-
-pub(crate) fn parse_toml_document(text: &str) -> Result<TomlDocument<String>, TomlError> {
-    text.parse()
-}
-
-pub(crate) fn string_from_utf8_lossy(bytes: &[u8]) -> String {
-    <String>::from_utf8_lossy(bytes).into_owned()
-}

@@ -1,17 +1,18 @@
-use std::process::Output;
+use std::process::{Command, Output, Stdio};
 use std::thread::sleep;
 use std::time::Duration;
+use std::time::Instant;
 
 const DOTNET_SOURCE_ARGS: &[&str] = &["nuget", "list", "source", "--format", "short"];
 const DOTNET_SOURCE_TIMEOUT: Duration = crate::duration_from_millis(750);
 const DOTNET_SOURCE_POLL_INTERVAL: Duration = crate::duration_from_millis(25);
 
 pub(super) fn dotnet_source_listing() -> Option<String> {
-    let started = std::time::Instant::now();
-    let mut child = std::process::Command::new("dotnet")
+    let started = Instant::now();
+    let mut child = Command::new("dotnet")
         .args(DOTNET_SOURCE_ARGS)
-        .stdout(std::process::Stdio::piped())
-        .stderr(std::process::Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
         .spawn()
         .ok()?;
 

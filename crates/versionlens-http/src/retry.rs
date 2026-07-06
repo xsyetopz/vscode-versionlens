@@ -93,7 +93,7 @@ pub(crate) fn retry_backoff_ms(attempt: u32) -> u64 {
 #[cfg(test)]
 mod tests;
 
-pub(crate) fn disabled_retry_policy() -> RetryPolicy {
+pub fn disabled_retry_policy() -> RetryPolicy {
     RetryPolicy {
         max_retries: 0,
         factor: 1,
@@ -102,7 +102,7 @@ pub(crate) fn disabled_retry_policy() -> RetryPolicy {
     }
 }
 
-pub(crate) fn npm_registry_fetch_retry_policy() -> RetryPolicy {
+pub fn npm_registry_fetch_retry_policy() -> RetryPolicy {
     RetryPolicy {
         max_retries: 2,
         factor: 2,

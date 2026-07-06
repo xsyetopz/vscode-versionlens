@@ -1,10 +1,6 @@
-use quick_xml::Reader as XmlReader;
-use semver::{Error as SemverError, Version as SemverVersion};
-use serde_json::Value as JsonValue;
-use std::path::Path as StdPath;
-use std::string::FromUtf8Error as StringFromUtf8Error;
 mod registry;
 mod response;
+mod support;
 mod vulnerability;
 
 pub use registry::{
@@ -20,35 +16,10 @@ pub use response::{
     npm_build_versions, npm_error_status_from_response, npm_release_versions,
     release_versions_from_response,
 };
+pub(crate) use support::{
+    default, json_array_mut, json_bool, parse_semver, path, string_from_utf8, xml_reader,
+};
 pub use vulnerability::{
     VulnerabilityAdvisory, vulnerability_advisories_from_response, vulnerability_request_body,
     vulnerability_titles_from_response, vulnerability_url, vulnerability_version_from_requirement,
 };
-
-pub(crate) fn parse_semver(value: &str) -> Result<SemverVersion, SemverError> {
-    value.parse()
-}
-
-pub(crate) fn path(value: &str) -> &StdPath {
-    value.as_ref()
-}
-
-pub(crate) fn default<T: Default>() -> T {
-    <T as Default>::default()
-}
-
-pub(crate) fn json_bool(value: &JsonValue) -> Option<bool> {
-    value.as_bool()
-}
-
-pub(crate) fn xml_reader(body: &str) -> XmlReader<&[u8]> {
-    quick_xml::Reader::from_str(body)
-}
-
-pub(crate) fn string_from_utf8(value: Vec<u8>) -> Result<String, StringFromUtf8Error> {
-    value.try_into()
-}
-
-pub(crate) fn json_array_mut(value: &mut JsonValue) -> Option<&mut Vec<JsonValue>> {
-    value.as_array_mut()
-}

@@ -63,6 +63,11 @@ const RUST_PASS_THROUGH_PATTERN =
 const TYPESCRIPT_PASS_THROUGH_PATTERN =
 	/^return\s+([A-Za-z_$][\w$.]*)\s*\([^{};]*\)$/u;
 const UPPERCASE_START_PATTERN = /^[A-Z]/u;
+const RUST_CRATE_TYPE_QUALIFICATION_PATTERN = /\bcrate::([A-Z][A-Za-z0-9_]*)\b/gu;
+const RUST_CRATE_MODULE_CALL_PATTERN =
+	/\bcrate::([a-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)+)\s*\(/gu;
+const RUST_STDLIB_CALL_PATTERN =
+	/\bstd::([a-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)+)\s*\(/gu;
 
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: comment stripping is a small lexer.
 function stripComments(source) {
@@ -788,6 +793,77 @@ function isSingleCallBody(body, callee) {
 	return tail === "" || tail === "?";
 }
 
+function collectOverqualifiedPaths(files, options = {}) {
+	const findings = [];
+	for (const file of files) {
+		if (file.language !== "rust") {
+			continue;
+		}
+		if (options.ignoreTestFilesForQualifiedPaths && isTestPath(file.path)) {
+			continue;
+		}
+
+		const source = stripComments(file.source);
+		const lines = source.split("\n");
+		for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
+			const line = lines[lineIndex];
+			if (/^(?:pub(?:\([^)]*\))?\s+)?use\s/u.test(line.trimStart())) {
+				continue;
+			}
+			recordOverqualifiedMatches(
+				findings,
+				file.path,
+				lineIndex + 1,
+				line,
+				RUST_CRATE_TYPE_QUALIFICATION_PATTERN,
+				"crate-type",
+				(match) => match[1],
+			);
+			recordOverqualifiedMatches(
+				findings,
+				file.path,
+				lineIndex + 1,
+				line,
+				RUST_CRATE_MODULE_CALL_PATTERN,
+				"crate-module-call",
+				(match) => `${match[1].split("::").at(0)}::${match[1].split("::").at(-1)}()`,
+			);
+			recordOverqualifiedMatches(
+				findings,
+				file.path,
+				lineIndex + 1,
+				line,
+				RUST_STDLIB_CALL_PATTERN,
+				"std-module-call",
+				(match) => `${match[1]}()`,
+			);
+		}
+	}
+
+	return findings;
+}
+
+function recordOverqualifiedMatches(
+	findings,
+	filePath,
+	line,
+	text,
+	pattern,
+	kind,
+	suggestionForMatch,
+) {
+	pattern.lastIndex = 0;
+	for (const match of text.matchAll(pattern)) {
+		findings.push({
+			path: filePath,
+			line,
+			kind,
+			qualified: match[0].trim().replace(/\($/u, ""),
+			suggested: suggestionForMatch(match),
+		});
+	}
+}
+
 function isTestPath(filePath) {
 	return (
 		filePath.includes("/tests/") ||
@@ -826,6 +902,7 @@ export function analyzeSources(files, options = {}) {
 		unusedParameters,
 		suppressedParameters,
 		passThroughWrappers: collectPassThroughWrappers(functions, options),
+		overqualifiedPaths: collectOverqualifiedPaths(parsedFiles, options),
 	};
 }
 
@@ -939,6 +1016,15 @@ export function formatFindings(result, options = {}) {
 		}
 	}
 
+	if (result.overqualifiedPaths.length > 0) {
+		lines.push("overqualified paths");
+		for (const finding of result.overqualifiedPaths) {
+			lines.push(
+				`- ${finding.path}:${finding.line} ${finding.kind} ${finding.qualified} -> ${finding.suggested}`,
+			);
+		}
+	}
+
 	return lines.join("\n");
 }
 
@@ -1005,6 +1091,7 @@ function main() {
 		ignoreTestFilesForDuplicates: true,
 		ignoreTestFilesForPassThrough: true,
 		ignorePublicPassThroughWrappers: true,
+		ignoreTestFilesForQualifiedPaths: true,
 	});
 	if (hasFindings(result)) {
 		console.error(formatFindings(result, { diffCommand }));
