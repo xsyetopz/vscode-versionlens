@@ -29,4 +29,5 @@ export const registryUrlKeys: readonly ConfigKeyPair[] = [
 	["nix", "nix.apiUrl"],
 	["unity", "unity.apiUrl"],
 	["cocoapods", "cocoapods.apiUrl"],
+	["cpp", "cpp.apiUrl"],
 ] as const;

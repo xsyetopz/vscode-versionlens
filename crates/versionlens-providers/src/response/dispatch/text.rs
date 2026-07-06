@@ -1,6 +1,7 @@
 use versionlens_parsers::Ecosystem;
 
 use super::ResponseRequest;
+use crate::response::cpp::latest_cpp_text_version;
 use crate::response::cran::latest_cran_version;
 use crate::response::go::latest_go_version;
 use crate::response::haxelib::latest_haxelib_version;
@@ -11,7 +12,7 @@ use crate::response::opam::latest_opam_version;
 use crate::response::python::latest_python_version;
 use crate::response::xml::latest_maven_version;
 use versionlens_parsers::Ecosystem::{
-    Cran, Go, Haxelib, Helm, Julia, LuaRocks, Maven, Opam, Python,
+    Cpp, Cran, Go, Haxelib, Helm, Julia, LuaRocks, Maven, Opam, Python,
 };
 
 pub(super) fn latest_text_response(
@@ -20,6 +21,7 @@ pub(super) fn latest_text_response(
     request: &TextResponseRequest<'_>,
 ) -> Option<String> {
     match ecosystem {
+        Cpp => latest_cpp_text_version(body, request.include_prereleases, request.prerelease_tags),
         Cran => latest_cran_version(
             body,
             request.package,

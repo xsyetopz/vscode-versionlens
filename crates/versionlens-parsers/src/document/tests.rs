@@ -503,6 +503,7 @@ fn parses_gradle_plugin_maven_repositories_separately() {
     );
 }
 
+include!("tests/cpp.rs");
 include!("tests/jvm.rs");
 include!("tests/native_infra.rs");
 

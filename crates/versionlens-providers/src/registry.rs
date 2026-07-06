@@ -46,6 +46,7 @@ const PROVIDER_IDS: &[&str] = &[
     "nix",
     "unity",
     "cocoapods",
+    "cpp",
 ];
 
 pub fn provider_id(ecosystem: Ecosystem) -> &'static str {

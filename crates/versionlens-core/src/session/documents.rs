@@ -19,17 +19,17 @@ use crate::snapshot::dependency_signature;
 use crate::status::{status_payload, to_u32};
 use crate::suggestion::into_suggestion_payloads;
 use versionlens_parsers::ManifestKind::{
-    AnsibleGalaxyRequirementsYaml, BazelModule, Cabal, CabalProject, CargoToml, ClojureDepsEdn,
-    CocoaPodsPodfile, ComposerJson, ConanfilePy, ConanfileTxt, Cpanfile, DenoImportMapJson,
-    DenoJson, DockerComposeYaml, Dockerfile, DotnetProjectJson, DotnetXml, DubJson, DubSdl,
-    DuneProject, Gemfile, GleamToml, GoMod, GradleBuild, GradleSettings, GradleVersionCatalogToml,
-    HaxelibJson, HelmChartYaml, JsrJson, JuliaManifestToml, JuliaProjectToml, KustomizationYaml,
-    LeiningenProjectClj, LuaRockspec, MavenPomXml, MixExs, Nimble, NixFlake, NpmPackageJson,
-    NpmPackageJson5, NpmPackageYaml, Opam, PaketDependencies, PaketReferences, PnpmYaml,
-    PubspecOverridesYaml, PubspecYaml, PythonPipfile, PythonPyprojectToml, PythonRequirementsTxt,
-    RDescription, RebarConfig, RenvLock, RubyGemspec, SbtBuild, StackYaml, SwiftPackage,
-    TerraformTf, UnityProjectManifestJson, Unknown, VcpkgJson, VersionLensMultiRegistries,
-    ZigBuildZon,
+    AnsibleGalaxyRequirementsYaml, BazelModule, BazelWorkspace, Cabal, CabalProject, CargoToml,
+    ClojureDepsEdn, Cmake, CocoaPodsPodfile, ComposerJson, ConanfilePy, ConanfileTxt, Cpanfile,
+    DenoImportMapJson, DenoJson, DockerComposeYaml, Dockerfile, DotnetProjectJson, DotnetXml,
+    DubJson, DubSdl, DuneProject, Gemfile, GleamToml, GoMod, GradleBuild, GradleSettings,
+    GradleVersionCatalogToml, HaxelibJson, HelmChartYaml, JsrJson, JuliaManifestToml,
+    JuliaProjectToml, KustomizationYaml, LeiningenProjectClj, LuaRockspec, MavenPomXml, MesonWrap,
+    MixExs, Nimble, NixFlake, NpmPackageJson, NpmPackageJson5, NpmPackageYaml, Opam,
+    PaketDependencies, PaketReferences, PnpmYaml, PubspecOverridesYaml, PubspecYaml, PythonPipfile,
+    PythonPyprojectToml, PythonRequirementsTxt, RDescription, RebarConfig, RenvLock, RubyGemspec,
+    SbtBuild, StackYaml, SwiftPackage, TerraformTf, UnityProjectManifestJson, Unknown, VcpkgJson,
+    VersionLensMultiRegistries, XmakeLua, ZigBuildZon,
 };
 
 impl VersionLensSession {
@@ -47,7 +47,7 @@ impl VersionLensSession {
         let active_provider_name = is_supported_manifest
             .then(|| active_provider_name_for_manifest(manifest_kind))
             .flatten()
-            .map(|value| value.to_owned());
+            .map(ToOwned::to_owned);
         if manifest_kind == VersionLensMultiRegistries {
             return schema_output(&input);
         }
@@ -213,6 +213,7 @@ fn active_provider_name_for_manifest(manifest_kind: ManifestKind) -> Option<&'st
         RDescription | RenvLock => Some("cran"),
         ConanfileTxt | ConanfilePy => Some("conan"),
         VcpkgJson => Some("vcpkg"),
+        Cmake | XmakeLua | MesonWrap | BazelWorkspace => Some("cpp"),
         SwiftPackage => Some("swift"),
         ZigBuildZon => Some("zig"),
         Nimble => Some("nim"),

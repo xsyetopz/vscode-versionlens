@@ -440,3 +440,4 @@ fn parses_luarocks_rockspec_dependencies() {
     assert_eq!(dependencies[3].name, "busted");
     assert_eq!(dependencies[3].requirement_prefix, "~> ");
 }
+

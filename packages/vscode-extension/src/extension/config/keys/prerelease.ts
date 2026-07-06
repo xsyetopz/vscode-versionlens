@@ -33,4 +33,5 @@ export const prereleaseTagKeys: readonly ConfigKeyPair[] = [
 	["kustomize", "kustomize.prereleaseTagFilter"],
 	["unity", "unity.prereleaseTagFilter"],
 	["cocoapods", "cocoapods.prereleaseTagFilter"],
+	["cpp", "cpp.prereleaseTagFilter"],
 ] as const;

@@ -4,23 +4,20 @@ use std::path::PathBuf;
 
 use super::classify_document;
 use crate::model::ManifestKind::{
-    AnsibleGalaxyRequirementsYaml, BazelModule, Cabal, CabalProject, CargoToml, ClojureDepsEdn,
-    ComposerJson, Cpanfile, DenoImportMapJson, DenoJson, DockerComposeYaml, Dockerfile,
-    DotnetProjectJson, DotnetXml, DubJson, DubSdl, DuneProject, Gemfile, GleamToml, GoMod,
-    GradleBuild, GradleSettings, GradleVersionCatalogToml, HaxelibJson, HelmChartYaml, JsrJson,
-    JuliaManifestToml, JuliaProjectToml, KustomizationYaml, LeiningenProjectClj, LuaRockspec,
-    MavenPomXml, MixExs, Nimble, NixFlake, NpmPackageJson, NpmPackageJson5, NpmPackageYaml, Opam,
-    PaketDependencies, PaketReferences, PnpmYaml, PubspecOverridesYaml, PubspecYaml, PythonPipfile,
-    PythonPyprojectToml, PythonRequirementsTxt, RDescription, RebarConfig, RenvLock, RubyGemspec,
-    SbtBuild, StackYaml, SwiftPackage, TerraformTf, UnityProjectManifestJson, Unknown, VcpkgJson,
-    VersionLensMultiRegistries, ZigBuildZon,
+    AnsibleGalaxyRequirementsYaml, BazelModule, BazelWorkspace, Cabal, CabalProject, CargoToml,
+    ClojureDepsEdn, Cmake, ComposerJson, Cpanfile, DenoImportMapJson, DenoJson, DockerComposeYaml,
+    Dockerfile, DotnetProjectJson, DotnetXml, DubJson, DubSdl, DuneProject, Gemfile, GleamToml,
+    GoMod, GradleBuild, GradleSettings, GradleVersionCatalogToml, HaxelibJson, HelmChartYaml,
+    JsrJson, JuliaManifestToml, JuliaProjectToml, KustomizationYaml, LeiningenProjectClj,
+    LuaRockspec, MavenPomXml, MesonWrap, MixExs, Nimble, NixFlake, NpmPackageJson, NpmPackageJson5,
+    NpmPackageYaml, Opam, PaketDependencies, PaketReferences, PnpmYaml, PubspecOverridesYaml,
+    PubspecYaml, PythonPipfile, PythonPyprojectToml, PythonRequirementsTxt, RDescription,
+    RebarConfig, RenvLock, RubyGemspec, SbtBuild, StackYaml, SwiftPackage, TerraformTf,
+    UnityProjectManifestJson, Unknown, VcpkgJson, VersionLensMultiRegistries, XmakeLua,
+    ZigBuildZon,
 };
 
 #[test]
-#[expect(
-    clippy::too_many_lines,
-    reason = "table-driven manifest coverage stays readable as one scenario"
-)]
 fn classifies_supported_json_toml_and_xml_manifest_files() {
     for (uri, language_id, kind) in [
         ("file:///work/package.json", "jsonc", NpmPackageJson),
@@ -52,6 +49,9 @@ fn classifies_supported_json_toml_and_xml_manifest_files() {
         ("file:///work/Directory.Build.targets", "xml", DotnetXml),
         ("file:///work/dub.json", "json", DubJson),
         ("file:///work/vcpkg.json", "json", VcpkgJson),
+        ("file:///work/CMakeLists.txt", "cmake", Cmake),
+        ("file:///work/toolchain.cmake", "cmake", Cmake),
+        ("file:///work/xmake.lua", "lua", XmakeLua),
         ("file:///work/Package.swift", "swift", SwiftPackage),
         ("file:///work/build.zig.zon", "zig", ZigBuildZon),
         ("file:///work/demo.nimble", "nim", Nimble),
@@ -118,6 +118,9 @@ fn classifies_supported_yaml_plaintext_and_other_manifest_files() {
             AnsibleGalaxyRequirementsYaml,
         ),
         ("file:///work/MODULE.bazel", "starlark", BazelModule),
+        ("file:///work/WORKSPACE", "starlark", BazelWorkspace),
+        ("file:///work/WORKSPACE.bazel", "starlark", BazelWorkspace),
+        ("file:///work/subprojects/zlib.wrap", "meson", MesonWrap),
         ("file:///work/flake.nix", "nix", NixFlake),
         ("file:///work/kustomization.yaml", "yaml", KustomizationYaml),
         (
@@ -236,6 +239,11 @@ fn classifies_known_manifest_paths_without_language_ids() {
         ("file:///work/package.json", NpmPackageJson),
         ("file:///work/package.json5", NpmPackageJson5),
         ("file:///work/package.yaml", NpmPackageYaml),
+        ("file:///work/CMakeLists.txt", Cmake),
+        ("file:///work/toolchain.cmake", Cmake),
+        ("file:///work/xmake.lua", XmakeLua),
+        ("file:///work/subprojects/zlib.wrap", MesonWrap),
+        ("file:///work/WORKSPACE", BazelWorkspace),
         ("file:///work/Pipfile", PythonPipfile),
         ("file:///work/pyproject.toml", PythonPyprojectToml),
         ("file:///work/pubspec.yaml", PubspecYaml),
@@ -281,7 +289,7 @@ fn ignores_ordinary_manifests_from_non_file_uris() {
         classify_document(&DocumentInput {
             uri: "versionlens:/versionlens.multi-registries.json".to_owned(),
             language_id: "json".to_owned(),
-            text: "".to_owned(),
+            text: String::new(),
             workspace_root: None,
         }),
         VersionLensMultiRegistries,
@@ -293,7 +301,7 @@ fn assert_manifest(uri: &str, language_id: &str, kind: ManifestKind) {
         classify_document(&DocumentInput {
             uri: uri.to_owned(),
             language_id: language_id.to_owned(),
-            text: "".to_owned(),
+            text: String::new(),
             workspace_root: None,
         }),
         kind
@@ -325,7 +333,7 @@ fn classifies_case_insensitive_manifest_extensions() {
         classify_document(&DocumentInput {
             uri: "file:///work/PACKAGE.JSON".to_owned(),
             language_id: "json".to_owned(),
-            text: "".to_owned(),
+            text: String::new(),
             workspace_root: None,
         }),
         NpmPackageJson
@@ -334,7 +342,7 @@ fn classifies_case_insensitive_manifest_extensions() {
         classify_document(&DocumentInput {
             uri: "file:///work/DENO.JSONC".to_owned(),
             language_id: "jsonc".to_owned(),
-            text: "".to_owned(),
+            text: String::new(),
             workspace_root: None,
         }),
         DenoJson
@@ -343,7 +351,7 @@ fn classifies_case_insensitive_manifest_extensions() {
         classify_document(&DocumentInput {
             uri: "file:///work/app.CSPROJ".to_owned(),
             language_id: "xml".to_owned(),
-            text: "".to_owned(),
+            text: String::new(),
             workspace_root: None,
         }),
         DotnetXml
@@ -352,7 +360,7 @@ fn classifies_case_insensitive_manifest_extensions() {
         classify_document(&DocumentInput {
             uri: "file:///work/Requirements.TXT".to_owned(),
             language_id: "plaintext".to_owned(),
-            text: "".to_owned(),
+            text: String::new(),
             workspace_root: None,
         }),
         PythonRequirementsTxt
@@ -361,7 +369,7 @@ fn classifies_case_insensitive_manifest_extensions() {
         classify_document(&DocumentInput {
             uri: "file:///work/PIPFILE".to_owned(),
             language_id: "toml".to_owned(),
-            text: "".to_owned(),
+            text: String::new(),
             workspace_root: None,
         }),
         PythonPipfile
@@ -370,7 +378,7 @@ fn classifies_case_insensitive_manifest_extensions() {
         classify_document(&DocumentInput {
             uri: "file:///work/PYPROJECT.TOML".to_owned(),
             language_id: "toml".to_owned(),
-            text: "".to_owned(),
+            text: String::new(),
             workspace_root: None,
         }),
         PythonPyprojectToml
@@ -379,7 +387,7 @@ fn classifies_case_insensitive_manifest_extensions() {
         classify_document(&DocumentInput {
             uri: "file:///work/HAXELIB.JSON".to_owned(),
             language_id: "json".to_owned(),
-            text: "".to_owned(),
+            text: String::new(),
             workspace_root: None,
         }),
         HaxelibJson
@@ -421,7 +429,7 @@ fn does_not_classify_generated_dotnet_outputs() {
             classify_document(&DocumentInput {
                 uri: uri.to_owned(),
                 language_id: "xml".to_owned(),
-                text: "".to_owned(),
+                text: String::new(),
                 workspace_root: None,
             }),
             Unknown,
@@ -442,7 +450,7 @@ fn does_not_classify_manifest_name_suffixes() {
             classify_document(&DocumentInput {
                 uri: uri.to_owned(),
                 language_id: "plaintext".to_owned(),
-                text: "".to_owned(),
+                text: String::new(),
                 workspace_root: None,
             }),
             Unknown,

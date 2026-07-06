@@ -5,6 +5,7 @@ use crate::clojure_deps::parse_clojure_deps_edn;
 use crate::cocoapods_podfile::parse_cocoapods_podfile;
 use crate::conan::{parse_conanfile_py, parse_conanfile_txt};
 use crate::cpanfile::parse_cpanfile;
+use crate::cpp::{parse_bazel_workspace, parse_cmake, parse_meson_wrap, parse_xmake_lua};
 use crate::docker::{parse_docker_compose_yaml, parse_dockerfile};
 use crate::dotnet_xml::parse_dotnet_xml_with_paths;
 use crate::dub_sdl::parse_dub_sdl;
@@ -29,16 +30,17 @@ use crate::luarocks::parse_luarocks_rockspec;
 use crate::maven_xml::parse_maven_xml_with_paths;
 use crate::mix_exs::parse_mix_exs;
 use crate::model::ManifestKind::{
-    AnsibleGalaxyRequirementsYaml, BazelModule, Cabal, CabalProject, CargoToml, ClojureDepsEdn,
-    CocoaPodsPodfile, ComposerJson, ConanfilePy, ConanfileTxt, Cpanfile, DenoImportMapJson,
-    DenoJson, DockerComposeYaml, Dockerfile, DotnetProjectJson, DotnetXml, DubJson, DubSdl,
-    DuneProject, Gemfile, GleamToml, GoMod, GradleBuild, GradleSettings, GradleVersionCatalogToml,
-    HaxelibJson, HelmChartYaml, JsrJson, JuliaManifestToml, JuliaProjectToml, KustomizationYaml,
-    LeiningenProjectClj, LuaRockspec, MavenPomXml, MixExs, Nimble, NixFlake, NpmPackageJson,
-    NpmPackageJson5, NpmPackageYaml, Opam, PaketDependencies, PaketReferences, PnpmYaml,
-    PubspecOverridesYaml, PubspecYaml, PythonPipfile, PythonPyprojectToml, PythonRequirementsTxt,
-    RDescription, RebarConfig, RenvLock, RubyGemspec, SbtBuild, StackYaml, SwiftPackage,
-    TerraformTf, UnityProjectManifestJson, VcpkgJson, ZigBuildZon,
+    AnsibleGalaxyRequirementsYaml, BazelModule, BazelWorkspace, Cabal, CabalProject, CargoToml,
+    ClojureDepsEdn, Cmake, CocoaPodsPodfile, ComposerJson, ConanfilePy, ConanfileTxt, Cpanfile,
+    DenoImportMapJson, DenoJson, DockerComposeYaml, Dockerfile, DotnetProjectJson, DotnetXml,
+    DubJson, DubSdl, DuneProject, Gemfile, GleamToml, GoMod, GradleBuild, GradleSettings,
+    GradleVersionCatalogToml, HaxelibJson, HelmChartYaml, JsrJson, JuliaManifestToml,
+    JuliaProjectToml, KustomizationYaml, LeiningenProjectClj, LuaRockspec, MavenPomXml, MesonWrap,
+    MixExs, Nimble, NixFlake, NpmPackageJson, NpmPackageJson5, NpmPackageYaml, Opam,
+    PaketDependencies, PaketReferences, PnpmYaml, PubspecOverridesYaml, PubspecYaml, PythonPipfile,
+    PythonPyprojectToml, PythonRequirementsTxt, RDescription, RebarConfig, RenvLock, RubyGemspec,
+    SbtBuild, StackYaml, SwiftPackage, TerraformTf, UnityProjectManifestJson, VcpkgJson, XmakeLua,
+    ZigBuildZon,
 };
 use crate::model::{Dependency, ManifestKind};
 use crate::nimble::parse_nimble;
@@ -135,6 +137,10 @@ const MANIFEST_PARSERS: &[(ManifestKind, ManifestParser)] = &[
     (ConanfileTxt, ParserDirect(parse_conanfile_txt)),
     (ConanfilePy, ParserDirect(parse_conanfile_py)),
     (VcpkgJson, ParserWithPaths(parse_vcpkg_json_with_paths)),
+    (Cmake, ParserDirect(parse_cmake)),
+    (XmakeLua, ParserDirect(parse_xmake_lua)),
+    (MesonWrap, ParserDirect(parse_meson_wrap)),
+    (BazelWorkspace, ParserDirect(parse_bazel_workspace)),
     (SwiftPackage, ParserDirect(parse_swift_package)),
     (ZigBuildZon, ParserDirect(parse_zig_build_zon)),
     (Nimble, ParserDirect(parse_nimble)),

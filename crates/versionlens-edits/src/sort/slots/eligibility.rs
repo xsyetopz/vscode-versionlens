@@ -4,8 +4,8 @@ use versionlens_parsers::Dependency;
 
 use super::lines::{dependency_end_line, dependency_start_line};
 use versionlens_parsers::Ecosystem::{
-    AnsibleGalaxy, Bazel, Cargo, CocoaPods, Composer, Conan, Cpan, Cran, Deno, Docker, Dotnet, Dub,
-    Go, Hackage, Haxelib, Helm, Hex, Julia, LuaRocks, Maven, Nim, Nix, Npm, Opam, Pub, Python,
+    AnsibleGalaxy, Bazel, Cargo, CocoaPods, Composer, Conan, Cpan, Cpp, Cran, Deno, Docker, Dotnet,
+    Dub, Go, Hackage, Haxelib, Helm, Hex, Julia, LuaRocks, Maven, Nim, Nix, Npm, Opam, Pub, Python,
     Ruby, Swift, Terraform, Unity, Vcpkg, Zig,
 };
 
@@ -52,7 +52,7 @@ pub(in crate::sort) fn is_sortable_dependency(dependency: &Dependency) -> bool {
         Ruby => true,
         Hex | Opam | Hackage | Julia | Cran | Conan | Vcpkg | Swift | Zig | Nim | LuaRocks
         | Cpan | Haxelib | Terraform | Helm | AnsibleGalaxy | Bazel | Nix | Unity | CocoaPods
-        | Docker => false,
+        | Docker | Cpp => false,
     }
 }
 

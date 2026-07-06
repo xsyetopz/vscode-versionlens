@@ -39,6 +39,7 @@ const readmeLabelGroups = [
 		cocoapods: "CocoaPods",
 		composer: "Composer",
 		conan: "Conan",
+		cpp: "C/C++ build files",
 		cpan: "CPAN",
 		cran: "CRAN",
 		deno: "Deno",

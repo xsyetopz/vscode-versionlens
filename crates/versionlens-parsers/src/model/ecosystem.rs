@@ -1,6 +1,6 @@
 use crate::model::Ecosystem::{
-    AnsibleGalaxy, Bazel, Cargo, CocoaPods, Composer, Conan, Cpan, Cran, Deno, Docker, Dotnet, Dub,
-    Go, Hackage, Haxelib, Helm, Hex, Julia, LuaRocks, Maven, Nim, Nix, Npm, Opam, Pub, Python,
+    AnsibleGalaxy, Bazel, Cargo, CocoaPods, Composer, Conan, Cpan, Cpp, Cran, Deno, Docker, Dotnet,
+    Dub, Go, Hackage, Haxelib, Helm, Hex, Julia, LuaRocks, Maven, Nim, Nix, Npm, Opam, Pub, Python,
     Ruby, Swift, Terraform, Unity, Vcpkg, Zig,
 };
 use serde::{Deserialize, Serialize};
@@ -41,6 +41,7 @@ pub enum Ecosystem {
     Nix,
     Unity,
     CocoaPods,
+    Cpp,
 }
 
 const ECOSYSTEM_CONFIG_NAMES: &[(&str, Ecosystem)] = &[
@@ -86,6 +87,12 @@ const ECOSYSTEM_CONFIG_NAMES: &[(&str, Ecosystem)] = &[
     ("nix", Nix),
     ("unity", Unity),
     ("cocoapods", CocoaPods),
+    ("cpp", Cpp),
+    ("c-cpp", Cpp),
+    ("c++", Cpp),
+    ("cmake", Cpp),
+    ("xmake", Cpp),
+    ("meson", Cpp),
     ("bun", Npm),
     ("npm", Npm),
     ("pnpm", Npm),
@@ -128,6 +135,7 @@ const ECOSYSTEM_CONFIG_NAMESPACES: &[&str] = &[
     "nix",
     "unity",
     "cocoapods",
+    "cpp",
 ];
 
 pub fn ecosystem_from_config_name(name: &str) -> Option<Ecosystem> {

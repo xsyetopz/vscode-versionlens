@@ -23,6 +23,7 @@ VersionLens supports these manifest ecosystems in this repository:
 | --- | --- |
 | Cargo / Rust | crates.io |
 | Conan / C and C++ | ConanCenter and Conan-compatible v2 remotes |
+| C/C++ build files | GitHub tags and Xmake package recipes |
 | CPAN / Perl | MetaCPAN |
 | Composer / PHP | Packagist |
 | Deno | Deno, JSR, npm |
@@ -79,13 +80,13 @@ Composer dependencies query Packagist-compatible metadata under `https://repo.pa
 
 VersionLens scans `deno.json`, `deno.jsonc`, `import_map.json`, `jsr.json`, and `jsr.jsonc` files by default. Deno config and import-map files read `version`, `imports`, and `scopes`; `jsr.json` and `jsr.jsonc` read the package `name` plus project `version`. `jsr:` and `npm:` import specifiers use the embedded package identity for lookup, including unversioned specifiers where an update can insert the missing version. Directory import-map specifiers preserve their slash style when edited. Non-`jsr:` and non-`npm:` Deno imports are left without registry suggestions.
 
-JSR dependencies query `https://jsr.io/{scope}/{package}/meta.json` by default through `versionlens.deno.apiUrl`. `npm:` imports use npm-compatible registry resolution and workspace npm/Yarn/pnpm/Bun registry configuration where available. Edits preserve the `jsr:` or `npm:` scheme, package alias, and specifier form. OSV vulnerability lookups are disabled for the Deno provider because this repository does not define an OSV ecosystem mapping for JSR import-map packages. Sorting is enabled for `imports` and each `scopes.*` import group.
+JSR dependencies query `https://jsr.io/{scope}/{package}/meta.json` by default through `versionlens.deno.apiUrl`. `npm:` imports use npm-compatible registry resolution and workspace npm/Yarn/pnpm/Bun registry configuration where available. Edits preserve the `jsr:` or `npm:` scheme, package alias, and specifier form. OSV vulnerability lookups are disabled for JSR import-map packages because OSV.dev does not list JSR as a covered ecosystem. Sorting is enabled for `imports` and each `scopes.*` import group.
 
 ### Docker / Compose / OCI image support
 
 VersionLens scans `Dockerfile`, `dockerfile`, `*.dockerfile`, `*.Dockerfile`, `compose.yaml`, `compose.yml`, `docker-compose.yaml`, `docker-compose.yml`, and compose override/variant YAML files by default. Dockerfiles read every `FROM` image, including `--platform`, aliases with `AS`, missing tags, explicit tags, and digest-pinned images. Compose files read service `image` values, service `build` contexts as fixed local build paths, and top-level `x-*` extension image fields where the extension shape contains reusable service-like image definitions. Namespace-qualified Docker Hub images such as `library/nginx:1.25` keep the full repository name instead of treating `library` as a registry.
 
-Docker Hub images query Docker Hub tag pages, `mcr.microsoft.com/...` images query the Microsoft Container Registry tag catalog, and explicit registry images such as `ghcr.io/org/app:1.2.3` or `my_private.registry:5000/redis` use the OCI Distribution `/v2/{name}/tags/list` route. Digest-only pins are reported as fixed and are not rewritten to tags. Images containing unresolved Dockerfile or Compose variables are shown as unsupported instead of receiving registry suggestions. OSV vulnerability lookups are disabled for Docker images because this repository does not define an OSV ecosystem mapping for container image references. Sorting is disabled for Dockerfile and Compose manifests because declaration order affects build stages and service semantics.
+Docker Hub images query Docker Hub tag pages, `mcr.microsoft.com/...` images query the Microsoft Container Registry tag catalog, and explicit registry images such as `ghcr.io/org/app:1.2.3` or `my_private.registry:5000/redis` use the OCI Distribution `/v2/{name}/tags/list` route. Digest-only pins are reported as fixed and are not rewritten to tags. Images containing unresolved Dockerfile or Compose variables are shown as unsupported instead of receiving registry suggestions. OSV vulnerability lookups are disabled for Docker image references because OSV.dev does not list container images as a covered package ecosystem. Sorting is disabled for Dockerfile and Compose manifests because declaration order affects build stages and service semantics.
 
 ### .NET / F# / NuGet / Paket support
 
@@ -97,25 +98,25 @@ NuGet dependencies use NuGet v3 service indexes, with `https://api.nuget.org/v3/
 
 VersionLens scans `dub.json`, `dub.selections.json`, and `dub.sdl` files by default. `dub.json` reads top-level `dependencies`, selected `versions`, and per-configuration dependency maps under `configurations.*.dependencies`. Dependency sub-objects with `version`, `path`, or `repository` fields are parsed from their editable source ranges. `dub.sdl` reads `dependency` directives with `version`, `path`, or `repository` attributes. Local `path` dependencies and direct repository dependencies are shown as fixed sources instead of receiving registry update suggestions.
 
-Dub dependencies query `https://code.dlang.org/api/packages/{name}/info?minimize=true` by default. Configure `versionlens.dub.apiUrl` for another Dub-compatible package API base. OSV vulnerability lookups are disabled for Dub because this repository does not define an OSV ecosystem mapping for Dub packages. Sorting is enabled for Dub `dependencies` and `versions` groups.
+Dub dependencies query `https://code.dlang.org/api/packages/{name}/info?minimize=true` by default. Configure `versionlens.dub.apiUrl` for another Dub-compatible package API base. OSV vulnerability lookups are disabled for Dub packages because OSV.dev does not list Dub as a covered ecosystem. Sorting is enabled for Dub `dependencies` and `versions` groups.
 
 ### Haxelib / Haxe support
 
 VersionLens scans `haxelib.json` files by default. It reads the top-level `dependencies` object where dependency names are keys and values are exact Haxelib versions or an empty string for Haxelib's latest-version behavior. Edits replace only the version value for pinned dependencies.
 
-Haxelib dependencies query the project versions page under `https://lib.haxe.org/p/{name}/versions/` by default. Configure `versionlens.haxelib.apiUrl` for another Haxelib-compatible base URL. OSV vulnerability lookups are disabled for Haxelib because this repository does not define an OSV ecosystem mapping for Haxelib packages. Sorting is disabled for `haxelib.json` manifests.
+Haxelib dependencies query the project versions page under `https://lib.haxe.org/p/{name}/versions/` by default. Configure `versionlens.haxelib.apiUrl` for another Haxelib-compatible base URL. OSV vulnerability lookups are disabled for Haxelib packages because OSV.dev does not list Haxelib as a covered ecosystem. Sorting is disabled for `haxelib.json` manifests.
 
 ### Terraform / OpenTofu support
 
 VersionLens scans `.tf` and `.tofu` files by default. It reads provider requirements from `terraform.required_providers`, including object requirements with `source` and `version` attributes and legacy string requirements such as `aws = "~> 5.0"`. Provider sources without an explicit hostname default to `registry.terraform.io`; omitted sources use `registry.terraform.io/hashicorp/{local_name}`. Built-in providers such as `terraform.io/builtin/terraform` are shown as fixed built-in providers instead of receiving registry update suggestions.
 
-Terraform and OpenTofu providers query the Terraform Registry protocol `GET /v1/providers/{namespace}/{type}/versions` endpoint at `https://registry.terraform.io` by default. Configure `versionlens.terraform.apiUrl` for another compatible registry base. Provider sources with an explicit hostname use that hostname for lookup. Edits preserve HCL version constraint operators such as `~>`, `>=`, `<=`, and `!=` when parser support exposes a single editable version segment. OSV vulnerability lookups are disabled for Terraform providers because this repository does not define an OSV ecosystem mapping for Terraform provider identities. Sorting is disabled for Terraform and OpenTofu HCL manifests.
+Terraform and OpenTofu providers query the Terraform Registry protocol `GET /v1/providers/{namespace}/{type}/versions` endpoint at `https://registry.terraform.io` by default. Configure `versionlens.terraform.apiUrl` for another compatible registry base. Provider sources with an explicit hostname use that hostname for lookup. Edits preserve HCL version constraint operators such as `~>`, `>=`, `<=`, and `!=` when parser support exposes a single editable version segment. OSV vulnerability lookups are disabled for Terraform provider identities because OSV.dev does not list Terraform providers as a covered ecosystem. Sorting is disabled for Terraform and OpenTofu HCL manifests.
 
 ### Helm support
 
 VersionLens scans `Chart.yaml` files by default. It reads chart dependencies from the top-level `dependencies` list, including `name`, `version`, `repository`, and `alias`. Dependencies using an alias display the alias while using the original chart name for registry lookup. Local `file:` repositories and repository aliases such as `@repo` are shown as fixed sources instead of receiving registry update suggestions.
 
-HTTP(S) Helm repositories query the repository `index.yaml` file, using the dependency `repository` URL when present and `https://charts.bitnami.com/bitnami` as the default `versionlens.helm.apiUrl` base otherwise. OCI chart repositories query the OCI Distribution tags route for the chart path. Edits preserve Helm semver constraint operators such as `~` by replacing only the editable version segment. OSV vulnerability lookups are disabled for Helm charts because this repository does not define an OSV ecosystem mapping for Helm chart identities. Sorting is disabled for Helm `Chart.yaml` manifests.
+HTTP(S) Helm repositories query the repository `index.yaml` file, using the dependency `repository` URL when present and `https://charts.bitnami.com/bitnami` as the default `versionlens.helm.apiUrl` base otherwise. OCI chart repositories query the OCI Distribution tags route for the chart path. Edits preserve Helm semver constraint operators such as `~` by replacing only the editable version segment. OSV vulnerability lookups are disabled for Helm chart identities because OSV.dev does not list Helm charts as a covered ecosystem. Sorting is disabled for Helm `Chart.yaml` manifests.
 
 ### Ansible Galaxy support
 
@@ -165,37 +166,43 @@ Workspace YAML files read pnpm `catalog`, named `catalogs`, `overrides`, and `pa
 
 VersionLens scans `conanfile.txt` and `conanfile.py` files by default. `conanfile.txt` reads `[requires]`, `[tool_requires]`, and `[test_requires]` references. `conanfile.py` reads declarative `requires`, `tool_requires`, `build_requires`, `test_requires`, and `python_requires` string attributes. Updates preserve Conan version-range brackets plus user/channel and recipe revision suffixes such as `@user/channel` and `#revision`.
 
-Conan registry dependencies query the Conan v2 search endpoint at `https://center2.conan.io/v2/conans/search?q={name}/*` by default. Configure `versionlens.conan.apiUrl` for another Conan-compatible v2 remote. OSV vulnerability lookups are disabled for Conan because this repository does not define an OSV ecosystem mapping for Conan. Sorting is disabled for Conan manifests.
+Conan registry dependencies query the Conan v2 search endpoint at `https://center2.conan.io/v2/conans/search?q={name}/*` by default. Configure `versionlens.conan.apiUrl` for another Conan-compatible v2 remote. OSV vulnerability lookups use Conan Package URL identity when an exact version is present. Sorting is disabled for Conan manifests.
+
+### C/C++ build file support
+
+VersionLens scans `CMakeLists.txt`, `*.cmake`, `xmake.lua`, `subprojects/*.wrap`, `WORKSPACE`, and `WORKSPACE.bazel` files by default. CMake files read GitHub-backed `FetchContent_Declare`, `ExternalProject_Add`, and `CPMAddPackage` declarations when a tag or version can be paired with a repository URL. Xmake files read `add_requires(...)` dependencies. Meson wrap files read `url`, `source_url`, `revision`, `source_fallback_url`, and `wrapdb_version` fields. Bazel WORKSPACE files read `http_archive(...)` declarations with GitHub archive URLs and tag-like versions.
+
+GitHub-backed C/C++ dependencies query repository tags through the GitHub tags API. Xmake dependencies without an explicit GitHub repository query package recipes from `https://raw.githubusercontent.com/xmake-io/xmake-repo/master` by default; configure `versionlens.cpp.apiUrl` for another raw Xmake package registry base. OSV vulnerability lookups use OSV.dev `GIT` queries for GitHub-backed C/C++ dependencies when an exact tag version is present. Sorting is disabled for C/C++ build files.
 
 ### vcpkg / C and C++ support
 
 VersionLens scans `vcpkg.json` files by default. It reads top-level `dependencies`, feature dependencies under `features.*.dependencies`, and `overrides`. Version-constrained dependency objects update the `version>=` field, overrides update the `version` field, and baseline-only dependencies without an inline version are shown as fixed baseline dependencies.
 
-vcpkg registry dependencies query the configured registry repository version database at `https://raw.githubusercontent.com/microsoft/vcpkg/master/versions/{prefix}/{name}.json` by default. Configure `versionlens.vcpkg.apiUrl` for another raw vcpkg registry base. OSV vulnerability lookups are disabled for vcpkg because this repository does not define an OSV ecosystem mapping for vcpkg. Sorting is disabled for vcpkg manifests.
+vcpkg registry dependencies query the configured registry repository version database at `https://raw.githubusercontent.com/microsoft/vcpkg/master/versions/{prefix}/{name}.json` by default. Configure `versionlens.vcpkg.apiUrl` for another raw vcpkg registry base. OSV vulnerability lookups use vcpkg Package URL identity when an exact version is present. Sorting is disabled for vcpkg manifests.
 
 ### Swift Package Manager support
 
 VersionLens scans `Package.swift` files by default. It reads `.package(...)` entries in the package `dependencies` array, including `from:`, `.exact(...)`, `.upToNextMajor(from:)`, and `.upToNextMinor(from:)` version requirements. GitHub URL dependencies use GitHub tags for lookup. Branch, revision, non-GitHub Git URL, and local `path:` dependencies are shown as fixed sources instead of receiving registry update suggestions.
 
-Swift registry dependencies query `/{scope}/{name}` on the configured Swift package registry base, `https://packages.swift.org` by default. Configure `versionlens.swift.apiUrl` for another Swift package registry base. OSV vulnerability lookups are disabled for Swift because this repository does not define an OSV ecosystem mapping for Swift packages. Sorting is disabled for Swift manifests.
+Swift registry dependencies query `/{scope}/{name}` on the configured Swift package registry base, `https://packages.swift.org` by default. Configure `versionlens.swift.apiUrl` for another Swift package registry base. OSV vulnerability lookups use the `SwiftURL` ecosystem and Swift Package URL identity. Sorting is disabled for Swift manifests.
 
 ### Zig support
 
 VersionLens scans `build.zig.zon` files by default. It reads dependencies from the `.dependencies` struct, including `.url`, `.hash`, and local `.path` fields. GitHub archive URLs such as `/archive/refs/tags/{version}.tar.gz` expose the tag segment as the editable version and use GitHub tags for lookup. Hash-only, plain URL, and local path dependencies are shown as fixed sources instead of receiving registry update suggestions.
 
-Non-GitHub Zig package identities use the configured `versionlens.zig.apiUrl` base, `https://pkg.ziglang.org` by default. OSV vulnerability lookups are disabled for Zig because this repository does not define an OSV ecosystem mapping for Zig packages. Sorting is disabled for Zig manifests.
+Non-GitHub Zig package identities use the configured `versionlens.zig.apiUrl` base, `https://pkg.ziglang.org` by default. OSV vulnerability lookups are disabled for Zig packages because OSV.dev does not list Zig as a covered ecosystem. Sorting is disabled for Zig manifests.
 
 ### Nim / Nimble support
 
 VersionLens scans `*.nimble` files by default. It reads `requires "..."` declarations at the top level, inside `dev:` blocks, and inside Nimble feature blocks. Version requirements preserve Nimble operators such as `==`, `>=`, `<=`, `^=`, and `~=` when edits are applied. Dependencies pinned to `#head` are shown as fixed moving-branch dependencies instead of receiving registry update suggestions.
 
-GitHub URL dependencies use GitHub tags for lookup. Plain Nimble package names query the configured packages index at `https://raw.githubusercontent.com/nim-lang/packages/master/packages.json` by default. Configure `versionlens.nim.apiUrl` for a compatible packages index or registry base. OSV vulnerability lookups are disabled for Nim because this repository does not define an OSV ecosystem mapping for Nimble packages. Sorting is disabled for Nimble manifests.
+GitHub URL dependencies use GitHub tags for lookup. Plain Nimble package names query the configured packages index at `https://raw.githubusercontent.com/nim-lang/packages/master/packages.json` by default. Configure `versionlens.nim.apiUrl` for a compatible packages index or registry base. OSV vulnerability lookups are disabled for Nimble packages because OSV.dev does not list Nimble as a covered ecosystem. Sorting is disabled for Nimble manifests.
 
 ### LuaRocks / Lua support
 
 VersionLens scans `*.rockspec` files by default. It reads LuaRocks `dependencies`, `build_dependencies`, and `test_dependencies` arrays, preserving LuaRocks operators such as `==`, `~=`, `>=`, `<=`, and `~>` when edits are applied. The special `lua` runtime dependency is shown as fixed because LuaRocks treats it as the Lua interpreter version rather than a rock package.
 
-LuaRocks dependencies query the configured LuaRocks manifest at `https://luarocks.org/manifest` by default. Configure `versionlens.luarocks.apiUrl` for another LuaRocks server base or manifest URL. OSV vulnerability lookups are disabled for LuaRocks because this repository does not define an OSV ecosystem mapping for LuaRocks packages. Sorting is disabled for rockspec manifests.
+LuaRocks dependencies query the configured LuaRocks manifest at `https://luarocks.org/manifest` by default. Configure `versionlens.luarocks.apiUrl` for another LuaRocks server base or manifest URL. OSV vulnerability lookups are disabled for LuaRocks packages because OSV.dev does not list LuaRocks as a covered ecosystem. Sorting is disabled for rockspec manifests.
 
 ### Python / PyPI / Pipenv / Poetry / uv support
 
@@ -231,7 +238,7 @@ Hex registry dependencies query `https://hex.pm/api/packages/{name}` by default.
 
 VersionLens scans `opam`, `*.opam`, and `dune-project` package definition files by default. It reads opam package `version` metadata and package formulas in `depends`, `depopts`, and `conflicts`; it also reads Dune `(package ...)` `version` and `depends` metadata, preserving comparison operators when updating version constraints.
 
-opam package lookups query `https://opam.ocaml.org/packages/{name}/` by default. Configure `versionlens.opam.apiUrl` for an opam-compatible package site base URL. OSV vulnerability lookups are disabled for opam packages because this repository does not define an OSV ecosystem mapping for opam. Sorting is disabled for opam manifests.
+opam package lookups query `https://opam.ocaml.org/packages/{name}/` by default. Configure `versionlens.opam.apiUrl` for an opam-compatible package site base URL. OSV vulnerability lookups use the `opam` ecosystem and opam Package URL identity. Sorting is disabled for opam manifests.
 
 ### Haskell / Cabal / Stack support
 
@@ -255,7 +262,7 @@ CRAN registry dependencies query `https://cran.r-project.org/src/contrib/PACKAGE
 
 VersionLens scans CocoaPods `Podfile` manifests by default. It reads `pod` declarations in root, `target`, and `abstract_target` blocks, including version requirements, source-level `source` repositories, per-pod `:source` overrides, and unsupported `:path`, `:git`, and `:podspec` source forms. Pods without an explicit version are shown as latest-version CocoaPods dependencies; local path, Git, and podspec dependencies are shown as fixed sources instead of receiving registry update suggestions.
 
-CocoaPods dependencies query the configured Specs repository CDN using `https://cdn.cocoapods.org` by default. Configure `versionlens.cocoapods.apiUrl` for another CocoaPods Specs-compatible base. Edits preserve Ruby-style CocoaPods operators such as `~>`, `>=`, `<=`, and `!=` by replacing only the editable version segment. OSV vulnerability lookup is unsupported for CocoaPods packages because this repository does not define an OSV ecosystem mapping for CocoaPods. Sorting is disabled for Podfiles because target grouping and declaration order can carry project meaning. Implementation follows the CocoaPods Podfile syntax guide and Specs repository format documented by CocoaPods.
+CocoaPods dependencies query the configured Specs repository CDN using `https://cdn.cocoapods.org` by default. Configure `versionlens.cocoapods.apiUrl` for another CocoaPods Specs-compatible base. Edits preserve Ruby-style CocoaPods operators such as `~>`, `>=`, `<=`, and `!=` by replacing only the editable version segment. OSV vulnerability lookups use CocoaPods Package URL identity when an exact version is present. Sorting is disabled for Podfiles because target grouping and declaration order can carry project meaning. Implementation follows the CocoaPods Podfile syntax guide and Specs repository format documented by CocoaPods.
 
 ## Show version information
 

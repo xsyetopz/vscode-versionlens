@@ -2,14 +2,15 @@ use crate::model::ManifestKind;
 
 use super::uri::file_name;
 use crate::model::ManifestKind::{
-    AnsibleGalaxyRequirementsYaml, BazelModule, CabalProject, CargoToml, ClojureDepsEdn,
-    CocoaPodsPodfile, ComposerJson, ConanfilePy, ConanfileTxt, Cpanfile, DenoImportMapJson,
-    DenoJson, DotnetProjectJson, DotnetXml, DubJson, DubSdl, DuneProject, Gemfile, GleamToml,
-    GoMod, GradleBuild, GradleSettings, GradleVersionCatalogToml, HaxelibJson, HelmChartYaml,
-    JsrJson, JuliaManifestToml, JuliaProjectToml, KustomizationYaml, LeiningenProjectClj,
-    MavenPomXml, MixExs, NixFlake, NpmPackageJson, NpmPackageJson5, NpmPackageYaml, Opam,
-    PaketDependencies, PaketReferences, PubspecOverridesYaml, PubspecYaml, RDescription,
-    RebarConfig, RenvLock, SbtBuild, StackYaml, SwiftPackage, VcpkgJson, ZigBuildZon,
+    AnsibleGalaxyRequirementsYaml, BazelModule, BazelWorkspace, CabalProject, CargoToml,
+    ClojureDepsEdn, Cmake, CocoaPodsPodfile, ComposerJson, ConanfilePy, ConanfileTxt, Cpanfile,
+    DenoImportMapJson, DenoJson, DotnetProjectJson, DotnetXml, DubJson, DubSdl, DuneProject,
+    Gemfile, GleamToml, GoMod, GradleBuild, GradleSettings, GradleVersionCatalogToml, HaxelibJson,
+    HelmChartYaml, JsrJson, JuliaManifestToml, JuliaProjectToml, KustomizationYaml,
+    LeiningenProjectClj, MavenPomXml, MixExs, NixFlake, NpmPackageJson, NpmPackageJson5,
+    NpmPackageYaml, Opam, PaketDependencies, PaketReferences, PubspecOverridesYaml, PubspecYaml,
+    RDescription, RebarConfig, RenvLock, SbtBuild, StackYaml, SwiftPackage, VcpkgJson, XmakeLua,
+    ZigBuildZon,
 };
 
 pub(super) const EARLY_FILE_MANIFESTS: &[(&str, ManifestKind)] = &[
@@ -48,6 +49,10 @@ pub(super) const EARLY_FILE_MANIFESTS: &[(&str, ManifestKind)] = &[
     ("conanfile.txt", ConanfileTxt),
     ("conanfile.py", ConanfilePy),
     ("vcpkg.json", VcpkgJson),
+    ("CMakeLists.txt", Cmake),
+    ("xmake.lua", XmakeLua),
+    ("WORKSPACE", BazelWorkspace),
+    ("WORKSPACE.bazel", BazelWorkspace),
     ("Package.swift", SwiftPackage),
     ("build.zig.zon", ZigBuildZon),
     ("cpanfile", Cpanfile),

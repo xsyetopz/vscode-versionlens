@@ -6,7 +6,7 @@ use versionlens_suggestions::SuggestionStatus::{
 use versionlens_vscode_model::{Position, Range};
 
 use super::update_edits;
-use versionlens_parsers::Ecosystem::{Cargo, Dotnet, Go, Npm, Python, Ruby};
+use versionlens_parsers::Ecosystem::{Cargo, Cpp, Dotnet, Go, Npm, Python, Ruby};
 
 #[test]
 fn replaces_requirement_range_with_latest_version() {
@@ -127,6 +127,32 @@ fn inserts_missing_ruby_version_argument() {
 
     assert_eq!(edits[0].range, range(0, 14, 0, 14));
     assert_eq!(edits[0].new_text, ", '1.18.10'");
+}
+
+#[test]
+fn inserts_missing_xmake_requirement_with_separator() {
+    let edits = update_edits(&[Suggestion {
+        dependency: Dependency {
+            name: "openssl".to_owned(),
+            requirement: "*".to_owned(),
+            ecosystem: Cpp,
+            group: "add_requires".to_owned(),
+            hosted_url: None,
+            hosted_name: None,
+            range: range(0, 14, 0, 21),
+            requirement_range: range(0, 21, 0, 21),
+            requirement_prefix: " ".to_owned(),
+            requirement_suffix: "".to_owned(),
+        },
+        latest: Some("3.0.0".to_owned()),
+        resolved: None,
+        status: StatusUpdateAvailable,
+        builds: vec![],
+        choices: vec![],
+    }]);
+
+    assert_eq!(edits[0].range, range(0, 21, 0, 21));
+    assert_eq!(edits[0].new_text, " 3.0.0");
 }
 
 #[test]

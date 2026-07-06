@@ -49,6 +49,11 @@ export const filePatternKeys: readonly FilePatternKey[] = [
 	["kustomize", "kustomize.files", ["yaml"]],
 	["unity", "unity.files", ["json", "jsonc"]],
 	["cocoapods", "cocoapods.files", ["ruby", "plaintext"]],
+	[
+		"cpp",
+		"cpp.files",
+		["cmake", "lua", "meson", "ini", "starlark", "plaintext"],
+	],
 ] as const;
 
 export function enabledFilePatternKeys(

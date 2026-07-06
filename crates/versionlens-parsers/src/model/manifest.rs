@@ -2,21 +2,22 @@ use serde::{Deserialize, Serialize};
 
 use super::Ecosystem;
 use crate::model::Ecosystem::{
-    AnsibleGalaxy, Bazel, Cargo, CocoaPods, Composer, Conan, Cpan, Cran, Deno, Docker, Dotnet, Dub,
-    Go, Hackage, Haxelib, Helm, Hex, Julia, LuaRocks, Maven, Nim, Nix, Npm, Opam as OpamEcosystem,
-    Pub, Python, Ruby, Swift, Terraform, Unity, Vcpkg, Zig,
+    AnsibleGalaxy, Bazel, Cargo, CocoaPods, Composer, Conan, Cpan, Cpp, Cran, Deno, Docker, Dotnet,
+    Dub, Go, Hackage, Haxelib, Helm, Hex, Julia, LuaRocks, Maven, Nim, Nix, Npm,
+    Opam as OpamEcosystem, Pub, Python, Ruby, Swift, Terraform, Unity, Vcpkg, Zig,
 };
 use crate::model::ManifestKind::{
-    AnsibleGalaxyRequirementsYaml, BazelModule, Cabal, CabalProject, CargoToml, ClojureDepsEdn,
-    CocoaPodsPodfile, ComposerJson, ConanfilePy, ConanfileTxt, Cpanfile, DenoImportMapJson,
-    DenoJson, DockerComposeYaml, Dockerfile, DotnetProjectJson, DotnetXml, DubJson, DubSdl,
-    DuneProject, Gemfile, GleamToml, GoMod, GradleBuild, GradleSettings, GradleVersionCatalogToml,
-    HaxelibJson, HelmChartYaml, JsrJson, JuliaManifestToml, JuliaProjectToml, KustomizationYaml,
-    LeiningenProjectClj, LuaRockspec, MavenPomXml, MixExs, Nimble, NixFlake, NpmPackageJson,
-    NpmPackageJson5, NpmPackageYaml, Opam, PaketDependencies, PaketReferences, PnpmYaml,
-    PubspecOverridesYaml, PubspecYaml, PythonPipfile, PythonPyprojectToml, PythonRequirementsTxt,
-    RDescription, RebarConfig, RenvLock, RubyGemspec, SbtBuild, StackYaml, SwiftPackage,
-    TerraformTf, UnityProjectManifestJson, VcpkgJson, ZigBuildZon,
+    AnsibleGalaxyRequirementsYaml, BazelModule, BazelWorkspace, Cabal, CabalProject, CargoToml,
+    ClojureDepsEdn, Cmake, CocoaPodsPodfile, ComposerJson, ConanfilePy, ConanfileTxt, Cpanfile,
+    DenoImportMapJson, DenoJson, DockerComposeYaml, Dockerfile, DotnetProjectJson, DotnetXml,
+    DubJson, DubSdl, DuneProject, Gemfile, GleamToml, GoMod, GradleBuild, GradleSettings,
+    GradleVersionCatalogToml, HaxelibJson, HelmChartYaml, JsrJson, JuliaManifestToml,
+    JuliaProjectToml, KustomizationYaml, LeiningenProjectClj, LuaRockspec, MavenPomXml, MesonWrap,
+    MixExs, Nimble, NixFlake, NpmPackageJson, NpmPackageJson5, NpmPackageYaml, Opam,
+    PaketDependencies, PaketReferences, PnpmYaml, PubspecOverridesYaml, PubspecYaml, PythonPipfile,
+    PythonPyprojectToml, PythonRequirementsTxt, RDescription, RebarConfig, RenvLock, RubyGemspec,
+    SbtBuild, StackYaml, SwiftPackage, TerraformTf, UnityProjectManifestJson, VcpkgJson, XmakeLua,
+    ZigBuildZon,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -61,6 +62,10 @@ pub enum ManifestKind {
     ConanfileTxt,
     ConanfilePy,
     VcpkgJson,
+    Cmake,
+    XmakeLua,
+    MesonWrap,
+    BazelWorkspace,
     SwiftPackage,
     ZigBuildZon,
     Nimble,
@@ -127,6 +132,10 @@ const MANIFEST_ECOSYSTEMS: &[(ManifestKind, Ecosystem)] = &[
     (ConanfileTxt, Conan),
     (ConanfilePy, Conan),
     (VcpkgJson, Vcpkg),
+    (Cmake, Cpp),
+    (XmakeLua, Cpp),
+    (MesonWrap, Cpp),
+    (BazelWorkspace, Cpp),
     (SwiftPackage, Swift),
     (ZigBuildZon, Zig),
     (Nimble, Nim),

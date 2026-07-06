@@ -5,6 +5,7 @@ mod cocoapods;
 mod composer;
 mod conan;
 mod cpan;
+mod cpp;
 mod cran;
 mod deno;
 mod dub;
@@ -35,6 +36,7 @@ pub(super) use cocoapods::{cocoapods_registry_url, cocoapods_registry_url_with_b
 pub(super) use composer::{composer_registry_url, composer_registry_url_with_base};
 pub(super) use conan::{conan_registry_url, conan_registry_url_with_base};
 pub(super) use cpan::{cpan_registry_url, cpan_registry_url_with_base};
+pub(super) use cpp::{cpp_registry_url, cpp_registry_url_with_base};
 pub(super) use cran::{cran_registry_url, cran_registry_url_with_base};
 pub(super) use deno::{deno_registry_url, deno_registry_url_with_base};
 pub(super) use dub::{dub_registry_url, dub_registry_url_with_base};

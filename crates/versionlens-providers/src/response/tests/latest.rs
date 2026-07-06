@@ -4,9 +4,9 @@ use super::{
     release_versions_from_response,
 };
 use versionlens_parsers::Ecosystem::{
-    AnsibleGalaxy, Bazel, Cargo, CocoaPods, Conan, Cpan, Cran, Deno, Docker, Dotnet, Go, Hackage,
-    Hex, Julia, LuaRocks, Maven, Nim, Nix, Npm, Opam, Pub, Python, Ruby, Swift, Terraform, Vcpkg,
-    Zig,
+    AnsibleGalaxy, Bazel, Cargo, CocoaPods, Conan, Cpan, Cpp, Cran, Deno, Docker, Dotnet, Go,
+    Hackage, Hex, Julia, LuaRocks, Maven, Nim, Nix, Npm, Opam, Pub, Python, Ruby, Swift, Terraform,
+    Vcpkg, Zig,
 };
 
 #[test]
@@ -165,6 +165,22 @@ fn github_tag_responses_ignore_non_semver_names() {
             "v2.0.0",
         );
     }
+}
+
+#[test]
+fn cpp_github_tag_responses_use_json_before_xmake_text_fallback() {
+    assert_latest(
+        Cpp,
+        "fmtlib/fmt",
+        r#"[{"name":"11.1.4"},{"name":"11.2.0-rc.1"},{"name":"10.2.1"}]"#,
+        "11.1.4",
+    );
+    assert_latest(
+        Cpp,
+        "openssl",
+        r#"add_versions("3.0.0", "sha256") add_versions("3.1.0-beta", "sha256")"#,
+        "3.0.0",
+    );
 }
 
 #[test]

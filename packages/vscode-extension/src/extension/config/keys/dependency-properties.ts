@@ -32,4 +32,5 @@ export const dependencyPropertyKeys: readonly ConfigKeyPair[] = [
 	["kustomize", "kustomize.dependencyProperties"],
 	["unity", "unity.dependencyProperties"],
 	["cocoapods", "cocoapods.dependencyProperties"],
+	["cpp", "cpp.dependencyProperties"],
 ] as const;

@@ -4,7 +4,7 @@ use versionlens_parsers::Ecosystem;
 
 use super::ResponseRequest;
 use versionlens_parsers::Ecosystem::{
-    AnsibleGalaxy, Bazel, Cargo, CocoaPods, Composer, Conan, Cpan, Deno, Docker, Dotnet, Dub,
+    AnsibleGalaxy, Bazel, Cargo, CocoaPods, Composer, Conan, Cpan, Cpp, Deno, Docker, Dotnet, Dub,
     Hackage, Hex, Maven, Nim, Nix, Npm, Pub, Ruby, Swift, Terraform, Unity, Vcpkg, Zig,
 };
 
@@ -32,6 +32,7 @@ mod terraform;
 mod vcpkg;
 mod zig;
 
+use crate::response::cpp::latest_cpp_json_version;
 use ansible::latest_ansible_json_response;
 use bazel::latest_bazel_json_response;
 use cargo::latest_cargo_json_response;
@@ -78,6 +79,7 @@ const JSON_RESPONSE_PARSERS: &[(Ecosystem, JsonResponseParser)] = &[
     (CocoaPods, latest_cocoapods_json_response),
     (Conan, latest_conan_json_response),
     (Cpan, latest_cpan_json_response),
+    (Cpp, latest_cpp_json_response),
     (Deno, latest_deno_json_response),
     (Dotnet, latest_dotnet_json_response),
     (Docker, latest_docker_json_response),
@@ -96,3 +98,12 @@ const JSON_RESPONSE_PARSERS: &[(Ecosystem, JsonResponseParser)] = &[
     (Zig, latest_zig_json_response),
     (Terraform, latest_terraform_json_response),
 ];
+
+fn latest_cpp_json_response(value: &Value, request: &ResponseRequest<'_>) -> Option<String> {
+    let tags = value.as_array()?;
+    latest_cpp_json_version(
+        &Value::Array(tags.to_owned()),
+        request.include_prereleases,
+        request.prerelease_tags,
+    )
+}

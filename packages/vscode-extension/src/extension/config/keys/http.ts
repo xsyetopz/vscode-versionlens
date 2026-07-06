@@ -33,4 +33,5 @@ export const providerStrictSslKeys: readonly ConfigKeyPair[] = [
 	["kustomize", "kustomize.http.strictSSL"],
 	["unity", "unity.http.strictSSL"],
 	["cocoapods", "cocoapods.http.strictSSL"],
+	["cpp", "cpp.http.strictSSL"],
 ] as const;

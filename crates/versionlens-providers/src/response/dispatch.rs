@@ -2,8 +2,8 @@ use self::json::latest_json_response;
 use self::text::latest_text_response;
 use versionlens_parsers::Ecosystem;
 use versionlens_parsers::Ecosystem::{
-    AnsibleGalaxy, Bazel, Cargo, CocoaPods, Composer, Conan, Cpan, Cran, Deno, Docker, Dotnet, Dub,
-    Go, Hackage, Haxelib, Helm, Hex, Julia, LuaRocks, Maven, Nim, Nix, Npm, Opam, Pub, Python,
+    AnsibleGalaxy, Bazel, Cargo, CocoaPods, Composer, Conan, Cpan, Cpp, Cran, Deno, Docker, Dotnet,
+    Dub, Go, Hackage, Haxelib, Helm, Hex, Julia, LuaRocks, Maven, Nim, Nix, Npm, Opam, Pub, Python,
     Ruby, Swift, Terraform, Unity, Vcpkg, Zig,
 };
 
@@ -56,6 +56,8 @@ pub fn latest_version_from_response_for_request(
         Cran | Go | Julia | LuaRocks | Opam | Python | Haxelib => {
             latest_text_response(request.ecosystem, request.body, &parser_request)
         }
+        Cpp => latest_json_response(request.ecosystem, request.body, &parser_request)
+            .or_else(|| latest_text_response(request.ecosystem, request.body, &parser_request)),
         Helm => latest_text_response(request.ecosystem, request.body, &parser_request)
             .or_else(|| latest_json_response(request.ecosystem, request.body, &parser_request)),
         Maven => latest_json_response(request.ecosystem, request.body, &parser_request)

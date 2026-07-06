@@ -7,6 +7,7 @@ mod common;
 mod composer;
 mod conan;
 mod cpan;
+mod cpp;
 mod cran;
 mod deno;
 mod dispatch;

@@ -9,6 +9,7 @@ mod cocoapods_podfile;
 mod composer_repositories;
 mod conan;
 mod cpanfile;
+mod cpp;
 mod docker;
 mod document;
 mod dotnet_sources;

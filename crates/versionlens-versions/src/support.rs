@@ -8,11 +8,11 @@ pub(crate) fn parse_semver(value: &str) -> Result<SemverVersion, SemverError> {
 }
 
 fn empty_prerelease() -> SemverPrerelease {
-    "".parse().expect("empty semver prerelease is valid")
+    SemverPrerelease::EMPTY
 }
 
 fn empty_build_metadata() -> SemverBuildMetadata {
-    "".parse().expect("empty semver build metadata is valid")
+    SemverBuildMetadata::EMPTY
 }
 
 pub(crate) fn semver_version(major: u64, minor: u64, patch: u64) -> SemverVersion {

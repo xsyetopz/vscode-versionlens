@@ -34,4 +34,5 @@ export const providerCacheKeys: readonly ConfigKeyPair[] = [
 	["kustomize", "kustomize.caching.duration"],
 	["unity", "unity.caching.duration"],
 	["cocoapods", "cocoapods.caching.duration"],
+	["cpp", "cpp.caching.duration"],
 ] as const;

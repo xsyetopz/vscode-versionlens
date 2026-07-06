@@ -4,6 +4,7 @@ use crate::model::ManifestKind::{
     PythonRequirementsTxt,
 };
 
+mod cpp;
 mod docker;
 mod dotnet;
 mod python;
@@ -11,6 +12,7 @@ mod workspace;
 
 pub(super) use docker::is_dockerfile_uri;
 
+use cpp::classify_cpp_manifest;
 use docker::is_docker_compose_uri;
 use dotnet::is_dotnet_xml_uri;
 use python::{is_pipfile_uri, is_pyproject_toml_uri, is_requirements_txt_uri};
@@ -25,6 +27,9 @@ pub(super) fn classify_early_pattern_manifest(uri: &str) -> Option<ManifestKind>
     }
     if is_pnpm_yaml_uri(uri) {
         return Some(PnpmYaml);
+    }
+    if let Some(kind) = classify_cpp_manifest(uri) {
+        return Some(kind);
     }
     None
 }

@@ -1,15 +1,16 @@
 use serde::{Deserialize, Serialize};
 use versionlens_cache::minutes_to_ms;
 use versionlens_parsers::ManifestKind::{
-    AnsibleGalaxyRequirementsYaml, BazelModule, Cabal, CabalProject, CargoToml, ClojureDepsEdn,
-    CocoaPodsPodfile, ComposerJson, ConanfilePy, ConanfileTxt, Cpanfile, DenoImportMapJson,
-    DenoJson, DockerComposeYaml, DotnetXml, DubJson, DuneProject, Gemfile, GleamToml, GoMod,
-    GradleBuild, GradleSettings, GradleVersionCatalogToml, HaxelibJson, HelmChartYaml, JsrJson,
-    JuliaManifestToml, JuliaProjectToml, KustomizationYaml, LeiningenProjectClj, LuaRockspec,
-    MavenPomXml, MixExs, Nimble, NixFlake, NpmPackageJson, NpmPackageJson5, NpmPackageYaml, Opam,
-    PaketDependencies, PaketReferences, PnpmYaml, PubspecYaml, PythonRequirementsTxt, RDescription,
-    RebarConfig, RenvLock, RubyGemspec, SbtBuild, StackYaml, SwiftPackage, TerraformTf,
-    UnityProjectManifestJson, VcpkgJson, ZigBuildZon,
+    AnsibleGalaxyRequirementsYaml, BazelModule, BazelWorkspace, Cabal, CabalProject, CargoToml,
+    ClojureDepsEdn, Cmake, CocoaPodsPodfile, ComposerJson, ConanfilePy, ConanfileTxt, Cpanfile,
+    DenoImportMapJson, DenoJson, DockerComposeYaml, DotnetXml, DubJson, DuneProject, Gemfile,
+    GleamToml, GoMod, GradleBuild, GradleSettings, GradleVersionCatalogToml, HaxelibJson,
+    HelmChartYaml, JsrJson, JuliaManifestToml, JuliaProjectToml, KustomizationYaml,
+    LeiningenProjectClj, LuaRockspec, MavenPomXml, MesonWrap, MixExs, Nimble, NixFlake,
+    NpmPackageJson, NpmPackageJson5, NpmPackageYaml, Opam, PaketDependencies, PaketReferences,
+    PnpmYaml, PubspecYaml, PythonRequirementsTxt, RDescription, RebarConfig, RenvLock, RubyGemspec,
+    SbtBuild, StackYaml, SwiftPackage, TerraformTf, UnityProjectManifestJson, VcpkgJson, XmakeLua,
+    ZigBuildZon,
 };
 use versionlens_parsers::{Ecosystem, ManifestKind, ecosystem_from_config_name};
 
@@ -187,6 +188,7 @@ fn manifest_kind_matches(candidate: ManifestKind, kind: ManifestKind) -> bool {
         || (candidate == RDescription && kind == RenvLock)
         || (candidate == Opam && kind == DuneProject)
         || (candidate == ConanfileTxt && kind == ConanfilePy)
+        || (candidate == Cmake && matches!(kind, XmakeLua | MesonWrap | BazelWorkspace))
 }
 
 pub fn enabled_provider_config_from_name(provider: &str) -> Option<EnabledProviderConfig> {
@@ -265,6 +267,10 @@ pub fn file_pattern_manifest_kind_from_name(provider: &str) -> Option<ManifestKi
         "renv" => Some(RenvLock),
         "conan" => Some(ConanfileTxt),
         "vcpkg" => Some(VcpkgJson),
+        "cpp" | "c-cpp" | "cmake" => Some(Cmake),
+        "xmake" => Some(XmakeLua),
+        "meson" => Some(MesonWrap),
+        "bazel-workspace" => Some(BazelWorkspace),
         "swift" => Some(SwiftPackage),
         "zig" => Some(ZigBuildZon),
         "nim" => Some(Nimble),

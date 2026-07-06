@@ -2106,6 +2106,60 @@
 					"type": "boolean",
 					"default": true,
 					"description": "Refresh CocoaPods suggestions when Podfile files are saved."
+				},
+				"versionlens.cpp.files": {
+					"type": "string",
+					"default": "**/{CMakeLists.txt,*.cmake,xmake.lua,subprojects/*.wrap,WORKSPACE,WORKSPACE.bazel}",
+					"description": "C/C++ build and dependency manifest files to scan."
+				},
+				"versionlens.cpp.prereleaseTagFilter": {
+					"type": "array",
+					"default": [],
+					"items": {
+						"type": "string"
+					},
+					"description": "C/C++ prerelease identifiers to include when prerelease suggestions are enabled."
+				},
+				"versionlens.cpp.dependencyProperties": {
+					"type": "array",
+					"default": [
+						"add_requires",
+						"FetchContent_Declare",
+						"ExternalProject_Add",
+						"CPMAddPackage",
+						"meson.wrap",
+						"http_archive"
+					],
+					"items": {
+						"type": "string"
+					},
+					"description": "C/C++ dependency declaration forms to scan."
+				},
+				"versionlens.cpp.caching.duration": {
+					"type": [
+						"null",
+						"number"
+					],
+					"default": null,
+					"description": "C/C++ registry cache duration in minutes."
+				},
+				"versionlens.cpp.http.strictSSL": {
+					"type": [
+						"null",
+						"boolean"
+					],
+					"default": null,
+					"description": "Whether to require strict SSL for C/C++ registry requests."
+				},
+				"versionlens.cpp.onSaveChanges": {
+					"type": "string",
+					"default": null,
+					"description": "C/C++ provider on-save behavior."
+				},
+				"versionlens.cpp.apiUrl": {
+					"type": "string",
+					"default": "https://raw.githubusercontent.com/xmake-io/xmake-repo/master",
+					"description": "C/C++ fallback package registry base URL for Xmake package recipes."
 				}
 			}
 		}

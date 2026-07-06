@@ -789,6 +789,55 @@
     },
     {
       "ecosystem": "c-cpp",
+      "provider": "cpp",
+      "registry": "GitHub tags for GitHub-backed CMake, Meson wrap, and Bazel dependencies; Xmake package recipes from xmake-repo for Xmake dependencies",
+      "manifests": [
+        {
+          "defaultSettingKey": "versionlens.cpp.files",
+          "defaultGlob": "**/{CMakeLists.txt,*.cmake,xmake.lua,subprojects/*.wrap,WORKSPACE,WORKSPACE.bazel}",
+          "fileForms": [
+            "CMakeLists.txt",
+            "*.cmake",
+            "xmake.lua",
+            "subprojects/*.wrap",
+            "WORKSPACE",
+            "WORKSPACE.bazel"
+          ],
+          "languages": [
+            "cmake",
+            "lua",
+            "ini",
+            "starlark",
+            "plaintext"
+          ],
+          "manifestKinds": [
+            "Cmake",
+            "XmakeLua",
+            "MesonWrap",
+            "BazelWorkspace"
+          ],
+          "parsers": [
+            "parse_cmake_with_paths",
+            "parse_xmake_lua_with_paths",
+            "parse_meson_wrap_with_paths",
+            "parse_bazel_workspace_with_paths"
+          ]
+        }
+      ],
+      "dependencyProperties": {
+        "settingKey": "versionlens.cpp.dependencyProperties",
+        "default": [
+          "add_requires",
+          "FetchContent_Declare",
+          "ExternalProject_Add",
+          "CPMAddPackage",
+          "meson.wrap",
+          "http_archive"
+        ]
+      }
+    },
+    {
+      "ecosystem": "c-cpp",
       "provider": "vcpkg",
       "registry": "vcpkg registry version database from the configured registry repository",
       "manifests": [
