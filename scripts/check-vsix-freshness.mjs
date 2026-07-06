@@ -17,6 +17,7 @@ const expectedEntries = [
 	"[Content_Types].xml",
 	"extension.vsixmanifest",
 	"extension/LICENSE.txt",
+	"extension/changelog.md",
 	"extension/dist/extension.js",
 	"extension/images/faq/ext-host-log.jpg",
 	"extension/images/faq/ext-log.jpg",

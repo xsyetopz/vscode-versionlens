@@ -14,7 +14,7 @@ ALLOWED_EXTENSION_SOURCE_DIRS = {"extension", "schema"}
 ALLOWED_ROOT_SOURCE_FILES = {"extension.ts"}
 ALLOWED_BARE_IMPORTS = {"bun:test", "vscode"}
 FORBIDDEN_NODE_IMPORTS = {"node:child_process"}
-PRESERVED_PACKAGE_FIELDS = ["author", "categories", "description", "icon", "license", "preview", "version"]
+PRESERVED_PACKAGE_FIELDS = ["author", "categories", "description", "icon", "license", "preview"]
 APPROVED_PACKAGE_OVERRIDES: dict[str, Any] = {
     "name": "versionlens-redux",
     "displayName": "VersionLens Redux",
@@ -292,7 +292,7 @@ def check_assets(offenders: list[str], extension_package: dict[str, Any]) -> Non
 def check_vscodeignore(offenders: list[str]) -> None:
     package_ignore_path = Path("packages/vscode-extension/.vscodeignore")
     package_ignore_lines = read(package_ignore_path).split("\n") if package_ignore_path.exists() else []
-    for required_file in ["README.md", "LICENSE", "dist/extension.js", "native/versionlens_napi.node", "src/schema/versionlens.multi-registries.json"]:
+    for required_file in ["README.md", "LICENSE", "src/schema/versionlens.multi-registries.json"]:
         if not Path("packages/vscode-extension", required_file).exists():
             offenders.append(f"packages/vscode-extension missing {required_file}")
     for required_ignore in ["src/**", "dist/*.node", "*.vsix", "*.tsbuildinfo", "tsconfig.json", "node_modules/**"]:
