@@ -116,7 +116,7 @@ for (const root of roots) {
 }
 
 if (checked === 0) {
-	console.error("checked 0 Rust files");
+	console.error("no Rust files checked");
 	process.exit(1);
 }
 
@@ -126,7 +126,3 @@ if (offenders.length > 0) {
 	}
 	process.exit(1);
 }
-
-console.log(
-	`checked ${checked} Rust files; no inline Rust tests or #[path] test wiring`,
-);

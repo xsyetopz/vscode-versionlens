@@ -656,21 +656,27 @@ const filePatternKeys = new Map(
 );
 
 const rustSupportedFileDefaults = new Map([
-	["deno.files", "**/{deno.json,deno.jsonc}"],
+	[
+		"deno.files",
+		"**/{deno.json,deno.jsonc,import_map.json,jsr.json,jsr.jsonc}",
+	],
 	[
 		"docker.files",
 		"**/{dockerfile,*.dockerfile,Dockerfile,*.Dockerfile,compose.yaml,compose.yml,*.compose.yaml,*.compose.yml,compose.*.yaml,compose.*.yml,docker-compose.yaml,docker-compose.yml,docker-compose.*.yaml,docker-compose.*.yml}",
 	],
 	[
 		"dotnet.files",
-		"**/{*.csproj,*.fsproj,*.vbproj,project.json,*.targets,*.props}",
+		"**/{*.csproj,*.fsproj,*.vbproj,project.json,packages.config,paket.dependencies,paket.references,*.targets,*.props}",
 	],
 	[
 		"pnpm.files",
 		"**/{pnpm-workspace.yaml,pnpm-workspace.yml,.yarnrc.yaml,.yarnrc.yml}",
 	],
-	["pypi.files", "**/{Pipfile,pyproject.toml,*requirements*.txt}"],
-	["pub.files", "**/{pubspec.yaml,pubspec.yml}"],
+	[
+		"pypi.files",
+		"**/{Pipfile,pyproject.toml,*requirements*.txt,*constraints*.txt}",
+	],
+	["pub.files", "**/{pubspec.yaml,pubspec.yml,pubspec_overrides.yaml}"],
 ]);
 const rustSupportedFileLanguages = new Map([
 	["dotnet.files", ["xml", "json", "jsonc"]],
@@ -755,5 +761,3 @@ if (offenders.length > 0) {
 	console.error(offenders.join("\n"));
 	process.exit(1);
 }
-
-console.log("checked VS Code adapter; no TS domain/runtime dependency drift");

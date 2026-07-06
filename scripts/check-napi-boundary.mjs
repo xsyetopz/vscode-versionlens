@@ -353,7 +353,3 @@ if (offenders.length > 0) {
 	console.error(offenders.join("\n"));
 	process.exit(1);
 }
-
-console.log(
-	`checked N-API boundary; ${allowedFunctions.size} coarse operations only with no JSON bridge`,
-);

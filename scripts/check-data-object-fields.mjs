@@ -646,9 +646,7 @@ for (const filePath of files) {
 
 for (const language of ["rust", "typescript"]) {
 	if (checkedFiles[language] === 0) {
-		console.error(
-			`checked 0 ${language} files; data object field limit must cover both Rust and TypeScript`,
-		);
+		console.error(`no ${language} files checked`);
 		process.exit(1);
 	}
 }
@@ -661,7 +659,3 @@ if (offenders.length > 0) {
 	}
 	process.exit(1);
 }
-
-console.log(
-	`checked ${checkedFiles.rust} Rust files and ${checkedFiles.typescript} TypeScript files; no data objects over ${MAX_FIELDS} fields`,
-);

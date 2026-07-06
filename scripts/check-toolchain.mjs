@@ -135,5 +135,3 @@ if (offenders.length > 0) {
 	console.error(offenders.join("\n"));
 	process.exit(1);
 }
-
-console.log("checked toolchain; Rust 2024/1.96 and TypeScript ^6.0.3 via Bun");

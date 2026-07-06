@@ -50,5 +50,3 @@ if (offenders.length > 0) {
 	console.error(offenders.join("\n"));
 	process.exit(1);
 }
-
-console.log("checked test layout; repo-level tests stay boundary/e2e only");

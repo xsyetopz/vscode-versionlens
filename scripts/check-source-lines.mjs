@@ -43,7 +43,7 @@ for (const root of roots) {
 }
 
 if (checked === 0) {
-	console.error("checked 0 source files");
+	console.error("no source files checked");
 	process.exit(1);
 }
 
@@ -53,5 +53,3 @@ if (offenders.length > 0) {
 	}
 	process.exit(1);
 }
-
-console.log(`checked ${checked} source files; none over ${MAX_LINES} lines`);

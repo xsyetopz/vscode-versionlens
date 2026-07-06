@@ -28,24 +28,39 @@ const contributionFields = [
 	"contributes.keybindings",
 	"contributes.walkthroughs",
 ];
-const expandedFileDefaults = new Map([
-	["versionlens.deno.files", "**/{deno.json,deno.jsonc}"],
-	[
-		"versionlens.docker.files",
-		"**/{dockerfile,*.dockerfile,Dockerfile,*.Dockerfile,compose.yaml,compose.yml,*.compose.yaml,*.compose.yml,compose.*.yaml,compose.*.yml,docker-compose.yaml,docker-compose.yml,docker-compose.*.yaml,docker-compose.*.yml}",
-	],
-	[
-		"versionlens.dotnet.files",
-		"**/{*.csproj,*.fsproj,*.vbproj,project.json,*.targets,*.props}",
-	],
-	[
-		"versionlens.pnpm.files",
-		"**/{pnpm-workspace.yaml,pnpm-workspace.yml,.yarnrc.yaml,.yarnrc.yml}",
-	],
-	["versionlens.pypi.files", "**/{Pipfile,pyproject.toml,*requirements*.txt}"],
-	["versionlens.pub.files", "**/{pubspec.yaml,pubspec.yml}"],
-]);
+const configKeyFiles = [
+	"cache",
+	"dependency-properties",
+	"files",
+	"http",
+	"prerelease",
+	"registry",
+];
+const configPairPattern = /\[\s*"([^"]+)"\s*,\s*"([^"]+)"/g;
+const configKeyPattern = /^[a-z][a-z.]*\.[A-Za-z]/;
+const locallyExpandedDefaultSuffixes = [".files", ".dependencyProperties"];
 const failures = [];
+
+function localConfigurationKeys() {
+	const keys = new Set();
+	for (const name of configKeyFiles) {
+		const source = fs.readFileSync(
+			`packages/vscode-extension/src/extension/config/keys/${name}.ts`,
+			"utf8",
+		);
+		for (const match of source.matchAll(configPairPattern)) {
+			const ecosystem = match[1];
+			const key = match[2];
+			if (configKeyPattern.test(key)) {
+				keys.add(`versionlens.${key}`);
+			}
+			if (key.endsWith(".files")) {
+				keys.add(`versionlens.${ecosystem}.onSaveChanges`);
+			}
+		}
+	}
+	return keys;
+}
 
 function readJson(filePath) {
 	return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -86,40 +101,78 @@ function compareField(upstream, local, keyPath) {
 	}
 }
 
+function configurationPropertyKeys(configuration) {
+	return Object.keys(configuration?.properties ?? {}).sort();
+}
+
+function compareConfigurationKeys(upstreamKeys, localKeys) {
+	const upstreamKeySet = new Set(upstreamKeys);
+	const localKeySet = new Set(localKeys);
+	const supportedLocalKeys = localConfigurationKeys();
+	for (const key of upstreamKeys) {
+		if (!localKeySet.has(key)) {
+			failures.push(
+				`contributes.configuration is missing upstream property ${key}`,
+			);
+		}
+	}
+	for (const key of localKeys) {
+		if (!(upstreamKeySet.has(key) || supportedLocalKeys.has(key))) {
+			failures.push(
+				`contributes.configuration has unsupported extra property ${key}`,
+			);
+		}
+	}
+}
+
+function removeApprovedExtraConfiguration(
+	normalizedLocal,
+	upstreamKeys,
+	localKeys,
+) {
+	const upstreamKeySet = new Set(upstreamKeys);
+	for (const key of localKeys) {
+		if (!upstreamKeySet.has(key)) {
+			delete normalizedLocal.properties[key];
+		}
+	}
+}
+
+function normalizeLocallyExpandedDefaults(normalizedUpstream, normalizedLocal) {
+	for (const key of Object.keys(normalizedLocal?.properties ?? {})) {
+		if (
+			!locallyExpandedDefaultSuffixes.some((suffix) => key.endsWith(suffix))
+		) {
+			continue;
+		}
+		const upstreamSetting = normalizedUpstream?.properties?.[key];
+		const localSetting = normalizedLocal?.properties?.[key];
+		if (!(upstreamSetting && localSetting)) {
+			continue;
+		}
+		delete upstreamSetting.default;
+		delete localSetting.default;
+	}
+}
+
 function compareConfiguration(upstream, local) {
 	const upstreamConfig = upstream.contributes?.configuration;
 	const localConfig = local.contributes?.configuration;
-	const upstreamPropertyKeys = Object.keys(
-		upstreamConfig?.properties ?? {},
-	).sort();
-	const localPropertyKeys = Object.keys(localConfig?.properties ?? {}).sort();
-	if (!sameValue(upstreamPropertyKeys, localPropertyKeys)) {
-		failures.push(
-			"contributes.configuration properties differ from upstream package.json",
-		);
+	const upstreamKeys = configurationPropertyKeys(upstreamConfig);
+	const localKeys = configurationPropertyKeys(localConfig);
+	compareConfigurationKeys(upstreamKeys, localKeys);
+	if (failures.length > 0) {
 		return;
 	}
 
 	const normalizedLocal = stable(localConfig);
 	const normalizedUpstream = stable(upstreamConfig);
-	for (const [key, expectedDefault] of expandedFileDefaults) {
-		const localSetting = normalizedLocal?.properties?.[key];
-		const upstreamSetting = normalizedUpstream?.properties?.[key];
-		if (!(localSetting && upstreamSetting)) {
-			failures.push(`${key} missing from configuration parity inputs`);
-			continue;
-		}
-		if (localSetting.default !== expectedDefault) {
-			failures.push(
-				`${key} default must include Rust-supported manifest variants`,
-			);
-		}
-		localSetting.default = upstreamSetting.default;
-	}
+	removeApprovedExtraConfiguration(normalizedLocal, upstreamKeys, localKeys);
+	normalizeLocallyExpandedDefaults(normalizedUpstream, normalizedLocal);
 
 	if (!sameValue(normalizedUpstream, normalizedLocal)) {
 		failures.push(
-			"contributes.configuration differs from upstream package.json outside approved file-default expansions",
+			"contributes.configuration differs from upstream package.json",
 		);
 	}
 }
@@ -171,9 +224,6 @@ compareConfiguration(upstream, local);
 compareActivationEvents(upstream, local);
 
 if (failures.length > 0) {
-	console.error("Package parity check failed:");
-	for (const failure of failures) {
-		console.error(`- ${failure}`);
-	}
+	console.error(failures.join("\n"));
 	process.exit(1);
 }

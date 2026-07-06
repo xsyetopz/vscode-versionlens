@@ -158,5 +158,3 @@ if (offenders.length > 0) {
 	console.error(offenders.join("\n"));
 	process.exit(1);
 }
-
-console.log("checked workspace layout; crates/ and packages/ stay split");

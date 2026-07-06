@@ -67,7 +67,7 @@ for (const root of tsRoots) {
 }
 
 if (checked === 0) {
-	console.error("checked 0 entrypoint files");
+	console.error("no entrypoint files checked");
 	process.exit(1);
 }
 
@@ -79,7 +79,3 @@ if (offenders.length > 0) {
 	}
 	process.exit(1);
 }
-
-console.log(
-	`checked ${checked} entrypoint files; lib.rs, main.rs, and index.ts stay module/export-only`,
-);

@@ -118,7 +118,7 @@ for (const root of roots) {
 }
 
 if (checked === 0) {
-	console.error("checked 0 TypeScript files");
+	console.error("no TypeScript files checked");
 	process.exit(1);
 }
 
@@ -130,7 +130,3 @@ if (offenders.length > 0) {
 	}
 	process.exit(1);
 }
-
-console.log(
-	`checked ${checked} TypeScript files; TypeScript stays enum-free, erasable, and free of production catch-all shapes`,
-);
