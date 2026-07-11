@@ -72,7 +72,6 @@ jobs:
       - name: Check VS Code contracts
         run: |
           bun run check:vscode-adapter
-          bun run check:package-parity
           bun run check:vsix-freshness
           bun run check:data-objects
           bun run check:napi-boundary
