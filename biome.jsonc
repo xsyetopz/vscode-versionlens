@@ -38,9 +38,7 @@
 			}
 		},
 		{
-			"includes": [
-				"packages/vscode-extension/src/**"
-			],
+			"includes": ["packages/vscode-extension/src/**"],
 			"linter": {
 				"rules": {
 					"correctness": {
@@ -144,10 +142,7 @@
 		}
 	},
 	"javascript": {
-		"globals": [
-			"Bun",
-			"$"
-		],
+		"globals": ["Bun", "$"],
 		"formatter": {
 			"quoteStyle": "double"
 		}
