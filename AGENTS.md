@@ -30,8 +30,6 @@ Use the scripts already defined in `package.json`.
 Small checks:
 
 ```bash
-bun run check:toolchain
-bun run check:workspace-layout
 bun run check:vscode-adapter
 bun run typecheck
 cargo fmt --all -- --check

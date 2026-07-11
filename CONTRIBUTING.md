@@ -33,8 +33,6 @@ bun run package
 Run the smallest check that covers your change. Common checks:
 
 ```bash
-bun run check:toolchain
-bun run check:workspace-layout
 bun run check:vscode-adapter
 bun run typecheck
 cargo fmt --all -- --check

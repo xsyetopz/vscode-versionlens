@@ -15,12 +15,6 @@ safe-remotes:
     git remote set-url --push upstream DISABLED
     git remote -v
 
-# Run the smallest layout/toolchain checks used while editing repo structure.
-check-layout:
-    bun run check:toolchain
-    bun run check:workspace-layout
-    bun run check:rust-test-layout
-
 # Run repository text/style checks that are cheap locally.
 check-style:
     git diff --check

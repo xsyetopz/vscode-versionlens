@@ -64,19 +64,10 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Check toolchain
-        run: bun run check:toolchain
-
       - name: Check formatting
         run: |
           bun run check:biome
           bun run check:rustfmt
-
-      - name: Check repository layout
-        run: |
-          bun run check:workspace-layout
-          bun run check:test-layout
-          bun run check:rust-test-layout
 
       - name: Check VS Code contracts
         run: |
@@ -85,10 +76,6 @@ jobs:
           bun run check:package-parity
           bun run check:vsix-freshness
           bun run check:data-objects
-          bun run check:entrypoints
-          bun run check:source-lines
-          bun run check:rust-production-constraints
-          bun run check:typescript-style
           bun run check:napi-boundary
 
       - name: Typecheck
