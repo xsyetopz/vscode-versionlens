@@ -31,7 +31,7 @@ const expectedEntries = [
 	"extension/images/icons/toggle-death.svg",
 	"extension/images/icons/toggle-inactive-light.svg",
 	"extension/images/icons/toggle-inactive.svg",
-	"extension/images/logo.png",
+	"extension/images/logo-redux.png",
 	"extension/native/versionlens_napi.node",
 	"extension/package.json",
 	"extension/readme.md",

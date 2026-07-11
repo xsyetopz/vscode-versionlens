@@ -13,7 +13,7 @@
 	},
 	"author": "Peter Flannery",
 	"license": "ISC",
-	"icon": "images/logo.png",
+	"icon": "images/logo-redux.png",
 	"keywords": [
 		"versions",
 		"packages",
