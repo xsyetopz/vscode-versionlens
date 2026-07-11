@@ -64,7 +64,7 @@ Each crate has a local `README.md` and inherits repository metadata from the wor
 
 ## Asset policy
 
-Shared VersionLens media lives in [`assets/versionlens/`](assets/versionlens/). The VS Code package keeps `packages/vscode-extension/images` as a package-local mirror so marketplace paths such as `images/logo.png` and `images/faq/show-releases.gif` resolve inside the extension package. `bun run check:assets` verifies that the mirror matches the shared source.
+Shared VersionLens media lives in [`assets/versionlens/`](assets/versionlens/). The VS Code package keeps `packages/vscode-extension/images` as a package-local mirror so marketplace paths such as `images/logo.png` and `images/faq/show-releases.gif` resolve inside the extension package.
 
 ## Contributing
 
