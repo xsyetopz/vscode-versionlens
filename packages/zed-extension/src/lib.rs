@@ -2,14 +2,30 @@ use std::path::Path;
 use zed::settings::LspSettings;
 use zed_extension_api::{self as zed, LanguageServerId, Result, Worktree};
 
-const SERVER_BINARY: &str = "versionlens-lsp";
-
 struct VersionLensExtension;
 
 impl VersionLensExtension {
+    fn server_binary() -> &'static str {
+        let (os, _) = zed::current_platform();
+        if os == zed::Os::Windows {
+            "versionlens-lsp.exe"
+        } else {
+            "versionlens-lsp"
+        }
+    }
+
+    fn bundled_binary() -> Option<String> {
+        let binary = Path::new("bin").join(Self::server_binary());
+        std::fs::metadata(&binary)
+            .is_ok_and(|metadata| metadata.is_file())
+            .then(|| binary.to_string_lossy().to_string())
+    }
+
     fn repo_binary(worktree: &Worktree) -> Option<String> {
         let root = worktree.root_path();
-        let binary = Path::new(&root).join("target/debug/versionlens-lsp");
+        let binary = Path::new(&root)
+            .join("target/debug")
+            .join(Self::server_binary());
         std::fs::metadata(&binary)
             .is_ok_and(|metadata| metadata.is_file())
             .then(|| binary.to_string_lossy().to_string())
@@ -20,14 +36,18 @@ impl VersionLensExtension {
         if let Some(binary) = settings.binary.and_then(|binary| binary.path) {
             return Ok(binary);
         }
-        if let Some(path) = worktree.which(SERVER_BINARY) {
+        if let Some(path) = Self::bundled_binary() {
+            return Ok(path);
+        }
+        if let Some(path) = worktree.which(Self::server_binary()) {
             return Ok(path);
         }
         if let Some(path) = Self::repo_binary(worktree) {
             return Ok(path);
         }
         Err(format!(
-            "could not find '{SERVER_BINARY}'. Build it with `cargo build -p versionlens-lsp` or set lsp.versionlens.binary.path in Zed settings."
+            "could not find '{}'. Build it with `cargo build -p versionlens-lsp` or set lsp.versionlens.binary.path in Zed settings.",
+            Self::server_binary()
         ))
     }
 }

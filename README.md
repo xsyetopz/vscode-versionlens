@@ -53,6 +53,7 @@ cargo build -p versionlens-lsp # build the shared LSP server
 bun run typecheck             # TypeScript checks
 cargo test --workspace        # Rust tests
 bun run package               # build a local VSIX
+bun run package:editors       # build VS Code, Zed, and JetBrains packages with bundled runtimes
 bun run check                 # full repository validation
 ```
 

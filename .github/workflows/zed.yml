@@ -24,6 +24,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: latest
+
       - name: Setup Rust toolchain
         shell: bash
         run: |
@@ -37,8 +42,9 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
+            target
             packages/zed-extension/target
-          key: ${{ runner.os }}-cargo-zed-${{ hashFiles('packages/zed-extension/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-zed-${{ hashFiles('Cargo.lock', 'packages/zed-extension/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-zed-
             ${{ runner.os }}-cargo-
@@ -49,26 +55,23 @@ jobs:
       - name: Test Zed extension
         run: cargo test --manifest-path packages/zed-extension/Cargo.toml --locked
 
-      - name: Build Zed extension
-        run: cargo build --manifest-path packages/zed-extension/Cargo.toml --release --locked
+      - name: Build language server and Zed extension
+        run: |
+          cargo build -p versionlens-lsp --release --locked
+          cargo build --manifest-path packages/zed-extension/Cargo.toml --release --locked
 
       - name: Package Zed extension
-        shell: bash
-        run: |
-          mkdir -p dist
-          tar -czf dist/versionlens-redux-zed-extension.tar.gz \
-            -C packages/zed-extension \
-            Cargo.toml Cargo.lock extension.toml src
+        run: bun scripts/package-zed.mjs
 
       - name: Upload Zed artifact
         uses: actions/upload-artifact@v7.0.1
         with:
           name: versionlens-redux-zed-extension
-          path: dist/versionlens-redux-zed-extension.tar.gz
+          path: dist/versionlens-redux-zed-extension-*.tar.gz
           if-no-files-found: error
 
       - name: Attach Zed package to GitHub release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v3.0.1
         with:
-          files: dist/versionlens-redux-zed-extension.tar.gz
+          files: dist/versionlens-redux-zed-extension-*.tar.gz

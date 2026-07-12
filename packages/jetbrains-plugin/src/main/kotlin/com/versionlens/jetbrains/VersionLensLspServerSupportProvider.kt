@@ -1,12 +1,14 @@
 package com.versionlens.jetbrains
 
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.LspServerSupportProvider
 import com.intellij.platform.lsp.api.ProjectWideLspServerDescriptor
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 import java.util.Locale
 
 internal class VersionLensLspServerSupportProvider : LspServerSupportProvider {
@@ -39,6 +41,8 @@ private class VersionLensLspServerDescriptor(
             return environmentPath
         }
 
+        bundledServerPath()?.let { return it }
+
         val basePath = currentProject.basePath
         if (basePath != null) {
             val repoBinary = Path.of(basePath, "target", "debug", SERVER_BINARY)
@@ -52,7 +56,28 @@ private class VersionLensLspServerDescriptor(
 
     companion object {
         private const val SERVER_NAME = "VersionLens Redux"
-        private const val SERVER_BINARY = "versionlens-lsp"
+        private val SERVER_BINARY =
+            if (System.getProperty("os.name").startsWith("Windows", ignoreCase = true)) {
+                "versionlens-lsp.exe"
+            } else {
+                "versionlens-lsp"
+            }
+
+        @Synchronized
+        private fun bundledServerPath(): String? {
+            val resource = VersionLensLspServerSupportProvider::class.java
+                .getResourceAsStream("/bin/$SERVER_BINARY") ?: return null
+            val directory = Path.of(PathManager.getSystemPath(), "versionlens-redux", "bin")
+            Files.createDirectories(directory)
+            val binary = directory.resolve(SERVER_BINARY)
+            resource.use {
+                Files.copy(it, binary, StandardCopyOption.REPLACE_EXISTING)
+            }
+            if (!binary.toFile().setExecutable(true)) {
+                return null
+            }
+            return binary.toString()
+        }
         private val supportedFileNames = setOf(
             "WORKSPACE",
             "MODULE.bazel",

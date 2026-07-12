@@ -24,6 +24,28 @@ kotlin {
     jvmToolchain(21)
 }
 
+
+val lspExecutableName =
+    if (System.getProperty("os.name").startsWith("Windows", ignoreCase = true)) {
+        "versionlens-lsp.exe"
+    } else {
+        "versionlens-lsp"
+    }
+val repositoryRoot = layout.projectDirectory.dir("../..")
+val lspBinary = repositoryRoot.file("target/release/$lspExecutableName")
+val buildVersionLensLsp =
+    tasks.register<Exec>("buildVersionLensLsp") {
+        workingDir(repositoryRoot)
+        commandLine("cargo", "build", "-p", "versionlens-lsp", "--release")
+    }
+
+tasks.processResources {
+    dependsOn(buildVersionLensLsp)
+    from(lspBinary) {
+        into("bin")
+    }
+}
+
 dependencies {
     intellijPlatform {
         intellijIdea("2026.1.4")

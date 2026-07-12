@@ -19,12 +19,13 @@ From the repository root:
 cargo build -p versionlens-lsp
 ```
 
-The plugin resolves the server in this order:
+The packaged plugin builds and embeds a release version of the server. The plugin resolves the server in this order:
 
 1. `versionlens.lsp.path` Java system property.
 2. `VERSIONLENS_LSP` environment variable.
-3. Repository-local debug binary at `target/debug/versionlens-lsp`.
-4. `versionlens-lsp` on `PATH`.
+3. Bundled release binary extracted to the IDE system directory.
+4. Repository-local debug binary at `target/debug/versionlens-lsp`.
+5. `versionlens-lsp` on `PATH`.
 
 ## Build the plugin
 

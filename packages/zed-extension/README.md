@@ -17,11 +17,12 @@ From the repository root:
 cargo build -p versionlens-lsp
 ```
 
-The extension code resolves the server in this order:
+The direct-distribution package embeds the release server binary for its build platform. The extension code resolves the server in this order:
 
 1. `lsp.versionlens.binary.path` in Zed settings.
-2. `versionlens-lsp` on `PATH`.
-3. Repository-local debug binary at `target/debug/versionlens-lsp`.
+2. Bundled `bin/versionlens-lsp`.
+3. `versionlens-lsp` on `PATH`.
+4. Repository-local debug binary at `target/debug/versionlens-lsp`.
 
 ## Development checks
 

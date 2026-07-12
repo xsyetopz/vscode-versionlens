@@ -28,6 +28,12 @@ Package a local VSIX:
 bun run package
 ```
 
+Build all three editor packages and verify their bundled runtimes:
+
+```bash
+bun run package:editors
+```
+
 ## Validation
 
 Run the smallest check that covers your change. Common checks:
