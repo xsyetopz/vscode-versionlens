@@ -8,6 +8,6 @@
   <depends>com.intellij.modules.ultimate</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <platform.lsp.serverSupportProvider implementation="com.versionlens.jetbrains.VersionLensLspServerSupportProvider" />
+    <platform.lsp.integrationProvider implementation="com.versionlens.jetbrains.VersionLensLspServerSupportProvider" />
   </extensions>
 </idea-plugin>

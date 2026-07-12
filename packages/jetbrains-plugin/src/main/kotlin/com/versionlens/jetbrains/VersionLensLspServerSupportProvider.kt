@@ -4,28 +4,28 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.platform.lsp.api.LspServerSupportProvider
-import com.intellij.platform.lsp.api.ProjectWideLspServerDescriptor
+import com.intellij.platform.lsp.api.LspIntegrationProvider
+import com.intellij.platform.lsp.api.ProjectWideLspClientDescriptor
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import java.util.Locale
 
-internal class VersionLensLspServerSupportProvider : LspServerSupportProvider {
+internal class VersionLensLspServerSupportProvider : LspIntegrationProvider {
     override fun fileOpened(
         project: Project,
         file: VirtualFile,
-        serverStarter: LspServerSupportProvider.LspServerStarter,
+        clientStarter: LspIntegrationProvider.LspClientStarter,
     ) {
         if (VersionLensLspServerDescriptor.supports(file)) {
-            serverStarter.ensureServerStarted(VersionLensLspServerDescriptor(project))
+            clientStarter.ensureClientStarted(VersionLensLspServerDescriptor(project))
         }
     }
 }
 
 private class VersionLensLspServerDescriptor(
     private val currentProject: Project,
-) : ProjectWideLspServerDescriptor(currentProject, SERVER_NAME) {
+) : ProjectWideLspClientDescriptor(currentProject, SERVER_NAME) {
     override fun isSupportedFile(file: VirtualFile): Boolean = supports(file)
 
     override fun createCommandLine(): GeneralCommandLine = GeneralCommandLine(resolveServerPath())
