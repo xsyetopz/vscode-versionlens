@@ -14,3 +14,7 @@ Desktop.ini
 __pycache__/
 *.py[cod]
 
+# env files
+*.env
+!*.env.example
+
