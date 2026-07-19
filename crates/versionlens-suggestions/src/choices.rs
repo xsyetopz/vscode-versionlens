@@ -23,6 +23,7 @@ pub fn release_update_choices_with_prereleases(
     include_prereleases: bool,
     prerelease_tags: &[String],
 ) -> UpdateChoices {
+    let requirement = comparable_requirement(requirement);
     let mut choices = stable_update_choices(requirement, latest, versions);
     if include_prereleases {
         choices.extend(prerelease_update_choices(
@@ -32,6 +33,20 @@ pub fn release_update_choices_with_prereleases(
         ));
     }
     choices
+}
+
+fn comparable_requirement(requirement: &str) -> &str {
+    registry_alias_requirement(requirement).unwrap_or(requirement)
+}
+
+fn registry_alias_requirement(requirement: &str) -> Option<&str> {
+    let spec = requirement
+        .strip_prefix("jsr:")
+        .or_else(|| requirement.strip_prefix("npm:"))?;
+    let Some(split) = spec.rfind('@').filter(|index| *index > 0) else {
+        return Some("");
+    };
+    Some(&spec[split + 1..])
 }
 
 fn stable_update_choices(requirement: &str, latest: &str, versions: &[String]) -> UpdateChoices {

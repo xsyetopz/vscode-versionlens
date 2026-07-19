@@ -1,3 +1,5 @@
+use versionlens_versions::requirement_satisfies_latest;
+
 pub(super) fn python_replacement(requirement: &str, latest: &str) -> String {
     if requirement.contains(',') {
         return replace_python_multi_constraint(requirement, latest);
@@ -23,18 +25,17 @@ fn replace_python_multi_constraint(requirement: &str, latest: &str) -> String {
         .map(|value| value.trim())
         .collect::<Vec<_>>();
     let has_upper_bound = parts.iter().any(|part| part.starts_with('<'));
+    let has_lower_bound = parts.iter().any(|part| part.starts_with('>'));
+    let update_upper_bound =
+        has_upper_bound && (!has_lower_bound || !requirement_satisfies_latest(requirement, latest));
 
     parts
         .into_iter()
         .map(|part| {
-            if has_upper_bound {
-                if part.starts_with('<') {
-                    format!("<={latest}")
-                } else {
-                    part.to_owned()
-                }
-            } else if part.starts_with('>') {
+            if part.starts_with('>') {
                 format!(">={latest}")
+            } else if update_upper_bound && part.starts_with('<') {
+                format!("<={latest}")
             } else {
                 part.to_owned()
             }

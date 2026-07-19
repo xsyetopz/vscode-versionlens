@@ -1,7 +1,7 @@
 use super::{
     assert_latest, latest_version_for_requirement, latest_version_from_response,
     latest_version_from_response_with_prereleases, latest_version_with_tags, npm_build_versions,
-    release_versions_from_response, release_versions_from_response_for_package,
+    release_versions_from_response,
 };
 use versionlens_parsers::Ecosystem::{
     AnsibleGalaxy, Bazel, Cargo, CocoaPods, Conan, Cpan, Cpp, Cran, Deno, Docker, Dotnet, Go,
@@ -270,7 +270,7 @@ fn ignores_malformed_hex_package_responses() {
         latest_version_from_response(Hex, "plug", r#"{"package":"plug"}"#),
         None
     );
-    assert!(release_versions_from_response(Hex, r#"{"releases": ["#).is_empty());
+    assert!(release_versions_from_response(Hex, "plug", r#"{"releases": ["#).is_empty());
 }
 
 #[test]
@@ -278,6 +278,7 @@ fn extracts_hex_release_versions_for_update_choices() {
     assert_eq!(
         release_versions_from_response(
             Hex,
+            "plug",
             r#"{"releases":[{"version":"1.20.2"},{"version":"1.21.0-rc.1"},{"version":"1.19.4"}]}"#,
         ),
         [
@@ -451,19 +452,19 @@ fn reads_latest_cpan_version_from_metacpan_download_url() {
 }
 
 #[test]
-fn reads_latest_cran_version_from_packages_index() {
+fn extracts_cran_releases_only_for_the_requested_package() {
     let body = "Package: cli\nVersion: 3.6.2\n\nPackage: dplyr\nVersion: 1.1.3\nDepends: R (>= 3.5.0)\n\nPackage: dplyr\nVersion: 1.1.4\n";
     assert_eq!(
         latest_version_from_response(Cran, "dplyr", body),
         Some("1.1.4".to_owned())
     );
     assert_eq!(
-        release_versions_from_response_for_package(Cran, "dplyr", body),
+        release_versions_from_response(Cran, "dplyr", body),
         vec!["1.1.3".to_owned(), "1.1.4".to_owned()]
     );
     assert_eq!(
-        release_versions_from_response(Cran, body),
-        vec!["3.6.2".to_owned(), "1.1.3".to_owned(), "1.1.4".to_owned()]
+        release_versions_from_response(Cran, "cli", body),
+        vec!["3.6.2".to_owned()]
     );
 }
 
@@ -607,7 +608,11 @@ fn reads_python_versions_from_normalized_string_arrays() {
 #[test]
 fn extracts_python_release_versions_for_update_choices() {
     assert_eq!(
-        release_versions_from_response(Python, r#"{"versions":["24.3.1","25.0.0","26.0.0rc1"]}"#,),
+        release_versions_from_response(
+            Python,
+            "pip",
+            r#"{"versions":["24.3.1","25.0.0","26.0.0rc1"]}"#,
+        ),
         [
             "24.3.1".to_owned(),
             "25.0.0".to_owned(),
@@ -617,6 +622,7 @@ fn extracts_python_release_versions_for_update_choices() {
     assert_eq!(
         release_versions_from_response(
             Python,
+            "pip",
             r#"{"info":{"version":"3.0.0"},"releases":{"2.0.0":[{"yanked":true}],"1.0.0":[],"1.1.0":[{"yanked":false}],"1.0":[{"yanked":false}],"1.1.0rc1":[{"yanked":false}]}}"#,
         ),
         [
@@ -628,6 +634,7 @@ fn extracts_python_release_versions_for_update_choices() {
     assert_eq!(
         release_versions_from_response(
             Python,
+            "demo",
             r#"<?xml version="1.0"?><rss><channel><item><title>Demo 1.0.0</title></item><item><title>Demo 1.1.0</title></item><item><title>Demo 1.1.0</title></item><item><title>Demo 2.0.0rc1</title></item></channel></rss>"#,
         ),
         [
@@ -641,7 +648,7 @@ fn extracts_python_release_versions_for_update_choices() {
 #[test]
 fn extracts_ruby_versions_for_update_choices() {
     assert_eq!(
-        release_versions_from_response(Ruby, r#"["1.0.0","1.1.0-pre.1","1.0.1"]"#,),
+        release_versions_from_response(Ruby, "rails", r#"["1.0.0","1.1.0-pre.1","1.0.1"]"#,),
         [
             "1.0.0".to_owned(),
             "1.0.1".to_owned(),
@@ -676,6 +683,7 @@ fn reads_maven_release_versions_for_update_choices() {
     assert_eq!(
         release_versions_from_response(
             Maven,
+            "junit:junit",
             r#"<metadata><versioning><versions><version>1.0.0</version><version>2.0.0-M1</version><version>1.0.1</version><version>ignored</version></versions></versioning></metadata>"#
         ),
         [
@@ -691,6 +699,7 @@ fn reads_npm_release_versions_in_upstream_compare_build_order() {
     assert_eq!(
         release_versions_from_response(
             Npm,
+            "example",
             r#"{"versions":{"2.0.0":{},"1.0.0+build.10":{},"1.0.0+build.2":{},"1.0.0":{}}}"#,
         ),
         [

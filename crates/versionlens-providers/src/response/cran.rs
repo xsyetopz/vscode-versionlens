@@ -19,13 +19,6 @@ pub(crate) fn cran_release_versions(body: &str, package: &str) -> Vec<String> {
         .collect()
 }
 
-pub(crate) fn cran_all_release_versions(body: &str) -> Vec<String> {
-    body.split("\n\n")
-        .filter_map(|record| record_field(record, "Version"))
-        .map(|value| value.to_owned())
-        .collect()
-}
-
 fn cran_package_versions<'a>(body: &'a str, package: &'a str) -> impl Iterator<Item = &'a str> {
     body.split("\n\n").filter_map(move |record| {
         (record_field(record, "Package")? == package).then(|| record_field(record, "Version"))?

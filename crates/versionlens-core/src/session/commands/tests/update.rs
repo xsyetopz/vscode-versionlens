@@ -549,6 +549,67 @@ fn apply_command_uses_code_lens_selector_for_duplicate_names() {
 }
 
 #[test]
+fn pyproject_update_code_lenses_advance_lower_bounds_and_preserve_upper_caps() {
+    let session = standard_session();
+    let input = DocumentInput {
+        uri: "file:///pyproject.toml".to_owned(),
+        language_id: "toml".to_owned(),
+        text: package_file_fixture(
+            "pyproject-update-code-lenses-advance-lower-bounds-and-preserve-upper-caps.toml",
+        ),
+        workspace_root: None,
+    };
+    let responses = [
+        RegistryResponseInput {
+            package: "httpx".to_owned(),
+            ecosystem: versionlens_parsers::Ecosystem::Python,
+            body: r#"{"info":{"version":"0.28.1"},"releases":{"0.27.0":[],"0.28.1":[{"yanked":false}]}}"#
+                .to_owned(),
+        },
+        RegistryResponseInput {
+            package: "httpcore".to_owned(),
+            ecosystem: versionlens_parsers::Ecosystem::Python,
+            body: r#"{"info":{"version":"0.28.1"},"releases":{"0.27.0":[],"0.28.1":[{"yanked":false}]}}"#
+                .to_owned(),
+        },
+    ];
+
+    session.resolve_document_with_responses(input.clone(), &responses);
+    let analyzed = session.analyze_document(input.clone());
+
+    for (package, group) in [
+        ("httpx", "project.dependencies"),
+        ("httpcore", "project.optional-dependencies.test"),
+    ] {
+        let arguments = analyzed
+            .code_lenses
+            .iter()
+            .find(|lens| {
+                lens.command == "versionlens.suggestion.onUpdateDependency"
+                    && lens.arguments.first().is_some_and(|name| name == package)
+            })
+            .map(|lens| lens.arguments.as_slice())
+            .expect("Python update code lens arguments");
+        let output = session.apply_command_with_selected_version(ApplyCommandRequest {
+            input: input.clone(),
+            command: arguments.get(2).map(String::as_str),
+            dependency_name: arguments.get(1).map(String::as_str),
+            selected_version: arguments.get(3).map(String::as_str),
+            responses: &responses,
+        });
+
+        assert_eq!(output.suggestions.len(), 1);
+        assert_eq!(output.suggestions[0].dependency.group, group);
+        assert_eq!(output.edits.len(), 1);
+        assert_eq!(
+            output.edits[0].range,
+            output.suggestions[0].dependency.requirement_range
+        );
+        assert_eq!(output.edits[0].new_text, ">=0.28.1, <1");
+    }
+}
+
+#[test]
 fn apply_command_updates_only_requested_level() {
     let session = standard_session();
 

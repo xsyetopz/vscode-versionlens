@@ -1,4 +1,4 @@
-use super::{find_next_major, release_update_choices};
+use super::{find_next_major, release_update_choices, release_update_choices_with_prereleases};
 
 #[test]
 fn release_update_choices_omits_major_when_latest_already_targets_next_major() {
@@ -67,6 +67,68 @@ fn release_update_choices_omit_noop_latest_for_current_ranges_without_history() 
     let choices = release_update_choices("^2.5.2", "2.5.2", &[]);
 
     assert!(choices.is_empty());
+}
+
+#[test]
+fn release_update_choices_omit_noop_latest_for_current_registry_alias_ranges_without_history() {
+    for requirement in ["npm:chalk@^2.5.2", "jsr:@scope/chalk@^2.5.2"] {
+        assert!(release_update_choices(requirement, "2.5.2", &[]).is_empty());
+    }
+}
+
+#[test]
+fn release_update_choices_offer_latest_for_stale_registry_alias_ranges_without_history() {
+    for requirement in ["npm:chalk@^1.0.0", "jsr:@scope/chalk@^1.0.0"] {
+        let choices = release_update_choices(requirement, "1.2.0", &[]);
+
+        assert_eq!(choices.len(), 1);
+        assert_eq!(choices[0].label, "latest");
+        assert_eq!(choices[0].version, "1.2.0");
+        assert_eq!(choices[0].command, "update");
+    }
+}
+
+#[test]
+fn release_update_choices_offer_latest_for_stale_fixed_registry_aliases_without_history() {
+    let choices = release_update_choices("npm:chalk@1.0.0", "1.2.0", &[]);
+
+    assert_eq!(choices.len(), 1);
+    assert_eq!(choices[0].label, "latest");
+    assert_eq!(choices[0].version, "1.2.0");
+    assert_eq!(choices[0].command, "update");
+}
+
+#[test]
+fn release_update_choices_preserve_prerelease_choices_for_registry_aliases() {
+    let versions = ["1.0.0-alpha", "1.0.1-alpha"]
+        .into_iter()
+        .map(str::to_owned)
+        .collect::<Vec<_>>();
+
+    let choices = release_update_choices_with_prereleases(
+        "jsr:@scope/chalk@~1.0.0-alpha",
+        "1.0.0-alpha",
+        &versions,
+        true,
+        &[],
+    );
+
+    assert_eq!(choices.len(), 1);
+    assert_eq!(choices[0].label, "alpha");
+    assert_eq!(choices[0].version, "1.0.1-alpha");
+    assert_eq!(choices[0].command, "update");
+}
+
+#[test]
+fn release_update_choices_treat_registry_alias_tags_as_non_actionable_without_history() {
+    for requirement in [
+        "npm:chalk",
+        "npm:chalk@latest",
+        "jsr:@scope/chalk@next",
+        "jsr:@scope/chalk@unparseable",
+    ] {
+        assert!(release_update_choices(requirement, "2.0.0", &[]).is_empty());
+    }
 }
 
 #[test]

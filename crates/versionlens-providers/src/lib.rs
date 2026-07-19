@@ -14,7 +14,7 @@ pub use response::{
     http_status_message_from_code, latest_version_from_response,
     latest_version_from_response_for_request, latest_version_from_response_with_prereleases,
     npm_build_versions, npm_error_status_from_response, npm_release_versions,
-    release_versions_from_response, release_versions_from_response_for_package,
+    release_versions_from_response,
 };
 pub(crate) use support::{
     default, json_array_mut, json_bool, parse_semver, path, string_from_utf8, xml_reader,

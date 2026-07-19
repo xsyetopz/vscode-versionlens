@@ -4,8 +4,7 @@ use serde_json::from_str;
 use versionlens_parsers::Dependency;
 use versionlens_parsers::Ecosystem::{Composer, Docker, Dotnet, Npm};
 use versionlens_providers::{
-    is_registry_dependency, is_unsupported_dotnet_requirement,
-    release_versions_from_response_for_package,
+    is_registry_dependency, is_unsupported_dotnet_requirement, release_versions_from_response,
 };
 use versionlens_suggestions::SuggestionStatus::{
     BuildAvailable as StatusBuildAvailable, Current as StatusCurrent, Satisfies as StatusSatisfies,
@@ -367,7 +366,7 @@ fn fixed_requirement_missing_from_responses(
         return false;
     };
 
-    let releases = release_versions_from_response_for_package(
+    let releases = release_versions_from_response(
         dependency.ecosystem,
         dependency
             .hosted_name
@@ -395,7 +394,7 @@ fn fixed_requirement_matches_response(
         return false;
     };
 
-    release_versions_from_response_for_package(
+    release_versions_from_response(
         dependency.ecosystem,
         dependency
             .hosted_name
