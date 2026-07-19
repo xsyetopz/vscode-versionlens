@@ -64,7 +64,17 @@ pub fn build_versions_from_response(
     }
 }
 
-pub fn release_versions_from_response(
+pub fn release_versions_from_response(ecosystem: Ecosystem, body: &str) -> Vec<String> {
+    if ecosystem == Cran {
+        return vec![];
+    }
+
+    release_versions_from_response_for_package(ecosystem, "", body)
+}
+
+/// Extract release versions with the package identity required by registries
+/// whose response bodies can contain multiple packages.
+pub fn release_versions_from_response_for_package(
     ecosystem: Ecosystem,
     package: &str,
     body: &str,

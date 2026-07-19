@@ -246,6 +246,33 @@ fn suggestion_indicators_preserve_nonblank_custom_values_verbatim() {
 }
 
 #[test]
+fn direct_session_config_preserves_nonblank_custom_indicators() {
+    let indicators = crate::SuggestionIndicators {
+        latest: " latest ".to_owned(),
+        satisfies_latest: " satisfies ".to_owned(),
+        directory: " directory ".to_owned(),
+        error: " error ".to_owned(),
+        no_match: " no-match ".to_owned(),
+        matched: " matched ".to_owned(),
+        updateable: " update ".to_owned(),
+        updateable_vulnerable: " vulnerable ".to_owned(),
+        build: " build ".to_owned(),
+    };
+    let session = crate::version_lens_session(SessionConfig {
+        cache_ttl_ms: 1,
+        enabled_providers: vec![],
+        providers: crate::default(),
+        suggestion_indicators: indicators.clone(),
+        show_vulnerabilities: true,
+        show_suggestion_stats: false,
+        show_prereleases: false,
+        http: versionlens_http::standard_http_config(),
+    });
+
+    assert_eq!(session.config.suggestion_indicators, indicators);
+}
+
+#[test]
 fn session_config_input_normalizes_session_indicator_and_http_values() {
     let config = normalized_session_config();
 

@@ -1,4 +1,4 @@
-use super::{latest_version_from_response, release_versions_from_response};
+use super::{latest_version_from_response, release_versions_from_response_for_package};
 use versionlens_parsers::Ecosystem::Composer;
 
 #[test]
@@ -40,7 +40,7 @@ fn normalizes_v_prefixed_packagist_versions() {
 #[test]
 fn extracts_composer_release_versions_for_update_choices() {
     assert_eq!(
-        release_versions_from_response(
+        release_versions_from_response_for_package(
             Composer,
             "php-parallel-lint/php-parallel-lint",
             r#"{"packages":{"php-parallel-lint/php-parallel-lint":[{"version":"v3.1.3"},{"version":"v3.1.2"},{"version":"v3.1.1"},{"version":"v3.1.0"},{"version":"v3.2.0-beta.1"},{"version":"v3.0.1"},{"version":"v3.0"}]}}"#,
@@ -60,7 +60,7 @@ fn extracts_composer_release_versions_for_update_choices() {
 #[test]
 fn extracts_composer_branch_alias_versions_from_metadata() {
     assert_eq!(
-        release_versions_from_response(
+        release_versions_from_response_for_package(
             Composer,
             "acme/pkg",
             r#"{
@@ -101,7 +101,7 @@ fn reads_packagist_json_api_package_versions() {
         Some("3.7.0".to_owned())
     );
     assert_eq!(
-        release_versions_from_response(Composer, "monolog/monolog", body),
+        release_versions_from_response_for_package(Composer, "monolog/monolog", body),
         vec![
             "3.6.0".to_owned(),
             "3.7.0".to_owned(),

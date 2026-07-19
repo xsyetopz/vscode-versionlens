@@ -5,7 +5,9 @@ use std::cmp::Ordering::{Equal as OrderingEqual, Greater as OrderingGreater};
 use semver::Version;
 use serde_json::Value;
 use versionlens_parsers::Dependency;
-use versionlens_providers::{build_versions_from_response, release_versions_from_response};
+use versionlens_providers::{
+    build_versions_from_response, release_versions_from_response_for_package,
+};
 use versionlens_suggestions::{UpdateChoice, release_update_choices_with_prereleases};
 
 use crate::VersionLensSession;
@@ -116,7 +118,7 @@ fn update_choice_versions_from_response(
     body: &str,
     latest: &str,
 ) -> Vec<String> {
-    let versions = release_versions_from_response(
+    let versions = release_versions_from_response_for_package(
         dependency.ecosystem,
         dependency
             .hosted_name

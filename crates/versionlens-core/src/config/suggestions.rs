@@ -33,30 +33,45 @@ impl SuggestionIndicators {
     }
 
     pub fn from_input(input: SuggestionIndicatorsInput) -> Self {
+        Self {
+            latest: input.latest.unwrap_or_default(),
+            satisfies_latest: input.satisfies_latest.unwrap_or_default(),
+            directory: input.directory.unwrap_or_default(),
+            error: input.error.unwrap_or_default(),
+            no_match: input.no_match.unwrap_or_default(),
+            matched: input.matched.unwrap_or_default(),
+            updateable: input.updateable.unwrap_or_default(),
+            updateable_vulnerable: input.updateable_vulnerable.unwrap_or_default(),
+            build: input.build.unwrap_or_default(),
+        }
+        .with_standard_indicators_for_blanks()
+    }
+
+    pub(crate) fn with_standard_indicators_for_blanks(self) -> Self {
         let defaults = Self::standard();
         Self {
-            latest: indicator_or_default(input.latest, defaults.latest),
+            latest: indicator_or_default(self.latest, defaults.latest),
             satisfies_latest: indicator_or_default(
-                input.satisfies_latest,
+                self.satisfies_latest,
                 defaults.satisfies_latest,
             ),
-            directory: indicator_or_default(input.directory, defaults.directory),
-            error: indicator_or_default(input.error, defaults.error),
-            no_match: indicator_or_default(input.no_match, defaults.no_match),
-            matched: indicator_or_default(input.matched, defaults.matched),
-            updateable: indicator_or_default(input.updateable, defaults.updateable),
+            directory: indicator_or_default(self.directory, defaults.directory),
+            error: indicator_or_default(self.error, defaults.error),
+            no_match: indicator_or_default(self.no_match, defaults.no_match),
+            matched: indicator_or_default(self.matched, defaults.matched),
+            updateable: indicator_or_default(self.updateable, defaults.updateable),
             updateable_vulnerable: indicator_or_default(
-                input.updateable_vulnerable,
+                self.updateable_vulnerable,
                 defaults.updateable_vulnerable,
             ),
-            build: indicator_or_default(input.build, defaults.build),
+            build: indicator_or_default(self.build, defaults.build),
         }
     }
 }
 
-fn indicator_or_default(value: Option<String>, default: String) -> String {
-    value
-        .filter(|indicator| !indicator.trim().is_empty())
+fn indicator_or_default(value: String, default: String) -> String {
+    (!value.trim().is_empty())
+        .then_some(value)
         .unwrap_or(default)
 }
 

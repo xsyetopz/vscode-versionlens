@@ -85,6 +85,12 @@ impl VersionLensSession {
 }
 
 pub fn version_lens_session(config: SessionConfig) -> VersionLensSession {
+    let config = SessionConfig {
+        suggestion_indicators: config
+            .suggestion_indicators
+            .with_standard_indicators_for_blanks(),
+        ..config
+    };
     let cache_ttl = crate::duration_from_millis(config.cache_ttl_ms);
     VersionLensSession {
         config,

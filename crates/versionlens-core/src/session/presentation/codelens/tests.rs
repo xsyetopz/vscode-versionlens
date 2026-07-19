@@ -58,6 +58,65 @@ fn code_lens_title_uses_configured_indicators() {
 }
 
 #[test]
+fn direct_blank_indicators_use_standard_glyphs_for_status_and_update_lenses() {
+    let session = crate::version_lens_session(SessionConfig {
+        cache_ttl_ms: 300_000,
+        enabled_providers: vec![],
+        providers: crate::default(),
+        suggestion_indicators: SuggestionIndicators {
+            latest: "".to_owned(),
+            satisfies_latest: " \t\n\u{2003} ".to_owned(),
+            directory: "".to_owned(),
+            error: "".to_owned(),
+            no_match: "".to_owned(),
+            matched: "".to_owned(),
+            updateable: "".to_owned(),
+            updateable_vulnerable: "".to_owned(),
+            build: "".to_owned(),
+        },
+        show_vulnerabilities: true,
+        show_suggestion_stats: false,
+        show_prereleases: false,
+        http: versionlens_http::standard_http_config(),
+    });
+
+    assert_eq!(
+        session.config.suggestion_indicators,
+        crate::standard_suggestion_indicators()
+    );
+    let input = DocumentInput {
+        uri: "file:///package.json".to_owned(),
+        language_id: "json".to_owned(),
+        text: package_file_fixture("package-left-pad-1.0.0.json"),
+        workspace_root: None,
+    };
+
+    session.resolve_document_with_responses(
+        input.clone(),
+        &[RegistryResponseInput {
+            package: "left-pad".to_owned(),
+            ecosystem: Npm,
+            body: r#"{"dist-tags":{"latest":"1.1.0"}}"#.to_owned(),
+        }],
+    );
+
+    let output = session.analyze_document(input);
+
+    assert_eq!(
+        output
+            .code_lenses
+            .iter()
+            .map(|lens| lens.title.as_str())
+            .collect::<Vec<_>>(),
+        ["🟡 fixed 1.0.0", "↑  latest 1.1.0"]
+    );
+    assert_eq!(
+        output.code_lenses[1].command,
+        "versionlens.suggestion.onUpdateDependency"
+    );
+}
+
+#[test]
 fn code_lenses_offer_release_update_choices_for_fixed_versions() {
     let session = crate::version_lens_session(SessionConfig {
         cache_ttl_ms: 300_000,
