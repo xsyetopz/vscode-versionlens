@@ -35,7 +35,7 @@ mod xml;
 mod zig;
 
 use composer::composer_release_versions;
-use cran::cran_release_versions;
+use cran::{cran_all_release_versions, cran_release_versions};
 pub use dispatch::{
     LatestVersionRequest, latest_version_from_response, latest_version_from_response_for_request,
     latest_version_from_response_with_prereleases,
@@ -67,7 +67,7 @@ pub fn build_versions_from_response(
 pub fn release_versions_from_response(ecosystem: Ecosystem, body: &str) -> Vec<String> {
     match ecosystem {
         Composer => composer_release_versions(body),
-        Cran => cran_release_versions(body),
+        Cran => cran_all_release_versions(body),
         Dotnet => dotnet_release_versions(body),
         Hex => hex_release_versions(body),
         Maven => maven_release_versions(body),
@@ -75,6 +75,17 @@ pub fn release_versions_from_response(ecosystem: Ecosystem, body: &str) -> Vec<S
         Python => python_release_versions(body),
         Ruby => ruby_release_versions(body),
         _ => vec![],
+    }
+}
+
+pub fn release_versions_from_response_for_package(
+    ecosystem: Ecosystem,
+    package: &str,
+    body: &str,
+) -> Vec<String> {
+    match ecosystem {
+        Cran => cran_release_versions(body, package),
+        _ => release_versions_from_response(ecosystem, body),
     }
 }
 

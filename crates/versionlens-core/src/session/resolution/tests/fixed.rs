@@ -295,6 +295,31 @@ fn renv_non_repository_packages_resolve_as_fixed_sources() {
 }
 
 #[test]
+fn cran_fixed_requirements_ignore_versions_from_other_packages() {
+    let session = standard_session();
+
+    let output = session.resolve_document_with_responses(
+        DocumentInput {
+            uri: "file:///repo/DESCRIPTION".to_owned(),
+            language_id: "r".to_owned(),
+            text: "Package: example\nVersion: 0.1.0\nImports: dplyr (1.1.3)\n".to_owned(),
+            workspace_root: None,
+        },
+        &[RegistryResponseInput {
+            package: "dplyr".to_owned(),
+            ecosystem: Cran,
+            body: "Package: dplyr\nVersion: 1.1.4\n\nPackage: unrelated\nVersion: 1.1.3\n"
+                .to_owned(),
+        }],
+    );
+
+    assert_eq!(output.suggestions.len(), 2);
+    assert_eq!(output.suggestions[1].dependency.name, "dplyr");
+    assert_eq!(output.suggestions[1].status, "noMatch");
+    assert!(output.edits.is_empty());
+}
+
+#[test]
 fn go_replace_local_dependencies_resolve_as_directories() {
     let session = standard_session();
     let root = local_test_root("go-directory");

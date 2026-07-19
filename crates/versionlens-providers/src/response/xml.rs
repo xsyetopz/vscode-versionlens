@@ -22,6 +22,14 @@ pub(crate) fn latest_python_rss_version(
     .and_then(|version| normalized_version(&version))
 }
 
+pub(crate) fn python_rss_release_versions(body: &str) -> Vec<String> {
+    collect_element_texts(body, b"title", python_rss_title_version)
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|version| normalized_version(&version))
+        .collect()
+}
+
 pub(crate) fn latest_maven_version(
     body: &str,
     include_prereleases: bool,

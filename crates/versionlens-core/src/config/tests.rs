@@ -200,6 +200,52 @@ fn session_config_input_applies_core_defaults() {
 }
 
 #[test]
+fn suggestion_indicators_replace_blank_values_with_standard_indicators() {
+    let defaults = crate::standard_suggestion_indicators();
+
+    for blank in ["", " \t\n\u{2003} "] {
+        let indicators = crate::SuggestionIndicators::from_input(SuggestionIndicatorsInput {
+            latest: Some(blank.to_owned()),
+            satisfies_latest: Some(blank.to_owned()),
+            directory: Some(blank.to_owned()),
+            error: Some(blank.to_owned()),
+            no_match: Some(blank.to_owned()),
+            matched: Some(blank.to_owned()),
+            updateable: Some(blank.to_owned()),
+            updateable_vulnerable: Some(blank.to_owned()),
+            build: Some(blank.to_owned()),
+        });
+
+        assert_eq!(indicators, defaults);
+    }
+}
+
+#[test]
+fn suggestion_indicators_preserve_nonblank_custom_values_verbatim() {
+    let indicators = crate::SuggestionIndicators::from_input(SuggestionIndicatorsInput {
+        latest: Some(" latest ".to_owned()),
+        satisfies_latest: Some(" satisfies ".to_owned()),
+        directory: Some(" directory ".to_owned()),
+        error: Some(" error ".to_owned()),
+        no_match: Some(" no-match ".to_owned()),
+        matched: Some(" matched ".to_owned()),
+        updateable: Some(" update ".to_owned()),
+        updateable_vulnerable: Some(" vulnerable ".to_owned()),
+        build: Some(" build ".to_owned()),
+    });
+
+    assert_eq!(indicators.latest, " latest ");
+    assert_eq!(indicators.satisfies_latest, " satisfies ");
+    assert_eq!(indicators.directory, " directory ");
+    assert_eq!(indicators.error, " error ");
+    assert_eq!(indicators.no_match, " no-match ");
+    assert_eq!(indicators.matched, " matched ");
+    assert_eq!(indicators.updateable, " update ");
+    assert_eq!(indicators.updateable_vulnerable, " vulnerable ");
+    assert_eq!(indicators.build, " build ");
+}
+
+#[test]
 fn session_config_input_normalizes_session_indicator_and_http_values() {
     let config = normalized_session_config();
 

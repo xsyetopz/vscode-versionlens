@@ -35,19 +35,29 @@ impl SuggestionIndicators {
     pub fn from_input(input: SuggestionIndicatorsInput) -> Self {
         let defaults = Self::standard();
         Self {
-            latest: input.latest.unwrap_or(defaults.latest),
-            satisfies_latest: input.satisfies_latest.unwrap_or(defaults.satisfies_latest),
-            directory: input.directory.unwrap_or(defaults.directory),
-            error: input.error.unwrap_or(defaults.error),
-            no_match: input.no_match.unwrap_or(defaults.no_match),
-            matched: input.matched.unwrap_or(defaults.matched),
-            updateable: input.updateable.unwrap_or(defaults.updateable),
-            updateable_vulnerable: input
-                .updateable_vulnerable
-                .unwrap_or(defaults.updateable_vulnerable),
-            build: input.build.unwrap_or(defaults.build),
+            latest: indicator_or_default(input.latest, defaults.latest),
+            satisfies_latest: indicator_or_default(
+                input.satisfies_latest,
+                defaults.satisfies_latest,
+            ),
+            directory: indicator_or_default(input.directory, defaults.directory),
+            error: indicator_or_default(input.error, defaults.error),
+            no_match: indicator_or_default(input.no_match, defaults.no_match),
+            matched: indicator_or_default(input.matched, defaults.matched),
+            updateable: indicator_or_default(input.updateable, defaults.updateable),
+            updateable_vulnerable: indicator_or_default(
+                input.updateable_vulnerable,
+                defaults.updateable_vulnerable,
+            ),
+            build: indicator_or_default(input.build, defaults.build),
         }
     }
+}
+
+fn indicator_or_default(value: Option<String>, default: String) -> String {
+    value
+        .filter(|indicator| !indicator.trim().is_empty())
+        .unwrap_or(default)
 }
 
 pub fn standard_suggestion_indicators() -> SuggestionIndicators {

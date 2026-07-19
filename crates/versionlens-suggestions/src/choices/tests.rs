@@ -43,6 +43,39 @@ fn release_update_choices_avoid_duplicate_latest_targets() {
 }
 
 #[test]
+fn release_update_choices_offer_latest_for_stale_fixed_versions_without_history() {
+    let choices = release_update_choices("1.0.0", "1.2.0", &[]);
+
+    assert_eq!(choices.len(), 1);
+    assert_eq!(choices[0].label, "latest");
+    assert_eq!(choices[0].version, "1.2.0");
+    assert_eq!(choices[0].command, "update");
+}
+
+#[test]
+fn release_update_choices_offer_latest_for_stale_satisfying_ranges_without_history() {
+    let choices = release_update_choices("^1.0.0", "1.2.0", &[]);
+
+    assert_eq!(choices.len(), 1);
+    assert_eq!(choices[0].label, "latest");
+    assert_eq!(choices[0].version, "1.2.0");
+    assert_eq!(choices[0].command, "update");
+}
+
+#[test]
+fn release_update_choices_omit_noop_latest_for_current_ranges_without_history() {
+    let choices = release_update_choices("^2.5.2", "2.5.2", &[]);
+
+    assert!(choices.is_empty());
+}
+
+#[test]
+fn release_update_choices_omit_latest_aliases_and_unparseable_non_ranges_without_history() {
+    assert!(release_update_choices("latest", "2.0.0", &[]).is_empty());
+    assert!(release_update_choices("unparseable", "2.0.0", &[]).is_empty());
+}
+
+#[test]
 fn release_update_choices_sort_stable_suggestions_by_version_descending() {
     let releases = ["1.0.0", "1.0.1", "1.1.0", "2.0.0"]
         .into_iter()

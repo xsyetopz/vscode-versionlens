@@ -484,31 +484,40 @@
 					},
 					"properties": {
 						"Build": {
-							"type": "string"
+							"type": "string",
+							"pattern": "\\S"
 						},
 						"Directory": {
-							"type": "string"
+							"type": "string",
+							"pattern": "\\S"
 						},
 						"Error": {
-							"type": "string"
+							"type": "string",
+							"pattern": "\\S"
 						},
 						"Latest": {
-							"type": "string"
+							"type": "string",
+							"pattern": "\\S"
 						},
 						"Match": {
-							"type": "string"
+							"type": "string",
+							"pattern": "\\S"
 						},
 						"NoMatch": {
-							"type": "string"
+							"type": "string",
+							"pattern": "\\S"
 						},
 						"SatisfiesLatest": {
-							"type": "string"
+							"type": "string",
+							"pattern": "\\S"
 						},
 						"Updateable": {
-							"type": "string"
+							"type": "string",
+							"pattern": "\\S"
 						},
 						"UpdateableVulnerable": {
-							"type": "string"
+							"type": "string",
+							"pattern": "\\S"
 						}
 					},
 					"description": "The indicators used when showing version suggestion statuses."

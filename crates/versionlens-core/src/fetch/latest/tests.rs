@@ -1,7 +1,10 @@
 use std::fs::read_to_string;
 use std::path::PathBuf;
 use versionlens_parsers::DocumentInput;
+use versionlens_parsers::{Dependency, Ecosystem};
+use versionlens_vscode_model::{Position, Range};
 
+use super::response_update_choices;
 use crate::{ProviderSettings, RegistryUrlConfig, SessionConfig};
 use versionlens_parsers::Ecosystem::Npm;
 
@@ -38,6 +41,44 @@ fn invalid_registry_url_creates_contextual_error_suggestion() {
             .as_deref()
             .is_some_and(|message| message.contains("failed to fetch registry URL")),
     );
+}
+
+#[test]
+fn cran_update_choices_exclude_versions_from_other_packages() {
+    let dependency = Dependency {
+        name: "dplyr".to_owned(),
+        requirement: "1.0.0".to_owned(),
+        ecosystem: Ecosystem::Cran,
+        group: "Imports".to_owned(),
+        hosted_url: None,
+        hosted_name: None,
+        range: empty_range(),
+        requirement_range: empty_range(),
+        requirement_prefix: "".to_owned(),
+        requirement_suffix: "".to_owned(),
+    };
+    let body = "Package: dplyr\nVersion: 1.0.0\n\nPackage: dplyr\nVersion: 1.1.4\n\nPackage: unrelated\nVersion: 2.0.0\n";
+
+    let choices = response_update_choices(&dependency, "1.1.4", body, false, &[]);
+
+    assert_eq!(
+        choices
+            .iter()
+            .map(|choice| choice.version.as_str())
+            .collect::<Vec<_>>(),
+        ["1.1.4"]
+    );
+}
+
+fn empty_range() -> Range {
+    let position = Position {
+        line: 0,
+        character: 0,
+    };
+    Range {
+        start: position,
+        end: position,
+    }
 }
 
 fn package_file_fixture(name: &str) -> String {

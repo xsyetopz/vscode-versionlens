@@ -1,7 +1,7 @@
 use super::{
     assert_latest, latest_version_for_requirement, latest_version_from_response,
     latest_version_from_response_with_prereleases, latest_version_with_tags, npm_build_versions,
-    release_versions_from_response,
+    release_versions_from_response, release_versions_from_response_for_package,
 };
 use versionlens_parsers::Ecosystem::{
     AnsibleGalaxy, Bazel, Cargo, CocoaPods, Conan, Cpan, Cpp, Cran, Deno, Docker, Dotnet, Go,
@@ -458,6 +458,10 @@ fn reads_latest_cran_version_from_packages_index() {
         Some("1.1.4".to_owned())
     );
     assert_eq!(
+        release_versions_from_response_for_package(Cran, "dplyr", body),
+        vec!["1.1.3".to_owned(), "1.1.4".to_owned()]
+    );
+    assert_eq!(
         release_versions_from_response(Cran, body),
         vec!["3.6.2".to_owned(), "1.1.3".to_owned(), "1.1.4".to_owned()]
     );
@@ -601,7 +605,7 @@ fn reads_python_versions_from_normalized_string_arrays() {
 }
 
 #[test]
-fn extracts_python_and_ruby_versions_for_update_choices() {
+fn extracts_python_release_versions_for_update_choices() {
     assert_eq!(
         release_versions_from_response(Python, r#"{"versions":["24.3.1","25.0.0","26.0.0rc1"]}"#,),
         [
@@ -610,6 +614,32 @@ fn extracts_python_and_ruby_versions_for_update_choices() {
             "26.0.0-rc.1".to_owned()
         ]
     );
+    assert_eq!(
+        release_versions_from_response(
+            Python,
+            r#"{"info":{"version":"3.0.0"},"releases":{"2.0.0":[{"yanked":true}],"1.0.0":[],"1.1.0":[{"yanked":false}],"1.0":[{"yanked":false}],"1.1.0rc1":[{"yanked":false}]}}"#,
+        ),
+        [
+            "1.0.0".to_owned(),
+            "1.1.0-rc.1".to_owned(),
+            "1.1.0".to_owned()
+        ]
+    );
+    assert_eq!(
+        release_versions_from_response(
+            Python,
+            r#"<?xml version="1.0"?><rss><channel><item><title>Demo 1.0.0</title></item><item><title>Demo 1.1.0</title></item><item><title>Demo 1.1.0</title></item><item><title>Demo 2.0.0rc1</title></item></channel></rss>"#,
+        ),
+        [
+            "1.0.0".to_owned(),
+            "1.1.0".to_owned(),
+            "2.0.0-rc.1".to_owned()
+        ]
+    );
+}
+
+#[test]
+fn extracts_ruby_versions_for_update_choices() {
     assert_eq!(
         release_versions_from_response(Ruby, r#"["1.0.0","1.1.0-pre.1","1.0.1"]"#,),
         [

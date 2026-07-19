@@ -9,6 +9,7 @@ use versionlens_parsers::Ecosystem::Npm;
 mod actions;
 mod docker;
 mod npm;
+mod python;
 mod ranges;
 mod vulnerabilities;
 #[test]
@@ -236,6 +237,11 @@ fn multiline_package_json_code_lenses_stay_on_dependency_lines() {
             (3, "L latest 1.3.14", ""),
             (4, "L latest 26.0.1", ""),
             (5, "S satisfies latest 1.125.0", ""),
+            (
+                5,
+                "U latest 1.125.0",
+                "versionlens.suggestion.onUpdateDependency"
+            ),
             (6, "L latest 3.9.2", ""),
             (7, "L latest 6.0.3", "")
         ]

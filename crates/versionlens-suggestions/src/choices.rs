@@ -37,15 +37,16 @@ pub fn release_update_choices_with_prereleases(
 fn stable_update_choices(requirement: &str, latest: &str, versions: &[String]) -> UpdateChoices {
     let stable_versions = stable_versions(versions);
     let Some(current) = crate::parse_semver(requirement.trim()).ok() else {
-        return range_update_choices(requirement, latest, &stable_versions);
+        return range_update_choices(requirement, latest, &stable_versions, versions.is_empty());
     };
-    if stable_versions.is_empty() {
-        return vec![];
-    }
 
     let mut choices = vec![];
     if !current_matches_latest(&current, latest) {
         push_unique_choice(&mut choices, latest_choice_label(latest), latest, "update");
+    }
+
+    if stable_versions.is_empty() {
+        return if versions.is_empty() { choices } else { vec![] };
     }
 
     if let Some(version) = next_major(&current, versions, &stable_versions) {
@@ -77,14 +78,19 @@ fn range_update_choices(
     requirement: &str,
     latest: &str,
     stable_versions: &[(&str, Version)],
+    has_no_versions: bool,
 ) -> UpdateChoices {
-    if stable_versions.is_empty() || !looks_like_range_requirement(requirement) {
+    if !looks_like_range_requirement(requirement) {
         return vec![];
     }
 
     let mut choices = vec![];
     if range_latest_update_is_useful(requirement, latest) {
         push_unique_choice(&mut choices, latest_choice_label(latest), latest, "update");
+    }
+
+    if stable_versions.is_empty() {
+        return if has_no_versions { choices } else { vec![] };
     }
 
     if let Some(version) = latest_satisfying_range(requirement, stable_versions) {

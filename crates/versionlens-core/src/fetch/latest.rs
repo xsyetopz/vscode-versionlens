@@ -4,8 +4,10 @@ use std::cmp::Ordering::{Equal as OrderingEqual, Greater as OrderingGreater};
 
 use semver::Version;
 use serde_json::Value;
-use versionlens_parsers::{Dependency, Ecosystem};
-use versionlens_providers::{build_versions_from_response, release_versions_from_response};
+use versionlens_parsers::Dependency;
+use versionlens_providers::{
+    build_versions_from_response, release_versions_from_response_for_package,
+};
 use versionlens_suggestions::{UpdateChoice, release_update_choices_with_prereleases};
 
 use crate::VersionLensSession;
@@ -101,7 +103,7 @@ pub(crate) fn response_update_choices(
         return docker_update_choices(&dependency.requirement, latest, body);
     }
 
-    let versions = update_choice_versions_from_response(dependency.ecosystem, body, latest);
+    let versions = update_choice_versions_from_response(dependency, body, latest);
     release_update_choices_with_prereleases(
         &dependency.requirement,
         latest,
@@ -112,12 +114,19 @@ pub(crate) fn response_update_choices(
 }
 
 fn update_choice_versions_from_response(
-    ecosystem: Ecosystem,
+    dependency: &Dependency,
     body: &str,
     latest: &str,
 ) -> Vec<String> {
-    let versions = release_versions_from_response(ecosystem, body);
-    if ecosystem == Npm {
+    let versions = release_versions_from_response_for_package(
+        dependency.ecosystem,
+        dependency
+            .hosted_name
+            .as_deref()
+            .unwrap_or(&dependency.name),
+        body,
+    );
+    if dependency.ecosystem == Npm {
         return npm_versions_capped_to_latest(versions, latest);
     }
     versions

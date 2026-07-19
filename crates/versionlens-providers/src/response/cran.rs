@@ -13,7 +13,13 @@ pub(crate) fn latest_cran_version(
     )
 }
 
-pub(crate) fn cran_release_versions(body: &str) -> Vec<String> {
+pub(crate) fn cran_release_versions(body: &str, package: &str) -> Vec<String> {
+    cran_package_versions(body, package)
+        .map(|value| value.to_owned())
+        .collect()
+}
+
+pub(crate) fn cran_all_release_versions(body: &str) -> Vec<String> {
     body.split("\n\n")
         .filter_map(|record| record_field(record, "Version"))
         .map(|value| value.to_owned())
